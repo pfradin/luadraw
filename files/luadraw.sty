@@ -1,0 +1,116 @@
+% luadraw.sty v1.0 du 07/02/2025%
+%% ---------------------------------------%
+%% Copyright (C) 2025 Patrick Fradin%
+%% ---------------------------------------%
+% Ce package fournit un environnement de dessin avec lua%
+%%
+% \begin{luadraw}{<options>}%
+%  <code lua>%
+% \end{luadraw}%
+%%%%%%%% ATTENTION : compilation avec lualatex uniquement !%
+%%%%%% Les options de l'environnement sont:%
+%%
+% name =         : nom du fichier tkz créé SANS extension (il y a un nom par défaut: \jobname\luaDraw@progcount),%
+% exec =         : (true ou false): exécute ou non le code lua, true par defaut,%
+% auto =         : (true ou false, true par défaut)): inclut ou non automatiquement le fichier tikz lorsque exec est false%
+%%
+%%%% Les options globales du package sont au nombre de 1:%
+%%
+% noexec  : redéfinit la valeur par défaut de l'option exec à la valeur false,%
+%           par conséquent les environnements luadraw ne sont pas exécutés par lua%
+%           sauf si l'option exec (ou exec=true) est mentionnée dans les options de l'environnement%
+%%
+\RequirePackage{ifluatex}%
+\ifluatex%
+  % Rien à faire, tout va bien%
+\else%
+  \PackageError{luadraw}{Ce package nécessite LuaTeX (lualatex)}{}%
+  \expandafter\endinput%
+\fi%
+%%
+\NeedsTeXFormat{LaTeX2e}% %
+\ProvidesPackage{luadraw}[2025/02/21 version 1.0, provides luadraw environment for drawing with lua]%%
+%
+\RequirePackage{luacode}%%
+\RequirePackage{verbatim,xkeyval}%%
+%
+\RequirePackage{tikz}%%
+\usetikzlibrary{patterns}%%
+\usetikzlibrary{plotmarks}%%
+\usetikzlibrary{arrows.meta}%%
+\usetikzlibrary{decorations.markings}% %
+%
+\newif\ifluaDraw@DefaultExec\luaDraw@DefaultExectrue%%
+\define@key{luadraw.sty}{noexec}[]{\luaDraw@DefaultExecfalse}%%
+\ProcessOptionsX%%
+%
+\def\luadrawTkzDir{}% répertoire de travail%
+\define@key{luaDraw}{name}{%%
+    \def\luaDraw@nom{\luadrawTkzDir#1}%%
+    \directlua{graph_name = \luastring{\luaDraw@nom}..".tkz"}%
+}%%
+\define@boolkey{luaDraw}{exec}[true]{%%
+\ifKV@luaDraw@exec%%
+\def\luaDraw@dep{\luacode}%%
+\def\luaDraw@enddep{\endluacode}%%
+\else%%
+\def\luaDraw@dep{\comment}%%
+\def\luaDraw@enddep{\endcomment}%%
+\fi%%
+}%%
+\define@boolkey{luaDraw}{auto}[true]{%%
+}%%
+%
+\newcounter{luaDraw@progcount}%%
+\setcounter{luaDraw@progcount}{0}%%
+%
+\ifluaDraw@DefaultExec%%
+    \presetkeys{luaDraw}{name=\jobname\theluaDraw@progcount, exec, auto}{}%%
+\else%%
+    \presetkeys{luaDraw}{name=\jobname\theluaDraw@progcount, exec=false, auto}{}%%
+\fi%%
+%
+\def\luaDraw@loading{}%%
+%
+\newenvironment*{luadraw}[2][]{%%
+\addtocounter{luaDraw@progcount}{1}%%
+\setkeys{luaDraw}{#2}%%
+\ifKV@luaDraw@exec% code lua exécuté%
+\directlua{% on efface l'ancien fichier tkz s'il existe%
+    local file = io.open(graph_name, "r")
+    if not file then return
+    else 
+        file:close()
+        os.remove(graph_name)
+    end
+}%%
+\else% code lua non exécuté%
+\ifKV@luaDraw@auto% -- chargement automatique du fichier tkz%
+\def\luaDraw@loading{\input{\luaDraw@nom.tkz}}%%
+\else%%
+\def\luaDraw@loading{}%%
+\fi%%
+\fi%%
+\bgroup%%
+\luaDraw@dep%%
+}%%
+{%%
+\luaDraw@enddep%%
+\egroup%%
+\luaDraw@loading%%
+}%%
+%
+\begin{luacode}
+graph = require 'luadraw_graph2d'
+graph_name = "" -- nom du graphique (l'extension .tkz a été ajoutée)
+function graph:Save()
+    self:Savetofile(graph_name)
+end
+function graph:Show() -- on réécrit la méthode Show pour ajouter une sauvegarde automatique du fichier tkz
+    self:Save()
+    local str = concat(self:beginDraw(),self.export,self:endDraw())
+    tex.sprint(table.unpack(str))
+end
+\end{luacode}
+%
+\endinput%%
