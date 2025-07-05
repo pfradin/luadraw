@@ -1,6 +1,6 @@
 -- luadraw_colors.lua (chargé par luadraw_graph)
--- date 2025/02/21
--- version 1.0
+-- date 2025/07/04
+-- version 2.0
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -173,36 +173,31 @@ function rgb(r,g,b) -- ou rgb({r,g,b})
     return "{rgb,1:red,"..strReal(r)..";green,"..strReal(g)..";blue,"..strReal(b).."}"
 end
 
-function hsb(h,s,b) 
+function hsb(h,s,b,table) 
 -- hsb(hue (0..360), saturation (0..1), brightness (0..1) ) 
 -- conversion vers rgb
--- renvoie une chaîne pour tikz
+-- renvoie une chaîne pour tikz ou une table
+    table = table or false
     local Hi = math.floor(h/60) % 6
     local f = h/60-Hi
     local p = b*(1-s) 
     local q = b*(1-f*s)
     local t = b*(1-(1-f)*s)
-    if Hi == 0 then  return rgb(b,t,p)
-    else
-        if Hi == 1 then return rgb(q,b,p)
-        else
-            if Hi == 2 then return rgb(p,b,t)
-            else 
-                if Hi == 3 then return rgb(p,q,b)
-                else
-                    if Hi == 4 then return rgb(t,p,b)
-                    else return rgb(b,p,q)
-                    end
-                end
-            end
-        end
+    local res
+    if Hi == 0 then res = {b,t,p}
+    elseif Hi == 1 then res = {q,b,p}
+    elseif Hi == 2 then res = {p,b,t}
+    elseif Hi == 3 then res = {p,q,b}
+    elseif Hi == 4 then res = {t,p,b}
+    else res = {b,p,q}
     end
+    if table then return res else return rgb(res) end
 end
 
 function mixcolor(...) 
 --mixcolor( color1, proportion1, color2, proportion1, ..., colorN, proportionN): mélange les couleurs suivants les proportions
 -- chaque couleur est une table {r,g,b}
--- renvoie une chaîne rgb pour tikz
+-- renvoie une chaîne rgb pour tikz et une table
     local S, r, g, b, a1, a2, a3 = 0, 0, 0, 0
     for k,coef in ipairs{...} do
         if k%2 == 1 then -- k impair c'est une couleur
@@ -212,20 +207,39 @@ function mixcolor(...)
             S = S+coef
         end
     end
-    return rgb(r/S, g/S, b/S)
+    return rgb(r/S, g/S, b/S), {r/S,g/S,b/S} -- on renvoie la version chaîne et la version table
 end
 
-function palette(colors,pos)
+function palette(colors,pos,tbl)
 -- colors est une liste de couleurs au format {r,g,b}
 -- pos est un nombre entre 0 et 1 (0=première couleur, 1=dernière couleur)
 -- la fonction renvoie la couleur correspondant à la position pos dans la liste colors
+-- si tbl vaut true, on renvoie une table, sinon une chaîne
     local N = #colors
-    if pos == 0 then return rgb(colors[1])
-    elseif pos == 1 then return rgb(colors[N])
+    tbl = tbl or false
+    if pos == 0 then if tbl then return colors[1] else return rgb(colors[1]) end
+    elseif pos == 1 then if tbl then return colors[N] else return rgb(colors[N]) end
     else
         local x = pos*(N-1)+1
         local k = math.floor(x)
         local p = x-k
-        return mixcolor(colors[k],1-p,colors[k+1],p)
+        local res1, res2 = mixcolor(colors[k],1-p,colors[k+1],p)
+        if tbl then return res2
+        else return res1
+        end
     end
+end
+
+function getpalette(colors,nb,tbl)
+-- colors est une liste de couleurs au format {r,g,b} (tables)
+-- nb est le nombre de couleurs souhaitées
+-- la fonction renvoie une liste de nb couleurs régulièrement réparties dans colors
+-- si tbl vaut true, on renvoie une liste de tables, sinon une liste de chaînes
+    local N = #colors
+    tbl = tbl or false
+    local res = {}
+    for k = 0, nb-1 do
+        table.insert(res, palette(colors,k/(nb-1),tbl))
+    end
+    return res
 end

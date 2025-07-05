@@ -1,0 +1,1968 @@
+\documentclass[%
+10pt,%
+a4paper,%
+french,%
+]%
+{article}%
+
+
+\usepackage{luatextra}
+\usepackage{amsmath,amssymb,marvosym,stmaryrd,calrsfs,minted,setspace,array,caption,fvextra}%
+\usepackage[math-style=french]{unicode-math}
+\usepackage[math-style=french]{fourier-otf}%
+\usepackage[svgnames]{xcolor}
+\usepackage[margin=1.5cm,top=1cm,bottom=1.5cm,headheight=5mm,headsep=2mm]{geometry}
+\usepackage[unicode,pdfstartview = FitH, colorlinks, linkcolor=blue]{hyperref}
+\usepackage{babel,microtype,multicol}%
+\frenchsetup{ListOldLayout=true}
+
+\usepackage[noexec,3d]{luadraw}
+\def\version{2.0}
+
+\def\luadrawTkzDir{tkz3d/}% sauvegarde des fichiers *.tkz dans le sous-dossier tkz3d
+
+\hypersetup{
+  pdfauthor={P. Fradin},
+  pdflang={fr},
+  %hidelinks,
+  pdfcreator={LuaLatex}
+}
+
+\title{\textbf{Le paquet} \emph{luadraw} version \version\\ Dessin 3d avec lua (et tikz)}
+\author{P. Fradin}
+%\date{}
+
+\onehalfspacing
+\newminted{Lua}{bgcolor=Beige,ignorelexererrors=true,linenos,numbersep=6pt,breaklines,frame=single,fontsize=\footnotesize}%
+\newminted{TeX}{bgcolor=Gray!30,breaklines,fontsize=\footnotesize}%
+
+%\columnseprule 0.4pt
+\columnsep 25pt
+
+\definecolor{bgcol}{RGB}{238,240,252}% couleur de fond des listings
+
+\newenvironment*{demo}[2][]{%
+\gdef\legende{#2}%
+\gdef\lab{#1}%
+\bgroup
+\VerbatimOut{\jobname.tmp}%
+}%
+{%
+\endVerbatimOut%
+\egroup%
+%\begin{center}
+%\begin{tabular}{|m{10cm}|m{7cm}|}
+%\hline
+%\begin{minipage}{10cm}
+\inputminted[ignorelexererrors=true,breaklines,bgcolor=Beige,linenos,numbersep=6pt,frame=single,fontsize=\footnotesize]{Lua}{\jobname.tmp}%
+%\end{minipage}
+%&
+\begin{minipage}{0.9\textwidth}
+%\par\smallskip
+\begin{center}
+\captionof{figure}{\legende}\label{\lab}%
+\input{\jobname.tmp}%
+%\end{center}
+%\par\smallskip
+%\hline
+%\end{tabular}
+\end{center}
+\end{minipage}
+}
+
+\begin{document}
+\maketitle
+
+%\selectlanguage{english}
+%\begin{abstract}
+%The \emph{luadraw} package defines the environment of the same name, which lets you create mathematical graphs using the Lua language. These graphs are ultimately drawn by tikz (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language with good computational capabilities.
+%\end{abstract}
+
+\selectlanguage{french}
+\begin{abstract}
+Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet de créer des graphiques mathématiques en utilisant le langage Lua. Ces graphiques sont dessinés au final par tikz (et automatiquement sauvegardés), alors pourquoi les faire en Lua ? Parce que celui-ci apporte toute la puissance d'un langage de programmation simple, efficace, capable de faire des calculs, tout en utilisant les possibilités graphiques de tikz.
+
+L'aide se présente en deux parties : le présent fichier relatif à la 3d, et le fichier \href{file://luadraw2d.pdf}{luadraw2d.pdf} relatif à la 2d.
+\end{abstract}
+
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+
+\clearpage
+
+\listoffigures
+
+\clearpage
+
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{--}
+\renewcommand{\labelitemiii}{$*$}
+%\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\Roman{section}~}
+\renewcommand{\thesubsection}{\arabic{subsection})}
+\renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
+\renewcommand{\thefigure}{\arabic{figure}}
+
+\begin{center}
+\captionof{figure}{Point col en $M(0,0,0)$ ($z=x^2-y^2$)}\label{pointcol}\par
+\begin{luadraw}{name=point_col}
+local g = graph3d:new{window3d={-2,2,-2,2,-4,4}, window={-3.5,3.5,-5,5}, size={8,9,0}, viewdir={120,60}}
+g:Linejoin("round")
+local S = surface(function(u,v) return M(u,v,u^2-v^2) end, -2,2,-2,2,{20,20})
+local P = facet2poly(S) -- conversion en polyèdre
+local Tx = g:Intersection3d(P, {Origin,vecI}) --intersection de P avec le plan yOz
+local Ty = g:Intersection3d(P, {Origin,vecJ}) --intersection de P avec le plan xOz
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray",drawbox=true})
+g:Dfacet(S,{mode=5,color="ForestGreen"}) -- dessin de la surface
+g:Dedges(Tx, {color="Crimson", hidden=true, width=8}) -- intersection avec yOz
+g:Dedges(Ty, {color="Navy",hidden=true, width=8}) -- intersection avec xOz
+g:Dpolyline3d( {M(2,0,4),M(-2,0,4),M(-2,0,-4)}, "Navy,line width=.8pt")
+g:Dpolyline3d( {M(0,-2,4),M(0,2,4),M(0,2,-4)}, "Crimson,line width=.8pt")
+g:Show()
+\end{luadraw}
+\end{center}
+
+\section{Introduction}
+
+\subsection{Prérequis}
+
+\begin{itemize}
+\item Ce document présente l'utilisation du package \emph{luadraw} avec l'option globale \emph{3d} :
+\verb|\usepackage[3d]{luadraw}|.
+\item Le paquet charge le module \emph{luadraw\_graph2d.lua} qui définit la classe \emph{graph}, et fournit l'environnement \emph{luadraw} qui permet de faire des graphiques en Lua. Tout ce qui est dit dans la documentation \emph{LuaDraw2d.pdf} s'applique donc, et est supposé connu ici.
+\item L'option globale \emph{3d} permet en plus le chargement du module \emph{luadraw\_graph3d.lua}. Celui-ci définit en plus la classe \emph{graph3d} (qui s'appuie sur la classe \emph{graph}) pour des dessins en 3d. 
+\end{itemize}
+
+\subsection{Quelques rappels}
+
+\begin{itemize}
+    \item Autre option globale du paquet : \emph{noexec}. Lorsque cette option globale est mentionnée la valeur par défaut de l'option \emph{exec} pour l'environnement \emph{luadraw} sera false (et non plus true).
+
+    \item Lorsqu'un graphique est terminé il est exporté au format tikz, donc ce paquet charge également le paquet \emph{tikz} ainsi que les librairies :
+    \begin{itemize}
+        \item\emph{patterns}
+        \item\emph{plotmarks}
+        \item\emph{arrows.meta}
+        \item\emph{decorations.markings}
+        \end{itemize}
+    \item Les graphiques sont créés dans un environnement \emph{luadraw}, celui-ci appelle \emph{luacode}, c'est donc du \textbf{langage Lua} qu'il faut utiliser dans cet environnement.
+
+    \item Sauvegarde du fichier \emph{.tkz} : le graphique est exporté au format tikz dans un fichier (avec l'extension \emph{tkz}), par défaut celui-ci est sauvegardé dans le dossier courant. Mais il est possible d'imposer un chemin spécifique en définissant dans le document, la commande \verb|\luadrawTkzDir|, par exemple : \verb|\def\luadrawTkzDir{tikz/}|, ce qui permettra d'enregistrer les fichiers \emph{*.tkz} dans le sous-dossier \emph{tikz} du dossier courant, à condition toutefois que ce sous-dossier existe !
+
+    \item Les options de l'environnement sont :
+    \begin{itemize}
+    \item \emph{name = \ldots{}} : permet de donner un nom au fichier tikz produit, on donne un nom sans extension (celle-ci sera automatiquement ajoutée, c'est \emph{.tkz}). Si cette option est omise, alors il y a un nom par défaut, qui est le nom du fichier maître suivi d'un numéro.
+    \item \emph{exec = true/false} : permet d'exécuter ou non le code Lua compris dans l'environnement. Par défaut cette option vaut true, \textbf{SAUF} si l'option globale \emph{noexec} a été mentionnée dans le préambule avec la déclaration du paquet. Lorsqu'un graphique complexe qui demande beaucoup de calculs est au point, il peut être intéressant de lui ajouter l'option \emph{exec=false}, cela évitera les recalculs de ce même graphique pour les compilations à venir.
+    \item \emph{auto = true/false} : permet d'inclure ou non automatiquement le fichier tikz en lieu et place de l'environnement \emph{luadraw} lorsque l'option \emph{exec} est à false. Par défaut l'option \emph{auto} vaut true.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Création d'un graphe 3d}
+
+\begin{TeXcode}
+\begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
+-- création d'un nouveau graphique en lui donnant un nom local
+local g = graph3d:new{ window3d={x1,x2,y1,y2,z1,z2}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom}, size={largeur,hauteur,ratio}, bg="color", border=true/false }
+-- construction du graphique g
+    instructions graphiques en langage Lua ...
+-- affichage du graphique g et sauvegarde dans le fichier <filename>.tkz
+g:Show()
+-- ou bien sauvegarde uniquement dans le fichier <filename>.tkz
+g:Save()
+\end{luadraw}
+\end{TeXcode}
+
+La création se fait dans un environnement \emph{luadraw}, c'est à la première ligne à l'intérieur de l'environnement qu'est faite cette création en nommant le graphique :
+
+\begin{Luacode}
+local g = graph3d:new{ window3d={x1,x2,y1,y2,z1,z2}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom}, size={largeur,hauteur,ratio}, bg="color", border=true/false }
+\end{Luacode}
+
+La classe \emph{graph3d} est définie dans le paquet \emph{luadraw} grâce à l'option globale \emph{3d}. On instancie cette classe en invoquant son constructeur et en donnant un nom (ici c'est \emph{g}), on le fait en local de sorte que le graphique \emph{g} ainsi créé, n'existera plus une fois sorti de l'environnement (sinon \emph{g} resterait en mémoire jusqu'à la fin du document).
+
+\begin{itemize}
+ \item Le paramètre (facultatif) \emph{window3d} définit le pavé de $\mathbf R^3$ correspondant au graphique : c'est $[x_1,x_2]\times[y_1,y_2]\times[z_1,z_2]$. Par défaut c'est $[-5,5]\times[-5,5]\times[-5,5]$.
+ \item Le paramètre (facultatif) \emph{adjust2d} indique si la fenêtre 2d qui va contenir la projection orthographique du dessin 3d, doit être déterminée automatiquement (false par défaut). Cette fenêtre 2d correspond à l'argument \emph{window}.
+ 
+ \item Le paramètre (facultatif) \emph{viewdir} est une table qui définit les deux angles de vue (en degrés) pour la projection orthographique. Par défaut c'est la table \{30,60\}.
+ 
+\begin{center}
+\captionof{figure}{Angles de vue}\label{viewdir}
+\begin{luadraw}{name=viewdir}
+local g = graph3d:new{ size={8,8} }
+local i = cpx.I
+g:Linejoin("round")
+local O, A = Origin, M(4,4,4)
+local B, C, D, E = pxy(A), px(A), py(A), pz(A)
+g:Dpolyline3d( {{O,A},{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, "->")
+g:Dpolyline3d( {{E,A,B,O}, {C,B,D}}, "dashed")
+g:Dpath3d( {C,O,B,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8")
+g:Darc3d(C,O,B,2.5,1,"->")
+g:Dpath3d( {E,O,A,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8")
+g:Darc3d(E,O,A,2.5,1,"->")
+g:Dballdots3d(O)
+g:Labelsize("footnotesize")
+g:Dlabel3d(
+    "$x$", 5.25*vecI,{}, "$y$", 5.25*vecJ,{}, "$z$", 5.25*vecK,{},
+    "vers observateur", A, {pos="E"},
+    "$O$", O, {pos="NW"},
+    "$\\theta$", (B+C)/2, {pos="N", dist=0.15},
+    "$\\varphi$", (A+E)/2, {pos="S",dist=0.25}
+)
+g:Dlabel("viewdir=\\{$\\theta,\\varphi$\\} (en degrés)",-5*i,{pos="N"})
+g:Show()            
+\end{luadraw}
+\end{center}
+
+\item Les autres paramètres sont ceux de la classe \emph{graph}, ils ont été décrits dans le fichier \emph{LuaDraw2d.pdf}.
+\end{itemize}
+
+\paragraph{Construction du graphique.}
+
+\begin{itemize}
+    \item L'objet instancié (\emph{g} ici dans l'exemple) possède toutes les méthodes de la classe \emph{graph}, plus des méthodes spécifiques à la 3d.
+    \item La classe \emph{graph3d} amène aussi un certain nombre de fonctions mathématiques propres à la 3d.
+\end{itemize}
+
+
+\section{La classe \emph{pt3d} (point 3d)}
+
+\subsection{Représentation des points et vecteurs}
+
+\begin{itemize}
+    \item L'espace usuel est $\mathbf R^3$, les points et les vecteurs sont donc des triplets de réels (appelés points 3d). Quatre triplets portent un nom spécifique (variables prédéfinies), il s'agit de :
+    \begin{itemize}
+        \item \textbf{Origin}, qui représente le triplet $(0,0,0)$.
+        \item \textbf{vecI}, qui représente le triplet $(1,0,0)$.
+        \item \textbf{vecJ}, qui représente le triplet $(0,1,0)$.
+        \item \textbf{vecK}, qui représente le triplet $(0,0,1)$.
+    \end{itemize}
+    À cela s'ajoute la variable \textbf{ID3d} qui est la table \emph{\{Origin, vecI, vecJ, vecK\}} représentant la matrice unité 3d. Par défaut c'est la matrice de transformation du graphe 3d.
+    \item La classe \emph{pt3d} (qui est automatiquement chargée) définit les triplets de réels, les opérations possibles, et un certain nombre de méthodes. Pour créer un point 3d, il y a trois méthodes :
+        \begin{itemize}
+            \item Définition en cartésien : la fonction \textbf{M(x,y,z)} renvoie le triplet $(x,y,z)$. On peut également obtenir ce triplet en faisant : \emph{x*vecI+y*vecJ+z*vecK}.
+            \item Définition en cylindrique : la fonction \textbf{Mc(r,$\theta$,z)} renvoie le triplet $(r\cos(\theta),r\sin(\theta),z)$.
+            \item Définition en sphérique : la fonction \textbf{Ms(r,$\theta$,$\varphi$)} renvoie le triplet $(r\cos(\theta)\sin(\varphi), r\sin(\theta)\sin(\varphi),r\cos(\varphi))$.
+        \end{itemize}
+    Accès aux composantes d'un point 3d : si une variable $A$ désigne un point 3d, alors ses trois composantes sont $A.x$, $A.y$ et $A.z$.
+    
+    Pour tester si une variable $A$ désigne un point 3d, on dispose de la fonction \textbf{isPoint3d()} qui renvoie un booléen.
+    
+    Conversion : pour convertir un réel ou un complexe en point 3d, on dispose de la fonction \textbf{toPoint3d()}.
+\end{itemize}
+
+\subsection{Opérations sur les points 3d}
+
+Ces opérations sont les opérations usuelles avec les symboles usuels :
+\begin{itemize}
+    \item L'addition (+), la différence (-), l'opposé (-).
+    \item Le produit par un scalaire, si k et un réel, \emph{k*M(x,y,z)} renvoie \emph{M(ka,ky,kz)}.
+    \item On peut diviser un point 3d par un scalaire, par exemple, si $A$ et $B$ sont deux points 3d, alors le milieu s'écrit simplement $(A+B)/2$.
+    \item On peut tester l'égalité de deux points 3d avec le symbole =.
+\end{itemize}
+
+\subsection{Méthodes de la classe \emph{pt3d}}
+
+Celles-ci sont :
+\begin{itemize}
+    \item \textbf{pt3d.abs(u)} : renvoie la norme euclidienne du point 3d $u$.
+    \item \textbf{pt3d.N1(u)} : renvoie la norme 1 du point 3d $u$. Si $u=M(x,y,z)$, alors \emph{pt3d.N1(u)} renvoie $|x|+|y|+|z|$.
+    \item \textbf{pt3d.dot(u,v)} : renvoie le produit scalaire entre les vecteurs (points 3d) $u$ et $v$.
+    \item \textbf{pt3d.det(u,v,w)} : renvoie le déterminant entre les vecteurs (points 3d) $u$, $v$ et $w$.
+    \item \textbf{pt3d.prod(u,v)} : renvoie le produit vectoriel entre les vecteurs (points 3d) $u$ et $v$.
+    \item \textbf{pt3d.normalize(u)} : renvoie le vecteur (point 3d) $u$ normalisé (renvoie \emph{nil} si $u$ est nul).
+    \item \textbf{pt3d.round(u,nbDeci)} : renvoie un point 3d dont les composantes sont celles du point 3d $u$ arrondies avec \emph{nbDeci} décimales.
+\end{itemize}
+
+\subsection{Fonctions mathématiques}
+
+Dans le fichier définissant la classe \emph{pt3d}, quelques fonctions mathématiques sont introduites :
+\begin{itemize}
+    \item \textbf{angle3d(u,v,epsilon)} : renvoie l'écart angulaire entre les vecteurs (points 3d) $u$ et $v$ supposés non nuls. L'argument (facultatif) \emph{epsilon} vaut $0$ par défaut, il indique à combien près se fait un certain test d'égalité sur un flottant.
+    \item \textbf{isobar3d(L)} : renvoie l'isobarycentre des points 3d de la liste (table) $L$ (les éléments de $L$ qui ne sont pas des points 3d sont ignorés).
+    \item \textbf{insert3d(L,A,epsilon)} : cette fonction insère le point 3d $A$ dans la liste $L$ qui doit être une \textbf{variable} (et qui sera donc modifiée). Le point $A$ est inséré \textbf{sans doublon} et la fonction renvoie sa position (indice) dans la liste $L$ après insertion. L'argument (facultatif) \emph{epsilon} vaut $0$ par défaut, il indique à combien près se font les comparaisons.
+\end{itemize}
+
+\section{Méthodes graphiques élémentaires}
+
+Toutes les méthodes graphiques 2d s'appliquent. À cela s'ajoute la possibilité de dessiner dans l'espace des lignes polygonales, des segments, droites, courbes, chemins, points, labels, plans, solides. Avec les solides vient également la notion de facettes que l'on ne trouvait pas en 2d.
+
+Les méthodes graphiques 3d vont calculer automatiquement la projection sur le plan de l'écran, après avoir appliquer aux objets la matrice de transformation 3d associée au graphique (qui est l'identité par défaut), ce sont ensuite les méthodes graphiques 2d qui prendront le relai.
+
+La méthode qui applique la matrice 3d et fait la projection sur l'écran (plan passant par l'origine et normal au vecteur unitaire dirigé vers l'observateur et défini par les angles de vue), est : \textbf{g:Proj3d(L)} où $L$ est soit un point 3d, soit une liste de points 3d, soit une liste de listes de points 3d. Cette fonction renvoie des complexes (affixes des projetés sur l'écran).
+
+\subsection{Dessin aux traits}
+
+\subsubsection{Ligne polygonale : Dpolyline3d}
+
+La méthode \textbf{g:Dpolyline3d(L,close,draw\_options)} (où \emph{g} désigne le graphique en cours de création), \emph{L} est une ligne polygonale 3d (liste de listes de points 3d), \emph{close} un argument facultatif qui vaut \emph{true} ou \emph{false} indiquant si la ligne doit être refermée ou non (\emph{false} par défaut), et \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw} dans l'export.
+    
+\subsubsection{Angle droit : Dangle3d}
+
+La méthode \textbf{g:Dangle3d(B,A,C,r,draw\_options)} dessine l'angle \(BAC\) avec un parallélogramme (deux côtés seulement sont dessinés), l'argument facultatif \emph{r} précise la longueur d'un côté (0.25 par défaut). Le parallélogramme est dans le plan défini par les points $A$, $B$ et $C$, ceux-ci ne doivent donc pas être alignés. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction  \emph{\textbackslash draw}.
+    
+\subsubsection{Segment : Dseg3d}
+
+La méthode \textbf{g:Dseg3d(seg,scale,draw\_options)} dessine le segment défini par l'argument \emph{seg} qui doit être une liste de deux points 3d. L'argument facultatif \emph{scale} (1 par défaut) est un nombre qui permet d'augmenter ou réduire la longueur du segment (la longueur naturelle est multipliée par \emph{scale}). L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    
+\subsubsection{Droite : Dline3d}
+
+La méthode \textbf{g:Dline3d(d,draw\_options)} trace la droite \emph{d}, celle-ci est une liste du type \emph{\{A,u\}} où \emph{A} représente un point de la droite (point 3d) et \emph{u} un vecteur directeur (un point 3d non nul). 
+
+Variante : la méthode \textbf{g:Dline3d(A,B,draw\_options)} trace la droite passant par les points \emph{A} et \emph{B} (deux points 3d). L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+
+ \subsubsection{Arc de cercle : Darc3d}
+ 
+\begin{itemize}
+    \item La méthode \textbf{g:Darc3d(B,A,C,r,sens,normal,draw\_options)} dessine un arc de cercle de centre \emph{A} (point 3d), de rayon \emph{r}, allant de \emph{B} (point 3d) vers \emph{C} (point 3d) dans le sens direct si l'argument \emph{sens} vaut 1, le sens inverse sinon. Cet arc est tracé dans le plan contenant les trois points $A$, $B$ et $C$, lorsque ces trois points sont alignés il faut préciser l'argument \emph{normal} (point 3d non nul) qui représente un vecteur normal au plan. Ce plan est orienté par le produit vectoriel $\vec{AB}\wedge\vec{AC}$ ou bien par le vecteur \emph{normal} si celui-ci est précisé. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    
+    \item La fonction \textbf{arc3d(B,A,C,r,sens,normal)} renvoie la liste des points de cet arc (ligne polygonale 3d). 
+    
+    \item La fonction \textbf{arc3db(B,A,C,r,sens,normal)} renvoie cet arc sous forme d'un chemin 3d (voir Dpath3d) utilisant des courbes de Bézier.
+\end{itemize}
+
+\subsubsection{Cercle : Dcircle3d}
+
+\begin{itemize}
+    \item La méthode \textbf{g:Dcircle3d(C,R,normal,draw\_options)} trace le cercle de centre $C$ (point 3d) et de rayon $R$, dans le plan contenant $C$ et normal au vecteur défini par l'argument \emph{normal} (point 3d non nul). L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    
+    \item La fonction \textbf{circle3d(C,R,normal)} renvoie la liste des points de ce cercle (ligne polygonale 3d). 
+    
+    \item La fonction \textbf{circle3db(C,R,normal)} renvoie ce cercle sous forme d'un chemin 3d (voir Dpath3d) utilisant des courbes de Bézier.
+\end{itemize}
+    
+\subsubsection{Chemin 3d : Dpath3d}
+
+La méthode \textbf{g:Dpath3d(chemin,draw\_options)} fait le dessin du \emph{chemin}. L'argument \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw}. L'argument \emph{chemin} est une liste de points 3d suivis d'instructions (chaînes) fonctionnant sur le même principe qu'en 2d. Les instructions sont :
+    \begin{itemize}
+      \item \emph{"m"} pour moveto,
+      \item \emph{"l"} pour lineto,
+      \item \emph{"b"} pour bézier (il faut deux points de contrôles),
+      \item \emph{"c"} pour cercle (il faut un point du cercle, le centre et un vecteur normal),
+      \item \emph{"ca"} pour arc de cercle (il faut 3 points, un rayon, un sens et éventuellement un vecteur normal),
+      \item \emph{"cl"} pour close (ferme la composante courante).
+      \end{itemize}
+
+Voici par exemple le code de la figure \ref{viewdir}.
+
+\begin{Luacode}
+\begin{luadraw}{name=viewdir}
+local g = graph3d:new{ size={8,8} }
+local i = cpx.I
+g:Linejoin("round")
+local O, A = Origin, M(4,4,4)
+local B, C, D, E = pxy(A), px(A), py(A), pz(A) --projeté de A sur le plan xOy et sur les axes
+g:Dpolyline3d( {{O,A},{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, "->") -- axes
+g:Dpolyline3d( {{E,A,B,O}, {C,B,D}}, "dashed")
+g:Dpath3d( {C,O,B,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8") --secteur angulaire
+g:Darc3d(C,O,B,2.5,1,"->") -- arc de cercle pour theta
+g:Dpath3d( {E,O,A,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8") --secteur angulaire
+g:Darc3d(E,O,A,2.5,1,"->") -- arc de cercle pour phi
+g:Dballdots3d(O) -- le point origine sous forme d'une petite sphère
+g:Labelsize("footnotesize")
+g:Dlabel3d(
+    "$x$", 5.25*vecI,{}, "$y$", 5.25*vecJ,{}, "$z$", 5.25*vecK,{},
+    "vers observateur", A, {pos="E"},
+    "$O$", O, {pos="NW"},
+    "$\\theta$", (B+C)/2, {pos="N", dist=0.15},
+    "$\\varphi$", (A+E)/2, {pos="S",dist=0.25}
+)
+g:Dlabel("viewdir=\\{$\\theta,\\varphi$\\} (en degrés)",-5*i,{pos="N"}) -- label 2d
+g:Show()   
+\end{luadraw}      
+\end{Luacode}
+
+\subsubsection{Plan : Dplane}
+
+La méthode \textbf{g:Dplane(P,V,L1,L2,mode,draw\_options)} permet de dessiner les bords du plan $P=\{A,u\}$ où $A$ est un point du plan et $u$ un vecteur normal au plan ($P$ est donc une table de deux points 3d). L'argument $V$ doit être un vecteur non nul du plan $P$, $L_1$ et $L_2$ sont deux longueurs. La méthode construit un parallélogramme centré sur $A$, dont un côté est $L_1\frac{V}{\|V\|}$ et l'autre $L_2\frac{W}{\|W\|}$ où $W = u\wedge V$. L'argument \emph{mode} indique les bords à tracer :
+    \begin{itemize}
+        \item mode = 1 : bas et gauche
+        \item mode = 2 : bas et droite
+        \item mode = 3 : haut et droite
+        \item mode = 4 : haut et gauche
+        \item mode = 5 : les 4 bords sont dessinés
+        \item mode = -1 : haut, gauche et droite
+        \item mode = -2 : haut, bas et gauche
+        \item mode = -3 : bas, gauche et droite
+        \item mode = -4 : haut, bas et droite
+    \end{itemize}
+    Par défaut le mode vaut 5.
+
+\begin{demo}{Dplane, exemple avec mode = 1}
+\begin{luadraw}{name=Dplane}
+local g = graph3d:new{size={8,8}}
+local i = cpx.I
+g:Linejoin("round"); g:Labelsize("footnotesize")
+local A = Origin
+local P = {A, vecK}
+g:Dplane(P, vecJ, 6, 6, 1)
+g:Dcrossdots3d({A,vecK},nil,0.75)
+g:Dseg3d({A,A+2*vecK},"->")
+g:Dangle3d(-vecJ,A,vecK,0.25)
+g:Dpolyline3d({{M(3.5,-3,0),M(3.5,3,0)},{M(3,-3.5,0), M(-3,-3.5,0)}}, "->")
+g:Dlabel3d("$A$",A,{pos="E"}, 
+    "$u$",2*vecK,{},
+    "$P$", M(3,-3,0),{pos="NE", dir={vecJ,-vecI}},
+    "$L_1\\frac{V}{\\|V\\|}$", M(3.5,0,0), {pos="S"},
+    "$L_2\\frac{W}{\\|W\\|}$", M(0,-3.5,0), {pos="N",dir={-vecI,-vecJ}}
+)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Courbe paramétrique : Dparametric3d}
+
+\begin{itemize}
+\item La fonction \textbf{parametric3d(p,t1,t2,nbdots,discont,nbdiv)} fait le calcul des points dela courbe et renvoie une ligne polygonale 3d (pas de dessin).
+  \begin{itemize}
+    \item L'argument \emph{p} est le paramétrage, ce doit être une fonction d'une variable réelle \emph{t} et à valeurs dans $\mathbf R^3$ (les images sont des points 3d), par exemple :
+    \mintinline{Lua}{local p = function(t) return Mc(3,t,t/3) end}
+    
+    \item  Les arguments \emph{t1} et \emph{t2} sont obligatoires avec \(t1 < t2\), ils forment les bornes de l'intervalle pour le paramètre.
+    
+    \item L'argument \emph{nbdots} est facultatif, c'est le nombre de points (minimal) à calculer, il vaut 50 par défaut.
+    
+    \item L'argument \emph{discont} est un booléen facultatif qui indique s'il y a des discontinuités ou non, c'est \emph{false} par défaut.
+    
+    \item L'argument \emph{nbdiv} est un entier positif qui vaut 5 par défaut et indique le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés.
+  \end{itemize}
+  
+\item La méthode \textbf{g:Dparametric3d(p,args)} fait le calcul des points et le dessin de la courbe paramétrée par \emph{p}. Le paramètre \emph{args} est une table à 5 champs :
+
+\begin{TeXcode}
+ { t={t1,t2}, nbdots=50, discont=true/false, nbdiv=5, draw_options="" }
+\end{TeXcode}
+
+  \begin{itemize}
+      \item Par défaut, le champ \emph{t} est égal à \emph{\{g:Xinf(),g:Xsup()\}},
+      \item le champ \emph{nbdots} vaut 50, 
+      \item le champ \emph{discont} vaut \emph{false},
+      \item le champ \emph{nbdiv} vaut 5,
+      \item le champ \emph{draw\_options} est une chaîne vide (celle-ci sera transmise telle quelle à l'instruction \emph{\textbackslash draw}).
+  \end{itemize}
+\end{itemize} 
+
+\begin{demo}{Une courbe et ses projections sur trois plans} 
+\begin{luadraw}{name=Dparametric3d}
+local g = graph3d:new{window3d={-4,4,-4,4,-3,3}, window={-7.5,6.5,-7,6}, size={8,8}}
+local pi = math.pi
+g:Linejoin("round"); g:Labelsize("footnotesize")
+local p = function(t) return Mc(3,t,t/3) end
+local L = parametric3d(p,-2*pi,2*pi,25,false,2)
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+g:Lineoptions("dashed","red",2)
+-- projection sur le plan y=-4
+g:Dpolyline3d(proj3d(L,{M(0,-4,0),vecJ}))
+-- projection sur le plan x=-4
+g:Dpolyline3d(proj3d(L,{M(-4,0,0),vecI}))
+-- projection sur le plan z=-3
+g:Dpolyline3d(proj3d(L,{M(0,0,-3),vecK}))
+-- dessin de la courbe
+g:Lineoptions("solid","Navy",8)
+g:Dparametric3d(p,{t={-2*pi,2*pi}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Le repère : Dboxaxes3d}
+
+La méthode \textbf{g:Dboxaxes3d( args )} permet de dessiner les trois axes, avec un certain nombre d'options définies dans la table \emph{args}. Ces options sont :
+\def\opt#1{\textcolor{blue}{\texttt{#1}}}%
+\begin{itemize}
+    \item \opt{xaxe=true/false}, \opt{yaxe=true/false} et \opt{zaxe=true/false} : indique si les axes correspondant doivent être dessinés ou non (true par défaut).
+
+    \item \opt{drawbox=true/false} : indique si une boite doit être dessinée avec les axes (false par défaut).
+
+    \item \opt{grid=true/false} : indique si une grille doit être dessinée (une pour $x$, une pour $y$ et une pour $z$). Lorsque cette option vaut true, on peut utiliser aussi les options suivantes :
+        \begin{itemize}
+            \item \opt{gridwidth} (=1 par défaut) indique l'épaisseur de trait de la grille en dixième de point.
+            \item \opt{gridcolor} ("black" par défaut) indique la couleur de la grille.
+            \item \opt{fillcolor} ("" par défaut) permet de peindre ou non le fond des grilles.
+        \end{itemize}
+    
+    \item \opt{xlimits=\{x1,x2\}}, \opt{ylimits=\{y1,y2\}}, \opt{zlimits=\{z1,z2\}} : permet de définir les trois intervalles utilisés pour les longueurs des axes. Par défaut ce sont les valeurs fournies à l'argument \opt{window3d} à la création du graphe.
+
+    \item \opt{xgradlimits=\{x1,x2\}}, \opt{ygradlimits=\{y1,y2\}}, \opt{zgradlimits=\{z1,z2\}} : permet de définir les trois intervalles de graduation sur les axes. Par défaut ces options ont la valeur "auto", ce qui veut dre qu'elles prennent les mêmes valeurs que \opt{xlimits}, \opt{ylimits} et \opt{zlimits}.
+
+    \item \opt{xstep}, \opt{ystep}, \opt{zstep} : indique le pas des graduations sur les axes (1 par défaut).
+
+    \item \opt{xyzticks} (0.2 par défaut) : indique la longueur des graduations.
+
+    \item \opt{labels} (true par défaut) : indique si la valeur des graduations doit être affichée ou non.
+    
+    \item \opt{xlabelsep}, \opt{ylabelsep}, \opt{zlabelsep} : indique la distance entre les labels et les graduations (0.25 par défaut).
+    
+    \item \opt{xlabelstyle}, \opt{ylabelstyle}, \opt{zlabelstyle} : indique le style des labels, c'est à dire la position par rapport au point d'ancrage. Par défaut c'est le style en cours qui s'applique.
+
+    \item \opt{xlegend} ("\$x\$" par défaut), \opt{ylegend} ("\$y\$" par défaut), \opt{zlegend} ("\$z\$" par défaut) : permet de définir une légende pour les axes.
+    
+    \item \opt{xlegendsep}, \opt{ylegendsep}, \opt{zlegendsep} : indique la distance entre les legendes et les graduations (0.5 par défaut).     
+\end{itemize}
+
+\subsection{Points et labels}
+
+\subsubsection{Points 3d : Ddots3d, Dballdots3d, Dcrossdots3d}
+
+Il y a trois possibilités de dessiner des points 3d. Pour les deux premières, l'argument \emph{L} peut être soit un seul point 3d, soit une liste (une table) de points 3d, soit une liste de listes de points 3d :
+
+\begin{itemize}
+    \item La méthode \textbf{g:Ddots3d(L, mark\_options)}. Le principe est le même que dans la version 2d, les points sont dessinés dans la couleur courante du tracé de lignes avec le style courant. L'argument \emph{mark\_options} est une chaîne de caractères facultative qui sera passée telle quelle à l'instruction \emph{\textbackslash draw} (modifications locales).
+    
+    \item La méthode \textbf{g:Dballdots3d(L,color,scale)} dessine les points de \emph{L} sous forme d'une sphère. L'argument facultatif \emph{color} précise la couleur de la sphère ("black" par défaut), et l'argument facultatif \emph{scale} permet de jouer sur la taille de la sphère (1 par défaut).
+    
+    \item La méthode \textbf{g:Dcrossdots3d(L,color,scale)} dessine les points de \emph{L} sous forme d'une croix plane. L'argument \emph{L} est une liste de la forme \{point 3d, vecteur normal\} ou \{ \{point3d, vecteur normal\}, \{point3d, vecteur normal\}, ...\}. Pour chaque point 3d, le vecteur normal associé permet de déterminer le plan contenant la croix. L'argument facultatif \emph{color} précise la couleur de la croix ("black" par défaut), et l'argument facultatif \emph{scale} permet de jouer sur la taille de la croix (1 par défaut).
+\end{itemize}
+
+\begin{demo}{Un tétraèdre et les centres de gravité de chaque face}
+\begin{luadraw}{name=Ddots3d}
+local g = graph3d:new{viewdir={15,60},size={8,8}}
+g:Linejoin("round")
+local A, B, C, D = 4*M(1,0,-0.5), 4*M(-1/2,math.sqrt(3)/2,-0.5), 4*M(-1/2,-math.sqrt(3)/2,-0.5), 4*M(0,0,1)
+local u, v, w = B-A, C-A, D-A
+-- centres de gravité faces cachées
+for _, F in ipairs({{A,B,C},{B,C,D}}) do
+    local G, u = isobar3d(F), pt3d.prod(F[2]-F[1],F[3]-F[1])
+    g:Dcrossdots3d({G,u}, "blue",0.75)
+    g:Dpolyline3d({{F[1],G,F[2]},{G,F[3]}},"dotted")
+end
+-- dessin du tétraèdre construit sur A, B, C et D
+g:Dpoly(tetra(A,u,v,w),{mode=3,opacity=0.7,color="Crimson"})
+-- centres de gravité faces visibles
+for _, F in ipairs({{A,B,D},{A,C,D}}) do
+    local G, u = isobar3d(F), pt3d.prod(F[2]-F[1],F[3]-F[1])
+    g:Dcrossdots3d({G,u}, "blue",0.75)
+    g:Dpolyline3d({{F[1],G,F[2]},{G,F[3]}},"dotted")
+end
+g:Dballdots3d({A,B,C,D}, "orange") --sommets
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Labels 3d : Dlabel3d}
+
+La méthode pour placer un label dans l'espace est :
+
+\hfil\textbf{g:Dlabel3d(text1, anchor1, args1, text2, anchor2, args2, ...)}.\hfil
+
+    \begin{itemize}
+    \item  Les arguments \emph{text1, text2,...} sont des chaînes de caractères, ce sont les labels.
+    \item  Les arguments \emph{anchor1, anchor2,...} sont des points 3d représentant les points d'ancrage des labels.
+    \item  Les arguments \emph{args1,arg2,...}  permettent de définir localement les paramètres des labels, ce sont des tables à 4 champs :
+\begin{TeXcode}
+    { pos=nil, dist=0, dir={dirX,dirY,dep}, node_options="" }
+\end{TeXcode}
+        \begin{itemize}
+            \item Le champ \emph{pos} indique la position du label dans le plan de l'écran par rapport au point d'ancrage, il peut valoir \emph{"N"} pour nord, \emph{"NE"} pour nord-est, \emph{"NW"} pour nord-ouest, ou encore \emph{"S"}, \emph{"SE"}, \emph{"SW"}. Par défaut, il vaut \emph{center}, et dans ce cas le label est centré sur le point  d'ancrage.
+            \item Le champ \emph{dist} est une distance en cm (dans le plan de l'écran) qui vaut $0$ par défaut, c'est la distance entre le label et son point d'ancrage lorsque \emph{pos} n'est pas égal a \emph{center}.
+            \item \emph{dir=\{dirX,dirY,dep\}} est la direction de l'écriture dans l'espace (\emph{nil}, valeur par défaut, pour le sens par défaut). Les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois points 3d représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage.
+            \item L'argument \emph{node\_options} est une chaîne (vide par défaut) destinée à recevoir des options qui seront directement passées à tikz dans l'instruction \emph{node{[}{]}}.
+            \item Les labels sont dessinés dans la couleur courante du texte du document, mais on peut changer de couleur avec l'argument \emph{node\_options} en mettant par exemple : \emph{node\_options="color=blue"}.
+            
+            \textbf{Attention} : les options choisies pour un label s'appliquent aussi aux labels suivants si elles sont inchangées.
+        \end{itemize}
+  \end{itemize}
+
+\subsection{Solides de base (sans facette)}
+
+\subsubsection{ Cylindre : Dcylinder}
+
+La méthode \textbf{g:Dcylinder(A,V,r,args)} dessine un cylindre circulaire.
+
+\begin{itemize}
+    \item \emph{A} est un point 3d représentant le centre d'une des faces circulaires.
+    \item \emph{V} est un point 3d, c'est un vecteur représentant l'axe du cylindre, le centre de la deuxième face circulaire est le point $A+V$.
+    \item \emph{r} est le rayon du cylindre.
+    \item \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+        \begin{itemize}
+            \item \emph{mode=0 ou 1} (0 par défaut). En mode 0 c'est un dessin en fil de fer, en mode 1 c'est un dessin en grille (comme s'il y avait des facettes).
+            \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+            \item \emph{hiddencolor}, définit la couleur des lignes cachées (couleur courante par défaut).
+            \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+            \item \emph{opacity=1}, définit la transparence du dessin.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{ Cône : Dcone}
+
+La méthode \textbf{g:Dcone(A,V,r,args)} dessine un cône à base circulaire.
+
+\begin{itemize}
+    \item \emph{A} est un point 3d représentant le sommet du cône.
+    \item \emph{V} est un point 3d, c'est un vecteur représentant l'axe du cône, le centre de la face circulaire est le point $A+V$ (cette face est orthogonale à $V$).
+    \item \emph{r} est le rayon de la base circulaire.
+    \item \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+        \begin{itemize}
+            \item \emph{mode=0 ou 1} (0 par défaut). En mode 0 c'est un dessin en fil de fer, en mode 1 c'est un dessin en grille (comme s'il y avait des facettes).
+            \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+            \item \emph{hiddencolor}, définit la couleur des lignes cachées (couleur courante par défaut).
+            \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+            \item \emph{opacity=1}, définit la transparence du dessin.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{ Sphère : Dsphere}
+
+La méthode \textbf{g:Dsphere(A,r,args)} dessine une sphère
+
+\begin{itemize}
+    \item \emph{A} est un point 3d représentant le centre de la sphère.
+    \item \emph{r} est le rayon de la pshère
+    \item \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+        \begin{itemize}
+            \item \emph{mode=0 ou 1 ou 2} (0 par défaut). En mode 0 on dessine le contour (cercle) et l'équateur, en mode 1 c'est le contour avec méridiens et fuseaux, en mode 2 c'est le contour uniquement.
+            \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+            \item \emph{hiddencolor}, définit la couleur des lignes cachées (couleur courante par défaut).
+            \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+            \item \emph{opacity=1}, définit la transparence du dessin.
+        \end{itemize}
+\end{itemize}
+
+\begin{demo}{Cylindres, cônes et sphères}
+\begin{luadraw}{name=cylindre_cone_sphere}
+local g = graph3d:new{ size={10,10} }
+g:Linejoin("round")
+local dessin = function(args)
+    g:Dsphere(M(-1,-2.5,1),2.5, args)
+    g:Dcone(M(-1,2.5,5),-5*vecK,2, args)
+    g:Dcylinder(M(3,-2,0),6*vecJ,1.5, args)
+end
+-- en haut à gauche, options par défaut
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-5,5,-5,5,true); dessin(); g:Restoreattr()
+-- en haut à droite
+g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-5,5,-5,5,true)
+dessin({mode=1, hiddenstyle="solid", hiddencolor="LightGray"}); g:Restoreattr()
+-- en bas à gauche
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-5,5,-5,5,true)
+dessin({mode=2, color="orange"}); g:Restoreattr()
+-- en bas à droite
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-5,5,-5,5,true)
+dessin({mode=1,opacity=0.8,hiddenstyle="noline",color="LightBlue"}); g:Restoreattr()
+g:Show()            
+\end{luadraw}
+\end{demo}
+
+\section{Solides à facettes}
+
+\subsection{Définition d'un solide}
+
+Il y a deux façons de définir un solide :
+\begin{enumerate}
+    \item Sous forme d'une liste (table) de facettes. Une facette est elle-même une liste de points 3d (au moins 3) coplanaires et non alignés, qui sont les sommets. Les facettes sont supposées convexes et elles sont orientées par l'ordre d'apparition des sommets. C'est à dire, si $A$, $B$ et $C$ sont les trois premiers sommets d'une facette $F$, alors la facette est orientée avec le vecteur normal $\vec{AB}\wedge\vec{AC}$. Si ce vecteur normal est dirigé vers l'observateur, alors la facette est considérée comme visible. Dans la définition d'un solide, les vecteurs normaux aux facettes doivent être dirigés vers \textbf{l'extérieur} du solide pour que l'orientation soit correcte.
+    
+    \item Sous forme de \textbf{polyèdre}, c'est à dire une table à deux champs, un premier champ appelé \emph{vertices} qui est la liste des sommets du polyèdre (points 3d), et un deuxième champ appelé \emph{facets} qui la liste des facettes, mais ici, dans la définition des facettes, les sommets sont remplacés par leur indice dans la liste \emph{vertices}. Les facettes sont orientées de la même façon que précédemment.
+\end{enumerate}
+
+Par exemple, considérons les quatre points $A=M(-2,-2,0)$, $B=M(3,0,0)$, $C=M(-2,2,0)$ et $D=M(0,0,4)$, alors on peut définir le tétraèdre construit sur ces quatre points :
+\begin{itemize}
+    \item soit sous forme d'une liste de facettes : \emph{T=\{\{A,B,D\},\{B,C,D\},\{C,A,D\},\{A,C,B\}\}} (attention à l'orientation),
+    \item soit sous forme de polyèdre : 
+    \emph{T=\{vertices=\{A,B,C,D\}, facets=\{\{1,2,4\},\{2,3,4\},\{3,1,4\},\{1,3,2\}\}\}}.
+\end{itemize}
+
+\paragraph{Fonctions de conversion entre les deux définitions}
+\begin{itemize}
+    \item La fonction \textbf{poly2facet(P)} où $P$ est un polyèdre, renvoie ce solide sous forme d'une liste de facettes.
+    \item La fonction \textbf{facet2poly(L,epsilon)} renvoie la liste de facettes $L$ sous forme de polyèdre. L'argument facultatif \emph{epsilon} vaut $10^{-8}$ par défaut, il précise à combien près sont faites les comparaisons entre points 3d.
+\end{itemize}
+
+\subsection{Dessin d'un polyèdre : Dpoly}
+
+La fonction \textbf{g:Dpoly(P,options)} permet de représenter le polyèdre $P$ (par l'algorithme naïf du peintre). L'argument \emph{options} est une table contenant les options :
+\begin{itemize}
+    \item \opt{mode=0/1/2/3/4/5} : définit le mode de représentation.
+        \begin{itemize}
+            \item \emph{mode=0} : mode fil de fer, on dessine les arêtes visibles et cachées.
+            \item \emph{mode=1} : on dessine les faces de couleur unie, ainsi que les arêtes visibles.
+            \item \emph{mode=2} : on dessine les faces de couleur unie, les arêtes visibles, et les arêtes cachées.
+            \item \emph{mode=3} : on dessine les faces de couleur nuancée en fonction de leur inclinaison, ainsi que les arêtes visibles. C'est le mode par défaut.
+            \item \emph{mode=4} : on dessine les faces de couleur nuancée en fonction de leur inclinaison, les arêtes visibles et cachées.
+            \item \emph{mode=5} :  on dessine les faces de couleur nuancée en fonction de leur inclinaison, mais pas les arêtes.
+        \end{itemize}
+        \item \opt{contrast} : c'est un nombre qui vaut 1 par défaut. Ce nombre permet d'accentuer ou diminuer la nuance des couleurs des facettes dans les modes 3, 4 et 5.
+        \item \opt{edgestyle} : est une chaîne qui définit le style de ligne des arêtes. C'est le style courant par défaut.
+        \item \opt{edgecolor} : est une chaîne qui définit la couleur des arêtes. C'est la couleur courante des lignes par défaut.
+        \item \opt{hiddenstyle} : est une chaîne qui définit le style de ligne des arêtes cachées. Par défaut c'est la valeur contenue dans la variable globale \emph{Hiddenlinestyle} (qui vaut elle-même "dotted" par défaut).
+        \item \opt{hiddencolor} : est une chaîne qui définit la couleur des arêtes cachées. C'est la couleur courante des lignes par défaut.
+        \item \opt{edgewidth} : épaisseur de trait des arêtes en dixième de point. C'est l'épaisseur courante par défaut.
+        \item \opt{opacity} : nombre entre 0 et 1 qui permet de mettre une transparence ou non sur les facettes. La valeur par défaut est 1, ce qui signifie pas de transparence.
+        \item \opt{backcull} : booléen qui vaut false par défaut. Lorsqu'il a la valeur true, les facettes considérées comme non visibles (vecteur normal non dirigé vers l'observateur) ne sont pas affichées. Cette option est intéressante pour les polyèdres convexes car elle permet de diminuer le nombre de facettes à dessiner.
+        \item \opt{color} : chaîne définissant la couleur de remplissage des facettes, c'est "white" par défaut.
+        \item \opt{twoside} : booléen qui vaut true par défaut, ce qui signifie qu'on distingue les deux côtés des facettes (intérieur et extérieur), les deux côtés n'auront pas exactement la même couleur.
+\end{itemize}
+
+\begin{demo}{Section d'un tétraèdre par un plan}
+\begin{luadraw}{name=tetra_coupe}
+local g = graph3d:new{viewdir={10,60}, size={10,10}, bg="gray!30"}
+g:Linejoin("round")
+local A,B,C,D = M(-2,-4,-2),M(4,0,-2),M(-2,4,-2),M(0,0,2)
+local T = tetra(A,B-A,C-A,D-A) -- tétraèdre de sommets A, B, C, D
+local plan = {Origin, -vecK}  -- plan de coupe
+local T1, T2, section = cutpoly(T,plan) -- on coupe du tétraèdre
+-- T1 est le polyèdre résultant dans le demi espace contenant -vecK
+-- T2 est le polyèdre résultant dans l'autre demi espace
+-- section est une facette (c'est la coupe)
+g:Dpoly(T1,{color="Crimson", edgecolor="white", opacity=0.8, edgewidth=8})
+g:Filloptions("bdiag","Navy"); g:Dpolyline3d(section,true,"draw=none")
+g:Dpoly(shift3d(T2,2*vecK), {color="Crimson", edgecolor="white", opacity=0.8, edgewidth=8})
+g:Dballdots3d({A,B,C,D+2*vecK}) -- on a dessiné T2 translaté avec le vecteur 2*vecK
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Fonctions de construction de polyèdres}
+
+Les fonctions suivantes renvoient un polyèdre, c'est à dire une table à deux champs, un premier champ appelé \emph{vertices} qui est la liste des sommets du polyèdre (points 3d), et un deuxième champ appelé \emph{facets} qui la liste des facettes, mais dans la définition des facettes, les sommets sont remplacés par leur indice dans la liste \emph{vertices}.
+
+\begin{itemize}
+    \item \textbf{tetra(S,v1,v2,v3)} renvoie le tétraèdre de sommets $S$ (point 3d), $S+v1$, $S+v2$, $S+v3$. Les trois vecteurs $v1$, $v2$, $v3$ (points 3d) sont supposés dans le sens direct.
+    
+    \item \textbf{parallelep(A,v1,v2,v3)} renvoie le parallélépipède construit à partir du sommet $A$ (point 3d) et de 3 vecteurs $v1$, $v2$, $v3$ (points 3d) supposés dans le sens direct.
+    
+    \item \textbf{prism(base,vector,open)} renvoie un prisme, l'argument \emph{base} est une liste de points 3d (une des deux bases du prisme), \emph{vector} est le vecteur de translation (point 3d) qui permet d'obtenir la seconde base. L'argument facultatif \emph{open} est un booléen indiquant si le prisme est ouvert ou non (false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées. La \emph{base} doit être orientée par le \emph{vector}.
+    
+    \item \textbf{pyramid(base,vertex,open)} renvoie une pyramide, l'argument \emph{base} est une liste de points 3d, \emph{vertex} est le sommet de la pyramide (point 3d). L'argument facultatif \emph{open} est un booléen indiquant si le pyramide est ouverte ou non (false par défaut). Dans le cas où elle est ouvert, seules les facettes latérales sont renvoyées. La \emph{base} doit être orientée par le sommet.
+    
+    \item \textbf{cylinder(A,V,R,nbfacet,open)} renvoie un cylindre de rayon $R$, d'axe \{A,V\} où $A$ est un point 3d, centre d'une des bases circulaires et $V$ vecteur 3d non nul etl que le centre de la seconde base est le point $A+V$. L'argument facultatif \emph{nbfacet} vaut 35 par défaut (nombre de facettes latérales). L'argument facultatif \emph{open} est un booléen indiquant si le cylindre est ouvert ou non (false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.
+    
+    \item \textbf{cone(A,V,R,nbfacet,open)} renvoie un cône de sommet $A$ (point 3d), d'axe \{A,V\}, de base circulaire le cercle de centre $A+V$ de rayon $R$ (dans un plan orthogonal à $V$). L'argument facultatif \emph{nbfacet} vaut 35 par défaut (nombre de facettes latérales). L'argument facultatif \emph{open} est un booléen indiquant si le cône est ouvert ou non (false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.
+
+    \item \textbf{sphere(A,R,nbu,nbv)} renvoie la sphère de centre $A$ (point 3d) et de rayon $R$. L'argument facultatif \emph{nbu} représente le nombre de fuseaux (36 par défaut) et l'argument facultatif \emph{nbv} le nombre de parallèles (20 par défaut).
+\end{itemize}
+
+\paragraph{Remarque} : nous avons déjà des primitives pour dessiner des cylindres, cônes, et sphères sans passer par des facettes. Un des intérêts de donner une définition de ces objets sous forme de polyèdres est que l'on va pouvoir faire certains calculs sur ces objets comme par exemple des sections planes.
+
+\begin{demo}{Hyperbole : intersection cône - plan}
+\begin{luadraw}{name=hyperbole}
+local g = graph3d:new{window={-6,6,-8,6}, viewdir={45,60}, size={10,10}}
+g:Linejoin("round")
+Hiddenlinestyle = "dashed"
+local C1 = cone(Origin,4*vecK,3,35,true)
+local C2 = cone(Origin, -4*vecK,3,35,true)
+local P = {M(1,0,-1),vecI} -- plan de coupe
+local I1 = g:Intersection3d(C1,P) -- intersection entre le cône C1 et le plan P
+local I2 = g:Intersection3d(C2,P) -- intersection entre le cône C2 et le plan P
+-- I1 et I2 sont de type Edges (arêtes)
+g:Dcone(Origin,4*vecK,3,{color="orange"}); g:Dcone(Origin,-4*vecK,3,{color="orange"})
+g:Lineoptions("solid","Navy",8)
+g:Dedges(I1,{hidden=true}); g:Dedges(I2,{hidden=true}) -- dessin des arêtes I1 et I2
+g:Dplane(P, vecK,12,8,5)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Dans cet exemple, les cônes $C_1$ et $C_2$ sont définis sous forme de polyèdres pour déterminer leur intersection avec le plan $P$, mais pas pour les dessiner. La méthode \textbf{g:Intersection3d(C1,P)} renvoie l'intersection du polyèdre $C_1$ avec le plan $P$ sous la forme d'une table à deux champs, un champ nommé \emph{visible} qui contient une ligne polygonale 3d représentant les "arêtes" (segments) visibles de l'intersection (c'est à dire qui sont sur une facette visible de $C_1$), et un autre champ nommé \emph{hidden} qui contient une ligne polygonale 3d représentant les "arêtes" cachées de l'intersection (c'est à dire qui sont sur une facette non visible de $C_1$). La méthode \textbf{g:Dedges} permet de dessiner ce type d'objets.
+
+\begin{demo}{Section de cône avec plusieurs vues}
+\begin{luadraw}{name=several_views}
+local g = graph3d:new{window3d={-3,3,-3,3,-3,3}, size={10,10}, margin={0,0,0,0}}
+g:Linejoin("round"); g:Labelsize("footnotesize")
+local y0, R = 1, 2.5
+local C = cone(M(0,0,3),-6*vecK,R,35,true) -- cone ouvert
+local P1 = {M(0,0,0),vecK+vecJ} -- 1er plan de coupe
+local P2 = {M(0,y0,0),vecJ} -- 2ieme plan de coupe
+local I, I2 
+local dessin = function() -- un dessin par vue
+    g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+    I1 = g:Intersection3d(C,P1) -- intersection entre le cône C et les plans P1 et P2
+    I2 = g:Intersection3d(C,P2) -- I1 et I2 sont de type Edges
+    g:Dpolyline3d( {{M(0,-3,3),M(0,0,3),M(0,0,-3),M(3,0,-3)}, {M(0,0,-3),M(0,3,-3)}},"red,line width=0.4pt" )
+    g:Dcone( M(0,0,3),-6*vecK,R, {color="cyan!50"})
+    g:Dedges(I1, {hidden=true,color="Navy", width=8})
+    g:Dedges(I2, {hidden=true,color="DarkGreen", width=8})
+end
+-- en haut à gauche, vue dans l'espace, on ajoute les plans au dessin
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-7,6,-6,5,1); g:Setviewdir(30,60); dessin()
+g:Dpolyline3d( {M(-3,-3,3),M(3,-3,3),M(3,3,-3),M(-3,3,-3)},"Navy,line width=0.8pt")
+g:Dpolyline3d( {M(-3,y0,3),M(3,y0,3),M(3,y0,-3)},"DarkGreen,line width=0.8pt")
+g:Dlabel3d( "$P_1$",M(3,-3,3),{pos="SE",dir={-vecI,-vecJ+vecK},node_options="Navy, draw"})
+g:Dlabel3d( "$P_2$",M(-3,y0,3),{pos="SW",dir={-vecI,vecK},node_options="DarkGreen,draw"})
+g:Restoreattr()
+-- en haut à droite, projection sur le plan xOy
+g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("xOy"); dessin()
+g:Restoreattr()
+-- en bas à gauche, projection sur le plan xOz
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("xOz"); dessin()
+g:Restoreattr()
+-- en bas à droite, projection sur le plan yOz
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("yOz"); dessin()
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Dessin d'une liste de facettes : Dfacet et Dmixfacet}
+
+Il y a deux méthodes possibles :
+\begin{enumerate}
+    \item Pour un solide $S$ sous forme d'une liste de facettes (avec points 3d), la méthode est :
+    \par\hfil\textbf{g:Dfacet(S,options)}\hfil\par
+    où $S$ est la liste de facettes et \emph{options} une table définissant les options. Celles-ci sont :
+\begin{itemize}
+    \item \opt{mode=0/1/2/3/4/5} : définit le mode de représentation.
+        \begin{itemize}
+            \item \emph{mode=0} : mode fil de fer, on dessine les arêtes seulement.
+            \item \emph{mode=1 ou 2} : on dessine les faces de couleur unie, ainsi que les arêtes.
+            \item \emph{mode=3 ou 4} : on dessine les faces de couleur nuancée en fonction de leur inclinaison, ainsi que les arêtes. Le mode par défaut est 3.
+            \item \emph{mode=5} :  on dessine les faces de couleur nuancée en fonction de leur inclinaison, mais pas les arêtes.
+        \end{itemize}
+        \item \opt{contrast} : c'est un nombre qui vaut 1 par défaut. Ce nombre permet d'accentuer ou diminuer la nuance des couleurs des facettes dans les modes 3, 4 et 5.
+        \item \opt{edgestyle} : est une chaîne qui définit le style de ligne des arêtes. C'est le style courant par défaut.
+        \item \opt{edgecolor} : est une chaîne qui définit la couleur des arêtes. C'est la couleur courante des lignes par défaut.
+        \item \opt{hiddenstyle} : est une chaîne qui définit le style de ligne des arêtes cachées. Par défaut c'est la valeur contenue dans la variable globale \emph{Hiddenlinestyle} (qui vaut elle-même "dotted" par défaut).
+        \item \opt{hiddencolor} : est une chaîne qui définit la couleur des arêtes cachées. C'est la couleur courante des lignes par défaut.
+        \item \opt{edgewidth} : épaisseur de trait des arêtes en dixième de point. C'est l'épaisseur courante par défaut.
+        \item \opt{opacity} : nombre entre 0 et 1 qui permet de mettre une transparence ou non sur les facettes. La valeur par défaut est 1, ce qui signifie pas de transparence.
+        \item \opt{backcull} : booléen qui vaut false par défaut. Lorsqu'il a la valeur true, les facettes considérées comme non visibles (vecteur normal non dirigé vers l'observateur) ne sont pas affichées. Cette option est intéressante pour les polyèdres convexes car elle permet de diminuer le nombre de facettes à dessiner.
+        \item \opt{color} : chaîne définissant la couleur de remplissage des facettes, c'est "white" par défaut.
+        \item \opt{twoside} : booléen qui vaut true par défaut, ce qui signifie qu'on distingue les deux côtés des facettes (intérieur et extérieur), les deux côtés n'auront pas exactement la même couleur.
+        \end{itemize}
+    \item Pour plusieurs listes de facettes dans un même dessin, la méthode est :
+        \par\hfil\textbf{g:Dmixfacet(S1,options1, S2,options2, ...)}\hfil\par
+    où $S1$, $S2$, ... sont des listes de facettes, et \emph{options1}, \emph{options2}, ... sont les options correspondantes. Les options d'une liste de facettes s'appliquent aussi aux suivantes si elles ne sont pas changées. Ces options sont identiques à la méthode précédente.
+    
+    Cette méthode est utile pour dessiner plusieurs solides ensemble, à condition qu'il n'y ait pas d'intersections entre les objets, car celles-ci ne sont pas gérées ici.
+\end{enumerate}
+
+\begin{demo}[courbeniv]{Exemple de courbes de niveaux sur une surface}
+\begin{luadraw}{name=courbes_niv}
+local cos, sin = math.cos, math.sin, math.pi
+local g = graph3d:new{window3d={0,5,0,10,0,11}, adjust2d=true, size={10,10}, viewdir={220,60}}
+g:Linejoin("round"); g:Labelsize("footnotesize")
+local S = surface(function(u,v) return M(u,v,(u+v)/(2+cos(u)*sin(v))) end,0,5,0,10,{30,30})
+local rainbow = {Purple,Indigo,Blue,Green,Yellow,Orange,Red} -- palette de couleurs
+local n = 10 -- nombre de niveaux
+local Colors = getpalette(rainbow,n,true) -- liste de 10 couleurs au format table
+local niv, S1 = {}
+for k = 1, n do
+    S1, S = cutfacet(S,{M(0,0,k),-vecK}) -- section de S avec le plan z=k
+    insert(niv,{S1, {color=Colors[k],mode=4,edgewidth=0.5}}) -- S1 est la partie sous le plan et S au dessus
+end
+insert(niv,{S, {color=Colors[n+1]}}) -- insertion du dernier niveau
+-- niv est une liste du type {facettes1, options1, facettes2, options2, ...}
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="lightgray"})
+g:Dmixfacet(table.unpack(niv))
+for k = 1, n do
+    g:Dballdots3d( M(5,0,k), rgb(Colors[k]))
+end
+g:Dlabel("$z=\\frac{x+y}{2+\\cos(x)\\sin(y)}$", Z((g:Xinf()+g:Xsup())/2, g:Yinf()), {pos="N"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Fonctions de construction de listes de facettes}
+
+Les fonctions suivantes renvoient un solide sous forme d'une liste de facettes (avec points 3d).
+\begin{itemize}
+    \item \textbf{surface(f,u1,u2,v1,v2,grid)} : surface paramétrée par la fonction $f\colon(u,v) \mapsto f(u,v)\in \mathbf R^3$. L'intervalle pour le paramètre $u$ est donné par \emph{u1} et \emph{u2}. L'intervalle pour le paramètre $v$ est donné par \emph{v1} et \emph{v2}. Le paramètre facultatif \emph{grid} vaut $\{25,25\}$ par défaut, il définit le nombre de points à calculer pour le paramètre $u$ suivi du nombre de points à calculer pour le paramètre $v$. Par exemple, voici le code de la figure \ref{pointcol}:
+\begin{Luacode}
+\begin{luadraw}{name=point_col}
+local g = graph3d:new{window3d={-2,2,-2,2,-4,4}, window={-3.5,3,-5,5}, size={8,9,0}, viewdir={120,60}}
+g:Linejoin("round")
+local S = surface(function(u,v) return M(u,v,u^2-v^2) end, -2,2,-2,2,{20,20}) -- surface d'équation z=x^2-y^2
+local P = facet2poly(S) -- conversion en polyèdre
+local Tx = g:Intersection3d(P, {Origin,vecI}) --intersection de P avec le plan yOz
+local Ty = g:Intersection3d(P, {Origin,vecJ}) --intersection de P avec le plan xOz
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray",drawbox=true})
+g:Dfacet(S,{mode=5,color="ForestGreen"}) -- dessin de la surface
+g:Dedges(Tx, {color="Crimson", hidden=true, width=8}) -- intersection avec yOz
+g:Dedges(Ty, {color="Navy",hidden=true, width=8}) -- intersection avec xOz
+g:Dpolyline3d( {M(2,0,4),M(-2,0,4),M(-2,0,-4)}, "Navy,line width=.8pt")
+g:Dpolyline3d( {M(0,-2,4),M(0,2,4),M(0,2,-4)}, "Crimson,line width=.8pt")
+g:Show()
+\end{luadraw}
+\end{Luacode}
+
+    \item \textbf{curve2cone(f,t1,t2,S,args)} : construit un cône de sommet $S$ (point 3d) et de base la courbe paramétrée par $f\colon t\mapsto f(t)\in\mathbf R^3$ sur l'intervalle défini par \emph{t1} et \emph{t2}. L'argument \emph{args} est une table facultative pour définir les options, qui sont :
+    \begin{itemize}
+        \item \opt{nbdots} qui représente le nombre minimal de points de la courbe à calculer (15 par défaut).
+        \item \opt{ratio} qui est un nombre représentant le rapport d'homothétie (de centre le sommet $S$) pour construire l'autre partie du cône. Par défaut \emph{ratio} vaut 0 (pas de deuxième partie).
+        \item \opt{nbdiv} qui est un entier positif indiquant le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre $t$ peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés. Par défaut \emph{nbdiv} vaut 0.
+    \end{itemize}
+ Cette fonction renvoie une liste de facettes, suivie d'une ligne polygonale 3d qui représente les bords du cône.
+ 
+\begin{demo}{Exemple de cône elliptique}
+\begin{luadraw}{name=curve2cone}
+local cos, sin, pi = math.cos, math.sin, math.pi
+local g = graph3d:new{ window3d={-2,2,-4,4,-3,3},window={-5.5,5,-5,5},size={10,10}}
+g:Linejoin("round")
+local f = function(t) return M(2*cos(t),4*sin(t),-3) end -- ellipse dans le plan z=-3
+local C, bord = curve2cone(f,-pi,pi,Origin,{nbdiv=2, ratio=-1})
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+g:Dpolyline3d(bord[1],"red,line width=2.4pt") -- bord inférieur
+g:Dfacet(C, {mode=5,color="LightBlue"})  -- cône
+g:Dpolyline3d(bord[2],"red,line width=0.8pt") -- bord supérieur
+g:Show()
+\end{luadraw}
+\end{demo}
+
+    \item \textbf{curve2cylinder(f,t1,t2,V,args)} : construit un cylindre d'axe dirigé par le vecteur $V$ (point 3d) et de base la courbe paramétrée par $f\colon t\mapsto f(t)\in\mathbf R^3$ sur l'intervalle défini par \emph{t1} et \emph{t2}. La seconde base est la translatée de la première avec le vecteur $V$. L'argument \emph{args} est une table facultative pour définir les options, qui sont :
+    \begin{itemize}
+        \item \opt{nbdots} qui représente le nombre minimal de points de la courbe à calculer (15 par défaut).
+        \item \opt{nbdiv} qui est un entier positif indiquant le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre $t$ peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés. Par défaut \emph{nbdiv} vaut 0.
+    \end{itemize}
+ Cette fonction renvoie une liste de facettes, suivie d'une ligne polygonale 3d qui représente les bords du cylindre.
+ 
+\begin{demo}{Section d'un cylindre non circulaire}
+\begin{luadraw}{name=curve2cylinder}
+local cos, sin, pi = math.cos, math.sin, math.pi
+local g = graph3d:new{ window3d={-5,5,-5,5,-4,4},window={-9,8,-7,7},viewdir={39,70},size={10,10}}
+g:Linejoin("round")
+local f = function(t) return M(4*cos(t)-cos(4*t),4*sin(t)-sin(4*t),-4) end -- courbe dans le plan z=-3
+local V = 8*vecK
+local C = curve2cylinder(f,-pi,pi,V,{nbdots=25,nbdiv=2})
+local plan = {M(0,0,2), -vecK} -- plan de coupe z=2
+local C1, C2, section = cutfacet(C,plan)
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+g:Dfacet(C1, {mode=3,color="LightBlue"})  -- partie sous le plan
+g:Dfacet(g:Plane2facet(plan), {opacity=0.3,color="Chocolate"}) -- dessin du plan sous forme d'une facette
+g:Filloptions("fdiag","red"); g:Dpolyline3d(section) -- dessin de la section
+g:Dfacet(C2, {mode=3,color="LightBlue"})  -- partie du cylindre au dessus du plan
+g:Show()
+\end{luadraw}
+\end{demo}
+
+    \item \textbf{line2tube(L,r,args)} : construit (sous forme d'une liste de facettes) un tube centré sur $L$ qui doit être une ligne polygonale 3d, l'argument $r$ représente le rayon de ce tube. L'argument \emph{args} est une table pour définir les options, qui sont :
+    \begin{itemize}
+        \item \opt{nbfacet} : nombre indiquant le nombre de facettes latérales du tube (3 par défaut).
+        \item \opt{close} : booléen indiquant si la ligne polygonale $L$ doit être refermée (false par défaut).
+        \item \opt{hollow} : booléen indiquant si les deux extrémités du tube doivent être ouvertes ou non (false par défaut). Lorsque l'option \opt{close} vaut true, l'option \opt{hollow} prend automatiquement la valeur true.
+        \item \opt{addwall} : nombre qui vaut 0 ou 1 (0 par défaut). Lorsque cette option vaut 1, la fonction renvoie, après la liste des facettes composant le tube, une liste de facettes séparatrices (murs) entre chaque "tronçon" du tube, ce qui peut être utile avec la méthode \textbf{g:Dscene3d} (uniquement).
+    \end{itemize}
+    
+\begin{demo}{Exemple avec line2tube}
+\begin{luadraw}{name=line2tube}
+local cos, sin, pi, i = math.cos, math.sin, math.pi, cpx.I
+local g = graph3d:new{window={-5,8,-4.5,4.5}, viewdir={45,60}, margin={0,0,0,0}, size={10,10}}
+g:Linejoin("round")
+local L1 = map(toPoint3d,polyreg(0,3,6)) -- hexagone régulier dans le plan xOy, centre O de sommet M(3,0,0)
+local L2 = shift3d(rotate3d(L1,90,{Origin,vecJ}),3*vecJ)
+local T1 = line2tube(L1,1,{nbfacet=8,close=true}) -- tube 1 refermé
+local T2 = line2tube(L2,1,{nbfacet=8})  -- tube 2 non refermé
+g:Dmixfacet( T1, {color="Crimson",opacity=0.8}, T2, {color="SteelBlue"} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+    \item \textbf{rotcurve(p,t1,t2,axe,angle1,angle2,args)} : construit sous forme d'une liste de facettes, la surface balayée par la courbe paramétrée par $p\colon t\mapsto p(t)\in \mathbf R^3$ sur l'intervalle défini par \emph{t1} et \emph{t2}, en la faisant tourner autour de \emph{axe} (qui est une table de la forme \{point3d, vecteur 3d\} représentant une droite orientée de l'espace), d'un angle allant de \emph{angle1} (en degrés) à \emph{angle2}. L'argument \emph{args} est une table pour définir les options, qui sont :
+    \begin{itemize}
+        \item \opt{grid} : table constituée de deux nombres, le premier est le nombre de points calculés pour le paramètre $t$, et le second le nombre de points calculés pour le paramètre angulaire. Par défaut la valeur de \opt{grid} est \{25,25\}.
+
+        \item \opt{addwall} : nombre qui vaut 0 ou 1 ou 2 (0 par défaut). Lorsque cette option vaut 1, la fonction renvoie, après la liste des facettes composant la surface, une liste de facettes séparatrices (murs) entre chaque "couche" de facettes (une couche correspond à deux valeurs consécutives du paramètre $t$), et avec la valeur 2 c'est une liste de facettes séparatrices (murs) entre chaque "tranche" de rotation (une couche correspond à deux valeurs consécutives du paramètre angulaire, ceci est intéressant lorsque la courbe est dans un même plan que l'axe de rotation). Cette option peut être utile avec la méthode \textbf{g:Dscene3d} (uniquement).
+        \end{itemize} 
+        
+\begin{demo}{Exemple avec rotcurve}
+\begin{luadraw}{name=rotcurve}
+local cos, sin, pi, i = math.cos, math.sin, math.pi, cpx.I
+local g = graph3d:new{viewdir={30,60},size={10,10}}
+g:Linejoin("round")
+local p = function(t) return M(0,sin(t)+2,t) end -- courbe dans le plan yOz
+local axe = {Origin,vecK}
+local S = rotcurve(p,pi,-pi,axe,0,360,{grid={25,35}})
+local  visible, hidden = g:Classifyfacet(S)
+g:Dfacet(hidden, {mode=5,color="cyan"})
+g:Dline3d(axe,"red,line width=1.2pt")
+g:Dfacet(visible, {mode=5,color="cyan"})
+g:Dline3d(axe,"red,line width=1.2pt,dashed")
+g:Dparametric3d(p,{t={-pi,pi},draw_options="red,line width=1.2pt"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Remarque} : si l'orientation de la surface ne semble pas bonne, il suffit d'échanger les paramètres \emph{t1} et \emph{t2}, ou bien \emph{angle1} et \emph{angle2}.
+
+    \item \textbf{rotline(L,axe,angle1,angle2,args)} : construit sous forme d'une liste de facettes, la surface balayée par la liste de points 3d $L$ en la faisant tourner autour de \emph{axe} (qui est une table de la forme \{point3d, vecteur 3d\} représentant une droite orientée de l'espace), d'un angle allant de \emph{angle1} (en degrés) à \emph{angle2}. L'argument \emph{args} est une table pour définir les options, qui sont :
+    \begin{itemize}
+        \item \opt{nbdots} : qui est le nombre de points calculés pour le paramètre angulaire. Par défaut la valeur de \opt{nbdots} est 25.
+        
+        \item \opt{close} : booléen qui indique si $L$ doit être refermée (false par défaut).
+
+        \item \opt{addwall} : nombre qui vaut 0 ou 1 ou 2 (0 par défaut). Lorsque cette option vaut 1, la fonction renvoie, après la liste des facettes composant la surface, une liste de facettes séparatrices (murs) entre chaque "couche" de facettes (une couche correspond à deux points consécutifs dans la liste $L$), et avec la valeur 2 c'est une liste de facettes séparatrices (murs) entre chaque "tranche" de rotation (une couche correspond à deux valeurs consécutives du paramètre angulaire, ceci est intéressant lorsque la courbe est dans un même plan que l'axe de rotation). Cette option peut être utile avec la méthode \textbf{g:Dscene3d} (uniquement).
+        \end{itemize} 
+\begin{demo}{Exemple avec rotline}
+\begin{luadraw}{name=rotline}
+local g = graph3d:new{window={-4,4,-4,4},size={10,10}}
+g:Linejoin("round")
+local L = {M(0,0,4),M(0,4,0),M(0,0,-4)} -- liste de points dans le plan yOz
+local axe = {Origin,vecK}
+local S = rotline(L,axe,0,360,{nbdots=5}) -- le point 1 et le point 5 sont confondus
+g:Dfacet(S,{color="Crimson",edgecolor="Gold",opacity=0.8})
+g:Show()
+\end{luadraw}
+\end{demo}      
+\end{itemize}   
+
+\subsection{Arêtes d'un solide}
+
+Un objet de type "edge" est une table à deux champs, un champ nommé \emph{visible} qui contient une ligne polygonale 3d correspondant aux arêtes visibles, et un autre champ nommé \emph{hidden} qui contient une ligne polygonale 3d correspondant aux arêtes cachées.
+
+\begin{itemize}
+    \item La méthode \textbf{g:Edges(P)} où $P$ est un polyèdre, renvoie les arêtes de $P$ sous forme d'un objet de type "edge". Une arête de $P$ est visible lorsqu'elle appartient à au moins une face visible.
+    \item La méthode \textbf{g:Intersection3d(P,plane)} où $P$ est un polyèdre ou bien une liste de facettes, renvoie sous forme d'objet de type "edge" l'intersection entre $P$ et le plan représenté par \emph{plane} (c'est une table de la forme \{A,u\} où $A$ est un point du plan et $u$ un vecteur normal, ce sont donc deux points 3d).
+    \item La méthode \textbf{g:Dedges(edges,options)} permet de dessiner \emph{edges} qui doit être un objet de type "edge". L'argument \emph{options} est une table définissant les options, celles-ci sont :
+    \begin{itemize}
+        \item \opt{hidden} : booléen qui indique si les arêtes cachées doivent être dessinées (false par défaut).
+        \item \opt{visible} : booléen qui indique si les arêtes visibles doivent être dessinées (true par défaut).
+        \item \opt{hiddenstyle} : chaîne de caractères définissant le style de ligne des arêtes cachées, par défaut cette option contient la valeur de la variable globale \emph{Hiddenlinestyle} (qui vaut "dotted" par défaut).
+        \item \opt{hiddencolor} : chaîne de caractères définissant la couleur des arêtes cachées, par défaut cette option contient la même couleur que l'option \opt{color}.
+        \item \opt{style} : chaîne de caractères définissant le style de ligne des arêtes visibles, par défaut cette option contient le style courant du dessin de lignes.
+        \item \opt{color} : chaîne de caractères définissant la couleur des arêtes visibles, par défaut cette option contient la couleur courante de dessin de lignes.
+        \item \opt{width} : nombre représentant l'épaisseur de trait des arêtes (en dixième de point), par défaut cette variable contient l'épaisseur courante du dessin de lignes.
+    \end{itemize}
+
+    \item \textbf{Complément} : 
+        \begin{itemize}
+            \item La fonction \textbf{facetedges(F)} où $F$ est une liste de facettes ou bien un polyèdre, renvoie une liste de segments 3d représentant toutes les arêtes de $F$. Le résultat n'est pas un objet de type "edge", et il se dessine avec la méthode \textbf{g:Dpolyline3d}.
+            \item La fonction \textbf{facetvertices(F)} où $F$ est une liste de facettes ou bien un polyèdre, renvoie la liste de tous les sommets de $F$ (points 3d).
+        \end{itemize}
+\end{itemize}
+
+\subsection{Méthodes et fonctions s'appliquant à des facettes ou polyèdres}
+
+\begin{itemize}
+    \item La méthode \textbf{g:Isvisible(F)} où $F$ désigne \textbf{une} facette (liste d'au moins 3 points 3d coplanaires et non alignés), renvoie true si la facette $F$ est visible (vecteur normal dirigé vers l'observateur). Si $A$, $B$ et $C$ sont les trois premiers points de $F$, le vecteur normal est calculé en faisant le produit vectoriel $\vec{AB}\wedge\vec{AC}$.
+    
+    \item La méthode \textbf{g:Classifyfacet(F)} où $F$ est une liste de facettes ou bien un polyèdre, renvoie \textbf{deux} listes de facettes, la première est la liste des facettes visibles, et la suivante, la liste des facettes non visibles.
+    
+    \item La méthode \textbf{g:Sortfacet(F,backcull)} où $F$ est une liste de facettes, renvoie cette liste de facettes triées de la plus éloignée à la plus proche de l'observateur. L'argument facultatif \emph{backcull} est un booléen qui vaut false par défaut, lorsqu'il a la valeur true, les facettes non visibles sont exclues du résultat (seules les facettes visibles sont alors renvoyées après avoir été triées). Le calcul de l'éloignement d'un facette se fait sur son centre de gravité. La technique dite du "peintre" consiste à afficher les facettes de la plus éloignée à la plus proche, donc dans l'ordre de la liste renvoyée par cette fonction (le résultat affiché n'est cependant pas toujours correct en fonction de la taille et de la forme des facettes).
+    
+    \item La méthode \textbf{g:Sortpolyfacet(P,backcull)} où $P$ est un polyèdre, renvoie la liste des facettes de $P$ (facettes avec points 3d) triées de la plus éloignée à la plus proche de l'observateur. L'argument facultatif \emph{backcull} est un booléen qui vaut false par défaut, lorsqu'il a la valeur true, les facettes non visibles sont exclues du résultat comme pour la méthode précédente. Ces deux méthodes de tris sont utilisées par les méthodes de dessin de polyèdres ou facettes (\emph{Dpoly}, \emph{Dfacet} et \emph{Dmixfacet}).
+    
+    \item La fonction \textbf{border(P)} où $P$ est un polyèdre ou une liste de facette, renvoie une ligne polygonale 3d qui correspond aux arêtes appartenant à une seule facette de $P$ (ces arêtes sont mises "bout à bout" pour former une ligne polygonale).
+    
+    \item La fonction \textbf{getfacet(P,list)} où $P$ est un polyèdre, renvoie la liste des facettes de $P$ (avec points 3d) dont le numéro figure dans la table \emph{list}. Si l'argument \emph{list} n'est pas précisé, c'est la liste de toutes les facettes de $P$ qui est renvoyée (dans ce cas c'est la même chose que \textbf{poly2facet(P)}).
+    
+    \item La fonction \textbf{facet2plane(L)} où $L$ est soit une facette, soit une liste de facettes, renvoie soit le plan contenant la facette, soit la liste des plans contenant chacune des facettes de $L$. Un plan est une table du type \{A,u\} où $A$ est un point du plan et $u$ un vecteur normal au plan (donc deux points 3d).
+    
+\begin{demo}{Sphère inscrite dans un octaèdre avec projection du centre sur les faces}
+\begin{luadraw}{name=sphere_octaedre}
+require "luadraw_polyhedrons"
+local g = graph3d:new{ window3d={-3,3,-3,3,-3,3}, size={10,10}}
+g:Linejoin("round")
+local P = Octaedre(Origin,M(0,0,3)) -- polyèdre défini dans le module luadraw_polyhedrons
+P = rotate3d(P,-10,{Origin,vecK}) -- rotate3d sur un polyèdre renvoie un polyèdre
+local V, H = g:Classifyfacet(P) -- V pour facettes visibles, H pour hidden
+local S = map(function(p) return {proj3d(Origin,p),p[2]} end, facet2plane(V) )
+-- S contient la liste de : {projeté, vecteur normal} (projetés de Origin sur les faces visibles)
+local R = pt3d.abs(S[1][1]) -- rayon de la sphère
+g:Dboxaxes3d({grid=true, gridcolor="gray", fillcolor="LightGray"})
+g:Dfacet(H, {color="blue",opacity=0.9}) -- dessin des facettes non visibles
+g:Dsphere(Origin,R,{mode=2,color="orange"}) -- dessin de la sphère
+g:Dballdots3d(Origin,"gray",0.75) -- centre de la sphère
+for _,D in ipairs(S) do -- segments reliant l'origine aux projetés
+    g:Dpolyline3d( {Origin,D[1]},"dashed,gray")
+end
+g:Dfacet(V,{opacity=0.4, color="LightBlue"}) -- facettes visibles de l'octaèdre
+g:Dcrossdots3d(S,nil,0.75) -- dessin des projetés sur les faces
+g:Dpolyline3d( {M(0,-3,3), M(0,0,3), M(-3,0,3)},"gray")
+g:Show()            
+\end{luadraw}
+\end{demo}
+\end{itemize}
+
+\subsection{Découper un solide : cutpoly et cutfacet}
+
+\begin{itemize}
+    \item La fonction \textbf{cutpoly(P,plane,close)} permet de découper le polyèdre $P$ avec le plan \emph{plane} (table du type \{A,n\} où $A$ est un point du plan et $n$ un vecteur normal au plan). La fonction renvoie 3 choses : la partie située dans le demi-espace contenant le vecteur $n$ (sous forme d'un polyèdre), suivie de la partie située dans l'autre demi-espace (toujours sous forme d'un polyèdre), suivie de la section sous forme d'une facette orientée par $-n$. Lorsque l'argument facultatif \emph{close} vaut true, la section est ajoutée aux deux polyèdres résultants, ce qui a pour effet de les refermer (false par défaut).\par
+    \textbf{Remarque} : lorsque le polyèdre $P$ n'est pas convexe, le résultat de la section n'est pas toujours correct.
+
+\begin{demo}{Cube coupé par un plan (cutpoly), avec \emph{close}=false et avec \emph{close}=true}
+\begin{luadraw}{name=cutpoly}
+local g = graph3d:new{window3d={-3,3,-3,3,-3,3}, window={-4,4,-3,3},size={10,10}}
+g:Linejoin("round")
+local P = parallelep(M(-1,-1,-1),2*vecI,2*vecJ,2*vecK)
+local A, B, C = M(0,-1,1), M(0,1,1), M(1,-1,0)
+local plane = {A, pt3d.prod(B-A,C-A)}
+local P1 = cutpoly(P,plane)
+local P2 = cutpoly(P,plane,true)
+g:Lineoptions(nil,"Gold",8)
+g:Dpoly( shift3d(P1,-2*vecJ), {color="Crimson",mode=4} )
+g:Dpoly( shift3d(P2,2*vecJ), {color="Crimson",mode=4} )
+g:Dlabel3d(
+    "close=false", M(2,-2,-1), {dir={vecJ,vecK}},
+    "close=true", M(2,2,-1), {}
+    )
+g:Show()            
+\end{luadraw}
+\end{demo}
+
+     \item La fonction \textbf{cutfacet(F,plane,close)} fait la même chose que la fonction précédente sauf que $F$ est une liste de facettes (pas un polyèdre), et que cette fonction renvoie des listes de facettes et non pas des polyèdres. Cette fonction a été  utilisée dans l'exemple des courbes de niveau à la figure \ref{courbeniv}.
+\end{itemize}
+
+\subsection{Clipper des facettes avec un polyèdre convexe : clip3d}
+
+La fonction \textbf{clip3d(S,P,exterior)} clippe le solide $S$ (liste de facettes ou bien polyèdre) avec le solide convexe $P$ (liste de facettes ou bien polyèdre) et renvoie la liste de facettes qui en résulte. L'argument facultatif \emph{exterior} est un booléen qui vaut false par défaut, dans ce cas c'est la partie de $S$ qui est intérieure à $P$ qui est renvoyée, sinon c'est la partie de $S$ extérieure à $P$ qui est renvoyée.\par
+\textbf{Remarque} : le résultat n'est pas toujours satisfaisant pour la partie extérieure.
+
+\begin{demo}[clip3d]{Exemple avec clip3d : construction d'un dé à partir d'un cube et d'une sphère}
+\begin{luadraw}{name=clip3d}
+local g = graph3d:new{window={-3,3,-3,3},size={10,10}}
+g:Linejoin("round")
+local S = sphere(Origin,3)
+local C = parallelep(M(-2,-2,-2),4*vecI,4*vecJ,4*vecK)
+local C1 = clip3d(S,C) -- sphère clippée par le cube
+local C2 = clip3d(C,S) -- cube clippé par la sphère
+local V = g:Classifyfacet(C2) -- facettes visibles de C2
+g:Dfacet( concat(C1,C2), {color="Beige",mode=5,backcull=true} ) -- que les faces visibles
+g:Dpolyline3d(V,true,"line width=0.8pt") -- contour des faces visibles de C2
+local A, B, C, D = M(2,-2,-2), M(2,2,2), M(-2,2,-2), M(0,0,2) -- dessin des points noirs
+g:Filloptions("full","black")
+g:Dcircle3d( D,0.25,vecK); g:Dcircle3d( (2*A+B)/3,0.25,vecI)
+g:Dcircle3d( (A+2*B)/3,0.25,vecI); g:Dcircle3d( (3*B+C)/4,0.25,vecJ)
+g:Dcircle3d( (B+C)/2,0.25,vecJ); g:Dcircle3d( (B+3*C)/4,0.25,vecJ)
+g:Show()            
+\end{luadraw}
+\end{demo}
+
+\section{La méthode Dscene3d}
+
+\subsection{Le principe, les limites}
+
+Le défaut majeur des méthodes \textbf{g:Dpoly}, \textbf{g:Dfacet} et \textbf{g:Dmixfacet} est de ne pas gérer les intersections éventuelles entre facettes de différents solides, sans compter que parfois, même pour un polyèdre convexe simple, l'algorithme du peintre ne donne pas toujours le bon résultat (car le tri de facettes se fait uniquement sur leur centre de gravité). D'autre part, ces méthodes permettent de dessiner uniquement des facettes.
+
+Le principe de la méthode \textbf{g:Dscene3d()} est de classer les objets 3d à dessiner (facettes, lignes polygonales, points, labels,...) dans un arbre (qui représente la scène). À chaque n{\oe}ud de l'arbre il y a un objet 3d, appelons-le $A$, et deux descendants, l'un des descendants va contenir les objets 3d qui sont devant l'objet A (c'est à dire plus près de l'observateur que $A$), et l'autre descendant va contenir les objets 3d qui sont derrière l'objet A (c'est à dire plus loin de l'observateur que $A$).
+
+En particulier, pour classer une facette $B$ par rapport à une facette $A$ qui est déjà dans l'arbre, on procède ainsi : on découpe la facette $B$ avec le plan contenant la facette $A$, ce qui donne en général deux "demi" facettes, une qui sera devant $A$ (celle dans le demi-espace "contenant" l'observateur) , et l'autre qui sera donc derrière $A$.
+
+Cette méthode est efficace mais comporte des limites car elle peut entraîner une explosion du nombre de facettes dans l'arbre augmentant ainsi sa taille de manière exponentielle, ce qui peut rendre rédhibitoire l'utilisation de cette méthode lorsqu'il y a beaucoup de facettes (temps de calcul long\footnote{Lua est un langage interprété donc l'exécution est en général plus longue qu'avec un langage compilé.}, taille trop importante du fichier tkz, temps de dessin par tikz trop long). Par contre, elle est très efficace lorsqu'il y a peu de facettes, et donc peu d'intersections de facettes (objets convexes avec peu de facettes). De plus, il est possible de dessiner sous la scène 3d et au-dessus, c'est à dire avant l'utilisation de la méthode \textbf{g:Dscene3d}, et après son utilisation.
+
+Cette méthode doit donc être réservée à des scènes très simples. Pour des scènes 3d complexes le format vectoriel n'est pas adapté, mieux vaux se tourner alors vers des d'autres outils comme povray ou blender ou webgl ...
+
+\subsection{Construction d'une scène 3d}
+
+La méthode \textbf{g:Dscene3d(...)} permet cette construction. Elle prend en argument les objets 3d qui vont constituer cette scène les uns après les autres. Ces objets 3d sont eux-mêmes fabriqués à partir de méthodes dédiées qui vont être détaillées plus loin. Dans la version actuelle, ces objets 3d peuvent être :
+\begin{itemize}
+    \item des polyèdres, 
+    \item des listes de facettes (avec point3d),
+    \item des lignes polygonales 3d,
+    \item des points 3d,
+    \item des labels,
+    \item des axes,
+    \item des plans, des droites,
+    \item des angles,
+    \item des cercles, des arcs de cercle.
+\end{itemize}
+
+\begin{demo}[plans]{Premier exemple avec Dscene3d : intersection de deux plans}
+\begin{luadraw}{name=intersection_plans}
+local g = graph3d:new{viewdir={-10,60}, window={-5,5.5,-5.5,5.5},bg="gray", size={10,10}}
+g:Linejoin("round")
+local P1 = planeEqn(1,1,1,-2) -- plan d'équation x+y+z-2=0
+local P2 = {Origin, vecK-vecJ} -- plan passant par O et normal à (1,1,1)
+local D = interPP(P1,P2) -- droite d'intersection entre P1 et P2 (D = {A,u})
+local posD = D[1]+1.85*D[2] -- pour placer le label
+Hiddenlines = true; Hiddenlinestyle = "dotted" -- affichage des lignes cachées en pointillées
+g:Dscene3d(
+    g:addPlane(P1, {color="Crimson",edge=true,edgecolor="Pink",edgewidth=8}), -- ajout du plan P1
+    g:addPlane(P2, {color="ForestGreen",edge=true,edgecolor="Pink",edgewidth=8}),  -- ajout du plan P2
+    g:addLine(D, {color="Navy",edgewidth=12}),  -- ajout de la droite D
+    g:addAxes(Origin, {arrows=1, color="Gold",width=8}),  -- ajout des axes fléchés
+    g:addLabel( -- ajout de labels, ceux-ci auraient pu être ajoutés par dessus la scène
+        "$D=P_1\\cap P_2$",posD,{color="Navy"},
+        "$P_2$", M(3,0,0)+3.5*M(0,1,1),{color="white",dir={vecI,vecJ+vecK}},
+        "$P_1$",M(2,0,0)+1.8*M(-1,-1,2), {dir={M(-1,1,0),M(-1,-1,2),1.125*M(1,-1,0)}}
+        )
+    )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Méthodes pour ajouter un objet dans la scène 3d}
+
+Ces méthodes sont à utiliser comme argument de la méthode \textbf{g:Dscene3d(...)} comme dans l'exemple ci-dessus.
+
+\subsubsection{Ajouter des facettes : g:addFacet et g:addPoly}
+
+La méthode \textbf{g:addFacet(list,options)} où \emph{list} est une facette ou bien une liste de facettes (avec points 3d), permet d'ajouter ces facettes à la scène. 
+
+La méthode \textbf{g:addPoly(list,options)} permet d'ajouter le polyèdre $P$ à la scène. 
+
+Dans les deux cas, l'argument facultatif \emph{options} est une table à 11 champs, ces options (avec leur valeur par défaut) sont :
+
+    \begin{itemize}
+        \item \opt{color="white"} : définit la couleur de remplissage des facettes, cette couleur sera nuancée en fonction de l'inclinaison de celles-ci. Par défaut, le bord des facettes n'est pas dessiné (seulement le remplissage).
+        \item \opt{opacity=1} : nombre entre 0 et 1 pour définir l'opacité des facettes (1 signifie pas de transparence).
+        \item \opt{backcull=false} : booléen qui indique si les facettes non visibles doivent être exclues de la scène. Par défaut elles sont présentes.
+        \item \opt{contrast=1} : valeur numérique permettant d'accentuer ou diminuer de contraste de couleur entre les facettes. Avec la valeur 0 toutes les facettes ont la même couleur.
+        \item \opt{twoside=true} : booléen qui indique si on distingue la face interne de la face externe des facettes. La couleur de la face interne est un peu plus claire que celle de l'externe.
+        
+        \item \opt{edge=true} : booléen qui indique si les arêtes doivent être ajoutées à la scène.
+        \item \opt{edgecolor="black"} : indique la couleur des arêtes lorsqu'elles sont dessinées.
+        \item \opt{edgewidth=6} : indique l'épaisseur de trait (en dixième de point) des arêtes.
+        \item \opt{hidden=Hiddenlines} : booléen qui indique si les arêtes cachées doivent être représentées. \emph{Hiddenlines} est une variable globale qui vaut false par défaut.
+        \item \opt{hiddenstyle=Hiddenlinestyle} : chaîne définissant le style de ligne des arêtes cachées. \emph{Hiddenlinestyle} est une variable globale qui vaut "dotted" par défaut.
+        \item \opt{matrix=ID3d} : matrice 3d de transformation des facettes, par défaut celle-ci est la matrice 3d de l'identité, c'est à dire la table \{M(0,0,0),vecI,vecJ,vecK\}.
+    \end{itemize}
+
+\subsubsection{Ajouter un plan : g:addPlane et g:addPlaneEq}
+
+La méthode \textbf{g:addPlane(P,options)} permet d'ajouter le plan $P$ à la scène 3d, ce plan est défini sous la forme d'une table \{A,u\} où $A$ est un point du plan (point 3d) et $u$ un vecteur normal au plan (point 3d non nul). Cette fonction détermine l'intersection entre ce plan et le parallélépipède donné par l'argument \emph{window3d} (lui-même défini à la création du graphe), ce qui donne une facette, c'est celle-ci qui est ajoutée à la scène. Cette méthode utilise \textbf{g:addFacet}.
+
+La méthode \textbf{g:addPlaneEq(coef,options)} où \emph{coef} est une table constituée de quatre réels \{a,b,c,d\}, permet d'ajouter à la scène le plan d'équation $ax+by+cz+d=0$ (cette méthode utilise la précédente).
+
+Dans les deux cas, l'argument facultatif \emph{options} est une table à 12 champs, ces options sont celles de la méthode \textbf{g:addFacet}, plus l'option \opt{scale=1} : ce nombre est un rapport d'homothétie, on applique à la facette l'homothétie de centre le centre de gravité de la facette et de rapport \emph{scale}. Cela permet de jouer sur la taille du plan dans sa représentation.
+        
+
+\subsubsection{Ajouter une ligne polygonale : g:addPolyline}
+
+La méthode \textbf{g:addPolyline(L,options)} où $L$ est une liste de points 3d, ou une liste de listes de points 3d, permet d'ajouter $L$ à la scène. L'argument facultatif \emph{options} est une table à 9 champs, ces options (avec leur valeur par défaut) sont :
+    \begin{itemize}
+        \item \opt{style="solid"} : pour définir le style de ligne.
+        \item \opt{color="black"} : couleur de la ligne.
+        \item \opt{width=4} : épaisseur de la ligne en dixième de point.
+        \item \opt{opacity=1} : opacité du tracé de ligne (1 signifie pas de transparence).
+        \item \opt{hidden=Hiddenlines} : booléen qui indique si les parties cachées de la ligne doivent être représentées. \emph{Hiddenlines} est une variable globale qui vaut false par défaut.
+        \item \opt{hiddenstyle=Hiddenlinestyle} : chaîne définissant le style de ligne des parties cachées. \emph{Hiddenlinestyle} est une variable globale qui vaut "dotted" par défaut.
+        \item \opt{arrows=0} : cette option peut valoir 0 (aucune flèche ajoutée à la ligne), 1 (une flèche ajoutée en fin de ligne), ou 2 (une flèche en début et en fin de ligne). Les flèches sont des petits cônes.
+        \item \opt{arrowscale=1} : permet de réduire ou augmenter la taille des flèches.
+        \item \opt{matrix=ID3d} : matrice 3d de transformation (de la ligne), par défaut celle-ci est la matrice 3d de l'identité, c'est à dire la table \{M(0,0,0),vecI,vecJ,vecK\}.
+    \end{itemize}
+    
+\subsubsection{Ajouter des axes : g:addAxes}
+
+La méthode \textbf{g:addAxes(O,options)} permet d'ajouter les axes : ($O$,\emph{vecI}), ($O$,\emph{vecJ}) et ($O$,\emph{vecK}) à la scène 3d, où l'argument $O$ est un point 3d. Les options sont celles de la méthode \textbf{g:addPolyline}, plus l'option \opt{legend=true} qui permet d'ajouter automatiquement le nom de chaque axe ($x$, $y$ et $z$) à l'extrémité. Ces axes ne sont pas gradués.
+    
+\subsubsection{Ajouter une droite : g:addLine}
+
+La méthode \textbf{g:addLine(d,options)} permet d'ajouter la droite $d$ à la scène, cette droite $d$ est une table de la forme \{A,u\} où $A$ est un point de la droite (point 3d) et $u$ un vecteur directeur (point 3d non nul).  L'argument facultatif \emph{options} est une table à 10 champs, ces options sont celles de la méthode \textbf{g:addPolyline}, plus l'option \opt{scale=1} : ce nombre est un rapport d'homothétie, on applique à la facette l'homothétie de centre le milieu du segment représentant la droite, et de rapport \emph{scale}. Cela permet de jouer sur la taille du segment dans sa représentation, ce segment est la droite clippée par le polyèdre donné par l'argument \emph{window3d} (lui-même défini à la création du graphe), ce qui donne une segment (éventuellement vide).
+
+\subsubsection{Ajouter un angle "droit" : g:addAngle}
+
+La méthode \textbf{g:addAngle(B,A,C,r,options)} permet d'ajouter l'angle $\widehat{BAC}$ sous forme d'un parallélogramme de côté $r$ ($r$ vaut 0.25 par défaut), seuls deux côtés sont représentés. les arguments $B$, $A$ et $C$ sont des points 3d. Les options sont celles de la méthode \textbf{g:addPolyline}.
+
+\subsubsection{Ajouter un arc de cercle : g:addArc}
+
+La méthode \textbf{g:addArc(B,A,C,r,sens,normal,options)} permet d'ajouter l'arc de cercle de centre $A$ (point 3d), de rayon $r$, allant de $B$ vers $C$ (points 3d) dans le sens direct si \emph{sens} vaut 1 (indirect sinon). L'arc est tracé dans le plan passant par $A$ et orthogonal au vecteur\emph{normal} (point 3d non nul), c'est ce même vecteur qui oriente le plan. Les options sont celles de la méthode \textbf{g:addPolyline}.
+
+\subsubsection{Ajouter un cercle : g:addCircle}
+
+La méthode \textbf{g:addCircle(A,r,normal,options)} permet d'ajouter le cercle de centre $A$ (point 3d) et de rayon $r$ dans le plan passant par $A$ et orthogonal au vecteur\emph{normal} (point 3d non nul). Les options sont celles de la méthode \textbf{g:addPolyline}.
+
+\begin{demo}{Cylindre plein plongé dans de l'eau}
+\begin{luadraw}{name=cylindres_imbriques}
+local g = graph3d:new{window={-5,5,-6,5}, viewdir={30,75},size={10,10},margin={0,0,0,0}}
+g:Linejoin("round")
+local R, r, A, B = 3, 1.5
+local C1 = cylinder(M(0,0,-5),5*vecK,R)  -- pour modéliser l'eau
+local C2 = cylinder(Origin,2*vecK,R,35,true) -- partie du contenant au dessus de l'eau (cylindre ouvert)
+local C3 = cylinder(M(0,0,-3),7*vecK,r) -- petit cylindre plongé dans l'eau
+-- sous la scène 3d
+g:Lineoptions(nil,"gray",12)
+g:Dcylinder(M(0,0,-5),7*vecK,R,{hiddenstyle="noline"}) -- contour du contenant (grand cylindre)
+-- scène 3d
+g:Dscene3d(
+        g:addPoly(C1,{contrast=0.125,color="cyan",opacity=0.5}), -- eau
+        g:addPoly(C2,{contrast=0.125,color="WhiteSmoke", opacity=0.5}), -- partie du contenant au-dessus de l'eau
+        g:addPoly(C3,{contrast=0.25,color="Salmon",backcull=true}), -- petit cylindre dans l'eau
+        g:addCircle(M(0,0,2),R,vecK,{color="gray"}), -- bord supérieur du contenant
+        g:addCircle(M(0,0,-5),R,vecK,{color="gray"}), -- bord inférieur du contenant        
+        g:addCircle(Origin,R-0.025,vecK, {width=2,color="cyan"}) -- bord supérieur eau
+        )
+-- par dessus la scène 3d
+g:Lineoptions(nil,"black",8); A = 4*vecK; B = A+r*g:ScreenX()
+g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$3\\,$cm",(A+B)/2,{pos="N",dist=0.25})
+A = Origin+(r+1)*g:ScreenX(); B = A-3*vecK
+g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("h",(A+B)/2,{pos="E"})
+g:Lineoptions("dashed")
+g:Dpolyline3d({{A,A-g:ScreenX()},{B,B-g:ScreenX()}})
+A = Origin-(R+1)*g:ScreenX(); B = A-vecK
+g:Dpolyline3d({{A,A+g:ScreenX()},{B,B+g:ScreenX()}})
+g:Linestyle("solid")
+g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$2$\\,cm",(A+B)/2,{pos="W"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Remarques} : 
+\begin{itemize}
+    \item La méthode \textbf{g:ScreenX()} renvoie le vecteur de l'espace (point 3d) correspondant au vecteur d'affixe 1 dans le plan de l'écran, et la méthode \textbf{g:ScreenY()} renvoie le vecteur de l'espace (point 3d) correspondant au vecteur d'affixe i dans le plan de l'écran.
+    \item Pour le petit cylindre (C3) on utilise l'option \opt{backcull=true} pour diminuer le nombre de facettes, par contre, on ne le fait pas pour les deux autres cylindres (C1 et C2) car ils sont transparents.
+\end{itemize}
+
+\subsubsection{Ajouter des points : g:addDots}
+
+La méthode \textbf{g:addDots(dots,options)} permet d'ajouter des points 3d à la scène. L'argument \emph{dots} est soit un point 3d, soit une liste de points 3d. L'argument facultatif \opt{options} est une table à quatre champs, ces options sont :
+\begin{itemize}
+        \item \opt{style="ball"} : chaîne définissant le style de points, ce sont tous les styles de points 2d, plus le style "ball" (sphère) qui est le style par défaut. 
+    \item \opt{color="black"} : chaîne définissant la couleur des points.
+    \item \opt{scale=1} : nombre permettant de jouer sur la taille des points.
+    \item \opt{matrix=ID3d} : matrice 3d de transformation, par défaut celle-ci est la matrice 3d de l'identité, c'est à dire la table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+\subsubsection{Ajouter des labels : g:addLabels}
+
+La méthode \textbf{g:addLabel(text1,anchor1,options1, text2,anchor2,options2, ...)} permet d'ajouter les labels \emph{text1}, \emph{text2}, etc. Les arguments (obligatoires) \emph{anchor1}, \emph{anchor2}, etc, sont des points 3d représentant les points d'ancrage des labels. Les arguments (obligatoires) \emph{options1}, \emph{options2}, etc, sont des tables à 7 champs. Ces options sont :
+\begin{itemize}
+    \item \opt{color} : chaîne définissant la couleur du label, initialisée à la couleur en cours des labels.
+    \item \opt{style} : chaîne définissant le style de label (comme en 2d : "N", "NW", "W", ...),  initialisée au style en cours des labels.
+    \item \opt{dist=0} : exprime la distance entre le label et son point d'ancrage (dans le plan de l'écran).
+    \item \opt{size} : chaîne définissant la taille du label,  initialisée à la taille en cours des labels.
+    \item \opt{dir=\{\}} : table définissant le sens de l'écriture dans l'espace (sens usuel par défaut).
+    En général, \emph{dir=\{dirX,dirY,dep\}}, et les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois points 3d représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage.
+    \item \opt{showdot=false} : booléen qui indique si un point (2d) doit être dessiné au point d'ancrage.
+    \item \opt{matrix=ID3d} : matrice 3d de transformation, par défaut celle-ci est la matrice 3d de l'identité, c'est à dire la table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+\begin{demo}{Construction d'un icosaèdre}
+\begin{luadraw}{name=icosaedre}
+local g = graph3d:new{window={-2.25,2.25,-2,2}, viewdir={40,60},bg="gray",size={10,10},margin={0,0,0,0}}
+g:Linejoin("round")
+local phi = (1+math.sqrt(5))/2 -- nombre d'or
+local A1, B1, C1, D1 = M(phi,-1,0), M(phi,1,0), M(-phi,1,0), M(-phi,-1,0) -- dans le plan z=0
+local A2, B2, C2, D2 = M(0,phi,1), M(0,phi,-1), M(0,-phi,-1), M(0,-phi,1) -- dans le plan x=0
+local A3, B3, C3, D3 = M(1,0,phi), M(-1,0,phi), M(-1,0,-phi), M(1,0,-phi) -- dans le plan y=0
+local ico = {   {A1,B1,A3}, {B1,A1,D3}, {D1,C1,C3}, {C1,D1,B3},
+                {B2,A2,B1}, {A2,B2,C1}, {D2,C2,A1}, {C2,D2,D1},
+                {B3,A3,A2}, {A3,B3,D2}, {D3,C3,B2}, {C3,D3,C2},
+                {A1,A3,D2}, {B1,A2,A3}, {A2,C1,B3}, {D1,D2,B3},
+                {B2,B1,D3}, {A1,C2,D3}, {B2,C3,C1}, {C2,D1,C3}  }
+g:Dscene3d(
+    g:addFacet({A2,B2,C2,D2},{color="Navy",twoside=false,opacity=0.8}),
+    g:addFacet({A1,B1,C1,D1},{color="Crimson",twoside=false,opacity=0.8}),
+    g:addFacet({A3,B3,C3,D3},{color="Chocolate",twoside=false,opacity=0.8}),
+    g:addPolyline(facetedges(ico), {color="Gold",width=12}), -- dessin des arêtes uniquement
+    g:addDots({A1,B1,C1,D1,A2,B2,C2,D2,A3,B3,C3,D3}, {color="black",scale=1.2}),
+    g:addLabel("A1",A1,{style="W",dist=0.1}, "B1",B1,{style="S"}, "C2",C2,{}, "C3",C3,{}, "A3",A3,{style="N"}, "D1",D1,{},  "A2",A2,{},  "D2",D2,{}, "B3",B3,{style="E"}, "C1",C1,{}, "B2",B2,{}, "D3",D3,{style="W"} )
+)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Ajouter des cloisons séparatrices : g:addWall}
+
+Les cloisons séparatrices sont des objets 3d qui sont insérés en tout premier dans l'arbre représentant la scène. Ces objets ne sont pas dessinés (donc invisibles), leur rôle est de partitionner l'espace car une facette qui est d'un côté d'une cloison séparatrice ne peut pas être découpée par le plan d'une facette qui est de l'autre côté de la cloison. Cela permet dans certains cas de diminuer significativement le nombre de découpage de facettes (ou lignes polygonales) lors de la construction de la scène. Une cloison séparatrice peut être un plan entier (donc une table de deux points 3d la forme \{A,n\}, c'est à dire un point et un vecteur normal), ou bien seulement une facette.
+
+La syntaxe est : \textbf{g:addWall(C,options)} où $C$ est soit un plan, soit une liste de plans, soit une facette, soit une liste de facettes. L'argument \emph{options} est une table. La seule option disponible est 
+\begin{itemize}
+    \item \opt{matrix=ID3d} : matrice 3d de transformation, par défaut celle-ci est la matrice 3d de l'identité, c'est à dire la table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+Dans l'exemple suivant les deux cloisons séparatrices ont été dessinées afin de les visualiser, mais normalement elles sont invisibles :
+\begin{demo}{Exemple avec addWall (les deux facettes transparentes roses sont normalement invisibles)}
+\begin{luadraw}{name=addWall}
+local g = graph3d:new{size={10,10},window={-8,8,-4,8}, margin={0,0,0,0}}
+g:Linejoin("round")
+local C = cylinder(M(0,0,-1),5*vecK,2)
+g:Dscene3d(
+    g:addWall( {{Origin,vecI}, {Origin,vecJ}}),
+    g:addPoly( shift3d(C,M(-3,-3,1)), {color="Cyan"} ),
+    g:addPoly( shift3d(C,M(-3,3,0.5)), {color="ForestGreen"} ),
+    g:addPoly( shift3d(C,M(3,-3,-0.5)), {color="Crimson"} )
+)
+g:Show()
+\end{luadraw}
+\end{demo}
+\paragraph{Remarques sur cet exemple} : 
+\begin{itemize}
+    \item avec les deux cloisons séparatrices, il n'y a aucune facette découpée, et la scène en contient exactement 111 (37 par cylindre).
+    \item sans les cloisons séparatrices, il y a 117 découpages (inutiles) de facettes, ce qui porte leur nombre à 228 dans la scène.
+        \item avec les deux cloisons séparatrices, et l'option \opt{backcull=true} pour chaque cylindre, il n'y a aucune facette découpée, et la scène en contient 57 seulement.
+\end{itemize}
+
+Voici un autre exemple bien plus probant où l'utilisation de cloisons séparatrices est indispensable pour avoir un dessin de taille raisonnable. Il s'agit de l'obtention d'une lemniscate comme intersection d'un tore avec un certain plan. Le tore étant non convexe le nombre de découpage inutile de facettes peut être très important.
+
+\begin{demo}{Tore et lemniscate}
+\begin{luadraw}{name=torus}
+local g = graph3d:new{size={10,10}, margin={0,0,0,0}}
+g:Linejoin("round")
+local cos, sin, pi = math.cos, math.sin, math.pi
+local R, r = 2.5, 1
+local x0 = R-r
+local f = function(t) return M(0,R+r*cos(t),r*sin(t)) end
+local plan = {M(x0,0,0),-vecI} -- plan dont la section avec le tore donne la lemniscate
+local C, wall = rotcurve(f,-pi,pi,{Origin,vecK},360,0,{grid={25,37},addwall=2})
+local C1 = cutfacet(C,plan)  -- partie du tore dans le demi espace contenant -vecI
+g:Dscene3d(
+    g:addWall(plan), g:addWall(wall), -- ajout de cloisons séparatrices
+    g:addFacet( C1, {color="Crimson", backcull=false}),
+    g:addPlane(plan, {color="Pink",opacity=0.4,edge=true}), -- plan de coupe
+    g:addAxes( Origin, {arrows=1})
+)
+-- équation  cartésienne du tore : (x^2+y^2+z^2+R^2-r^2)^2-4*R^2*(x^2+y^2) = 0
+-- la lemniscate a donc pour équation (x0^2+y^2+z^2+R^2-r^2)^2-4*R^2*(x0^2+y^2)=0 (courbe implicite)
+local h = function(y,z) return (x0^2+y^2+z^2+R^2-r^2)^2-4*R^2*(x0^2+y^2) end
+local I = implicit(h,-4,4,-3,3,{50,50}) -- ligne polygonale 2d (liste de listes de complexes)
+local lemniscate = map(function(z) return M(x0,z.re,z.im) end, I[1]) -- conversion en coordonnées spatiales
+g:Dpolyline3d(lemniscate,"Navy,line width=1.2pt")
+g:Show()
+\end{luadraw}
+\end{demo}
+\paragraph{Remarques sur cet exemple} : 
+\begin{itemize}
+    \item Avec les cloisons séparatrices on a 30 facettes qui sont coupées et un fichier tkz de 140 Ko environ.
+    \item Sans les cloisons séparatrices on a 2068 découpages de facettes (!) et un fichier tkz de 550 Ko environ.
+    \item On aurait pu utiliser la section de coupe qui est renvoyée par la fonction\emph{cutfacet}, mais le résultat n'est pas très satisfaisant (cela vient du fait que le tore est non convexe).
+    \item Si on n'avait pas voulu les axes traversant le tore et le plan de coupe, on aurait pu faire le dessin avec la méthode \textbf{g:Dfacet}, en remplaçant l'instruction \emph{g:Dscene3d(...)} par :
+\begin{Luacode}
+g:Dfacet(C1, {mode=5,color="Crimson"} )
+g:Dfacet( g:Plane2facet(plan,0.75), {color="Pink",opacity=0.4}) 
+\end{Luacode}
+On obtient exactement la même chose mais sans les axes (et sans découpage de facettes bien sûr).
+\end{itemize}
+
+\paragraph{Pour conclure cette partie} : on utilise la méthode \textbf{g:Dscene3d()} lorsqu'il n'est pas possible de faire autrement, par exemple lorsqu'il y a des intersections (peu nombreuses) qui ne peuvent pas être traiter "à la main". Mais ce n'est pas le cas de toutes les intersections ! Dans l'exemple suivant, on représente une section de sphère par un plan mais sans passer par la méthode \textbf{g:Dscene3d()} car celle-ci obligerait à dessiner une sphère à facettes ce qui n'est pas très joli. L'astuce ici, consiste à dessiner la sphère avec la méthode \textbf{g:Dsphere()}, puis dessiner par dessus le plan sous forme d'une facette préalablement trouée, le trou correspondant au contour (chemin 3d) de la partie de la sphère située au-dessus du plan :
+\begin{demo}{Section de sphère sans Dscene3d()}
+\begin{luadraw}{name=section_sphere}
+local g = graph3d:new{ window3d={-4,4,-4,4,-4,4}, window={-5.5,5.5,-4,5}, viewdir={30,75}, size={10,10}}
+g:Linejoin("round")
+local O, R = Origin, 2.5 -- center et rayon
+local S, P = sphere(O,R), {M(0,0,1.5),vecK+vecJ/2} -- la sphère et le plan de coupe
+local w, n = pt3d.normalize(P[2]), g.Normal -- vecteurs unitaires normaux à P pour w et à l'écran pour n
+local C = g:Intersection3d(S,P) -- C est une liste d'arêtes
+local I = proj3d(O,P) -- centre du petit cercle (intersection entre le plan et la sphère)
+local N = I-O
+local r = math.sqrt(R^2-pt3d.abs(N)^2) -- rayon du petit cercle
+local J = I+r*pt3d.normalize(vecJ-vecK/2) -- un point sur le petit cercle
+local a = R/pt3d.abs(N)
+local A, B = O+a*N, O-a*N -- points d'intersection de l'axe (O,I) avec la sphère
+local c1, alpha = Orange, 0.5
+local coul = {c1[1]*alpha, c1[2]*alpha,c1[3]*alpha} -- pour simuler la transparence
+g:Dhline( g:Proj3d({B,-N})) -- demi-droite (le point B est non visible)
+g:Dsphere(O,R,{mode=2,color="orange"})
+g:Dline3d(A,B,"dotted") -- droite (A,B) en pointillés
+g:Dedges(C, {hidden=true,hiddenstyle="dashed"}) -- dessin de l'intersection
+g:Dpolyline3d({I,J,O},"dashed") 
+g:Dangle3d(O,I,J)  -- angle droit
+g:Dcrossdots3d({{B,N},{I,N},{O,N}},rgb(coul),0.75) -- points dans la sphère
+g:Dlabel3d("$O$", O, {pos="NW"})
+local L = C.visible[1] -- partie visible de l'intersection (arc de cercle)
+A1 = L[1]; A2 = L[#L] -- extrémités de L
+local F = g:Plane2facet(P) -- plan converti en facette
+-- plan troué sous forme de chemin 3d, le trou est le contour de la partie de la sphère au-dessus du plan
+insert(F,{"l","cl",A1,"m",I,A2,r,-1,w,"ca",Origin,A1,R,-1,n,"ca"})
+g:Dpath3d( F,"fill=Beige,fill opacity=0.6") -- dessin du plan troué
+g:Dhline( g:Proj3d({A,N})) -- demi-droite, partie supérieure de l'axe (AB)
+g:Dcrossdots3d({A,N},"black",0.75); g:Dballdots3d(J,"black",0.75)
+g:Dlabel3d("$A$", A, {pos="NW"}, "$I$", I, {}, "$B$", B, {pos="E"}, "$J$", J, {pos="S"})
+g:Show()            
+\end{luadraw}
+\end{demo}
+
+\section{Transformations, calcul matriciel, et quelques fonctions mathématiques}
+
+\subsection{Transformations 3d}
+
+Dans les fonctions qui suivent :
+\begin{itemize}
+    \item l'argument \emph{L} est soit un point 3d, soit un polyèdre, soit une liste de points 3d (facette) soit une liste de listes de points 3d (liste de facettes),
+    \item une droite \emph{d} est une liste de deux points 3d \{A,u\} : un point de la droite ($A$) et un vecteur directeur ($u$),
+    \item un plan \emph{P} est une liste de deux points 3d \{A,n\} : un point du plan ($A$) et un vecteur normal au plan ($n$).
+  \end{itemize}
+Le résultat renvoyé est de même type que $L$.
+  
+\subsubsection{Appliquer une fonction de transformation : ftransform3d}
+
+La fonction \textbf{ftransform3d(L,f)} renvoie l'image de \emph{L} par la fonction \emph{f}, celle-ci  doit être une fonction de $\mathbf R^3$ vers $\mathbf R^3$.
+
+\subsubsection{Projections : proj3d, proj3dO, dproj3d}
+
+\begin{itemize}
+    \item La fonction \textbf{proj3d(L,P)} renvoie l'image de $L$ par la projection orthogonale sur le plan $P$.
+    \item La fonction \textbf{proj3dO(L,P,v)} renvoie l'image de $L$ par la projection sur le plan $P$ parallèlement à la direction du vecteur $v$ (point 3d non nul).
+    \item La fonction \textbf{dproj3d(L,d)} renvoie l'image de $L$ par la projection sur la droite $d$.
+\end{itemize}
+
+\subsubsection{Projections sur les axes ou les plans liés aux axes}
+
+\begin{itemize}
+    \item La fonction \textbf{pxy(L)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $xOy$.
+    \item La fonction \textbf{pyz(L)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $yOz$.
+    \item La fonction \textbf{pxz(L)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $xOz$.
+\item La fonction \textbf{px(L)} renvoie l'mage de $L$ par la projection orthogonale sur l'axe $Ox$.
+\item La fonction \textbf{py(L)} renvoie l'mage de $L$ par la projection orthogonale sur l'axe $Oy$.
+\item La fonction \textbf{pz(L)} renvoie l'mage de $L$ par la projection orthogonale sur l'axe $Oz$.
+\end{itemize}
+
+\subsubsection{Symétries : sym3d, sym3dO, dsym3d}
+
+\begin{itemize}
+    \item La fonction \textbf{sym3d(L,P)} renvoie l'image de $L$ par la symétrie orthogonale par rapport au plan $P$.
+    \item La fonction \textbf{sym3dO(L,P,v)} renvoie l'image de $L$ par la symétrie par rapport au plan $P$ et parallèlement à la direction du vecteur $v$ (point 3d non nul).
+    \item La fonction \textbf{dsym3d(L,d)} renvoie l'image de $L$ par la symétrie orthogonale par rapport la droite $d$.
+\end{itemize}
+
+\subsubsection{Rotation : rotate3d}
+
+La fonction \textbf{rotate3d(L,angle,d)} renvoie l'image de $L$ par la rotation d'axe $d$ (orientée par le vecteur directeur qui est $d[2]$), et de \emph{angle} degrés.
+
+\subsubsection{Homothétie : scale3d}
+
+La fonction \textbf{scale3d(L,k,center)} renvoie l'image de $L$ par l'homothétie de centre le point 3d \emph{center}, et de rapport \emph{k}. L'argument \emph{center} est facultatif et vaut $M(0,0,0)$ par défaut (origine).
+
+\subsubsection{Translation : shift3d}
+
+La fonction \textbf{shift3d(L,v)} renvoie l'image de $L$ par la translation de vecteur $v$ (point 3d).
+
+\subsection{Calcul matriciel}
+
+Si $f$ est une application affine de l'espace $\mathbf R^3$, on appellera matrice de $f$ la liste (table) :
+\begin{Luacode}
+{ f(Origin), Lf(vecI), Lf(vecJ), Lf(vecK) }
+\end{Luacode}
+où $Lf$ désigne la partie linéaire de $f$ (on a \emph{Lf(vecI) = f(vecI)-f(Origin)}, etc). La matrice identité est notée \emph{ID3d} dans le paquet \emph{luadraw}, elle correspond simplement à la liste \mintinline{Lua}{ {Origin,vecI,vecJ,vecK} }.
+
+\subsubsection{applymatrix3d et applyLmatrix3d}
+
+\begin{itemize}
+    \item La fonction \textbf{applymatrix3d(A,M)} applique la matrice $M$ au point 3d $A$ et renvoie le résultat (ce qui revient à calculer $f(A)$ si $M$ est la matrice de $f$). Si $A$ n'est pas un point 3d, la fonction renvoie $A$.
+    
+    \item La fonction \textbf{applyLmatrix3d(A,M)} applique la partie linéaire la matrice $M$ au point 3d $A$ et renvoie le résultat (ce qui revient à calculer $Lf(A)$ si $M$ est la matrice de $f$). Si $A$ n'est pas un point 3d, la fonction renvoie $A$.
+\end{itemize}
+
+\subsubsection{composematrix3d}
+La fonction \textbf{composematrix3d(M1,M2)} effectue le produit matriciel $M1\times M2$ et renvoie le résultat.
+
+\subsubsection{invmatrix3d}
+La fonction \textbf{invmatrix3d(M)} calcule et renvoie l'inverse de la matrice $M$ lorsque cela est possible.
+
+\subsubsection{matrix3dof}
+
+La fonction \textbf{matrix3dof(f)} calcule et renvoie la matrice de $f$ (qui doit être une application affine de l'espace $\mathbf R^3$).
+
+
+\subsubsection{mtransform3d et mLtransform3d}
+\begin{itemize}
+    \item La fonction \textbf{mtransform3d(L,M)} applique la matrice $M$ à la liste $L$ et renvoie le résultat. $L$ doit être une liste de points 3d (une facette) ou une liste de listes de points 3d (liste de facettes).
+    \item La fonction \textbf{mLtransform3d(L,M)} applique la partie linéaire la matrice $M$ à la liste $L$ et renvoie le résultat. $L$ doit être une liste de points 3d (une facette) ou une liste de listes de points 3d (liste de facettes).
+\end{itemize}
+
+\subsection{Matrice associée au graphe 3d}
+
+Lorsque l'on crée un graphe dans l'environnement \emph{luadraw}, par exemple :
+\begin{Luacode}
+local g = graph3d:new{size={10,10}}
+\end{Luacode}
+l'objet \emph{g} créé possède une matrice 3d de transformation qui est initialement l'identité. Toutes les méthodes graphiques appliquent automatiquement la matrice 3d de transformation du graphe. Une réserve cependant : les méthodes \emph{Dcylinder}, \emph{Dcone} et \emph{Dsphere} ne donnent le bon résultat qu'avec la matrice de transformation égale à l'identité. Pour manipuler cette matrice, on dispose des méthodes qui suivent.
+
+\subsubsection{g:IDmatrix3d()}
+La méthode \textbf{g:IDmatrix3d()} réaffecte l'identité à la matrice 3d du graphe \emph g.
+
+\subsubsection{g:Composematrix3d()}
+La méthode \textbf{g:Composematrix3d(M)} multiplie la matrice 3d du graphe \emph g par la matrice \emph{M} (avec \emph{M} à droite) et le résultat est affecté à la matrice 3d du graphe. L'argument \emph{M} doit donc être une matrice 3d.
+
+\subsubsection{g:Mtransform3d()}
+La méthode \textbf{g:Mtransform3d(L)} applique la matrice du graphe 3d de \emph g à \emph{L} et renvoie le résultat, l'argument \emph L doit être une liste de points 3d (une facette) ou une liste de listes de points 3d (liste de facettes).
+
+\subsubsection{g:MLtransform3d()}
+La méthode \textbf{g:MLtransform3d(L)} applique la partie linéaire de la matrice 3d du graphe \emph g à \emph{L} et renvoie le résultat. L'argument \emph L doit être une liste de points 3d (une facette) ou une liste de listes de points 3d (liste de facettes).
+
+\subsubsection{g:Rotate3d()}
+La méthode \textbf{g:Rotate3d(angle,axe)} modifie la matrice 3d de transformation du graphe \emph g en la composant avec la matrice de la rotation d'angle \emph{angle} (en degrés) et d'axe \emph{axe}. 
+
+\subsubsection{g:Scale3d()}
+La méthode \textbf{g:Scale3d(factor, center)} modifie la matrice 3d de transformation du graphe \emph g en la composant avec la matrice de l'homothétie de rapport \emph{factor} et de centre \emph{center}. L'argument \emph{center} est un point 3d qui vaut \emph{Origin} par défaut.
+
+
+\subsubsection{g:Setmatrix3d()}
+La méthode \textbf{g:Setmatrix3d(M)} permet d'affecter la matrice \emph M à la matrice 3d de transformation du graphe \emph g.
+
+\subsubsection{g:Shift3d()}
+La méthode \textbf{g:Shift3d(v)} modifie la matrice 3d de transformation du graphe \emph g en la composant avec la matrice de la translation de vecteur \emph{v} qui doit être un point 3d.
+
+\subsection{Fonctions mathématiques supplémentaires}
+
+\subsubsection{clippolyline3d()}
+La fonction \textbf{clippolyline3d(L, poly, exterior)} clippe la ligne polygonale 3d \emph{L} avec le polyèdre \textbf{convexe} \emph{poly}, si l'argument facultatif \emph{exterior} vaut true, alors c'est la partie extérieure au polyèdre qui est renvoyée (false par défaut). \emph{L} est une liste de points 3d ou une liste de listes de points 3d.
+
+\subsubsection{clipline3d()}
+La fonction \textbf{clipline3d(line, poly)} clippe la droite \emph{line} avec le polyèdre \textbf{convexe} \emph{poly}, la fonction renvoie la partie de la droite intérieure au polyèdre. L'argument \emph{line} et une table de la forme \{A,u\} où $A$ est un point de la droite et $u$ un vecteur directeur (deux points 3d).
+
+\subsubsection{cutpolyline3d()}
+La fonction \textbf{cutpolyline3d(L,plane,close)} coupe la ligne polygonale 3d \emph{L} avec le plan \emph{plane}, si l'argument facultatif \emph{close} vaut true, alors la ligne est refermée (false par défaut).
+\emph{L} est une liste de points 3d ou une liste de listes de points 3d, \emph{plane} est une table de la forme \{A,n\} où $A$ est un point du plan et $n$ un vecteur normal (deux points 3d).
+
+Le fonction renvoie trois choses :
+\begin{itemize}
+    \item la partie de \emph{L} qui est dans le demi-espace contenant le vecteur $n$,
+    \item suivie de la partie de \emph{L} qui est dans l'autre demi-espace,
+    \item suivie de la liste des points d'intersection.
+\end{itemize}
+
+\subsubsection{getbounds3d()}
+La fonction \textbf{getbounds3d(L)} renvoie les limites xmin,xmax,ymin,ymax,zmin,zmax de la ligne polygonale 3d \emph{L} (liste de points 3d ou une liste de listes de points 3d).
+
+\subsubsection{interDP()}
+La fonction \textbf{interDP(d,P)} calcule et renvoie (si elle existe) l'intersection entre la droite $d$ et le plan $P$.
+
+\subsubsection{interPP()}
+La fonction \textbf{interPP(P1,P2)} calcule et renvoie (si elle existe) l'intersection entre les plans $P_1$ et $P_2$.
+
+\subsubsection{interDD()}
+La fonction \textbf{interDD(D1,D2,epsilon)} calcule et renvoie (si elle existe) l'intersection entre les droites $D_1$ et $D_2$. L'argument \emph{epsilon} vaut $10^{-10}$ par défaut (sert à tester si un certain flottant est nul).
+
+\subsubsection{merge3d()}
+La fonction \textbf{merge3d(L)} recolle si c'est possible, les composantes connexes de \emph{L} qui doit être une liste de listes de points 3d, la fonction renvoie le résultat.
+
+\section{Exemples plus poussés}
+
+\subsection{Le module \emph{luadraw\_polyhedrons}}
+
+Ce module est encore à l'état d'ébauche et est appelé à s'étoffer par la suite. Comme son nom l'indique, il contient la définition de polyèdres. Voici les solides actuellement contenus dans ce module :
+
+\begin{itemize}
+    \item Tétraèdre : la fonction \textbf{Tetraedre(C,S,all)} permet la construction d'un tétraèdre régulier de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). L'argument facultatif \emph{all} vaut false par défaut. Lorsqu'il a la valeur true la fonction renvoie quatre choses :
+    \begin{itemize}
+        \item le solide en tant que polyèdre,
+        \item suivi de la liste des sommets,
+        \item suivi de la liste des arêtes (avec points 3d),
+        \item suivi de la liste des facettes.
+    \end{itemize}
+Avec la valeur false, la fonction ne renvoie que le polyèdre.
+
+
+\item Tétraèdre tronqué : la fonction \textbf{TetraedreTrq(C,S,all)} permet la construction d'un tétraèdre tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). L'argument facultatif \emph{all} vaut false par défaut. Lorsqu'il a la valeur true la fonction renvoie cinq choses :
+    \begin{itemize}
+        \item le solide en tant que polyèdre,
+        \item suivi de la liste des sommets,
+        \item suivi de la liste des arêtes (avec points 3d),
+        \item suivi de la liste des facettes de type 1,
+        \item suivi de la liste des facettes de type 2.
+    \end{itemize}
+Avec la valeur false, la fonction ne renvoie que le polyèdre.
+
+\item Octaèdre : la fonction \textbf{Octaedre(C,S,all)} permet la construction d'un octaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). L'argument facultatif \emph{all} vaut false par défaut. Lorsqu'il a la valeur true la fonction renvoie quatre choses :
+    \begin{itemize}
+        \item le solide en tant que polyèdre,
+        \item suivi de la liste des sommets,
+        \item suivi de la liste des arêtes (avec points 3d),
+        \item suivi de la liste des facettes.
+    \end{itemize}
+Avec la valeur false, la fonction ne renvoie que le polyèdre.
+
+\item Octahémioctaèdre : la fonction \textbf{Octahemioctaedre(C,S,all)} permet la construction d'un octahémioctaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). L'argument facultatif \emph{all} vaut false par défaut. Lorsqu'il a la valeur true la fonction renvoie cinq choses :
+    \begin{itemize}
+        \item le solide en tant que polyèdre,
+        \item suivi de la liste des sommets,
+        \item suivi de la liste des arêtes (avec points 3d),
+        \item suivi de la liste des facettes de type 1,
+        \item suivi de la liste des facettes de type 2.
+    \end{itemize}
+Avec la valeur false, la fonction ne renvoie que le polyèdre.
+
+\item Petit dodécaèdre étoilé : la fonction \textbf{PtDodecaedreEt(C,S,all)} permet la construction d'un petit dodécaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). L'argument facultatif \emph{all} vaut false par défaut. Lorsqu'il a la valeur true la fonction renvoie quatre choses :
+    \begin{itemize}
+        \item le solide en tant que polyèdre,
+        \item suivi de la liste des sommets,
+        \item suivi de la liste des arêtes (avec points 3d),
+        \item suivi de la liste des facettes.
+    \end{itemize}
+Avec la valeur false, la fonction ne renvoie que le polyèdre.
+\end{itemize}
+
+\begin{demo}{Polyèdres du module \emph{luadraw\_polyhedrons}}
+\begin{luadraw}{name=polyhedrons}
+local i = cpx.I
+require 'luadraw_polyhedrons' -- chargement du module
+local g = graph3d:new{bg="gray", size={10,10}}
+g:Linejoin("round"); g:Labelsize("small")
+-- en haut à gauche 
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-5,5,-5,5,true)
+local T = Tetraedre(Origin,M(0,0,5)) -- que le polyèdre
+g:Dpoly(T,{color="Crimson", edgecolor="Pink", edgewidth=8,opacity=0.8})
+g:Dballdots3d(T.vertices)
+g:Dlabel("Tétraèdre régulier",5*i,{})
+g:Restoreattr()
+-- en haut à droite
+g:Saveattr()
+g:Viewport(0,5,0,5); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1,F2 = TetraedreTrq(Origin,M(0,0,5),true) -- sortie complète, affichage dans une scène 3d
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addFacet(F2, {color="Gold"}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Tétraèdre tronqué",5*i,{})
+g:Restoreattr()
+-- en bas à gauche
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1,F2 = Octahemioctaedre(Origin,M(0,0,5),true)
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addFacet(F2, {color="Gold"}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Octahémioctaèdre",-5*i,{})
+g:Restoreattr()
+-- en bas à droite
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1 = PtDodecaedreEt(Origin,M(0,0,5),true)
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Petit dodécaèdre étoilé",-5*i,{})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{La boîte de sucres}
+
+Le problème\footnote{Problème posé dans un forum, l'objectif étant d'en faire des exercices de comptage pour des élèves.} est de dessiner des sucres dans une boîte. Il faut pouvoir positionner le nombre que l'on veut de morceaux, et où on veut dans la boite\footnote{Un morceau doit reposer soit sur le fond de la boîte, soit sur un autre morceau} sans avoir à réécrire tout le code. Autre contrainte : pour alléger au maximum la figure, seules les facettes réellement vues doivent être affichées. Dans le code proposé ci-dessous on garde les angles de vues par défaut, et :
+\begin{itemize}
+    \item les sucres sont des cubes de côté 1 (on modifie ensuite la matrice 3d du graphe pour les "allonger"),
+    \item chaque morceau est repéré par les coordonnées $(x,y,z)$ du coin supérieur droit de la face avant, avec $x$ entier 1 et \emph{Lg}, $y$ entier entre 1 et \emph{lg} et $z$ entier entre 1 et \emph{ht}.
+    \item pour mémoriser les positions des morceaux on utilise une matrice \emph{positions} à trois dimensions, une pour $x$, une pour $y$ et une pour $z$, avec la convention que \emph{positions[x][y][z]} vaut 1 s'il y a un sucre à la position $(x,y,z)$, et 0 sinon.
+    \item pour chaque morceau il y a au plus trois faces visibles : celles du dessus, celle de droite et celle de devant\footnote{À condition de ne pas changer les angles de vue !}, mais on ne dessine la face du dessus que s'il n'y a pas un autre morceau de sucre au-dessus, on ne dessine la face du droite que s'il n'y a pas un autre morceau à droite, et on ne dessine la face de devant que s'il n'y a pas un autre morceau devant. On construit ainsi la liste des facettes réellement vues.
+    \item Dans l'affichage de la scène, il faut \textbf{mettre la boîte en premier}, sinon les facettes de celle-ci vont être découpées par les plans des facettes des morceaux de sucre. Les facettes des morceaux de sucre ne peuvent pas être découpées par la boîte car ils sont tous dedans.
+\end{itemize}
+
+\begin{demo}{Boite de morceaux de sucre}
+\begin{luadraw}{name=boite_sucres}
+local g = graph3d:new{window={-9,8,-10,4},size={10,10}}
+local Lg, lg, ht = 5, 4, 3 -- longueur, largeur, hauteur (taille de la boîte)
+local positions = {} -- matrice de dimension 3 initialisée avec des 0
+for L = 1, Lg do
+    local X = {}
+    for l = 1, lg do
+        local Y = {}
+        for h = 1, ht do table.insert(Y,0) end
+        table.insert(X,Y)
+    end
+    table.insert(positions,X)
+end
+local facetList = function() -- renvoie la liste des facettes à dessiner (attention à l'orientation)
+    local facet = {}
+    for x = 1, Lg do -- parcours de la matrice positions
+        for y = 1, lg do
+            for z = 1, ht do
+                if positions[x][y][z] == 1 then -- il y a un sucre en (x,y,z)
+                    if (z == ht) or (positions[x][y][z+1] == 0) then -- pas de sucre au-dessus donc face du dessus visible
+                        table.insert(facet, {M(x,y,z),M(x-1,y,z),M(x-1,y-1,z),M(x,y-1,z)}) -- insertion face du dessus
+                    end
+                    if (y == lg) or (positions[x][y+1][z] == 0) then -- pas de sucre à droite donc face de droite visible
+                        table.insert(facet, {M(x,y,z),M(x,y,z-1),M(x-1,y,z-1),M(x-1,y,z)}) -- insertion face de droite
+                    end
+                    if (x == Lg) or (positions[x+1][y][z] == 0) then -- pas de sucre devant donc face de devant visible
+                        table.insert(facet, {M(x,y,z),M(x,y-1,z),M(x,y-1,z-1),M(x,y,z-1)}) -- insertion face de devant
+                    end
+                end
+            end
+        end
+    end
+    return facet
+end
+-- création de la boîte (parallélépipède)
+local O = Origin -0.1*M(1,1,1) -- pour ne pas que la boîte soit collée aux sucres
+local boite = parallelep(O, (Lg+0.2)*vecI, (lg+0.2)*vecJ, (ht+0.5)*vecK)
+table.remove(boite.facets,2) -- on retire le dessus de la boîte, c'est la facette numéro 2
+-- on positionne des sucres
+for y = 1, 4 do for z = 1, 3 do  positions[1][y][z] = 1 end end
+for x = 2, 5 do for z = 1, 2 do positions[x][1][z] = 1 end end
+for z = 1, 3 do positions[5][3][z] = 1 end
+for z = 1, 2 do positions[4][4][z] = 1 end
+for z = 1, 2 do positions[3][4][z] = 1 end
+positions[5][1][3] = 1; positions[3][1][3] = 1; positions[5][4][1] = 1; positions[2][3][1] = 1
+g:Setmatrix3d({Origin,3*vecI,2*vecJ,vecK}) -- dilatation sur Ox et Oy pour "allonger" les cubes ...
+g:Dscene3d( -- dessin
+    g:addPoly(boite,{color="brown",edge=true,opacity=0.9}),
+    g:addFacet(facetList(), {backcull=true,contrast=0.25,edge=true})    )
+g:Labelsize("huge"); g:Dlabel3d( "SUGAR", M(Lg/2+0.1,lg+0.1,ht/2+0.1), {dir={-vecI,vecK}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Empilement de cubes}
+
+On peut modifier l'exemple précédent pour dessiner un empilement de cubes positionnés au hasard, avec 4 vues. On va positionner les cubes en en mettant un nombre aléatoire par colonne en commençant par le bas. On va faire 4 vues de l'empilement en ajoutant les axes pour se repérer entre ces différentes vues. Cela change un peu la recherche des facettes potentiellement visibles, il y a 5 cas par cube et non plus seulement 3 (devant, derrière, gauche, droite et dessus, on ne fait pas de vues de dessous). Pour plus de lisibilité de l'empilement, on utilise trois couleurs pour peindre les faces des cubes (deux faces opposées ont la même couleur).
+
+\begin{demo}{Empilement de cubes}
+\begin{luadraw}{name=cubes_empiles}
+local g = graph3d:new{window3d={-6,6,-6,6,-6,6},size={10,10}}
+local Lg, lg, ht, a = 5, 5, 5, 2 -- longueur, largeur, hauteur de l'espace à remplir, taille d'un cube
+local positions = {} -- matrice de dimension 3 initialisée avec des 0
+for L = 1, Lg do
+    local X = {}
+    for l = 1, lg do
+        local Y = {}
+        for h = 1, ht do table.insert(Y,0) end
+        table.insert(X,Y)
+    end
+    table.insert(positions,X)
+end
+for x = 1, Lg do  -- positionnement aléatoire de cubes
+    for y = 1, lg do
+        local nb = math.random(0,ht) -- on met nb cubes dans la colonne (x,y,*) en partant du bas
+        for z = 1, nb do positions[x][y][z] = 1 end
+    end
+end
+local dessus,gauche,devant = {},{},{} -- pour mémoriser les facettes
+for x = 1, Lg do -- parcours de la matrice positions pour déterminer les facettes à dessiner
+    for y = 1, lg do
+        for z = 1, ht do
+            if positions[x][y][z] == 1 then -- il y a un cube en (x,y,z)
+                if (z == ht) or (positions[x][y][z+1] == 0) then -- pas de cube au-dessus donc face visible
+                    table.insert(dessus,{M(x,y,z),M(x-1,y,z),M(x-1,y-1,z),M(x,y-1,z)}) -- insertion face du dessus
+                end
+                if (y == lg) or (positions[x][y+1][z] == 0) then -- pas de cube à droite donc face  visible
+                    table.insert(gauche,{M(x,y,z),M(x,y,z-1),M(x-1,y,z-1),M(x-1,y,z)}) -- insertion face droite
+                end
+                if (y == 1) or (positions[x][y-1][z] == 0) then -- pas de cube à gauche donc face visible
+                    table.insert(gauche,{M(x,y-1,z),M(x-1,y-1,z),M(x-1,y-1,z-1),M(x,y-1,z-1)}) -- insertion face gauche
+                end                    
+                if (x == Lg) or (positions[x+1][y][z] == 0) then -- pas de cube devant donc face visible
+                    table.insert(devant,{M(x,y,z),M(x,y-1,z),M(x,y-1,z-1),M(x,y,z-1)}) -- insertion face avant
+                end
+                if (x == 1) or (positions[x-1][y][z] == 0) then -- pas de cube derrière donc face de derrière visible
+                    table.insert(devant,{M(x-1,y,z),M(x-1,y,z-1),M(x-1,y-1,z-1),M(x-1,y-1,z)}) -- insertion face arrière
+                end
+            end
+        end
+    end
+end
+g:Setmatrix3d({M(-a*Lg/2,-a*lg/2,-a*ht/2),a*vecI,a*vecJ,a*vecK}) -- pour centrer la figure et avoir des cubes de côté a
+local dessin = function()
+    g:Dscene3d(
+        g:addFacet(dessus, {backcull=true,color="Crimson"}), g:addFacet(gauche, {backcull=true,color="DarkGreen"}),
+        g:addFacet(devant, {backcull=true,color="SteelBlue"}),
+        g:addPolyline(facetedges(concat(dessus,gauche,devant))), -- dessin des arêtes
+        g:addAxes(Origin,{arrows=1}))
+end
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-11,11,-11,11); g:Setviewdir(45,60) -- en haut à gauche
+ dessin(); g:Restoreattr()
+g:Saveattr(); g:Viewport(0,5,0,5);g:Coordsystem(-11,11,-11,11); g:Setviewdir(-45,60) -- en haut à droite
+dessin(); g:Restoreattr()
+g:Saveattr(); g:Viewport(-5,0,-5,0);g:Coordsystem(-11,11,-11,11); g:Setviewdir(-135,60) -- en bas à gauche
+dessin(); g:Restoreattr()
+g:Saveattr(); g:Viewport(0,5,-5,0);g:Coordsystem(-11,11,-11,11); g:Setviewdir(135,60) -- en bas à droite
+dessin(); g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Illustration du théorème de Dandelin}
+
+\begin{demo}{Illustration du théorème de Dandelin}
+\begin{luadraw}{name=Dandelin}
+local g = graph3d:new{window3d={-5,5,-5,5,-5,5}, window={-5,5,-5,6}, bg="lightgray",viewdir={-10,85}}
+g:Linejoin("round"); g:Linewidth(8)
+local sqrt = math.sqrt
+local sqr = function(x) return x*x end
+local L, a = 4.5, 2
+local R = (a+5)*L/sqrt(100+L^2) --grosse sphère centre=M(0,0,a) rayon=R
+local S2 = sphere(M(0,0,a),R,45,45)
+local k = 0.35 --rapport d'homothetie
+local b, r = (a+5)*k-5, k*R -- petite sphère centre=M(0,0,b) rayon=r
+local S1 = sphere(M(0,0,b),r,45,45)
+local c = (b+k*a)/(1+k)  --deuxieme centre d'homothetie
+local z = a+sqr(R)/(c-a) --image de c par l'inversion par rapport à la grosse sphère
+local M1 = M(0,sqrt(sqr(R)-sqr(z-a)),z)--point de la grosse sphère et du plan tangent
+local N = M1-M(0,0,a) -- vecteur normal au plan tangent
+local plan = {M(0,0,c),-N} -- plan tangent
+local z2 = a+sqr(R)/(-5-a) --image du sommet par l'inversion par rapport à la grosse sphère
+local z1 = b+sqr(r)/(-5-b) -- image du sommet par l'inversion par rapport à la petite sphère
+local P2 = M(sqrt(R^2-(z2-a)^2),0,z2)
+local P1= M(sqrt(r^2-(z1-b)^2),0,z1)
+local S = M(0,0,-5)
+local P = interDP({P1,P2-P1},plan)
+local C = cone(M(0,0,-5),10*vecK,L,45,true)
+local ellips = g:Intersection3d(C,plan)
+local plan1 = {M(0,0,z1),vecK}
+local plan2 = {M(0,0,z2),vecK}
+local L1, L2 = g:Intersection3d(S1,plan1), g:Intersection3d(S2,plan2)
+local F1, F2 = proj3d(M(0,0,b), plan), proj3d(M(0,0,a), plan)  --foyers
+local s1, s2 = g:Proj3d(M(0,0,a)), g:Proj3d(M(0,0,b))
+local V, H = g:Classifyfacet(C) -- on sépare facettes visibles et les autres
+local V1, V2 = cutfacet(V,plan)
+local H1, H2 = cutfacet(H,plan)
+-- Dessin
+g:Dpolyline3d( border(H2),"left color=white, right color=DarkSeaGreen, draw=none" ) -- faces non visibles sous le plan, remplissage seulement
+g:Dsphere( M(0,0,b), r, {mode=2,color="Orange"}) -- petite sphère
+g:Dpolyline3d( border(V2),"left color=white, right color=DarkSeaGreen, fill opacity=0.4" ) -- faces visibles sous le plan
+g:Dpolyline3d({S,P})  -- segment [S,P] qui est sous le plan en partie
+g:Dfacet( g:Plane2facet(plan,0.75), {color="Chocolate", opacity=0.8}) -- le plan
+g:Dpolyline3d( border(H1),"left color=white, right color=DarkSeaGreen,draw=none,fill opacity=0.7" ) -- contour faces non visibles au dessus du plan, remplissage seulement
+g:Dsphere( M(0,0,a),R, {mode=2,color="SteelBlue"}) -- grosse sphère
+g:Dpolyline3d( border(V1),"left color=white, right color=DarkSeaGreen, fill opacity=0.6" ) -- contour faces visibles au dessus du plan
+g:Dcircle3d(M(0,0,5),L,vecK) -- ouverture du cône
+g:Dpolyline3d({{P,F1},{F2,P,P2}})
+g:Dedges(L1,{hidden=true,color="FireBrick"})
+g:Dedges(L2,{hidden=true,color="FireBrick"})
+g:Dedges(ellips,{hidden=true, color="blue"})
+g:Dballdots3d({F1,F2,S,P1,P,P2},nil,0.75)
+g:Dlabel3d(
+  "$F_1$",F1,{pos="N"}, "$F_2$",F2,{}, "$N_2$",P2,{},"$S$",S,{pos="S"}, "$N_1$",P1,{pos="SE"}, "$P$",P,{pos="SE"} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+On veut dessiner un cône avec une section par un plan et deux sphères à l'intérieur de ce cône (et tangentes au plan), mais sans dessiner de sphères ni de cônes à facettes. Le point de départ est néanmoins la création de ces solides à facettes, les sphères \emph{S1} et \emph{S2} (lignes 11 et 8 du listing) ainsi que le cône \emph{C} en ligne 23. Le principe du dessin est le suivant :
+\begin{enumerate}
+    \item On sépare les facettes du cône en deux catégories : les facettes visibles (tournées vers l'observateur) et les autres (variables \emph{V} et \emph{H} ligne 30), ce qui correspond en fait à l'avant du cône et l'arrière du cône.
+    \item On découpe les deux listes de facettes avec le plan (lignes 31 et 32). Ainsi, \emph{V1} correspond aux facettes avant situées au-dessus du plan et \emph{V2} correspond aux facettes avant situées sous le plan (même chose avec \emph{H1} et \emph{H2} pour l'arrière).
+    \item On dessine alors le contour de \emph{H2} avec un remplissage (seulement) en gradient (ligne 34).
+    \item On dessine la petite sphère (en orange, ligne 35).
+    \item On dessine le contour de \emph{V2} avec un remplissage en gradient et transparence pour voir la petite sphère  (ligne 36).
+    \item On dessine le segment $[S,P]$ (ligne 37) puis le plan sous forme de facette transparente (ligne 38).
+    \item On dessine le contour de \emph{H1} avec un remplissage en gradient (ligne 39). C'est la partie arrière au dessus du plan.
+    \item On dessine la grande sphère (ligne 40).
+    \item On dessine enfin le contour de \emph{V1} avec un remplissage en gradient (ligne 41) et transparence pour voir la sphère (c'est la partie avant du cône au dessus du plan), puis l'ouverture du cône (ligne 42).
+    \item On dessine les intersections entre le cône et les sphères (lignes 44 et 45) ainsi qu'entre le cône et le plan (ligne 46).
+\end{enumerate}
+
+\subsection{Volume défini par une intégrale double}
+\begin{demo}{Volume correspondant à $\int_{x_1}^{x_2}\int_{y_1}^{y_2}f(x,y)dxdy$}
+\begin{luadraw}{name=volume_integrale}
+local i, pi, sin, cos = cpx.I, math.pi, math.sin, math.cos
+local g = graph3d:new{window3d={-4,4,-4,4,0,6},adjust2d=true,margin={0,0,0,0},size={10,10}}
+g:Linejoin("round")
+local x1, x2, y1, y2 = -3,3,-3,3 -- bornes
+local f = function(x,y) return cos(x)+sin(y)+5 end -- fonction à intégrer
+local p = function(u,v) return M(u,v,f(u,v)) end -- paramétrage surface z=f(x,y)
+local Fx1 = concat({pxy(p(x1,y2)), pxy(p(x1,y1))}, parametric3d(function(t) return p(x1,t) end,y1,y2,25,false,0)[1])
+local Fx2 = concat({pxy(p(x2,y1)), pxy(p(x2,y2))}, parametric3d(function(t) return p(x2,t) end,y2,y1,25,false,0)[1])
+local Fy1 = concat({pxy(p(x1,y1)), pxy(p(x2,y1))}, parametric3d(function(t) return p(t,y1) end,x2,x1,25,false,0)[1])
+local Fy2 = concat({pxy(p(x2,y2)), pxy(p(x1,y2))}, parametric3d(function(t) return p(t,y2) end,x1,x2,25,false,0)[1])
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="LightGray",labels=false})
+g:Filloptions("fdiag","black"); g:Dpolyline3d( {M(x1,y1,0),M(x1,y2,0),M(x2,y2,0),M(x2,y1,0)}) -- dessous
+g:Dfacet( {Fx1,Fx2,Fy1,Fy2},{mode=4,opacity=0.7,color="Crimson"} )
+g:Dfacet(surface(p,x1,x2,y1,y2), {mode=5,color="cyan"})
+g:Dlabel3d("$x_1$", M(x1,4.75,0),{}, "$x_2$", M(x2,4.75,0),{}, "$y_1$", M(4.75,y1,0),{}, "$y_2$", M(4.75,y2,0),{}, "$0$",M(4,-4.75,0),{})  
+g:Show()  
+\end{luadraw}
+\end{demo}
+
+Ici le solide représenté a des faces latérales (\emph{Fx1}, \emph{Fx2}, \emph{Fy1} et \emph{Fy2}) présentant un côté qui est une courbe paramétrée. On prend donc les points de cette courbe paramétrée (sa première composante connexe) et on lui ajoute les projetés des deux extrémités sur le plan $xOy$. Il faut faire attention au sens de parcours pour que les faces soient bien orientées (normale vers l'extérieur), cette normale étant calculée à partir des trois premiers points de la face, il vaut mieux commencer la face par les deux projetés sur le plan pour être sur de l'orientation.
+On dessine en premier le dessous, puis les faces latérales, et on termine par la surface.
+
+\subsection{Volume défini sur autre chose qu'un pavé}
+\begin{demo}{Volume : $0\leqslant x\leqslant1;\ 0\leqslant y \leqslant x^2;\ 0\leqslant z\leqslant y^2$}
+\begin{luadraw}{name=volume2}
+local i = cpx.I
+local g = graph3d:new{window3d={0,1,0,1,0,1}, margin={0,0,0,0},adjust2d=true,viewdir={170,40}, size={10,10}}
+g:Linejoin("round"); g:Labelsize("scriptsize")
+local f = function(t) return M(t,t^2,0) end
+local h = function(t) return M(1,t,t^2) end
+local C = parametric3d(f,0,1,8)[1] -- courbe y=x^2 dans le plan z=0 (première composante connexe)
+local D = parametric3d(h,1,0,8)[1] -- courbe z=y^2 dans le plan x=1, en sens inverse
+local dessous = concat({M(1,0,0)},C) -- forme la face du dessous
+local arriere = concat({M(1,1,0)},D) -- forme la face arrière
+local  avant, dessus, A, B = {}, {}, nil, C[1]
+for k = 2, #C do --on construit les faces avant et de dessus facette par facette, en partant des points de C
+    A = B; B = C[k]
+    table.insert(avant, {B,A,M(A.x,A.y,A.y^2),M(B.x,B.y,B.y^2)})
+    table.insert(dessus, {M(B.x,B.y,B.y^2),M(A.x,A.y,A.y^2),M(1,A.y,A.y^2),M(1,B.y,B.y^2)})
+end
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="LightGray", drawbox=false, 
+    xstep=0.25,ystep=0.25,zstep=0.25, zlabelstyle="W",zlabelsep=0})
+g:Lineoptions(nil,"Navy",8)  
+g:Dpolyline3d(arriere,close,"fill=Crimson, fill opacity=0.6") -- face arrière (plane)
+g:Filloptions("fdiag","black"); g:Dpolyline3d(dessous,close) -- dessous
+g:Dmixfacet(avant,{color="Crimson",opacity=0.7,mode=5}, dessus,{color="cyan",opacity=1})
+g:Filloptions("none"); g:Dpolyline3d(concat(border(avant),border(dessus)))
+g:Show() 
+\end{luadraw}
+\end{demo}
+
+Dans cet exemple, la surface a pour équation $z=y^2$ (cylindre parabolique), mais nous ne sommes plus sur un pavé. La face avant n'est pas plane, on construit celle-ci à la manière d'un cylindre (ligne 14) avec des facettes verticales qui s'appuient sur la courbe $C$ en bas, et sur la courbe $t\mapsto M(t,t^2,t^4)$ en haut.
+
+De même, la face du dessus (la surface) est construite à la manière d'un cylindre horizontal qui s'appuie sur les courbes $D$ et $t\mapsto M(t,t^2,t^4)$.
+
+On pourrait ne pas construire à la main la surface (appelée \emph{dessus} dans le code), et dessiner à la place la surface suivante (après la face avant) :
+\begin{Luacode}
+g:Dfacet( surface(function(u,v) return M(u,v*u^2,v^2*u^4) end, 0,1,0,1), {mode=5, color="cyan"})
+\end{Luacode}
+mais elle comporte bien plus de facettes (25*25) que la construction sous forme de cylindre (21 facettes), ce qui est moins intéressant.
+\end{document}

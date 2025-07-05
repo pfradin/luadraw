@@ -1,0 +1,1195 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (7.5,8.5);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (7.5,8.5);%
+\pgfsetroundjoin%
+\pgfsetfillcolor{LightGray}%
+\fill[] (0.7679,0.9359) -- (2.7679,2.3215) -- (6.2321,1.5215) -- (4.2321,0.1359)--cycle;%
+\fill[] (0.7679,6.4785) -- (2.7679,7.8641) -- (2.7679,2.3215) -- (0.7679,0.9359)--cycle;%
+\fill[] (2.7679,7.8641) -- (2.7679,2.3215) -- (6.2321,1.5215) -- (6.2321,7.0641)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{gray}%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.1pt}%
+\draw[] (2.7679,2.3215) -- (2.7679,7.8641);%
+\draw[] (2.2679,1.9751) -- (2.2679,7.5177);%
+\draw[] (1.7679,1.6287) -- (1.7679,7.1713);%
+\draw[] (1.2679,1.2823) -- (1.2679,6.8249);%
+\draw[] (0.7679,0.9359) -- (0.7679,6.4785);%
+\draw[] (2.7679,2.3215) -- (0.7679,0.9359);%
+\draw[] (2.7679,3.0144) -- (0.7679,1.6287);%
+\draw[] (2.7679,3.7072) -- (0.7679,2.3215);%
+\draw[] (2.7679,4.4) -- (0.7679,3.0144);%
+\draw[] (2.7679,5.0928) -- (0.7679,3.7072);%
+\draw[] (2.7679,5.7856) -- (0.7679,4.4);%
+\draw[] (2.7679,6.4785) -- (0.7679,5.0928);%
+\draw[] (2.7679,7.1713) -- (0.7679,5.7856);%
+\draw[] (2.7679,7.8641) -- (0.7679,6.4785);%
+\draw[] (6.2321,1.5215) -- (6.2321,7.0641);%
+\draw[] (5.366,1.7215) -- (5.366,7.2641);%
+\draw[] (4.5,1.9215) -- (4.5,7.4641);%
+\draw[] (3.634,2.1215) -- (3.634,7.6641);%
+\draw[] (2.7679,2.3215) -- (2.7679,7.8641);%
+\draw[] (6.2321,1.5215) -- (2.7679,2.3215);%
+\draw[] (6.2321,2.2144) -- (2.7679,3.0144);%
+\draw[] (6.2321,2.9072) -- (2.7679,3.7072);%
+\draw[] (6.2321,3.6) -- (2.7679,4.4);%
+\draw[] (6.2321,4.2928) -- (2.7679,5.0928);%
+\draw[] (6.2321,4.9856) -- (2.7679,5.7856);%
+\draw[] (6.2321,5.6785) -- (2.7679,6.4785);%
+\draw[] (6.2321,6.3713) -- (2.7679,7.1713);%
+\draw[] (6.2321,7.0641) -- (2.7679,7.8641);%
+\draw[] (6.2321,1.5215) -- (4.2321,0.1359);%
+\draw[] (5.366,1.7215) -- (3.366,0.3359);%
+\draw[] (4.5,1.9215) -- (2.5,0.5359);%
+\draw[] (3.634,2.1215) -- (1.634,0.7359);%
+\draw[] (2.7679,2.3215) -- (0.7679,0.9359);%
+\draw[] (6.2321,1.5215) -- (2.7679,2.3215);%
+\draw[] (5.7321,1.1751) -- (2.2679,1.9751);%
+\draw[] (5.2321,0.8287) -- (1.7679,1.6287);%
+\draw[] (4.7321,0.4823) -- (1.2679,1.2823);%
+\draw[] (4.2321,0.1359) -- (0.7679,0.9359);%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\draw[] (4.2321,0.1359) -- (0.7679,0.9359);%
+\draw[] (4.2321,0.1359) -- (4.1499,0.0789);%
+\draw[] (3.366,0.3359) -- (3.2838,0.2789);%
+\draw[] (2.5,0.5359) -- (2.4178,0.4789);%
+\draw[] (1.634,0.7359) -- (1.5518,0.6789);%
+\draw[] (0.7679,0.9359) -- (0.6857,0.8789);%
+\draw[-] (1.8013,0.0518) node[] {$x$} (3.0783,0.1366) node[] {-1} (2.2123,0.3366) node[] {0} (1.3463,0.5366) node[] {1} (0.4803,0.7366) node[] {2};%
+\draw[] (6.2321,1.5215) -- (4.2321,0.1359);%
+\draw[] (6.2321,1.5215) -- (6.3295,1.499);%
+\draw[] (5.7321,1.1751) -- (5.8295,1.1526);%
+\draw[] (5.2321,0.8287) -- (5.3295,0.8062);%
+\draw[] (4.7321,0.4823) -- (4.8295,0.4598);%
+\draw[] (4.2321,0.1359) -- (4.3295,0.1134);%
+\draw[-] (6.0603,0.6375) node[] {$y$} (6.5731,1.4428) node[] {-2} (6.0731,1.0964) node[] {-1} (5.5731,0.75) node[] {0} (5.0731,0.4036) node[] {1} (4.5731,0.0571) node[] {2};%
+\draw[] (0.7679,0.9359) -- (0.7679,6.4785);%
+\draw[] (0.7679,0.9359) -- (0.6705,0.9584);%
+\draw[] (0.7679,1.6287) -- (0.6705,1.6512);%
+\draw[] (0.7679,2.3215) -- (0.6705,2.344);%
+\draw[] (0.7679,3.0144) -- (0.6705,3.0369);%
+\draw[] (0.7679,3.7072) -- (0.6705,3.7297);%
+\draw[] (0.7679,4.4) -- (0.6705,4.4225);%
+\draw[] (0.7679,5.0928) -- (0.6705,5.1153);%
+\draw[] (0.7679,5.7856) -- (0.6705,5.8081);%
+\draw[] (0.7679,6.4785) -- (0.6705,6.501);%
+\draw[-] (0.4269,1.0147) node[] {-4} (0.4269,1.7075) node[] {-3} (0.4269,2.4003) node[] {-2} (0.4269,3.0931) node[] {-1} (0.4269,3.7859) node[] {0} (0.4269,4.4788) node[] {1} (0.4269,5.1716) node[] {2} (0.4269,5.8644) node[] {3} (0.4269,6.5572) node[] {4};%
+\pgfsetfillcolor{ForestGreen!50!white!75.38!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!75.38!black}%
+\pgfsetlinewidth{0.1pt}%
+\draw[fill] (4.2265,2.0538) -- (4.0442,2.2187) -- (3.9389,2.6985) -- (4.1213,2.5336)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!71.74!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!71.74!black}%
+\draw[fill] (4.0442,2.2187) -- (3.8619,2.4451) -- (3.7566,2.9249) -- (3.9389,2.6985)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!78.61!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!78.61!black}%
+\draw[fill] (4.4088,1.9503) -- (4.2265,2.0538) -- (4.1213,2.5336) -- (4.3036,2.4301)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!67.77!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!67.77!black}%
+\draw[fill] (3.8619,2.4451) -- (3.6796,2.7328) -- (3.5743,3.2126) -- (3.7566,2.9249)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!81.39!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!81.39!black}%
+\draw[fill] (4.5912,1.9082) -- (4.4088,1.9503) -- (4.3036,2.4301) -- (4.4859,2.388)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!63.52!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!63.52!black}%
+\draw[fill] (3.6796,2.7328) -- (3.4972,3.082) -- (3.392,3.5618) -- (3.5743,3.2126)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!83.67!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!83.67!black}%
+\draw[fill] (4.7735,1.9275) -- (4.5912,1.9082) -- (4.4859,2.388) -- (4.6682,2.4073)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!59.03!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!59.03!black}%
+\draw[fill] (3.4972,3.082) -- (3.3149,3.4926) -- (3.2096,3.9724) -- (3.392,3.5618)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!85.46!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!85.46!black}%
+\draw[fill] (4.9558,2.0082) -- (4.7735,1.9275) -- (4.6682,2.4073) -- (4.8505,2.488)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!73.29!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!73.29!black}%
+\draw[fill] (4.1213,2.5336) -- (3.9389,2.6985) -- (3.8337,3.1169) -- (4.016,2.952)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!54.31!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!54.31!black}%
+\draw[fill] (3.3149,3.4926) -- (3.1326,3.9646) -- (3.0273,4.4444) -- (3.2096,3.9724)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!69.05!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!69.05!black}%
+\draw[fill] (3.9389,2.6985) -- (3.7566,2.9249) -- (3.6513,3.3432) -- (3.8337,3.1169)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!77.05!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!77.05!black}%
+\draw[fill] (4.3036,2.4301) -- (4.1213,2.5336) -- (4.016,2.952) -- (4.1983,2.8484)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!86.78!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!86.78!black}%
+\draw[fill] (5.1381,2.1503) -- (4.9558,2.0082) -- (4.8505,2.488) -- (5.0329,2.6301)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!64.4!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!64.4!black}%
+\draw[fill] (3.7566,2.9249) -- (3.5743,3.2126) -- (3.469,3.631) -- (3.6513,3.3432)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!80.24!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!80.24!black}%
+\draw[fill] (4.4859,2.388) -- (4.3036,2.4301) -- (4.1983,2.8484) -- (4.3806,2.8063)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!59.42!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!59.42!black}%
+\draw[fill] (3.5743,3.2126) -- (3.392,3.5618) -- (3.2867,3.9802) -- (3.469,3.631)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!82.81!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!82.81!black}%
+\draw[fill] (4.6682,2.4073) -- (4.4859,2.388) -- (4.3806,2.8063) -- (4.563,2.8256)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!49.34!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!49.34!black}%
+\draw[fill] (3.1326,3.9646) -- (2.9503,4.498) -- (2.845,4.9778) -- (3.0273,4.4444)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!87.69!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!87.69!black}%
+\draw[fill] (5.3204,2.3539) -- (5.1381,2.1503) -- (5.0329,2.6301) -- (5.2152,2.8337)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!54.12!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!54.12!black}%
+\draw[fill] (3.392,3.5618) -- (3.2096,3.9724) -- (3.1044,4.3908) -- (3.2867,3.9802)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!84.78!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!84.78!black}%
+\draw[fill] (4.8505,2.488) -- (4.6682,2.4073) -- (4.563,2.8256) -- (4.7453,2.9064)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!70.51!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!70.51!black}%
+\draw[fill] (4.016,2.952) -- (3.8337,3.1169) -- (3.7284,3.4739) -- (3.9107,3.3089)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!65.44!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!65.44!black}%
+\draw[fill] (3.8337,3.1169) -- (3.6513,3.3432) -- (3.5461,3.7002) -- (3.7284,3.4739)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!74.97!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!74.97!black}%
+\draw[fill] (4.1983,2.8484) -- (4.016,2.952) -- (3.9107,3.3089) -- (4.093,3.2054)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!44.03!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!44.03!black}%
+\draw[fill] (2.9503,4.498) -- (2.7679,5.0928) -- (2.6627,5.5726) -- (2.845,4.9778)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!48.47!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!48.47!black}%
+\draw[fill] (3.2096,3.9724) -- (3.0273,4.4444) -- (2.9221,4.8628) -- (3.1044,4.3908)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!86.16!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!86.16!black}%
+\draw[fill] (5.0329,2.6301) -- (4.8505,2.488) -- (4.7453,2.9064) -- (4.9276,3.0485)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!88.24!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!88.24!black}%
+\draw[fill] (5.5028,2.6188) -- (5.3204,2.3539) -- (5.2152,2.8337) -- (5.3975,3.0986)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!59.86!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!59.86!black}%
+\draw[fill] (3.6513,3.3432) -- (3.469,3.631) -- (3.3638,3.988) -- (3.5461,3.7002)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!78.71!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!78.71!black}%
+\draw[fill] (4.3806,2.8063) -- (4.1983,2.8484) -- (4.093,3.2054) -- (4.2754,3.1633)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!53.83!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!53.83!black}%
+\draw[fill] (3.469,3.631) -- (3.2867,3.9802) -- (3.1814,4.3371) -- (3.3638,3.988)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!81.66!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!81.66!black}%
+\draw[fill] (4.563,2.8256) -- (4.3806,2.8063) -- (4.2754,3.1633) -- (4.4577,3.1826)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!42.34!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!42.34!black}%
+\draw[fill] (3.0273,4.4444) -- (2.845,4.9778) -- (2.7397,5.3962) -- (2.9221,4.8628)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!87.06!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!87.06!black}%
+\draw[fill] (5.2152,2.8337) -- (5.0329,2.6301) -- (4.9276,3.0485) -- (5.1099,3.252)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!47.29!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!47.29!black}%
+\draw[fill] (3.2867,3.9802) -- (3.1044,4.3908) -- (2.9991,4.7477) -- (3.1814,4.3371)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!83.84!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!83.84!black}%
+\draw[fill] (4.7453,2.9064) -- (4.563,2.8256) -- (4.4577,3.1826) -- (4.64,3.2633)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!88.5!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!88.5!black}%
+\draw[fill] (5.6851,2.9452) -- (5.5028,2.6188) -- (5.3975,3.0986) -- (5.5798,3.425)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!66.61!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!66.61!black}%
+\draw[fill] (3.9107,3.3089) -- (3.7284,3.4739) -- (3.6231,3.7694) -- (3.8055,3.6045)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!60.35!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!60.35!black}%
+\draw[fill] (3.7284,3.4739) -- (3.5461,3.7002) -- (3.4408,3.9958) -- (3.6231,3.7694)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!72.07!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!72.07!black}%
+\draw[fill] (4.093,3.2054) -- (3.9107,3.3089) -- (3.8055,3.6045) -- (3.9878,3.501)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!53.38!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!53.38!black}%
+\draw[fill] (3.5461,3.7002) -- (3.3638,3.988) -- (3.2585,4.2835) -- (3.4408,3.9958)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!76.59!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!76.59!black}%
+\draw[fill] (4.2754,3.1633) -- (4.093,3.2054) -- (3.9878,3.501) -- (4.1701,3.4589)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!40.02!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!40.02!black}%
+\draw[fill] (3.1044,4.3908) -- (2.9221,4.8628) -- (2.8168,5.2197) -- (2.9991,4.7477)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!85.3!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!85.3!black}%
+\draw[fill] (4.9276,3.0485) -- (4.7453,2.9064) -- (4.64,3.2633) -- (4.8223,3.4055)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!35.4!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!35.4!black}%
+\draw[fill] (2.845,4.9778) -- (2.6627,5.5726) -- (2.5574,5.991) -- (2.7397,5.3962)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!87.55!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!87.55!black}%
+\draw[fill] (5.3975,3.0986) -- (5.2152,2.8337) -- (5.1099,3.252) -- (5.2922,3.517)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!45.62!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!45.62!black}%
+\draw[fill] (3.3638,3.988) -- (3.1814,4.3371) -- (3.0762,4.6327) -- (3.2585,4.2835)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!80.06!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!80.06!black}%
+\draw[fill] (4.4577,3.1826) -- (4.2754,3.1633) -- (4.1701,3.4589) -- (4.3524,3.4782)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!31.33!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!31.33!black}%
+\draw[fill] (2.9221,4.8628) -- (2.7397,5.3962) -- (2.6345,5.7531) -- (2.8168,5.2197)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!36.61!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!36.61!black}%
+\draw[fill] (3.1814,4.3371) -- (2.9991,4.7477) -- (2.8939,5.0433) -- (3.0762,4.6327)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!88.55!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!88.55!black}%
+\draw[fill] (5.8674,3.333) -- (5.6851,2.9452) -- (5.5798,3.425) -- (5.7621,3.8128)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!82.52!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!82.52!black}%
+\draw[fill] (4.64,3.2633) -- (4.4577,3.1826) -- (4.3524,3.4782) -- (4.5348,3.5589)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!86.18!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!86.18!black}%
+\draw[fill] (5.1099,3.252) -- (4.9276,3.0485) -- (4.8223,3.4055) -- (5.0047,3.609)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!60.8!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!60.8!black}%
+\draw[fill] (3.8055,3.6045) -- (3.6231,3.7694) -- (3.5179,4.0035) -- (3.7002,3.8386)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!52.6!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!52.6!black}%
+\draw[fill] (3.6231,3.7694) -- (3.4408,3.9958) -- (3.3356,4.2299) -- (3.5179,4.0035)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!67.8!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!67.8!black}%
+\draw[fill] (3.9878,3.501) -- (3.8055,3.6045) -- (3.7002,3.8386) -- (3.8825,3.7351)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!43.05!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!43.05!black}%
+\draw[fill] (3.4408,3.9958) -- (3.2585,4.2835) -- (3.1532,4.5177) -- (3.3356,4.2299)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!73.49!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!73.49!black}%
+\draw[fill] (4.1701,3.4589) -- (3.9878,3.501) -- (3.8825,3.7351) -- (4.0648,3.693)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!87.74!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!87.74!black}%
+\draw[fill] (5.5798,3.425) -- (5.3975,3.0986) -- (5.2922,3.517) -- (5.4746,3.8434)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!24.45!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!24.45!black}%
+\draw[fill] (2.9991,4.7477) -- (2.8168,5.2197) -- (2.7115,5.5153) -- (2.8939,5.0433)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!84.07!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!84.07!black}%
+\draw[fill] (4.8223,3.4055) -- (4.64,3.2633) -- (4.5348,3.5589) -- (4.7171,3.701)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!30.95!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!30.95!black}%
+\draw[fill] (3.2585,4.2835) -- (3.0762,4.6327) -- (2.9709,4.8668) -- (3.1532,4.5177)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!77.72!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!77.72!black}%
+\draw[fill] (4.3524,3.4782) -- (4.1701,3.4589) -- (4.0648,3.693) -- (4.2472,3.7123)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!18.24!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!18.24!black}%
+\draw[fill] (2.7397,5.3962) -- (2.5574,5.991) -- (2.4522,6.348) -- (2.6345,5.7531)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!86.6!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!86.6!black}%
+\draw[fill] (5.2922,3.517) -- (5.1099,3.252) -- (5.0047,3.609) -- (5.187,3.874)--cycle;%
+\pgfsetfillcolor{ForestGreen!11.37!black}%
+\pgfsetstrokecolor{ForestGreen!11.37!black}%
+\draw[fill] (3.0762,4.6327) -- (2.8939,5.0433) -- (2.7886,5.2774) -- (2.9709,4.8668)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!51.13!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!51.13!black}%
+\draw[fill] (3.7002,3.8386) -- (3.5179,4.0035) -- (3.4126,4.1763) -- (3.5949,4.0113)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!80.56!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!80.56!black}%
+\draw[fill] (4.5348,3.5589) -- (4.3524,3.4782) -- (4.2472,3.7123) -- (4.4295,3.793)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!88.43!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!88.43!black}%
+\draw[fill] (6.0497,3.7822) -- (5.8674,3.333) -- (5.7621,3.8128) -- (5.9445,4.262)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!38.63!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!38.63!black}%
+\draw[fill] (3.5179,4.0035) -- (3.3356,4.2299) -- (3.2303,4.4026) -- (3.4126,4.1763)--cycle;%
+\pgfsetfillcolor{ForestGreen!18.51!black}%
+\pgfsetstrokecolor{ForestGreen!18.51!black}%
+\draw[fill] (2.8168,5.2197) -- (2.6345,5.7531) -- (2.5292,6.0487) -- (2.7115,5.5153)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!60.94!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!60.94!black}%
+\draw[fill] (3.8825,3.7351) -- (3.7002,3.8386) -- (3.5949,4.0113) -- (3.7773,3.9078)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!84.91!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!84.91!black}%
+\draw[fill] (5.0047,3.609) -- (4.8223,3.4055) -- (4.7171,3.701) -- (4.8994,3.9046)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!17.66!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!17.66!black}%
+\draw[fill] (3.3356,4.2299) -- (3.1532,4.5177) -- (3.048,4.6904) -- (3.2303,4.4026)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!68.59!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!68.59!black}%
+\draw[fill] (4.0648,3.693) -- (3.8825,3.7351) -- (3.7773,3.9078) -- (3.9596,3.8657)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!87.69!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!87.69!black}%
+\draw[fill] (5.7621,3.8128) -- (5.5798,3.425) -- (5.4746,3.8434) -- (5.6569,4.2312)--cycle;%
+\pgfsetfillcolor{ForestGreen!30.77!black}%
+\pgfsetstrokecolor{ForestGreen!30.77!black}%
+\draw[fill] (2.8939,5.0433) -- (2.7115,5.5153) -- (2.6063,5.7494) -- (2.7886,5.2774)--cycle;%
+\pgfsetfillcolor{ForestGreen!30.56!black}%
+\pgfsetstrokecolor{ForestGreen!30.56!black}%
+\draw[fill] (3.1532,4.5177) -- (2.9709,4.8668) -- (2.8657,5.0395) -- (3.048,4.6904)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!74.05!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!74.05!black}%
+\draw[fill] (4.2472,3.7123) -- (4.0648,3.693) -- (3.9596,3.8657) -- (4.1419,3.885)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!82.24!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!82.24!black}%
+\draw[fill] (4.7171,3.701) -- (4.5348,3.5589) -- (4.4295,3.793) -- (4.6118,3.9352)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!86.68!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!86.68!black}%
+\draw[fill] (5.4746,3.8434) -- (5.2922,3.517) -- (5.187,3.874) -- (5.3693,4.2004)--cycle;%
+\pgfsetfillcolor{ForestGreen!30.83!black}%
+\pgfsetstrokecolor{ForestGreen!30.83!black}%
+\draw[fill] (2.6345,5.7531) -- (2.4522,6.348) -- (2.3469,6.6435) -- (2.5292,6.0487)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!29.06!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!29.06!black}%
+\draw[fill] (3.5949,4.0113) -- (3.4126,4.1763) -- (3.3074,4.2876) -- (3.4897,4.1227)--cycle;%
+\pgfsetfillcolor{ForestGreen!29.84!black}%
+\pgfsetstrokecolor{ForestGreen!29.84!black}%
+\draw[fill] (3.4126,4.1763) -- (3.2303,4.4026) -- (3.125,4.5139) -- (3.3074,4.2876)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!47.95!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!47.95!black}%
+\draw[fill] (3.7773,3.9078) -- (3.5949,4.0113) -- (3.4897,4.1227) -- (3.672,4.0191)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!85.25!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!85.25!black}%
+\draw[fill] (5.187,3.874) -- (5.0047,3.609) -- (4.8994,3.9046) -- (5.0817,4.1695)--cycle;%
+\pgfsetfillcolor{ForestGreen!40.36!black}%
+\pgfsetstrokecolor{ForestGreen!40.36!black}%
+\draw[fill] (2.9709,4.8668) -- (2.7886,5.2774) -- (2.6833,5.4501) -- (2.8657,5.0395)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!77.51!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!77.51!black}%
+\draw[fill] (4.4295,3.793) -- (4.2472,3.7123) -- (4.1419,3.885) -- (4.3242,3.9657)--cycle;%
+\pgfsetfillcolor{ForestGreen!42.96!black}%
+\pgfsetstrokecolor{ForestGreen!42.96!black}%
+\draw[fill] (3.2303,4.4026) -- (3.048,4.6904) -- (2.9427,4.8017) -- (3.125,4.5139)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!59.9!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!59.9!black}%
+\draw[fill] (3.9596,3.8657) -- (3.7773,3.9078) -- (3.672,4.0191) -- (3.8543,3.977)--cycle;%
+\pgfsetfillcolor{ForestGreen!38.62!black}%
+\pgfsetstrokecolor{ForestGreen!38.62!black}%
+\draw[fill] (2.7115,5.5153) -- (2.5292,6.0487) -- (2.424,6.2828) -- (2.6063,5.7494)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!83.06!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!83.06!black}%
+\draw[fill] (4.8994,3.9046) -- (4.7171,3.701) -- (4.6118,3.9352) -- (4.7941,4.1387)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!88.2!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!88.2!black}%
+\draw[fill] (6.2321,4.2928) -- (6.0497,3.7822) -- (5.9445,4.262) -- (6.1268,4.7726)--cycle;%
+\pgfsetfillcolor{ForestGreen!49.81!black}%
+\pgfsetstrokecolor{ForestGreen!49.81!black}%
+\draw[fill] (3.048,4.6904) -- (2.8657,5.0395) -- (2.7604,5.1509) -- (2.9427,4.8017)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!67.77!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!67.77!black}%
+\draw[fill] (4.1419,3.885) -- (3.9596,3.8657) -- (3.8543,3.977) -- (4.0366,3.9963)--cycle;%
+\pgfsetfillcolor{ForestGreen!46.19!black}%
+\pgfsetstrokecolor{ForestGreen!46.19!black}%
+\draw[fill] (2.7886,5.2774) -- (2.6063,5.7494) -- (2.501,5.9221) -- (2.6833,5.4501)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!87.49!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!87.49!black}%
+\draw[fill] (5.9445,4.262) -- (5.7621,3.8128) -- (5.6569,4.2312) -- (5.8392,4.6804)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!79.42!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!79.42!black}%
+\draw[fill] (4.6118,3.9352) -- (4.4295,3.793) -- (4.3242,3.9657) -- (4.5065,4.1079)--cycle;%
+\pgfsetfillcolor{ForestGreen!46.8!black}%
+\pgfsetstrokecolor{ForestGreen!46.8!black}%
+\draw[fill] (3.4897,4.1227) -- (3.3074,4.2876) -- (3.2021,4.3375) -- (3.3844,4.1726)--cycle;%
+\pgfsetfillcolor{ForestGreen!55.41!black}%
+\pgfsetstrokecolor{ForestGreen!55.41!black}%
+\draw[fill] (3.3074,4.2876) -- (3.125,4.5139) -- (3.0198,4.5638) -- (3.2021,4.3375)--cycle;%
+\pgfsetfillcolor{ForestGreen!26.73!black}%
+\pgfsetstrokecolor{ForestGreen!26.73!black}%
+\draw[fill] (3.672,4.0191) -- (3.4897,4.1227) -- (3.3844,4.1726) -- (3.5667,4.069)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.92!black}%
+\pgfsetstrokecolor{ForestGreen!96.92!black}%
+\draw[fill] (2.3318,1.2938) -- (2.1495,1.4587) -- (2.0442,0.8331) -- (2.2265,0.6681)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!86.54!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!86.54!black}%
+\draw[fill] (5.6569,4.2312) -- (5.4746,3.8434) -- (5.3693,4.2004) -- (5.5516,4.5881)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.74!black}%
+\pgfsetstrokecolor{ForestGreen!97.74!black}%
+\draw[fill] (2.1495,1.4587) -- (1.9671,1.6851) -- (1.8619,1.0594) -- (2.0442,0.8331)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.62!black}%
+\pgfsetstrokecolor{ForestGreen!95.62!black}%
+\draw[fill] (2.5141,1.1903) -- (2.3318,1.2938) -- (2.2265,0.6681) -- (2.4088,0.5646)--cycle;%
+\pgfsetfillcolor{ForestGreen!54.15!black}%
+\pgfsetstrokecolor{ForestGreen!54.15!black}%
+\draw[fill] (2.8657,5.0395) -- (2.6833,5.4501) -- (2.5781,5.5614) -- (2.7604,5.1509)--cycle;%
+\pgfsetfillcolor{ForestGreen!60.13!black}%
+\pgfsetstrokecolor{ForestGreen!60.13!black}%
+\draw[fill] (3.125,4.5139) -- (2.9427,4.8017) -- (2.8374,4.8516) -- (3.0198,4.5638)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!39.91!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!39.91!black}%
+\draw[fill] (3.8543,3.977) -- (3.672,4.0191) -- (3.5667,4.069) -- (3.7491,4.0269)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!72.44!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!72.44!black}%
+\draw[fill] (4.3242,3.9657) -- (4.1419,3.885) -- (4.0366,3.9963) -- (4.219,4.0771)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!85.24!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!85.24!black}%
+\draw[fill] (5.3693,4.2004) -- (5.187,3.874) -- (5.0817,4.1695) -- (5.264,4.4959)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.15!black}%
+\pgfsetstrokecolor{ForestGreen!98.15!black}%
+\draw[fill] (1.9671,1.6851) -- (1.7848,1.9728) -- (1.6796,1.3472) -- (1.8619,1.0594)--cycle;%
+\pgfsetfillcolor{ForestGreen!93.83!black}%
+\pgfsetstrokecolor{ForestGreen!93.83!black}%
+\draw[fill] (2.6964,1.1482) -- (2.5141,1.1903) -- (2.4088,0.5646) -- (2.5912,0.5225)--cycle;%
+\pgfsetfillcolor{ForestGreen!43.71!black}%
+\pgfsetstrokecolor{ForestGreen!43.71!black}%
+\draw[fill] (2.5292,6.0487) -- (2.3469,6.6435) -- (2.2416,6.8776) -- (2.424,6.2828)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!83.33!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!83.33!black}%
+\draw[fill] (5.0817,4.1695) -- (4.8994,3.9046) -- (4.7941,4.1387) -- (4.9765,4.4037)--cycle;%
+\pgfsetfillcolor{ForestGreen!62.98!black}%
+\pgfsetstrokecolor{ForestGreen!62.98!black}%
+\draw[fill] (2.9427,4.8017) -- (2.7604,5.1509) -- (2.6551,5.2008) -- (2.8374,4.8516)--cycle;%
+\pgfsetfillcolor{ForestGreen!50.19!black}%
+\pgfsetstrokecolor{ForestGreen!50.19!black}%
+\draw[fill] (2.6063,5.7494) -- (2.424,6.2828) -- (2.3187,6.4555) -- (2.501,5.9221)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!55.41!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!55.41!black}%
+\draw[fill] (4.0366,3.9963) -- (3.8543,3.977) -- (3.7491,4.0269) -- (3.9314,4.0462)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.22!black}%
+\pgfsetstrokecolor{ForestGreen!98.22!black}%
+\draw[fill] (1.7848,1.9728) -- (1.6025,2.322) -- (1.4972,1.6964) -- (1.6796,1.3472)--cycle;%
+\pgfsetfillcolor{ForestGreen!69.29!black}%
+\pgfsetstrokecolor{ForestGreen!69.29!black}%
+\draw[fill] (3.3844,4.1726) -- (3.2021,4.3375) -- (3.0968,4.326) -- (3.2791,4.161)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!80.3!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!80.3!black}%
+\draw[fill] (4.7941,4.1387) -- (4.6118,3.9352) -- (4.5065,4.1079) -- (4.6889,4.3114)--cycle;%
+\pgfsetfillcolor{ForestGreen!91.54!black}%
+\pgfsetstrokecolor{ForestGreen!91.54!black}%
+\draw[fill] (2.8787,1.1675) -- (2.6964,1.1482) -- (2.5912,0.5225) -- (2.7735,0.5418)--cycle;%
+\pgfsetfillcolor{ForestGreen!71.95!black}%
+\pgfsetstrokecolor{ForestGreen!71.95!black}%
+\draw[fill] (3.2021,4.3375) -- (3.0198,4.5638) -- (2.9145,4.5523) -- (3.0968,4.326)--cycle;%
+\pgfsetfillcolor{ForestGreen!62.99!black}%
+\pgfsetstrokecolor{ForestGreen!62.99!black}%
+\draw[fill] (3.5667,4.069) -- (3.3844,4.1726) -- (3.2791,4.161) -- (3.4615,4.0575)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.49!black}%
+\pgfsetstrokecolor{ForestGreen!97.49!black}%
+\draw[fill] (2.437,1.858) -- (2.2547,2.023) -- (2.1495,1.4587) -- (2.3318,1.2938)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.26!black}%
+\pgfsetstrokecolor{ForestGreen!98.26!black}%
+\draw[fill] (2.2547,2.023) -- (2.0724,2.2493) -- (1.9671,1.6851) -- (2.1495,1.4587)--cycle;%
+\pgfsetfillcolor{ForestGreen!57.14!black}%
+\pgfsetstrokecolor{ForestGreen!57.14!black}%
+\draw[fill] (2.6833,5.4501) -- (2.501,5.9221) -- (2.3957,6.0334) -- (2.5781,5.5614)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.16!black}%
+\pgfsetstrokecolor{ForestGreen!96.16!black}%
+\draw[fill] (2.6194,1.7545) -- (2.437,1.858) -- (2.3318,1.2938) -- (2.5141,1.1903)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!74.91!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!74.91!black}%
+\draw[fill] (4.5065,4.1079) -- (4.3242,3.9657) -- (4.219,4.0771) -- (4.4013,4.2192)--cycle;%
+\pgfsetfillcolor{ForestGreen!73.04!black}%
+\pgfsetstrokecolor{ForestGreen!73.04!black}%
+\draw[fill] (3.0198,4.5638) -- (2.8374,4.8516) -- (2.7322,4.8401) -- (2.9145,4.5523)--cycle;%
+\pgfsetfillcolor{ForestGreen!49.2!black}%
+\pgfsetstrokecolor{ForestGreen!49.2!black}%
+\draw[fill] (3.7491,4.0269) -- (3.5667,4.069) -- (3.4615,4.0575) -- (3.6438,4.0154)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.54!black}%
+\pgfsetstrokecolor{ForestGreen!98.54!black}%
+\draw[fill] (2.0724,2.2493) -- (1.8901,2.5371) -- (1.7848,1.9728) -- (1.9671,1.6851)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.2!black}%
+\pgfsetstrokecolor{ForestGreen!94.2!black}%
+\draw[fill] (2.8017,1.7124) -- (2.6194,1.7545) -- (2.5141,1.1903) -- (2.6964,1.1482)--cycle;%
+\pgfsetfillcolor{ForestGreen!64.82!black}%
+\pgfsetstrokecolor{ForestGreen!64.82!black}%
+\draw[fill] (2.7604,5.1509) -- (2.5781,5.5614) -- (2.4728,5.6113) -- (2.6551,5.2008)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!63.32!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!63.32!black}%
+\draw[fill] (4.219,4.0771) -- (4.0366,3.9963) -- (3.9314,4.0462) -- (4.1137,4.127)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.02!black}%
+\pgfsetstrokecolor{ForestGreen!98.02!black}%
+\draw[fill] (1.6025,2.322) -- (1.4202,2.7326) -- (1.3149,2.1069) -- (1.4972,1.6964)--cycle;%
+\pgfsetfillcolor{ForestGreen!88.78!black}%
+\pgfsetstrokecolor{ForestGreen!88.78!black}%
+\draw[fill] (3.0611,1.2482) -- (2.8787,1.1675) -- (2.7735,0.5418) -- (2.9558,0.6226)--cycle;%
+\pgfsetfillcolor{ForestGreen!84.76!black}%
+\pgfsetstrokecolor{ForestGreen!84.76!black}%
+\draw[fill] (3.2791,4.161) -- (3.0968,4.326) -- (2.9916,4.253) -- (3.1739,4.0881)--cycle;%
+\pgfsetfillcolor{ForestGreen!73.47!black}%
+\pgfsetstrokecolor{ForestGreen!73.47!black}%
+\draw[fill] (2.8374,4.8516) -- (2.6551,5.2008) -- (2.5499,5.1892) -- (2.7322,4.8401)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.12!black}%
+\pgfsetstrokecolor{ForestGreen!98.12!black}%
+\draw[fill] (2.5423,2.3609) -- (2.36,2.5258) -- (2.2547,2.023) -- (2.437,1.858)--cycle;%
+\pgfsetfillcolor{ForestGreen!84.16!black}%
+\pgfsetstrokecolor{ForestGreen!84.16!black}%
+\draw[fill] (3.0968,4.326) -- (2.9145,4.5523) -- (2.8092,4.4794) -- (2.9916,4.253)--cycle;%
+\pgfsetfillcolor{ForestGreen!83.07!black}%
+\pgfsetstrokecolor{ForestGreen!83.07!black}%
+\draw[fill] (3.4615,4.0575) -- (3.2791,4.161) -- (3.1739,4.0881) -- (3.3562,3.9846)--cycle;%
+\pgfsetfillcolor{ForestGreen!7.66!black}%
+\pgfsetstrokecolor{ForestGreen!7.66!black}%
+\draw[fill] (3.9314,4.0462) -- (3.7491,4.0269) -- (3.6438,4.0154) -- (3.8261,4.0347)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!87.18!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!87.18!black}%
+\draw[fill] (6.1268,4.7726) -- (5.9445,4.262) -- (5.8392,4.6804) -- (6.0215,5.191)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.44!black}%
+\pgfsetstrokecolor{ForestGreen!98.44!black}%
+\draw[fill] (1.8901,2.5371) -- (1.7078,2.8862) -- (1.6025,2.322) -- (1.7848,1.9728)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.78!black}%
+\pgfsetstrokecolor{ForestGreen!98.78!black}%
+\draw[fill] (2.36,2.5258) -- (2.1777,2.7521) -- (2.0724,2.2493) -- (2.2547,2.023)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.76!black}%
+\pgfsetstrokecolor{ForestGreen!96.76!black}%
+\draw[fill] (2.7246,2.2573) -- (2.5423,2.3609) -- (2.437,1.858) -- (2.6194,1.7545)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!86.26!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!86.26!black}%
+\draw[fill] (5.8392,4.6804) -- (5.6569,4.2312) -- (5.5516,4.5881) -- (5.7339,5.0373)--cycle;%
+\pgfsetfillcolor{ForestGreen!91.63!black}%
+\pgfsetstrokecolor{ForestGreen!91.63!black}%
+\draw[fill] (2.984,1.7317) -- (2.8017,1.7124) -- (2.6964,1.1482) -- (2.8787,1.1675)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!85.01!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!85.01!black}%
+\draw[fill] (5.5516,4.5881) -- (5.3693,4.2004) -- (5.264,4.4959) -- (5.4464,4.8837)--cycle;%
+\pgfsetfillcolor{ForestGreen!53.13!black}%
+\pgfsetstrokecolor{ForestGreen!53.13!black}%
+\draw[fill] (2.424,6.2828) -- (2.2416,6.8776) -- (2.1364,7.0504) -- (2.3187,6.4555)--cycle;%
+\pgfsetfillcolor{ForestGreen!83!black}%
+\pgfsetstrokecolor{ForestGreen!83!black}%
+\draw[fill] (2.9145,4.5523) -- (2.7322,4.8401) -- (2.6269,4.7671) -- (2.8092,4.4794)--cycle;%
+\pgfsetfillcolor{ForestGreen!75.79!black}%
+\pgfsetstrokecolor{ForestGreen!75.79!black}%
+\draw[fill] (3.6438,4.0154) -- (3.4615,4.0575) -- (3.3562,3.9846) -- (3.5385,3.9425)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!83.24!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!83.24!black}%
+\draw[fill] (5.264,4.4959) -- (5.0817,4.1695) -- (4.9765,4.4037) -- (5.1588,4.73)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.87!black}%
+\pgfsetstrokecolor{ForestGreen!98.87!black}%
+\draw[fill] (2.1777,2.7521) -- (1.9953,3.0399) -- (1.8901,2.5371) -- (2.0724,2.2493)--cycle;%
+\pgfsetfillcolor{ForestGreen!59.3!black}%
+\pgfsetstrokecolor{ForestGreen!59.3!black}%
+\draw[fill] (2.501,5.9221) -- (2.3187,6.4555) -- (2.2134,6.5669) -- (2.3957,6.0334)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.62!black}%
+\pgfsetstrokecolor{ForestGreen!94.62!black}%
+\draw[fill] (2.907,2.2152) -- (2.7246,2.2573) -- (2.6194,1.7545) -- (2.8017,1.7124)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!80.56!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!80.56!black}%
+\draw[fill] (4.9765,4.4037) -- (4.7941,4.1387) -- (4.6889,4.3114) -- (4.8712,4.5764)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.12!black}%
+\pgfsetstrokecolor{ForestGreen!94.12!black}%
+\draw[fill] (3.1739,4.0881) -- (2.9916,4.253) -- (2.8863,4.1187) -- (3.0686,3.9538)--cycle;%
+\pgfsetfillcolor{ForestGreen!66.08!black}%
+\pgfsetstrokecolor{ForestGreen!66.08!black}%
+\draw[fill] (2.5781,5.5614) -- (2.3957,6.0334) -- (2.2905,6.0833) -- (2.4728,5.6113)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!76.08!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!76.08!black}%
+\draw[fill] (4.6889,4.3114) -- (4.5065,4.1079) -- (4.4013,4.2192) -- (4.5836,4.4227)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.79!black}%
+\pgfsetstrokecolor{ForestGreen!98.79!black}%
+\draw[fill] (2.6476,2.8023) -- (2.4652,2.9672) -- (2.36,2.5258) -- (2.5423,2.3609)--cycle;%
+\pgfsetfillcolor{ForestGreen!92.3!black}%
+\pgfsetstrokecolor{ForestGreen!92.3!black}%
+\draw[fill] (2.9916,4.253) -- (2.8092,4.4794) -- (2.704,4.345) -- (2.8863,4.1187)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.04!black}%
+\pgfsetstrokecolor{ForestGreen!94.04!black}%
+\draw[fill] (3.3562,3.9846) -- (3.1739,4.0881) -- (3.0686,3.9538) -- (3.2509,3.8502)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!67.42!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!67.42!black}%
+\draw[fill] (4.4013,4.2192) -- (4.219,4.0771) -- (4.1137,4.127) -- (4.296,4.2691)--cycle;%
+\pgfsetfillcolor{ForestGreen!73.61!black}%
+\pgfsetstrokecolor{ForestGreen!73.61!black}%
+\draw[fill] (2.6551,5.2008) -- (2.4728,5.6113) -- (2.3675,5.5998) -- (2.5499,5.1892)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.63!black}%
+\pgfsetstrokecolor{ForestGreen!97.63!black}%
+\draw[fill] (1.4202,2.7326) -- (1.2379,3.2046) -- (1.1326,2.5789) -- (1.3149,2.1069)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.27!black}%
+\pgfsetstrokecolor{ForestGreen!99.27!black}%
+\draw[fill] (2.4652,2.9672) -- (2.2829,3.1935) -- (2.1777,2.7521) -- (2.36,2.5258)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.44!black}%
+\pgfsetstrokecolor{ForestGreen!97.44!black}%
+\draw[fill] (2.8299,2.6987) -- (2.6476,2.8023) -- (2.5423,2.3609) -- (2.7246,2.2573)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!44.4!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!44.4!black}%
+\draw[fill] (4.1137,4.127) -- (3.9314,4.0462) -- (3.8261,4.0347) -- (4.0084,4.1154)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.05!black}%
+\pgfsetstrokecolor{ForestGreen!98.05!black}%
+\draw[fill] (1.7078,2.8862) -- (1.5254,3.2968) -- (1.4202,2.7326) -- (1.6025,2.322)--cycle;%
+\pgfsetfillcolor{ForestGreen!81.83!black}%
+\pgfsetstrokecolor{ForestGreen!81.83!black}%
+\draw[fill] (2.7322,4.8401) -- (2.5499,5.1892) -- (2.4446,5.1163) -- (2.6269,4.7671)--cycle;%
+\pgfsetfillcolor{ForestGreen!85.64!black}%
+\pgfsetstrokecolor{ForestGreen!85.64!black}%
+\draw[fill] (3.2434,1.3903) -- (3.0611,1.2482) -- (2.9558,0.6226) -- (3.1381,0.7647)--cycle;%
+\pgfsetfillcolor{ForestGreen!61.18!black}%
+\pgfsetstrokecolor{ForestGreen!61.18!black}%
+\draw[fill] (3.8261,4.0347) -- (3.6438,4.0154) -- (3.5385,3.9425) -- (3.7209,3.9618)--cycle;%
+\pgfsetfillcolor{ForestGreen!88.49!black}%
+\pgfsetstrokecolor{ForestGreen!88.49!black}%
+\draw[fill] (3.1663,1.8124) -- (2.984,1.7317) -- (2.8787,1.1675) -- (3.0611,1.2482)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.54!black}%
+\pgfsetstrokecolor{ForestGreen!98.54!black}%
+\draw[fill] (1.9953,3.0399) -- (1.813,3.3891) -- (1.7078,2.8862) -- (1.8901,2.5371)--cycle;%
+\pgfsetfillcolor{ForestGreen!90.13!black}%
+\pgfsetstrokecolor{ForestGreen!90.13!black}%
+\draw[fill] (2.8092,4.4794) -- (2.6269,4.7671) -- (2.5217,4.6328) -- (2.704,4.345)--cycle;%
+\pgfsetfillcolor{ForestGreen!91.69!black}%
+\pgfsetstrokecolor{ForestGreen!91.69!black}%
+\draw[fill] (3.0893,2.2345) -- (2.907,2.2152) -- (2.8017,1.7124) -- (2.984,1.7317)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.47!black}%
+\pgfsetstrokecolor{ForestGreen!98.47!black}%
+\draw[fill] (3.0686,3.9538) -- (2.8863,4.1187) -- (2.781,3.9229) -- (2.9634,3.758)--cycle;%
+\pgfsetfillcolor{ForestGreen!89.22!black}%
+\pgfsetstrokecolor{ForestGreen!89.22!black}%
+\draw[fill] (3.5385,3.9425) -- (3.3562,3.9846) -- (3.2509,3.8502) -- (3.4333,3.8081)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.08!black}%
+\pgfsetstrokecolor{ForestGreen!99.08!black}%
+\draw[fill] (2.2829,3.1935) -- (2.1006,3.4813) -- (1.9953,3.0399) -- (2.1777,2.7521)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.44!black}%
+\pgfsetstrokecolor{ForestGreen!99.44!black}%
+\draw[fill] (2.7528,3.1823) -- (2.5705,3.3472) -- (2.4652,2.9672) -- (2.6476,2.8023)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.07!black}%
+\pgfsetstrokecolor{ForestGreen!95.07!black}%
+\draw[fill] (3.0122,2.6566) -- (2.8299,2.6987) -- (2.7246,2.2573) -- (2.907,2.2152)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.86!black}%
+\pgfsetstrokecolor{ForestGreen!96.86!black}%
+\draw[fill] (2.8863,4.1187) -- (2.704,4.345) -- (2.5987,4.1493) -- (2.781,3.9229)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.24!black}%
+\pgfsetstrokecolor{ForestGreen!98.24!black}%
+\draw[fill] (3.2509,3.8502) -- (3.0686,3.9538) -- (2.9634,3.758) -- (3.1457,3.6545)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.62!black}%
+\pgfsetstrokecolor{ForestGreen!99.62!black}%
+\draw[fill] (2.5705,3.3472) -- (2.3882,3.5735) -- (2.2829,3.1935) -- (2.4652,2.9672)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.17!black}%
+\pgfsetstrokecolor{ForestGreen!98.17!black}%
+\draw[fill] (2.9352,3.0787) -- (2.7528,3.1823) -- (2.6476,2.8023) -- (2.8299,2.6987)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.87!black}%
+\pgfsetstrokecolor{ForestGreen!99.87!black}%
+\draw[fill] (2.9634,3.758) -- (2.781,3.9229) -- (2.6758,3.6658) -- (2.8581,3.5008)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.92!black}%
+\pgfsetstrokecolor{ForestGreen!99.92!black}%
+\draw[fill] (2.8581,3.5008) -- (2.6758,3.6658) -- (2.5705,3.3472) -- (2.7528,3.1823)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.96!black}%
+\pgfsetstrokecolor{ForestGreen!98.96!black}%
+\draw[fill] (2.781,3.9229) -- (2.5987,4.1493) -- (2.4935,3.8921) -- (2.6758,3.6658)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.65!black}%
+\pgfsetstrokecolor{ForestGreen!99.65!black}%
+\draw[fill] (2.6758,3.6658) -- (2.4935,3.8921) -- (2.3882,3.5735) -- (2.5705,3.3472)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.14!black}%
+\pgfsetstrokecolor{ForestGreen!99.14!black}%
+\draw[fill] (3.1457,3.6545) -- (2.9634,3.758) -- (2.8581,3.5008) -- (3.0404,3.3973)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.83!black}%
+\pgfsetstrokecolor{ForestGreen!98.83!black}%
+\draw[fill] (3.0404,3.3973) -- (2.8581,3.5008) -- (2.7528,3.1823) -- (2.9352,3.0787)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.7!black}%
+\pgfsetstrokecolor{ForestGreen!94.7!black}%
+\draw[fill] (2.704,4.345) -- (2.5217,4.6328) -- (2.4164,4.437) -- (2.5987,4.1493)--cycle;%
+\pgfsetfillcolor{ForestGreen!99.06!black}%
+\pgfsetstrokecolor{ForestGreen!99.06!black}%
+\draw[fill] (2.3882,3.5735) -- (2.2059,3.8613) -- (2.1006,3.4813) -- (2.2829,3.1935)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.39!black}%
+\pgfsetstrokecolor{ForestGreen!94.39!black}%
+\draw[fill] (3.4333,3.8081) -- (3.2509,3.8502) -- (3.1457,3.6545) -- (3.328,3.6124)--cycle;%
+\pgfsetfillcolor{ForestGreen!88.14!black}%
+\pgfsetstrokecolor{ForestGreen!88.14!black}%
+\draw[fill] (2.6269,4.7671) -- (2.4446,5.1163) -- (2.3393,4.982) -- (2.5217,4.6328)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.53!black}%
+\pgfsetstrokecolor{ForestGreen!95.53!black}%
+\draw[fill] (3.1175,3.0366) -- (2.9352,3.0787) -- (2.8299,2.6987) -- (3.0122,2.6566)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.46!black}%
+\pgfsetstrokecolor{ForestGreen!98.46!black}%
+\draw[fill] (2.1006,3.4813) -- (1.9183,3.8305) -- (1.813,3.3891) -- (1.9953,3.0399)--cycle;%
+\pgfsetfillcolor{ForestGreen!78.4!black}%
+\pgfsetstrokecolor{ForestGreen!78.4!black}%
+\draw[fill] (3.7209,3.9618) -- (3.5385,3.9425) -- (3.4333,3.8081) -- (3.6156,3.8274)--cycle;%
+\pgfsetfillcolor{ForestGreen!80.79!black}%
+\pgfsetstrokecolor{ForestGreen!80.79!black}%
+\draw[fill] (2.5499,5.1892) -- (2.3675,5.5998) -- (2.2623,5.5269) -- (2.4446,5.1163)--cycle;%
+\pgfsetfillcolor{ForestGreen!91.67!black}%
+\pgfsetstrokecolor{ForestGreen!91.67!black}%
+\draw[fill] (3.1945,2.6759) -- (3.0122,2.6566) -- (2.907,2.2152) -- (3.0893,2.2345)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.3!black}%
+\pgfsetstrokecolor{ForestGreen!97.3!black}%
+\draw[fill] (2.5987,4.1493) -- (2.4164,4.437) -- (2.3111,4.1799) -- (2.4935,3.8921)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.58!black}%
+\pgfsetstrokecolor{ForestGreen!98.58!black}%
+\draw[fill] (2.4935,3.8921) -- (2.3111,4.1799) -- (2.2059,3.8613) -- (2.3882,3.5735)--cycle;%
+\pgfsetfillcolor{ForestGreen!73.62!black}%
+\pgfsetstrokecolor{ForestGreen!73.62!black}%
+\draw[fill] (2.4728,5.6113) -- (2.2905,6.0833) -- (2.1852,6.0718) -- (2.3675,5.5998)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.93!black}%
+\pgfsetstrokecolor{ForestGreen!97.93!black}%
+\draw[fill] (1.813,3.3891) -- (1.6307,3.7996) -- (1.5254,3.2968) -- (1.7078,2.8862)--cycle;%
+\pgfsetfillcolor{ForestGreen!40.37!black}%
+\pgfsetstrokecolor{ForestGreen!40.37!black}%
+\draw[fill] (4.0084,4.1154) -- (3.8261,4.0347) -- (3.7209,3.9618) -- (3.9032,4.0425)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.8!black}%
+\pgfsetstrokecolor{ForestGreen!95.8!black}%
+\draw[fill] (3.328,3.6124) -- (3.1457,3.6545) -- (3.0404,3.3973) -- (3.2227,3.3552)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.88!black}%
+\pgfsetstrokecolor{ForestGreen!95.88!black}%
+\draw[fill] (3.2227,3.3552) -- (3.0404,3.3973) -- (2.9352,3.0787) -- (3.1175,3.0366)--cycle;%
+\pgfsetfillcolor{ForestGreen!66.99!black}%
+\pgfsetstrokecolor{ForestGreen!66.99!black}%
+\draw[fill] (2.3957,6.0334) -- (2.2134,6.5669) -- (2.1082,6.6168) -- (2.2905,6.0833)--cycle;%
+\pgfsetfillcolor{ForestGreen!88.05!black}%
+\pgfsetstrokecolor{ForestGreen!88.05!black}%
+\draw[fill] (3.2716,2.3153) -- (3.0893,2.2345) -- (2.984,1.7317) -- (3.1663,1.8124)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.48!black}%
+\pgfsetstrokecolor{ForestGreen!97.48!black}%
+\draw[fill] (1.5254,3.2968) -- (1.3431,3.7688) -- (1.2379,3.2046) -- (1.4202,2.7326)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!54.36!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!54.36!black}%
+\draw[fill] (4.296,4.2691) -- (4.1137,4.127) -- (4.0084,4.1154) -- (4.1908,4.2576)--cycle;%
+\pgfsetfillcolor{ForestGreen!60.94!black}%
+\pgfsetstrokecolor{ForestGreen!60.94!black}%
+\draw[fill] (2.3187,6.4555) -- (2.1364,7.0504) -- (2.0311,7.1617) -- (2.2134,6.5669)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!69.58!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!69.58!black}%
+\draw[fill] (4.5836,4.4227) -- (4.4013,4.2192) -- (4.296,4.2691) -- (4.4783,4.4726)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.1!black}%
+\pgfsetstrokecolor{ForestGreen!97.1!black}%
+\draw[fill] (1.2379,3.2046) -- (1.0555,3.738) -- (0.9503,3.1124) -- (1.1326,2.5789)--cycle;%
+\pgfsetfillcolor{ForestGreen!84.89!black}%
+\pgfsetstrokecolor{ForestGreen!84.89!black}%
+\draw[fill] (3.3487,1.9546) -- (3.1663,1.8124) -- (3.0611,1.2482) -- (3.2434,1.3903)--cycle;%
+\pgfsetfillcolor{ForestGreen!92.57!black}%
+\pgfsetstrokecolor{ForestGreen!92.57!black}%
+\draw[fill] (2.5217,4.6328) -- (2.3393,4.982) -- (2.2341,4.7862) -- (2.4164,4.437)--cycle;%
+\pgfsetfillcolor{ForestGreen!98.06!black}%
+\pgfsetstrokecolor{ForestGreen!98.06!black}%
+\draw[fill] (2.2059,3.8613) -- (2.0235,4.2105) -- (1.9183,3.8305) -- (2.1006,3.4813)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!76.55!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!76.55!black}%
+\draw[fill] (4.8712,4.5764) -- (4.6889,4.3114) -- (4.5836,4.4227) -- (4.7659,4.6877)--cycle;%
+\pgfsetfillcolor{ForestGreen!86.26!black}%
+\pgfsetstrokecolor{ForestGreen!86.26!black}%
+\draw[fill] (3.6156,3.8274) -- (3.4333,3.8081) -- (3.328,3.6124) -- (3.5103,3.6317)--cycle;%
+\pgfsetfillcolor{ForestGreen!82.2!black}%
+\pgfsetstrokecolor{ForestGreen!82.2!black}%
+\draw[fill] (3.4257,1.5939) -- (3.2434,1.3903) -- (3.1381,0.7647) -- (3.3204,0.9682)--cycle;%
+\pgfsetfillcolor{ForestGreen!91.5!black}%
+\pgfsetstrokecolor{ForestGreen!91.5!black}%
+\draw[fill] (3.2998,3.0559) -- (3.1175,3.0366) -- (3.0122,2.6566) -- (3.1945,2.6759)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!80.47!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!80.47!black}%
+\draw[fill] (5.1588,4.73) -- (4.9765,4.4037) -- (4.8712,4.5764) -- (5.0535,4.9028)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.44!black}%
+\pgfsetstrokecolor{ForestGreen!95.44!black}%
+\draw[fill] (2.4164,4.437) -- (2.2341,4.7862) -- (2.1288,4.5291) -- (2.3111,4.1799)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.15!black}%
+\pgfsetstrokecolor{ForestGreen!97.15!black}%
+\draw[fill] (2.3111,4.1799) -- (2.1288,4.5291) -- (2.0235,4.2105) -- (2.2059,3.8613)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!82.96!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!82.96!black}%
+\draw[fill] (5.4464,4.8837) -- (5.264,4.4959) -- (5.1588,4.73) -- (5.3411,5.1178)--cycle;%
+\pgfsetfillcolor{ForestGreen!86.43!black}%
+\pgfsetstrokecolor{ForestGreen!86.43!black}%
+\draw[fill] (2.4446,5.1163) -- (2.2623,5.5269) -- (2.157,5.3926) -- (2.3393,4.982)--cycle;%
+\pgfsetfillcolor{ForestGreen!89.59!black}%
+\pgfsetstrokecolor{ForestGreen!89.59!black}%
+\draw[fill] (3.5103,3.6317) -- (3.328,3.6124) -- (3.2227,3.3552) -- (3.4051,3.3745)--cycle;%
+\pgfsetfillcolor{ForestGreen!90.96!black}%
+\pgfsetstrokecolor{ForestGreen!90.96!black}%
+\draw[fill] (3.4051,3.3745) -- (3.2227,3.3552) -- (3.1175,3.0366) -- (3.2998,3.0559)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.57!black}%
+\pgfsetstrokecolor{ForestGreen!97.57!black}%
+\draw[fill] (1.9183,3.8305) -- (1.736,4.2411) -- (1.6307,3.7996) -- (1.813,3.3891)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!84.65!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!84.65!black}%
+\draw[fill] (5.7339,5.0373) -- (5.5516,4.5881) -- (5.4464,4.8837) -- (5.6287,5.3329)--cycle;%
+\pgfsetfillcolor{ForestGreen!64.06!black}%
+\pgfsetstrokecolor{ForestGreen!64.06!black}%
+\draw[fill] (3.9032,4.0425) -- (3.7209,3.9618) -- (3.6156,3.8274) -- (3.7979,3.9082)--cycle;%
+\pgfsetfillcolor{ForestGreen!87.38!black}%
+\pgfsetstrokecolor{ForestGreen!87.38!black}%
+\draw[fill] (3.3769,2.7567) -- (3.1945,2.6759) -- (3.0893,2.2345) -- (3.2716,2.3153)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!85.88!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!85.88!black}%
+\draw[fill] (6.0215,5.191) -- (5.8392,4.6804) -- (5.7339,5.0373) -- (5.9163,5.548)--cycle;%
+\pgfsetfillcolor{ForestGreen!79.9!black}%
+\pgfsetstrokecolor{ForestGreen!79.9!black}%
+\draw[fill] (2.3675,5.5998) -- (2.1852,6.0718) -- (2.08,5.9989) -- (2.2623,5.5269)--cycle;%
+\pgfsetfillcolor{ForestGreen!97.14!black}%
+\pgfsetstrokecolor{ForestGreen!97.14!black}%
+\draw[fill] (1.6307,3.7996) -- (1.4484,4.2716) -- (1.3431,3.7688) -- (1.5254,3.2968)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!24.31!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!24.31!black}%
+\draw[fill] (4.1908,4.2576) -- (4.0084,4.1154) -- (3.9032,4.0425) -- (4.0855,4.1846)--cycle;%
+\pgfsetfillcolor{ForestGreen!90.65!black}%
+\pgfsetstrokecolor{ForestGreen!90.65!black}%
+\draw[fill] (2.3393,4.982) -- (2.157,5.3926) -- (2.0518,5.1968) -- (2.2341,4.7862)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.85!black}%
+\pgfsetstrokecolor{ForestGreen!96.85!black}%
+\draw[fill] (2.0235,4.2105) -- (1.8412,4.6211) -- (1.736,4.2411) -- (1.9183,3.8305)--cycle;%
+\pgfsetfillcolor{ForestGreen!83.87!black}%
+\pgfsetstrokecolor{ForestGreen!83.87!black}%
+\draw[fill] (3.4539,2.4574) -- (3.2716,2.3153) -- (3.1663,1.8124) -- (3.3487,1.9546)--cycle;%
+\pgfsetfillcolor{ForestGreen!75.37!black}%
+\pgfsetstrokecolor{ForestGreen!75.37!black}%
+\draw[fill] (3.7979,3.9082) -- (3.6156,3.8274) -- (3.5103,3.6317) -- (3.6926,3.7124)--cycle;%
+\pgfsetfillcolor{ForestGreen!86.29!black}%
+\pgfsetstrokecolor{ForestGreen!86.29!black}%
+\draw[fill] (3.4821,3.1367) -- (3.2998,3.0559) -- (3.1945,2.6759) -- (3.3769,2.7567)--cycle;%
+\pgfsetfillcolor{ForestGreen!73.57!black}%
+\pgfsetstrokecolor{ForestGreen!73.57!black}%
+\draw[fill] (2.2905,6.0833) -- (2.1082,6.6168) -- (2.0029,6.6052) -- (2.1852,6.0718)--cycle;%
+\pgfsetfillcolor{ForestGreen!93.62!black}%
+\pgfsetstrokecolor{ForestGreen!93.62!black}%
+\draw[fill] (2.2341,4.7862) -- (2.0518,5.1968) -- (1.9465,4.9396) -- (2.1288,4.5291)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.61!black}%
+\pgfsetstrokecolor{ForestGreen!95.61!black}%
+\draw[fill] (2.1288,4.5291) -- (1.9465,4.9396) -- (1.8412,4.6211) -- (2.0235,4.2105)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.78!black}%
+\pgfsetstrokecolor{ForestGreen!96.78!black}%
+\draw[fill] (1.3431,3.7688) -- (1.1608,4.3022) -- (1.0555,3.738) -- (1.2379,3.2046)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!59.41!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!59.41!black}%
+\draw[fill] (4.4783,4.4726) -- (4.296,4.2691) -- (4.1908,4.2576) -- (4.3731,4.4611)--cycle;%
+\pgfsetfillcolor{ForestGreen!81.28!black}%
+\pgfsetstrokecolor{ForestGreen!81.28!black}%
+\draw[fill] (3.6926,3.7124) -- (3.5103,3.6317) -- (3.4051,3.3745) -- (3.5874,3.4552)--cycle;%
+\pgfsetfillcolor{ForestGreen!84.48!black}%
+\pgfsetstrokecolor{ForestGreen!84.48!black}%
+\draw[fill] (3.5874,3.4552) -- (3.4051,3.3745) -- (3.2998,3.0559) -- (3.4821,3.1367)--cycle;%
+\pgfsetfillcolor{ForestGreen!80.95!black}%
+\pgfsetstrokecolor{ForestGreen!80.95!black}%
+\draw[fill] (3.531,2.1581) -- (3.3487,1.9546) -- (3.2434,1.3903) -- (3.4257,1.5939)--cycle;%
+\pgfsetfillcolor{ForestGreen!67.66!black}%
+\pgfsetstrokecolor{ForestGreen!67.66!black}%
+\draw[fill] (2.2134,6.5669) -- (2.0311,7.1617) -- (1.9258,7.2116) -- (2.1082,6.6168)--cycle;%
+\pgfsetfillcolor{ForestGreen!85!black}%
+\pgfsetstrokecolor{ForestGreen!85!black}%
+\draw[fill] (2.2623,5.5269) -- (2.08,5.9989) -- (1.9747,5.8646) -- (2.157,5.3926)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.54!black}%
+\pgfsetstrokecolor{ForestGreen!96.54!black}%
+\draw[fill] (1.736,4.2411) -- (1.5536,4.7131) -- (1.4484,4.2716) -- (1.6307,3.7996)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.47!black}%
+\pgfsetstrokecolor{ForestGreen!96.47!black}%
+\draw[fill] (1.0555,3.738) -- (0.8732,4.3328) -- (0.7679,3.7072) -- (0.9503,3.1124)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!70.74!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!70.74!black}%
+\draw[fill] (4.7659,4.6877) -- (4.5836,4.4227) -- (4.4783,4.4726) -- (4.6607,4.7376)--cycle;%
+\pgfsetfillcolor{ForestGreen!48.22!black}%
+\pgfsetstrokecolor{ForestGreen!48.22!black}%
+\draw[fill] (4.0855,4.1846) -- (3.9032,4.0425) -- (3.7979,3.9082) -- (3.9802,4.0503)--cycle;%
+\pgfsetfillcolor{ForestGreen!82.42!black}%
+\pgfsetstrokecolor{ForestGreen!82.42!black}%
+\draw[fill] (3.5592,2.8988) -- (3.3769,2.7567) -- (3.2716,2.3153) -- (3.4539,2.4574)--cycle;%
+\pgfsetfillcolor{ForestGreen!78.52!black}%
+\pgfsetstrokecolor{ForestGreen!78.52!black}%
+\draw[fill] (3.608,1.8588) -- (3.4257,1.5939) -- (3.3204,0.9682) -- (3.5028,1.2332)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!76.65!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!76.65!black}%
+\draw[fill] (5.0535,4.9028) -- (4.8712,4.5764) -- (4.7659,4.6877) -- (4.9482,5.0141)--cycle;%
+\pgfsetfillcolor{ForestGreen!88.98!black}%
+\pgfsetstrokecolor{ForestGreen!88.98!black}%
+\draw[fill] (2.157,5.3926) -- (1.9747,5.8646) -- (1.8694,5.6688) -- (2.0518,5.1968)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.57!black}%
+\pgfsetstrokecolor{ForestGreen!95.57!black}%
+\draw[fill] (1.8412,4.6211) -- (1.6589,5.0931) -- (1.5536,4.7131) -- (1.736,4.2411)--cycle;%
+\pgfsetfillcolor{ForestGreen!79.15!black}%
+\pgfsetstrokecolor{ForestGreen!79.15!black}%
+\draw[fill] (2.1852,6.0718) -- (2.0029,6.6052) -- (1.8976,6.5323) -- (2.08,5.9989)--cycle;%
+\pgfsetfillcolor{ForestGreen!63.52!black}%
+\pgfsetstrokecolor{ForestGreen!63.52!black}%
+\draw[fill] (3.9802,4.0503) -- (3.7979,3.9082) -- (3.6926,3.7124) -- (3.875,3.8546)--cycle;%
+\pgfsetfillcolor{ForestGreen!80.3!black}%
+\pgfsetstrokecolor{ForestGreen!80.3!black}%
+\draw[fill] (3.6644,3.2788) -- (3.4821,3.1367) -- (3.3769,2.7567) -- (3.5592,2.8988)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.26!black}%
+\pgfsetstrokecolor{ForestGreen!96.26!black}%
+\draw[fill] (1.4484,4.2716) -- (1.2661,4.8051) -- (1.1608,4.3022) -- (1.3431,3.7688)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!42.4!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!42.4!black}%
+\draw[fill] (4.3731,4.4611) -- (4.1908,4.2576) -- (4.0855,4.1846) -- (4.2678,4.3882)--cycle;%
+\pgfsetfillcolor{ForestGreen!91.96!black}%
+\pgfsetstrokecolor{ForestGreen!91.96!black}%
+\draw[fill] (2.0518,5.1968) -- (1.8694,5.6688) -- (1.7642,5.4116) -- (1.9465,4.9396)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.1!black}%
+\pgfsetstrokecolor{ForestGreen!94.1!black}%
+\draw[fill] (1.9465,4.9396) -- (1.7642,5.4116) -- (1.6589,5.0931) -- (1.8412,4.6211)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!80.22!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!80.22!black}%
+\draw[fill] (5.3411,5.1178) -- (5.1588,4.73) -- (5.0535,4.9028) -- (5.2358,5.2906)--cycle;%
+\pgfsetfillcolor{ForestGreen!79.29!black}%
+\pgfsetstrokecolor{ForestGreen!79.29!black}%
+\draw[fill] (3.6362,2.6609) -- (3.4539,2.4574) -- (3.3487,1.9546) -- (3.531,2.1581)--cycle;%
+\pgfsetfillcolor{ForestGreen!72!black}%
+\pgfsetstrokecolor{ForestGreen!72!black}%
+\draw[fill] (3.875,3.8546) -- (3.6926,3.7124) -- (3.5874,3.4552) -- (3.7697,3.5974)--cycle;%
+\pgfsetfillcolor{ForestGreen!77.09!black}%
+\pgfsetstrokecolor{ForestGreen!77.09!black}%
+\draw[fill] (3.7697,3.5974) -- (3.5874,3.4552) -- (3.4821,3.1367) -- (3.6644,3.2788)--cycle;%
+\pgfsetfillcolor{ForestGreen!73.49!black}%
+\pgfsetstrokecolor{ForestGreen!73.49!black}%
+\draw[fill] (2.1082,6.6168) -- (1.9258,7.2116) -- (1.8206,7.2001) -- (2.0029,6.6052)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!82.57!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!82.57!black}%
+\draw[fill] (5.6287,5.3329) -- (5.4464,4.8837) -- (5.3411,5.1178) -- (5.5234,5.567)--cycle;%
+\pgfsetfillcolor{ForestGreen!96.01!black}%
+\pgfsetstrokecolor{ForestGreen!96.01!black}%
+\draw[fill] (1.1608,4.3022) -- (0.9785,4.8971) -- (0.8732,4.3328) -- (1.0555,3.738)--cycle;%
+\pgfsetfillcolor{ForestGreen!83.79!black}%
+\pgfsetstrokecolor{ForestGreen!83.79!black}%
+\draw[fill] (2.08,5.9989) -- (1.8976,6.5323) -- (1.7924,6.398) -- (1.9747,5.8646)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!62.36!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!62.36!black}%
+\draw[fill] (4.6607,4.7376) -- (4.4783,4.4726) -- (4.3731,4.4611) -- (4.5554,4.7261)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.46!black}%
+\pgfsetstrokecolor{ForestGreen!95.46!black}%
+\draw[fill] (1.5536,4.7131) -- (1.3713,5.2465) -- (1.2661,4.8051) -- (1.4484,4.2716)--cycle;%
+\pgfsetfillcolor{ForestGreen!76.76!black}%
+\pgfsetstrokecolor{ForestGreen!76.76!black}%
+\draw[fill] (3.7133,2.4231) -- (3.531,2.1581) -- (3.4257,1.5939) -- (3.608,1.8588)--cycle;%
+\pgfsetfillcolor{ForestGreen!28.45!black}%
+\pgfsetstrokecolor{ForestGreen!28.45!black}%
+\draw[fill] (4.2678,4.3882) -- (4.0855,4.1846) -- (3.9802,4.0503) -- (4.1626,4.2539)--cycle;%
+\pgfsetfillcolor{ForestGreen!77.04!black}%
+\pgfsetstrokecolor{ForestGreen!77.04!black}%
+\draw[fill] (3.7415,3.1024) -- (3.5592,2.8988) -- (3.4539,2.4574) -- (3.6362,2.6609)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!84.22!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!84.22!black}%
+\draw[fill] (5.9163,5.548) -- (5.7339,5.0373) -- (5.6287,5.3329) -- (5.811,5.8435)--cycle;%
+\pgfsetfillcolor{ForestGreen!87.53!black}%
+\pgfsetstrokecolor{ForestGreen!87.53!black}%
+\draw[fill] (1.9747,5.8646) -- (1.7924,6.398) -- (1.6871,6.2022) -- (1.8694,5.6688)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.3!black}%
+\pgfsetstrokecolor{ForestGreen!94.3!black}%
+\draw[fill] (1.6589,5.0931) -- (1.4766,5.6265) -- (1.3713,5.2465) -- (1.5536,4.7131)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!71.4!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!71.4!black}%
+\draw[fill] (4.9482,5.0141) -- (4.7659,4.6877) -- (4.6607,4.7376) -- (4.843,5.064)--cycle;%
+\pgfsetfillcolor{ForestGreen!51.32!black}%
+\pgfsetstrokecolor{ForestGreen!51.32!black}%
+\draw[fill] (4.1626,4.2539) -- (3.9802,4.0503) -- (3.875,3.8546) -- (4.0573,4.0581)--cycle;%
+\pgfsetfillcolor{ForestGreen!73.89!black}%
+\pgfsetstrokecolor{ForestGreen!73.89!black}%
+\draw[fill] (3.8468,3.4823) -- (3.6644,3.2788) -- (3.5592,2.8988) -- (3.7415,3.1024)--cycle;%
+\pgfsetfillcolor{ForestGreen!90.46!black}%
+\pgfsetstrokecolor{ForestGreen!90.46!black}%
+\draw[fill] (1.8694,5.6688) -- (1.6871,6.2022) -- (1.5818,5.945) -- (1.7642,5.4116)--cycle;%
+\pgfsetfillcolor{ForestGreen!92.68!black}%
+\pgfsetstrokecolor{ForestGreen!92.68!black}%
+\draw[fill] (1.7642,5.4116) -- (1.5818,5.945) -- (1.4766,5.6265) -- (1.6589,5.0931)--cycle;%
+\pgfsetfillcolor{ForestGreen!74.69!black}%
+\pgfsetstrokecolor{ForestGreen!74.69!black}%
+\draw[fill] (3.7904,2.1852) -- (3.608,1.8588) -- (3.5028,1.2332) -- (3.6851,1.5596)--cycle;%
+\pgfsetfillcolor{ForestGreen!78.52!black}%
+\pgfsetstrokecolor{ForestGreen!78.52!black}%
+\draw[fill] (2.0029,6.6052) -- (1.8206,7.2001) -- (1.7153,7.1271) -- (1.8976,6.5323)--cycle;%
+\pgfsetfillcolor{ForestGreen!62.44!black}%
+\pgfsetstrokecolor{ForestGreen!62.44!black}%
+\draw[fill] (4.0573,4.0581) -- (3.875,3.8546) -- (3.7697,3.5974) -- (3.952,3.8009)--cycle;%
+\pgfsetfillcolor{ForestGreen!95.33!black}%
+\pgfsetstrokecolor{ForestGreen!95.33!black}%
+\draw[fill] (1.2661,4.8051) -- (1.0837,5.3999) -- (0.9785,4.8971) -- (1.1608,4.3022)--cycle;%
+\pgfsetfillcolor{ForestGreen!69.33!black}%
+\pgfsetstrokecolor{ForestGreen!69.33!black}%
+\draw[fill] (3.952,3.8009) -- (3.7697,3.5974) -- (3.6644,3.2788) -- (3.8468,3.4823)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!49.98!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!49.98!black}%
+\draw[fill] (4.5554,4.7261) -- (4.3731,4.4611) -- (4.2678,4.3882) -- (4.4501,4.6532)--cycle;%
+\pgfsetfillcolor{ForestGreen!74.48!black}%
+\pgfsetstrokecolor{ForestGreen!74.48!black}%
+\draw[fill] (3.8186,2.9259) -- (3.6362,2.6609) -- (3.531,2.1581) -- (3.7133,2.4231)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!76.58!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!76.58!black}%
+\draw[fill] (5.2358,5.2906) -- (5.0535,4.9028) -- (4.9482,5.0141) -- (5.1306,5.4019)--cycle;%
+\pgfsetfillcolor{ForestGreen!82.77!black}%
+\pgfsetstrokecolor{ForestGreen!82.77!black}%
+\draw[fill] (1.8976,6.5323) -- (1.7153,7.1271) -- (1.6101,6.9928) -- (1.7924,6.398)--cycle;%
+\pgfsetfillcolor{ForestGreen!94.39!black}%
+\pgfsetstrokecolor{ForestGreen!94.39!black}%
+\draw[fill] (1.3713,5.2465) -- (1.189,5.8413) -- (1.0837,5.3999) -- (1.2661,4.8051)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!27.72!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!27.72!black}%
+\draw[fill] (4.4501,4.6532) -- (4.2678,4.3882) -- (4.1626,4.2539) -- (4.3449,4.5188)--cycle;%
+\pgfsetfillcolor{ForestGreen!71.45!black}%
+\pgfsetstrokecolor{ForestGreen!71.45!black}%
+\draw[fill] (3.9238,3.3673) -- (3.7415,3.1024) -- (3.6362,2.6609) -- (3.8186,2.9259)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!79.87!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!79.87!black}%
+\draw[fill] (5.5234,5.567) -- (5.3411,5.1178) -- (5.2358,5.2906) -- (5.4182,5.7398)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!64.25!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!64.25!black}%
+\draw[fill] (4.843,5.064) -- (4.6607,4.7376) -- (4.5554,4.7261) -- (4.7377,5.0525)--cycle;%
+\pgfsetfillcolor{ForestGreen!72.43!black}%
+\pgfsetstrokecolor{ForestGreen!72.43!black}%
+\draw[fill] (3.8956,2.7495) -- (3.7133,2.4231) -- (3.608,1.8588) -- (3.7904,2.1852)--cycle;%
+\pgfsetfillcolor{ForestGreen!86.29!black}%
+\pgfsetstrokecolor{ForestGreen!86.29!black}%
+\draw[fill] (1.7924,6.398) -- (1.6101,6.9928) -- (1.5048,6.797) -- (1.6871,6.2022)--cycle;%
+\pgfsetfillcolor{ForestGreen!93.09!black}%
+\pgfsetstrokecolor{ForestGreen!93.09!black}%
+\draw[fill] (1.4766,5.6265) -- (1.2943,6.2213) -- (1.189,5.8413) -- (1.3713,5.2465)--cycle;%
+\pgfsetfillcolor{ForestGreen!37.96!black}%
+\pgfsetstrokecolor{ForestGreen!37.96!black}%
+\draw[fill] (4.3449,4.5188) -- (4.1626,4.2539) -- (4.0573,4.0581) -- (4.2396,4.3231)--cycle;%
+\pgfsetfillcolor{ForestGreen!67.31!black}%
+\pgfsetstrokecolor{ForestGreen!67.31!black}%
+\draw[fill] (4.0291,3.7473) -- (3.8468,3.4823) -- (3.7415,3.1024) -- (3.9238,3.3673)--cycle;%
+\pgfsetfillcolor{ForestGreen!89.13!black}%
+\pgfsetstrokecolor{ForestGreen!89.13!black}%
+\draw[fill] (1.6871,6.2022) -- (1.5048,6.797) -- (1.3995,6.5399) -- (1.5818,5.945)--cycle;%
+\pgfsetfillcolor{ForestGreen!91.37!black}%
+\pgfsetstrokecolor{ForestGreen!91.37!black}%
+\draw[fill] (1.5818,5.945) -- (1.3995,6.5399) -- (1.2943,6.2213) -- (1.4766,5.6265)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!82.13!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!82.13!black}%
+\draw[fill] (5.811,5.8435) -- (5.6287,5.3329) -- (5.5234,5.567) -- (5.7057,6.0776)--cycle;%
+\pgfsetfillcolor{ForestGreen!52.75!black}%
+\pgfsetstrokecolor{ForestGreen!52.75!black}%
+\draw[fill] (4.2396,4.3231) -- (4.0573,4.0581) -- (3.952,3.8009) -- (4.1343,4.0659)--cycle;%
+\pgfsetfillcolor{ForestGreen!61.46!black}%
+\pgfsetstrokecolor{ForestGreen!61.46!black}%
+\draw[fill] (4.1343,4.0659) -- (3.952,3.8009) -- (3.8468,3.4823) -- (4.0291,3.7473)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!71.79!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!71.79!black}%
+\draw[fill] (5.1306,5.4019) -- (4.9482,5.0141) -- (4.843,5.064) -- (5.0253,5.4518)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!54.43!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!54.43!black}%
+\draw[fill] (4.7377,5.0525) -- (4.5554,4.7261) -- (4.4501,4.6532) -- (4.6325,4.9795)--cycle;%
+\pgfsetfillcolor{ForestGreen!70.77!black}%
+\pgfsetstrokecolor{ForestGreen!70.77!black}%
+\draw[fill] (3.9727,2.573) -- (3.7904,2.1852) -- (3.6851,1.5596) -- (3.8674,1.9474)--cycle;%
+\pgfsetfillcolor{ForestGreen!69.54!black}%
+\pgfsetstrokecolor{ForestGreen!69.54!black}%
+\draw[fill] (4.0009,3.2523) -- (3.8186,2.9259) -- (3.7133,2.4231) -- (3.8956,2.7495)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!76.42!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!76.42!black}%
+\draw[fill] (5.4182,5.7398) -- (5.2358,5.2906) -- (5.1306,5.4019) -- (5.3129,5.8511)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!39.99!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!39.99!black}%
+\draw[fill] (4.6325,4.9795) -- (4.4501,4.6532) -- (4.3449,4.5188) -- (4.5272,4.8452)--cycle;%
+\pgfsetfillcolor{ForestGreen!65.76!black}%
+\pgfsetstrokecolor{ForestGreen!65.76!black}%
+\draw[fill] (4.1061,3.6937) -- (3.9238,3.3673) -- (3.8186,2.9259) -- (4.0009,3.2523)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!65.54!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!65.54!black}%
+\draw[fill] (5.0253,5.4518) -- (4.843,5.064) -- (4.7377,5.0525) -- (4.92,5.4403)--cycle;%
+\pgfsetfillcolor{ForestGreen!68.02!black}%
+\pgfsetstrokecolor{ForestGreen!68.02!black}%
+\draw[fill] (4.0779,3.1372) -- (3.8956,2.7495) -- (3.7904,2.1852) -- (3.9727,2.573)--cycle;%
+\pgfsetfillcolor{ForestGreen!17.73!black}%
+\pgfsetstrokecolor{ForestGreen!17.73!black}%
+\draw[fill] (4.5272,4.8452) -- (4.3449,4.5188) -- (4.2396,4.3231) -- (4.4219,4.6494)--cycle;%
+\pgfsetfillcolor{ForestGreen!60.66!black}%
+\pgfsetstrokecolor{ForestGreen!60.66!black}%
+\draw[fill] (4.2114,4.0737) -- (4.0291,3.7473) -- (3.9238,3.3673) -- (4.1061,3.6937)--cycle;%
+\pgfsetfillcolor{ForestGreen!42.53!black}%
+\pgfsetstrokecolor{ForestGreen!42.53!black}%
+\draw[fill] (4.4219,4.6494) -- (4.2396,4.3231) -- (4.1343,4.0659) -- (4.3167,4.3923)--cycle;%
+\pgfsetfillcolor{ForestGreen!53.5!black}%
+\pgfsetstrokecolor{ForestGreen!53.5!black}%
+\draw[fill] (4.3167,4.3923) -- (4.1343,4.0659) -- (4.0291,3.7473) -- (4.2114,4.0737)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!79.5!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!79.5!black}%
+\draw[fill] (5.7057,6.0776) -- (5.5234,5.567) -- (5.4182,5.7398) -- (5.6005,6.2504)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!57.38!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!57.38!black}%
+\draw[fill] (4.92,5.4403) -- (4.7377,5.0525) -- (4.6325,4.9795) -- (4.8148,5.3673)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!72.01!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!72.01!black}%
+\draw[fill] (5.3129,5.8511) -- (5.1306,5.4019) -- (5.0253,5.4518) -- (5.2076,5.901)--cycle;%
+\pgfsetfillcolor{ForestGreen!64.54!black}%
+\pgfsetstrokecolor{ForestGreen!64.54!black}%
+\draw[fill] (4.1832,3.6401) -- (4.0009,3.2523) -- (3.8956,2.7495) -- (4.0779,3.1372)--cycle;%
+\pgfsetfillcolor{ForestGreen!66.78!black}%
+\pgfsetstrokecolor{ForestGreen!66.78!black}%
+\draw[fill] (4.155,3.0222) -- (3.9727,2.573) -- (3.8674,1.9474) -- (4.0497,2.3966)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!46.39!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!46.39!black}%
+\draw[fill] (4.8148,5.3673) -- (4.6325,4.9795) -- (4.5272,4.8452) -- (4.7095,5.233)--cycle;%
+\pgfsetfillcolor{ForestGreen!60.01!black}%
+\pgfsetstrokecolor{ForestGreen!60.01!black}%
+\draw[fill] (4.2885,4.0815) -- (4.1061,3.6937) -- (4.0009,3.2523) -- (4.1832,3.6401)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!76.22!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!76.22!black}%
+\draw[fill] (5.6005,6.2504) -- (5.4182,5.7398) -- (5.3129,5.8511) -- (5.4952,6.3617)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!28.89!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!28.89!black}%
+\draw[fill] (4.7095,5.233) -- (4.5272,4.8452) -- (4.4219,4.6494) -- (4.6043,5.0372)--cycle;%
+\pgfsetfillcolor{ForestGreen!53.93!black}%
+\pgfsetstrokecolor{ForestGreen!53.93!black}%
+\draw[fill] (4.3937,4.4615) -- (4.2114,4.0737) -- (4.1061,3.6937) -- (4.2885,4.0815)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!66.46!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!66.46!black}%
+\draw[fill] (5.2076,5.901) -- (5.0253,5.4518) -- (4.92,5.4403) -- (5.1024,5.8895)--cycle;%
+\pgfsetfillcolor{ForestGreen!63.56!black}%
+\pgfsetstrokecolor{ForestGreen!63.56!black}%
+\draw[fill] (4.2603,3.5864) -- (4.0779,3.1372) -- (3.9727,2.573) -- (4.155,3.0222)--cycle;%
+\pgfsetfillcolor{ForestGreen!30.4!black}%
+\pgfsetstrokecolor{ForestGreen!30.4!black}%
+\draw[fill] (4.6043,5.0372) -- (4.4219,4.6494) -- (4.3167,4.3923) -- (4.499,4.7801)--cycle;%
+\pgfsetfillcolor{ForestGreen!45.23!black}%
+\pgfsetstrokecolor{ForestGreen!45.23!black}%
+\draw[fill] (4.499,4.7801) -- (4.3167,4.3923) -- (4.2114,4.0737) -- (4.3937,4.4615)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!59.48!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!59.48!black}%
+\draw[fill] (5.1024,5.8895) -- (4.92,5.4403) -- (4.8148,5.3673) -- (4.9971,5.8165)--cycle;%
+\pgfsetfillcolor{ForestGreen!59.49!black}%
+\pgfsetstrokecolor{ForestGreen!59.49!black}%
+\draw[fill] (4.3655,4.0893) -- (4.1832,3.6401) -- (4.0779,3.1372) -- (4.2603,3.5864)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!72.15!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!72.15!black}%
+\draw[fill] (5.4952,6.3617) -- (5.3129,5.8511) -- (5.2076,5.901) -- (5.3899,6.4116)--cycle;%
+\pgfsetfillcolor{ForestGreen!62.76!black}%
+\pgfsetstrokecolor{ForestGreen!62.76!black}%
+\draw[fill] (4.3373,3.5328) -- (4.155,3.0222) -- (4.0497,2.3966) -- (4.2321,2.9072)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!50.55!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!50.55!black}%
+\draw[fill] (4.9971,5.8165) -- (4.8148,5.3673) -- (4.7095,5.233) -- (4.8918,5.6822)--cycle;%
+\pgfsetfillcolor{ForestGreen!54.21!black}%
+\pgfsetstrokecolor{ForestGreen!54.21!black}%
+\draw[fill] (4.4708,4.5307) -- (4.2885,4.0815) -- (4.1832,3.6401) -- (4.3655,4.0893)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!38.25!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!38.25!black}%
+\draw[fill] (4.8918,5.6822) -- (4.7095,5.233) -- (4.6043,5.0372) -- (4.7866,5.4864)--cycle;%
+\pgfsetfillcolor{ForestGreen!47!black}%
+\pgfsetstrokecolor{ForestGreen!47!black}%
+\draw[fill] (4.576,4.9107) -- (4.3937,4.4615) -- (4.2885,4.0815) -- (4.4708,4.5307)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!9.79!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!9.79!black}%
+\draw[fill] (4.7866,5.4864) -- (4.6043,5.0372) -- (4.499,4.7801) -- (4.6813,5.2293)--cycle;%
+\pgfsetfillcolor{ForestGreen!36.08!black}%
+\pgfsetstrokecolor{ForestGreen!36.08!black}%
+\draw[fill] (4.6813,5.2293) -- (4.499,4.7801) -- (4.3937,4.4615) -- (4.576,4.9107)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!67.15!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!67.15!black}%
+\draw[fill] (5.3899,6.4116) -- (5.2076,5.901) -- (5.1024,5.8895) -- (5.2847,6.4001)--cycle;%
+\pgfsetfillcolor{ForestGreen!59.06!black}%
+\pgfsetstrokecolor{ForestGreen!59.06!black}%
+\draw[fill] (4.4426,4.0971) -- (4.2603,3.5864) -- (4.155,3.0222) -- (4.3373,3.5328)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!61.04!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!61.04!black}%
+\draw[fill] (5.2847,6.4001) -- (5.1024,5.8895) -- (4.9971,5.8165) -- (5.1794,6.3271)--cycle;%
+\pgfsetfillcolor{ForestGreen!54.39!black}%
+\pgfsetstrokecolor{ForestGreen!54.39!black}%
+\draw[fill] (4.5478,4.5999) -- (4.3655,4.0893) -- (4.2603,3.5864) -- (4.4426,4.0971)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!53.5!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!53.5!black}%
+\draw[fill] (5.1794,6.3271) -- (4.9971,5.8165) -- (4.8918,5.6822) -- (5.0742,6.1928)--cycle;%
+\pgfsetfillcolor{ForestGreen!48.24!black}%
+\pgfsetstrokecolor{ForestGreen!48.24!black}%
+\draw[fill] (4.6531,5.0413) -- (4.4708,4.5307) -- (4.3655,4.0893) -- (4.5478,4.5999)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!43.81!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!43.81!black}%
+\draw[fill] (5.0742,6.1928) -- (4.8918,5.6822) -- (4.7866,5.4864) -- (4.9689,5.997)--cycle;%
+\pgfsetfillcolor{ForestGreen!39.57!black}%
+\pgfsetstrokecolor{ForestGreen!39.57!black}%
+\draw[fill] (4.7584,5.4213) -- (4.576,4.9107) -- (4.4708,4.5307) -- (4.6531,5.0413)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!29.43!black}%
+\pgfsetstrokecolor{ForestGreen!50!white!29.43!black}%
+\draw[fill] (4.9689,5.997) -- (4.7866,5.4864) -- (4.6813,5.2293) -- (4.8636,5.7399)--cycle;%
+\pgfsetfillcolor{ForestGreen!24.15!black}%
+\pgfsetstrokecolor{ForestGreen!24.15!black}%
+\draw[fill] (4.8636,5.7399) -- (4.6813,5.2293) -- (4.576,4.9107) -- (4.7584,5.4213)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetstrokecolor{Crimson}%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (4.5,1.9292) -- (4.3947,2.409) -- (4.2895,2.8274) -- (4.1842,3.1844) -- (4.0789,3.4799) -- (3.9737,3.714) -- (3.8684,3.8868) -- (3.7632,3.9981) -- (3.6579,4.048);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\draw[] (3.6579,4.048) -- (3.5526,4.0365) -- (3.4474,3.9635) -- (3.3421,3.8292) -- (3.2368,3.6334) -- (3.1316,3.3763) -- (3.0263,3.0577) -- (2.9211,2.6777) -- (2.8158,2.2363) -- (2.7105,1.7335) -- (2.6053,1.1692) -- (2.5,0.5436);%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetstrokecolor{Navy}%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (3.9558,4.079) -- (4.1381,4.2211) -- (4.3204,4.4247) -- (4.5028,4.6896) -- (4.6851,5.016) -- (4.8674,5.4038) -- (5.0497,5.853) -- (5.2321,6.3636);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\draw[] (1.7679,7.1636) -- (1.9503,6.5688) -- (2.1326,6.0354) -- (2.3149,5.5634) -- (2.4972,5.1528) -- (2.6796,4.8036) -- (2.8619,4.5158) -- (3.0442,4.2895) -- (3.2265,4.1246) -- (3.4088,4.0211) -- (3.5912,3.9789) -- (3.7735,3.9983) -- (3.9558,4.079);%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\draw[Navy,line width=.8pt] (1.7679,7.1713) -- (5.2321,6.3713) -- (5.2321,0.8287);%
+\draw[Crimson,line width=.8pt] (4.5,7.4641) -- (2.5,6.0785) -- (2.5,0.5359);%
+\pgfsetmiterjoin%
+\pgfsetlinewidth{0.2pt}%
+\draw[] (0.7679,0.9359) -- (0.7679,6.4785) -- (2.7679,7.8641) -- (6.2321,7.0641) -- (6.2321,1.5215) -- (4.2321,0.1359) -- (0.7679,0.9359);%
+\draw[] (4.2321,0.1359) -- (4.2321,5.6785) -- (6.2321,7.0641);%
+\draw[] (0.7679,6.4785) -- (4.2321,5.6785);%
+\pgfsetlinewidth{0.4pt}%
+\end{scope}%
+\end{tikzpicture}%

@@ -1,0 +1,47 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (7.5,7.5);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (7.5,7.5);%
+\pgfsetroundjoin%
+\pgfsetstrokecolor{blue}%
+\draw[] (3.5839,2.2456) -- (3.4161,2.3295);%
+\draw[] (3.4161,2.2456) -- (3.5839,2.3295);%
+\pgfsetstrokecolor{black}%
+\draw[dotted] (2.7753,0.9353) -- (3.5,2.2876) -- (6.2046,2.6499);%
+\draw[dotted] (3.5,2.2876) -- (1.5201,3.2775);%
+\pgfsetstrokecolor{blue}%
+\draw[] (3.8326,3.9733) -- (3.6506,3.9283);%
+\draw[] (3.6825,4.0236) -- (3.8006,3.8779);%
+\pgfsetstrokecolor{black}%
+\draw[dotted] (6.2046,2.6499) -- (3.7416,3.9508) -- (1.5201,3.2775);%
+\draw[dotted] (3.7416,3.9508) -- (3.5,5.9249);%
+\pgfsetfillopacity{0.7}%
+\pgfsetfillcolor{Crimson!50!white!83.41!black}%
+\draw[fill] (6.2046,2.6499) -- (1.5201,3.2775) -- (3.5,5.9249)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\draw[fill] (2.7753,0.9353) -- (1.5201,3.2775) -- (6.2046,2.6499)--cycle;%
+\pgfsetfillcolor{Crimson!67.24!black}%
+\draw[fill] (2.7753,0.9353) -- (3.5,5.9249) -- (1.5201,3.2775)--cycle;%
+\pgfsetfillcolor{Crimson!88.61!black}%
+\draw[fill] (2.7753,0.9353) -- (6.2046,2.6499) -- (3.5,5.9249)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{blue}%
+\draw[] (4.0976,3.1) -- (4.2223,3.24);%
+\draw[] (4.1114,3.2502) -- (4.2086,3.0898);%
+\pgfsetstrokecolor{black}%
+\draw[dotted] (2.7753,0.9353) -- (4.16,3.17) -- (6.2046,2.6499);%
+\draw[dotted] (4.16,3.17) -- (3.5,5.9249);%
+\pgfsetstrokecolor{blue}%
+\draw[] (2.6163,3.2872) -- (2.5806,3.4713);%
+\draw[] (2.6449,3.4606) -- (2.552,3.2978);%
+\pgfsetstrokecolor{black}%
+\draw[dotted] (2.7753,0.9353) -- (2.5985,3.3792) -- (1.5201,3.2775);%
+\draw[dotted] (2.5985,3.3792) -- (3.5,5.9249);%
+\fill[opacity=1,ball color=orange] (2.7753,0.9353) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=orange] (6.2046,2.6499) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=orange] (1.5201,3.2775) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=orange] (3.5,5.9249) circle [radius=0.075cm];%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

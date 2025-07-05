@@ -1,0 +1,44 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (9.5,9.5);%
+\fill[gray!30] (-0.5,-0.5) rectangle (9.5,9.5);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.5);%
+\pgfsetroundjoin%
+\pgfsetstrokecolor{white}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!78.11!black}%
+\draw[fill] (2.8836,5.0994) -- (6.4289,4.7869) -- (8.3579,3.5149) -- (1.2673,4.14)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\draw[fill] (8.3579,3.5149) -- (3.8749,1.1685) -- (1.2673,4.14)--cycle;%
+\pgfsetfillcolor{Crimson!78.55!black}%
+\draw[fill] (3.8749,1.1685) -- (4.1874,3.6137) -- (2.8836,5.0994) -- (1.2673,4.14)--cycle;%
+\pgfsetfillcolor{Crimson!89.87!black}%
+\draw[fill] (8.3579,3.5149) -- (6.4289,4.7869) -- (4.1874,3.6137) -- (3.8749,1.1685)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillpattern{north east lines}{Navy}%
+\draw[fill,draw=none] (2.8836,5.0994) -- (4.1874,3.6137) -- (6.4289,4.7869)--cycle;%
+\pgfsetstrokecolor{white}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!78.11!black}%
+\draw[fill] (2.8836,6.6583) -- (4.5,7.6177) -- (6.4289,6.3457)--cycle;%
+\pgfsetfillcolor{Crimson!78.55!black}%
+\draw[fill] (4.1874,5.1725) -- (4.5,7.6177) -- (2.8836,6.6583)--cycle;%
+\pgfsetfillcolor{Crimson!89.87!black}%
+\draw[fill] (6.4289,6.3457) -- (4.5,7.6177) -- (4.1874,5.1725)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillpattern{north east lines}{Navy}%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\fill[opacity=1,ball color=black] (1.2673,4.14) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (3.8749,1.1685) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (8.3579,3.5149) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (4.5,7.6177) circle [radius=0.075cm];%
+\pgfsetmiterjoin%
+\pgfsetfillcolor{black}%
+\end{scope}%
+\end{tikzpicture}%

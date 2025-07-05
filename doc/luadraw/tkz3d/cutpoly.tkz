@@ -1,0 +1,54 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (9.5,7.25);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,7.25);%
+\pgfsetroundjoin%
+\pgfsetstrokecolor{Gold}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillcolor{Crimson!50!white!89.13!black}%
+\draw[fill] (2.1397,5.6802) -- (4.0882,5.1177) -- (4.0882,3.1691) -- (2.1397,3.7316)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\draw[fill] (4.0882,3.1691) -- (2.9632,2.1948) -- (1.0147,2.7573) -- (2.1397,3.7316)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!71.55!black}%
+\draw[fill] (1.0147,2.7573) -- (1.0147,3.7316) -- (1.5772,5.193) -- (2.1397,5.6802) -- (2.1397,3.7316)--cycle;%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\draw[fill] (1.5772,5.193) -- (3.5257,4.6305) -- (4.0882,5.1177) -- (2.1397,5.6802)--cycle;%
+\pgfsetfillcolor{Crimson!71.55!black}%
+\draw[fill] (3.5257,4.6305) -- (2.9632,3.1691) -- (2.9632,2.1948) -- (4.0882,3.1691) -- (4.0882,5.1177)--cycle;%
+\pgfsetfillcolor{Crimson!89.13!black}%
+\draw[fill] (1.0147,3.7316) -- (1.0147,2.7573) -- (2.9632,2.1948) -- (2.9632,3.1691)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\draw[] (1.0147,2.7573) -- (2.1397,3.7316) -- (2.1397,5.6802);%
+\draw[] (4.0882,3.1691) -- (2.1397,3.7316);%
+\draw[] (1.5772,5.193) -- (1.0147,3.7316);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!50!white!89.13!black}%
+\draw[fill] (6.0368,4.5552) -- (7.9853,3.9927) -- (7.9853,2.0441) -- (6.0368,2.6066)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\draw[fill] (7.9853,2.0441) -- (6.8603,1.0698) -- (4.9118,1.6323) -- (6.0368,2.6066)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!71.55!black}%
+\draw[fill] (4.9118,1.6323) -- (4.9118,2.6066) -- (5.4743,4.068) -- (6.0368,4.5552) -- (6.0368,2.6066)--cycle;%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\draw[fill] (5.4743,4.068) -- (7.4228,3.5055) -- (7.9853,3.9927) -- (6.0368,4.5552)--cycle;%
+\pgfsetfillcolor{Crimson!71.55!black}%
+\draw[fill] (7.4228,3.5055) -- (6.8603,2.0441) -- (6.8603,1.0698) -- (7.9853,2.0441) -- (7.9853,3.9927)--cycle;%
+\pgfsetfillcolor{Crimson!89.13!black}%
+\draw[fill] (4.9118,2.6066) -- (4.9118,1.6323) -- (6.8603,1.0698) -- (6.8603,2.0441)--cycle;%
+\pgfsetfillcolor{Crimson!95.18!black}%
+\draw[fill] (7.4228,3.5055) -- (5.4743,4.068) -- (4.9118,2.6066) -- (6.8603,2.0441)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\draw[] (4.9118,1.6323) -- (6.0368,2.6066) -- (6.0368,4.5552);%
+\draw[] (7.9853,2.0441) -- (6.0368,2.6066);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\draw[-] (1.4264,1.9889) node[cm={0.9608,-0.2774,0,1,(0,0)}] {close=false} (5.3236,0.8639) node[cm={0.9608,-0.2774,0,1,(0,0)}] {close=true};%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

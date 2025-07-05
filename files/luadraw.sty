@@ -1,4 +1,4 @@
-% luadraw.sty v1.0 du 07/02/2025%
+% luadraw.sty version 2.0 du 04/07/2025%
 %% ---------------------------------------%
 %% Copyright (C) 2025 Patrick Fradin%
 %% ---------------------------------------%
@@ -14,11 +14,12 @@
 % exec =         : (true ou false): exécute ou non le code lua, true par defaut,%
 % auto =         : (true ou false, true par défaut)): inclut ou non automatiquement le fichier tikz lorsque exec est false%
 %%
-%%%% Les options globales du package sont au nombre de 1:%
+%%%% Les options globales du package sont au nombre de 2:%
 %%
 % noexec  : redéfinit la valeur par défaut de l'option exec à la valeur false,%
 %           par conséquent les environnements luadraw ne sont pas exécutés par lua%
 %           sauf si l'option exec (ou exec=true) est mentionnée dans les options de l'environnement%
+% 3d : si cette option est utilisée alors la classe graph3d sera définie (ainsi que la classe graph), sinon seule la classe graph sera définie
 %%
 \RequirePackage{ifluatex}%
 \ifluatex%
@@ -29,7 +30,7 @@
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2025/02/21 version 1.0, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2025/07/04 version 2.0, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%
@@ -41,7 +42,9 @@
 \usetikzlibrary{decorations.markings}% %
 %
 \newif\ifluaDraw@DefaultExec\luaDraw@DefaultExectrue%%
+\newif\ifluaDraw@DefaultThreeD\luaDraw@DefaultThreeDfalse%%
 \define@key{luadraw.sty}{noexec}[]{\luaDraw@DefaultExecfalse}%%
+\define@key{luadraw.sty}{3d}[]{\luaDraw@DefaultThreeDtrue}%%
 \ProcessOptionsX%%
 %
 \def\luadrawTkzDir{}% répertoire de travail%
@@ -101,16 +104,18 @@
 }%%
 %
 \begin{luacode}
-graph = require 'luadraw_graph2d'
+graph = require 'luadraw_graph2d'  -- définition de la classe graph
 graph_name = "" -- nom du graphique (l'extension .tkz a été ajoutée)
-function graph:Save()
+function graph:Show() -- on écrit la méthode Show pour afficher et faire une sauvegarde du fichier tkz
+    self:Sendtotex()
     self:Savetofile(graph_name)
 end
-function graph:Show() -- on réécrit la méthode Show pour ajouter une sauvegarde automatique du fichier tkz
-    self:Save()
-    local str = concat(self:beginDraw(),self.export,self:endDraw())
-    tex.sprint(table.unpack(str))
+function graph:Save() -- on écrit la méthode Save pour faire une sauvegarde du fichier tkz uniquement
+    self:Savetofile(graph_name)
 end
 \end{luacode}
+\ifluaDraw@DefaultThreeD%
+\directlua{graph3d = require 'luadraw_graph3d'}% définition de la classe graph3d
+\fi%
 %
 \endinput%%

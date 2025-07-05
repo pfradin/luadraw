@@ -1,0 +1,53 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (9.5,9.5);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.5);%
+\tikzset{->-/.style={decoration={markings, mark=at position #1 with {\arrow{>}}}, postaction={decorate}}}%
+\draw[dashed,gray] (0,4.5) -- (9,4.5);%
+\draw[dashed,gray] (4.5,0) -- (4.5,9);%
+\begin{scope}%
+\draw[] (0.4932,6.5) -- (2.9589,6.5);%
+\draw[] (1.1096,5.5) -- (2.9589,8.5);%
+\pgfsetstrokecolor{blue}%
+\pgfsetlinewidth{0.8pt}%
+\draw[->-=0.5] (0.8014,7.5) .. controls (0.8014,7.1667) and (0.9555,6.5) .. (1.726,6.5);%
+\draw[->-=0.75] (1.726,6.5) .. controls (2.4966,6.5) and (3.2671,7.5) .. (3.5753,8);%
+\draw[->,red] (1.726,6.5) -- (2.6507,6.5);%
+\draw[->,red] (1.726,6.5) -- (2.6507,8);%
+\draw[-] (2.0342,5.5) node[below] {\tiny Point ordinaire} (2.9589,6.5) node[right,red] {\tiny $f^{(p)}(t_0)$} (2.6507,8) node[left=0.05cm,red] {\tiny $f^{(q)}(t_0)$};%
+\end{scope}%
+\begin{scope}%
+\draw[] (4.9932,6.5) -- (7.4589,6.5);%
+\draw[] (5.6096,5.5) -- (7.4589,8.5);%
+\pgfsetstrokecolor{blue}%
+\pgfsetlinewidth{0.8pt}%
+\draw[->-=0.5] (4.6849,5.5) .. controls (4.8904,5.8333) and (5.4555,6.5) .. (6.226,6.5);%
+\draw[->-=0.75] (6.226,6.5) .. controls (6.9966,6.5) and (7.7671,7.5) .. (8.0753,8);%
+\draw[->,red] (6.226,6.5) -- (7.1507,6.5);%
+\draw[->,red] (6.226,6.5) -- (7.1507,8);%
+\draw[-] (6.5342,5.5) node[below] {\tiny Point d'inflexion} (7.4589,6.5) node[right,red] {\tiny $f^{(p)}(t_0)$} (7.1507,8) node[left=0.05cm,red] {\tiny $f^{(q)}(t_0)$};%
+\end{scope}%
+\begin{scope}%
+\draw[] (0.4932,2) -- (2.9589,2);%
+\draw[] (1.1096,1) -- (2.9589,4);%
+\pgfsetstrokecolor{blue}%
+\pgfsetlinewidth{0.8pt}%
+\draw[->-=0.5] (2.6507,1) .. controls (2.6507,1.3333) and (2.4966,2) .. (1.726,2);%
+\draw[->-=0.75] (1.726,2) .. controls (2.4966,2) and (3.2671,3) .. (3.5753,3.5);%
+\draw[->,red] (1.726,2) -- (2.6507,2);%
+\draw[->,red] (1.726,2) -- (2.6507,3.5);%
+\draw[-] (2.0342,1) node[below] {\tiny Rebroussement 1ère espèce} (2.9589,2) node[right,red] {\tiny $f^{(p)}(t_0)$} (2.6507,3.5) node[left=0.05cm,red] {\tiny $f^{(q)}(t_0)$};%
+\end{scope}%
+\begin{scope}%
+\draw[] (4.9932,2) -- (7.4589,2);%
+\draw[] (5.6096,1) -- (7.4589,4);%
+\pgfsetstrokecolor{blue}%
+\pgfsetlinewidth{0.8pt}%
+\draw[->-=0.5] (8.0753,4) .. controls (7.7671,3.3333) and (6.9966,2) .. (6.226,2);%
+\draw[->-=0.75] (6.226,2) .. controls (6.9966,2) and (7.7671,3) .. (8.0753,3.5);%
+\draw[->,red] (6.226,2) -- (7.1507,2);%
+\draw[->,red] (6.226,2) -- (7.1507,3.5);%
+\draw[-] (6.5342,1) node[below] {\tiny Rebroussement 2ème espèce} (7.4589,2) node[right,red] {\tiny $f^{(p)}(t_0)$} (7.1507,3.5) node[left=0.05cm,red] {\tiny $f^{(q)}(t_0)$};%
+\end{scope}%
+\end{scope}%
+\end{tikzpicture}%

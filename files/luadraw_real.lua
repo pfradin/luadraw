@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2025/02/21
--- version 1.0
+-- date 2025/07/04
+-- version 2.0
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -63,6 +63,15 @@ function linspace(a,b,nbdots)
         x = x+pas
     end
     return res
+end
+
+function reverse(tbl)
+-- renvoie la séquence inverse de tbl (tbl n'est pas modifiée)
+    local rep = {}
+    for k = #tbl, 1, -1 do
+        table.insert(rep,tbl[k])
+    end
+    return rep
 end
 
 function gcd(a,b)

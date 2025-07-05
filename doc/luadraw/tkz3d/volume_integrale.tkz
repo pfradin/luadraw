@@ -1,0 +1,1843 @@
+\begin{tikzpicture}%
+\useasboundingbox (0,0) rectangle (10.0,9.7548094716167);%
+\begin{scope}%
+\clip (0,0) rectangle (10.0,9.7548094716167);%
+\pgfsetroundjoin%
+\pgfsetfillcolor{LightGray}%
+\fill[] (6.6188,1.5484) -- (1.5873,3.0009) -- (4.4923,5.5166) -- (9.5238,4.0642)--cycle;%
+\fill[] (9.5238,7.8378) -- (4.4923,9.2903) -- (4.4923,5.5166) -- (9.5238,4.0642)--cycle;%
+\fill[] (1.5873,6.7745) -- (1.5873,3.0009) -- (4.4923,5.5166) -- (4.4923,9.2903)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{gray}%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.1pt}%
+\draw[] (4.4923,5.5166) -- (4.4923,9.2903);%
+\draw[] (5.1212,5.3351) -- (5.1212,9.1087);%
+\draw[] (5.7502,5.1535) -- (5.7502,8.9272);%
+\draw[] (6.3791,4.972) -- (6.3791,8.7456);%
+\draw[] (7.008,4.7904) -- (7.008,8.5641);%
+\draw[] (7.637,4.6088) -- (7.637,8.3825);%
+\draw[] (8.2659,4.4273) -- (8.2659,8.2009);%
+\draw[] (8.8949,4.2457) -- (8.8949,8.0194);%
+\draw[] (9.5238,4.0642) -- (9.5238,7.8378);%
+\draw[] (4.4923,5.5166) -- (9.5238,4.0642);%
+\draw[] (4.4923,6.1456) -- (9.5238,4.6931);%
+\draw[] (4.4923,6.7745) -- (9.5238,5.322);%
+\draw[] (4.4923,7.4035) -- (9.5238,5.951);%
+\draw[] (4.4923,8.0324) -- (9.5238,6.5799);%
+\draw[] (4.4923,8.6614) -- (9.5238,7.2089);%
+\draw[] (4.4923,9.2903) -- (9.5238,7.8378);%
+\draw[] (4.4923,5.5166) -- (4.4923,9.2903);%
+\draw[] (4.1291,5.2022) -- (4.1291,8.9758);%
+\draw[] (3.766,4.8877) -- (3.766,8.6614);%
+\draw[] (3.4029,4.5732) -- (3.4029,8.3469);%
+\draw[] (3.0398,4.2588) -- (3.0398,8.0324);%
+\draw[] (2.6767,3.9443) -- (2.6767,7.7179);%
+\draw[] (2.3135,3.6298) -- (2.3135,7.4035);%
+\draw[] (1.9504,3.3153) -- (1.9504,7.089);%
+\draw[] (1.5873,3.0009) -- (1.5873,6.7745);%
+\draw[] (4.4923,5.5166) -- (1.5873,3.0009);%
+\draw[] (4.4923,6.1456) -- (1.5873,3.6298);%
+\draw[] (4.4923,6.7745) -- (1.5873,4.2588);%
+\draw[] (4.4923,7.4035) -- (1.5873,4.8877);%
+\draw[] (4.4923,8.0324) -- (1.5873,5.5166);%
+\draw[] (4.4923,8.6614) -- (1.5873,6.1456);%
+\draw[] (4.4923,9.2903) -- (1.5873,6.7745);%
+\draw[] (4.4923,5.5166) -- (9.5238,4.0642);%
+\draw[] (4.1291,5.2022) -- (9.1607,3.7497);%
+\draw[] (3.766,4.8877) -- (8.7976,3.4352);%
+\draw[] (3.4029,4.5732) -- (8.4344,3.1207);%
+\draw[] (3.0398,4.2588) -- (8.0713,2.8063);%
+\draw[] (2.6767,3.9443) -- (7.7082,2.4918);%
+\draw[] (2.3135,3.6298) -- (7.3451,2.1773);%
+\draw[] (1.9504,3.3153) -- (6.982,1.8629);%
+\draw[] (1.5873,3.0009) -- (6.6188,1.5484);%
+\draw[] (4.4923,5.5166) -- (1.5873,3.0009);%
+\draw[] (5.1212,5.3351) -- (2.2162,2.8193);%
+\draw[] (5.7502,5.1535) -- (2.8452,2.6377);%
+\draw[] (6.3791,4.972) -- (3.4741,2.4562);%
+\draw[] (7.008,4.7904) -- (4.1031,2.2746);%
+\draw[] (7.637,4.6088) -- (4.732,2.0931);%
+\draw[] (8.2659,4.4273) -- (5.361,1.9115);%
+\draw[] (8.8949,4.2457) -- (5.9899,1.7299);%
+\draw[] (9.5238,4.0642) -- (6.6188,1.5484);%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\draw[] (9.5238,4.0642) -- (6.6188,1.5484);%
+\draw[] (9.5238,4.0642) -- (9.6199,4.0364);%
+\draw[] (9.1607,3.7497) -- (9.2568,3.7219);%
+\draw[] (8.7976,3.4352) -- (8.8936,3.4075);%
+\draw[] (8.4344,3.1207) -- (8.5305,3.093);%
+\draw[] (8.0713,2.8063) -- (8.1674,2.7785);%
+\draw[] (7.7082,2.4918) -- (7.8043,2.4641);%
+\draw[] (7.3451,2.1773) -- (7.4412,2.1496);%
+\draw[] (6.982,1.8629) -- (7.078,1.8351);%
+\draw[] (6.6188,1.5484) -- (6.7149,1.5206);%
+\draw[-] (8.888,2.5705) node[] {$x$};%
+\draw[] (1.5873,3.0009) -- (6.6188,1.5484);%
+\draw[] (1.5873,3.0009) -- (1.5117,2.9354);%
+\draw[] (2.2162,2.8193) -- (2.1407,2.7538);%
+\draw[] (2.8452,2.6377) -- (2.7696,2.5723);%
+\draw[] (3.4741,2.4562) -- (3.3985,2.3907);%
+\draw[] (4.1031,2.2746) -- (4.0275,2.2092);%
+\draw[] (4.732,2.0931) -- (4.6564,2.0276);%
+\draw[] (5.361,1.9115) -- (5.2854,1.846);%
+\draw[] (5.9899,1.7299) -- (5.9143,1.6645);%
+\draw[] (6.6188,1.5484) -- (6.5433,1.4829);%
+\draw[-] (3.4605,1.7182) node[] {$y$};%
+\draw[] (1.5873,3.0009) -- (1.5873,6.7745);%
+\draw[] (1.5873,3.0009) -- (1.4912,3.0286);%
+\draw[] (1.5873,3.6298) -- (1.4912,3.6575);%
+\draw[] (1.5873,4.2588) -- (1.4912,4.2865);%
+\draw[] (1.5873,4.8877) -- (1.4912,4.9154);%
+\draw[] (1.5873,5.5166) -- (1.4912,5.5444);%
+\draw[] (1.5873,6.1456) -- (1.4912,6.1733);%
+\draw[] (1.5873,6.7745) -- (1.4912,6.8023);%
+\draw[-] (0.7706,5.1234) node[] {$z$};%
+\pgfsetfillpattern{north west lines}{black}%
+\draw[fill] (4.7581,5.0206) -- (8.5317,3.9312) -- (6.353,2.0444) -- (2.5794,3.1338);%
+\pgfsetfillopacity{0.7}%
+\pgfsetfillcolor{Crimson!50!white!89.13!black}%
+\draw[fill] (8.5317,3.9312) -- (4.7581,5.0206) -- (4.7581,7.4539) -- (4.9153,7.2572) -- (5.0726,7.0755) -- (5.2298,6.9171) -- (5.387,6.7892) -- (5.5443,6.6968) -- (5.7015,6.643) -- (5.8587,6.6281) -- (6.016,6.6503) -- (6.1732,6.7054) -- (6.3304,6.7872) -- (6.4877,6.8878) -- (6.6449,6.998) -- (6.8022,7.1082) -- (6.9594,7.2087) -- (7.1166,7.2905) -- (7.2739,7.3457) -- (7.4311,7.3679) -- (7.5883,7.353) -- (7.7456,7.2991) -- (7.9028,7.2068) -- (8.06,7.0788) -- (8.2173,6.9205) -- (8.3745,6.7387) -- (8.5317,6.5421)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!71.55!black}%
+\draw[fill] (4.7581,5.0206) -- (2.5794,3.1338) -- (2.5794,5.5671) -- (2.6701,5.687) -- (2.7609,5.8431) -- (2.8517,6.0305) -- (2.9425,6.2425) -- (3.0333,6.4707) -- (3.124,6.7059) -- (3.2148,6.9384) -- (3.3056,7.1585) -- (3.3964,7.3575) -- (3.4872,7.5279) -- (3.5779,7.6639) -- (3.6687,7.7621) -- (3.7595,7.8212) -- (3.8503,7.8423) -- (3.9411,7.8292) -- (4.0318,7.7874) -- (4.1226,7.7246) -- (4.2134,7.6493) -- (4.3042,7.5714) -- (4.395,7.5004) -- (4.4857,7.4456) -- (4.5765,7.4155) -- (4.6673,7.4166) -- (4.7581,7.4539)--cycle;%
+\pgfsetfillcolor{Crimson!71.55!black}%
+\draw[fill] (6.353,2.0444) -- (8.5317,3.9312) -- (8.5317,6.5421) -- (8.441,6.5048) -- (8.3502,6.5036) -- (8.2594,6.5338) -- (8.1686,6.5885) -- (8.0778,6.6595) -- (7.9871,6.7375) -- (7.8963,6.8127) -- (7.8055,6.8756) -- (7.7147,6.9173) -- (7.6239,6.9305) -- (7.5332,6.9093) -- (7.4424,6.8502) -- (7.3516,6.7521) -- (7.2608,6.616) -- (7.17,6.4456) -- (7.0793,6.2466) -- (6.9885,6.0265) -- (6.8977,5.7941) -- (6.8069,5.5589) -- (6.7161,5.3306) -- (6.6254,5.1187) -- (6.5346,4.9312) -- (6.4438,4.7752) -- (6.353,4.6552)--cycle;%
+\pgfsetfillcolor{Crimson!89.13!black}%
+\draw[fill] (2.5794,3.1338) -- (6.353,2.0444) -- (6.353,4.6552) -- (6.1958,4.8519) -- (6.0386,5.0337) -- (5.8813,5.192) -- (5.7241,5.3199) -- (5.5668,5.4123) -- (5.4096,5.4662) -- (5.2524,5.4811) -- (5.0951,5.4588) -- (4.9379,5.4037) -- (4.7807,5.3219) -- (4.6234,5.2214) -- (4.4662,5.1112) -- (4.309,5.0009) -- (4.1517,4.9004) -- (3.9945,4.8186) -- (3.8373,4.7635) -- (3.68,4.7413) -- (3.5228,4.7561) -- (3.3655,4.81) -- (3.2083,4.9024) -- (3.0511,5.0303) -- (2.8938,5.1887) -- (2.7366,5.3704) -- (2.5794,5.5671)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillpattern{north west lines}{black}%
+\pgfsetfillcolor{cyan!75.95!black}%
+\pgfsetstrokecolor{cyan!75.95!black}%
+\pgfsetlinewidth{0.1pt}%
+\draw[fill] (4.9153,7.2572) -- (4.8245,7.2199) -- (4.9818,7.0382) -- (5.0726,7.0755)--cycle;%
+\pgfsetfillcolor{cyan!76.36!black}%
+\pgfsetstrokecolor{cyan!76.36!black}%
+\draw[fill] (4.7581,7.4539) -- (4.6673,7.4166) -- (4.8245,7.2199) -- (4.9153,7.2572)--cycle;%
+\pgfsetfillcolor{cyan!75.03!black}%
+\pgfsetstrokecolor{cyan!75.03!black}%
+\draw[fill] (5.0726,7.0755) -- (4.9818,7.0382) -- (5.139,6.8798) -- (5.2298,6.9171)--cycle;%
+\pgfsetfillcolor{cyan!73.12!black}%
+\pgfsetstrokecolor{cyan!73.12!black}%
+\draw[fill] (5.2298,6.9171) -- (5.139,6.8798) -- (5.2963,6.7519) -- (5.387,6.7892)--cycle;%
+\pgfsetfillcolor{cyan!69.43!black}%
+\pgfsetstrokecolor{cyan!69.43!black}%
+\draw[fill] (5.387,6.7892) -- (5.2963,6.7519) -- (5.4535,6.6595) -- (5.5443,6.6968)--cycle;%
+\pgfsetfillcolor{cyan!63.01!black}%
+\pgfsetstrokecolor{cyan!63.01!black}%
+\draw[fill] (5.5443,6.6968) -- (5.4535,6.6595) -- (5.6107,6.6057) -- (5.7015,6.643)--cycle;%
+\pgfsetfillcolor{cyan!66.33!black}%
+\pgfsetstrokecolor{cyan!66.33!black}%
+\draw[fill] (4.8245,7.2199) -- (4.7338,7.2188) -- (4.891,7.037) -- (4.9818,7.0382)--cycle;%
+\pgfsetfillcolor{cyan!67.3!black}%
+\pgfsetstrokecolor{cyan!67.3!black}%
+\draw[fill] (4.6673,7.4166) -- (4.5765,7.4155) -- (4.7338,7.2188) -- (4.8245,7.2199)--cycle;%
+\pgfsetfillcolor{cyan!64.41!black}%
+\pgfsetstrokecolor{cyan!64.41!black}%
+\draw[fill] (4.9818,7.0382) -- (4.891,7.037) -- (5.0482,6.8787) -- (5.139,6.8798)--cycle;%
+\pgfsetfillcolor{cyan!60.98!black}%
+\pgfsetstrokecolor{cyan!60.98!black}%
+\draw[fill] (5.139,6.8798) -- (5.0482,6.8787) -- (5.2055,6.7508) -- (5.2963,6.7519)--cycle;%
+\pgfsetfillcolor{cyan!53.37!black}%
+\pgfsetstrokecolor{cyan!53.37!black}%
+\draw[fill] (5.7015,6.643) -- (5.6107,6.6057) -- (5.768,6.5908) -- (5.8587,6.6281)--cycle;%
+\pgfsetfillcolor{cyan!55.08!black}%
+\pgfsetstrokecolor{cyan!55.08!black}%
+\draw[fill] (5.2963,6.7519) -- (5.2055,6.7508) -- (5.3627,6.6584) -- (5.4535,6.6595)--cycle;%
+\pgfsetfillcolor{cyan!45.27!black}%
+\pgfsetstrokecolor{cyan!45.27!black}%
+\draw[fill] (5.4535,6.6595) -- (5.3627,6.6584) -- (5.5199,6.6045) -- (5.6107,6.6057)--cycle;%
+\pgfsetfillcolor{cyan!40.47!black}%
+\pgfsetstrokecolor{cyan!40.47!black}%
+\draw[fill] (5.8587,6.6281) -- (5.768,6.5908) -- (5.9252,6.613) -- (6.016,6.6503)--cycle;%
+\pgfsetfillcolor{cyan!56.39!black}%
+\pgfsetstrokecolor{cyan!56.39!black}%
+\draw[fill] (4.7338,7.2188) -- (4.643,7.2489) -- (4.8002,7.0672) -- (4.891,7.037)--cycle;%
+\pgfsetfillcolor{cyan!58.03!black}%
+\pgfsetstrokecolor{cyan!58.03!black}%
+\draw[fill] (4.5765,7.4155) -- (4.4857,7.4456) -- (4.643,7.2489) -- (4.7338,7.2188)--cycle;%
+\pgfsetfillcolor{cyan!53.24!black}%
+\pgfsetstrokecolor{cyan!53.24!black}%
+\draw[fill] (4.891,7.037) -- (4.8002,7.0672) -- (4.9575,6.9088) -- (5.0482,6.8787)--cycle;%
+\pgfsetfillcolor{cyan!27.89!black}%
+\pgfsetstrokecolor{cyan!27.89!black}%
+\draw[fill] (5.6107,6.6057) -- (5.5199,6.6045) -- (5.6772,6.5896) -- (5.768,6.5908)--cycle;%
+\pgfsetfillcolor{cyan!47.72!black}%
+\pgfsetstrokecolor{cyan!47.72!black}%
+\draw[fill] (5.0482,6.8787) -- (4.9575,6.9088) -- (5.1147,6.7809) -- (5.2055,6.7508)--cycle;%
+\pgfsetfillcolor{cyan!37.86!black}%
+\pgfsetstrokecolor{cyan!37.86!black}%
+\draw[fill] (5.2055,6.7508) -- (5.1147,6.7809) -- (5.2719,6.6886) -- (5.3627,6.6584)--cycle;%
+\pgfsetfillcolor{cyan!21.51!black}%
+\pgfsetstrokecolor{cyan!21.51!black}%
+\draw[fill] (6.016,6.6503) -- (5.9252,6.613) -- (6.0824,6.6681) -- (6.1732,6.7054)--cycle;%
+\pgfsetfillcolor{cyan!10.63!black}%
+\pgfsetstrokecolor{cyan!10.63!black}%
+\draw[fill] (5.3627,6.6584) -- (5.2719,6.6886) -- (5.4292,6.6347) -- (5.5199,6.6045)--cycle;%
+\pgfsetfillcolor{cyan!50!white!29.34!black}%
+\pgfsetstrokecolor{cyan!50!white!29.34!black}%
+\draw[fill] (5.768,6.5908) -- (5.6772,6.5896) -- (5.8344,6.6119) -- (5.9252,6.613)--cycle;%
+\pgfsetfillcolor{cyan!47.11!black}%
+\pgfsetstrokecolor{cyan!47.11!black}%
+\draw[fill] (4.643,7.2489) -- (4.5522,7.3037) -- (4.7094,7.1219) -- (4.8002,7.0672)--cycle;%
+\pgfsetfillcolor{cyan!49.51!black}%
+\pgfsetstrokecolor{cyan!49.51!black}%
+\draw[fill] (4.4857,7.4456) -- (4.395,7.5004) -- (4.5522,7.3037) -- (4.643,7.2489)--cycle;%
+\pgfsetfillcolor{cyan!42.4!black}%
+\pgfsetstrokecolor{cyan!42.4!black}%
+\draw[fill] (4.8002,7.0672) -- (4.7094,7.1219) -- (4.8667,6.9636) -- (4.9575,6.9088)--cycle;%
+\pgfsetfillcolor{cyan!50!white!37.06!black}%
+\pgfsetstrokecolor{cyan!50!white!37.06!black}%
+\draw[fill] (5.5199,6.6045) -- (5.4292,6.6347) -- (5.5864,6.6198) -- (5.6772,6.5896)--cycle;%
+\pgfsetfillcolor{cyan!33.42!black}%
+\pgfsetstrokecolor{cyan!33.42!black}%
+\draw[fill] (4.9575,6.9088) -- (4.8667,6.9636) -- (5.0239,6.8357) -- (5.1147,6.7809)--cycle;%
+\pgfsetfillcolor{cyan!50!white!26.47!black}%
+\pgfsetstrokecolor{cyan!50!white!26.47!black}%
+\draw[fill] (6.1732,6.7054) -- (6.0824,6.6681) -- (6.2397,6.7499) -- (6.3304,6.7872)--cycle;%
+\pgfsetfillcolor{cyan!50!white!41.93!black}%
+\pgfsetstrokecolor{cyan!50!white!41.93!black}%
+\draw[fill] (5.9252,6.613) -- (5.8344,6.6119) -- (5.9916,6.667) -- (6.0824,6.6681)--cycle;%
+\pgfsetfillcolor{cyan!50!white!12.01!black}%
+\pgfsetstrokecolor{cyan!50!white!12.01!black}%
+\draw[fill] (5.1147,6.7809) -- (5.0239,6.8357) -- (5.1811,6.7433) -- (5.2719,6.6886)--cycle;%
+\pgfsetfillcolor{cyan!50!white!47.93!black}%
+\pgfsetstrokecolor{cyan!50!white!47.93!black}%
+\draw[fill] (5.6772,6.5896) -- (5.5864,6.6198) -- (5.7436,6.642) -- (5.8344,6.6119)--cycle;%
+\pgfsetfillcolor{cyan!50!white!37.46!black}%
+\pgfsetstrokecolor{cyan!50!white!37.46!black}%
+\draw[fill] (5.2719,6.6886) -- (5.1811,6.7433) -- (5.3384,6.6894) -- (5.4292,6.6347)--cycle;%
+\pgfsetfillcolor{cyan!50!white!34.76!black}%
+\pgfsetstrokecolor{cyan!50!white!34.76!black}%
+\draw[fill] (6.3304,6.7872) -- (6.2397,6.7499) -- (6.3969,6.8505) -- (6.4877,6.8878)--cycle;%
+\pgfsetfillcolor{cyan!50!white!47.99!black}%
+\pgfsetstrokecolor{cyan!50!white!47.99!black}%
+\draw[fill] (6.0824,6.6681) -- (5.9916,6.667) -- (6.1489,6.7488) -- (6.2397,6.7499)--cycle;%
+\pgfsetfillcolor{cyan!50!white!48.76!black}%
+\pgfsetstrokecolor{cyan!50!white!48.76!black}%
+\draw[fill] (5.4292,6.6347) -- (5.3384,6.6894) -- (5.4956,6.6745) -- (5.5864,6.6198)--cycle;%
+\pgfsetfillcolor{cyan!39.69!black}%
+\pgfsetstrokecolor{cyan!39.69!black}%
+\draw[fill] (4.5522,7.3037) -- (4.4614,7.3747) -- (4.6187,7.1929) -- (4.7094,7.1219)--cycle;%
+\pgfsetfillcolor{cyan!42.91!black}%
+\pgfsetstrokecolor{cyan!42.91!black}%
+\draw[fill] (4.395,7.5004) -- (4.3042,7.5714) -- (4.4614,7.3747) -- (4.5522,7.3037)--cycle;%
+\pgfsetfillcolor{cyan!33!black}%
+\pgfsetstrokecolor{cyan!33!black}%
+\draw[fill] (4.7094,7.1219) -- (4.6187,7.1929) -- (4.7759,7.0346) -- (4.8667,6.9636)--cycle;%
+\pgfsetfillcolor{cyan!50!white!54.1!black}%
+\pgfsetstrokecolor{cyan!50!white!54.1!black}%
+\draw[fill] (5.8344,6.6119) -- (5.7436,6.642) -- (5.9009,6.6972) -- (5.9916,6.667)--cycle;%
+\pgfsetfillcolor{cyan!15.33!black}%
+\pgfsetstrokecolor{cyan!15.33!black}%
+\draw[fill] (4.8667,6.9636) -- (4.7759,7.0346) -- (4.9331,6.9067) -- (5.0239,6.8357)--cycle;%
+\pgfsetfillcolor{cyan!50!white!32.39!black}%
+\pgfsetstrokecolor{cyan!50!white!32.39!black}%
+\draw[fill] (5.0239,6.8357) -- (4.9331,6.9067) -- (5.0904,6.8143) -- (5.1811,6.7433)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.89!black}%
+\pgfsetstrokecolor{cyan!50!white!55.89!black}%
+\draw[fill] (5.5864,6.6198) -- (5.4956,6.6745) -- (5.6529,6.6968) -- (5.7436,6.642)--cycle;%
+\pgfsetfillcolor{cyan!50!white!45.25!black}%
+\pgfsetstrokecolor{cyan!50!white!45.25!black}%
+\draw[fill] (5.1811,6.7433) -- (5.0904,6.8143) -- (5.2476,6.7604) -- (5.3384,6.6894)--cycle;%
+\pgfsetfillcolor{cyan!50!white!37.78!black}%
+\pgfsetstrokecolor{cyan!50!white!37.78!black}%
+\draw[fill] (6.4877,6.8878) -- (6.3969,6.8505) -- (6.5541,6.9607) -- (6.6449,6.998)--cycle;%
+\pgfsetfillcolor{cyan!50!white!51.14!black}%
+\pgfsetstrokecolor{cyan!50!white!51.14!black}%
+\draw[fill] (6.2397,6.7499) -- (6.1489,6.7488) -- (6.3061,6.8493) -- (6.3969,6.8505)--cycle;%
+\pgfsetfillcolor{cyan!50!white!57.69!black}%
+\pgfsetstrokecolor{cyan!50!white!57.69!black}%
+\draw[fill] (5.9916,6.667) -- (5.9009,6.6972) -- (6.0581,6.7789) -- (6.1489,6.7488)--cycle;%
+\pgfsetfillcolor{cyan!50!white!53.93!black}%
+\pgfsetstrokecolor{cyan!50!white!53.93!black}%
+\draw[fill] (5.3384,6.6894) -- (5.2476,6.7604) -- (5.4048,6.7455) -- (5.4956,6.6745)--cycle;%
+\pgfsetfillcolor{cyan!35.97!black}%
+\pgfsetstrokecolor{cyan!35.97!black}%
+\draw[fill] (4.4614,7.3747) -- (4.3706,7.4527) -- (4.5279,7.2709) -- (4.6187,7.1929)--cycle;%
+\pgfsetfillcolor{cyan!39.71!black}%
+\pgfsetstrokecolor{cyan!39.71!black}%
+\draw[fill] (4.3042,7.5714) -- (4.2134,7.6493) -- (4.3706,7.4527) -- (4.4614,7.3747)--cycle;%
+\pgfsetfillcolor{cyan!27.73!black}%
+\pgfsetstrokecolor{cyan!27.73!black}%
+\draw[fill] (4.6187,7.1929) -- (4.5279,7.2709) -- (4.6851,7.1126) -- (4.7759,7.0346)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.36!black}%
+\pgfsetstrokecolor{cyan!50!white!60.36!black}%
+\draw[fill] (5.7436,6.642) -- (5.6529,6.6968) -- (5.8101,6.7519) -- (5.9009,6.6972)--cycle;%
+\pgfsetfillcolor{cyan!50!white!17.63!black}%
+\pgfsetstrokecolor{cyan!50!white!17.63!black}%
+\draw[fill] (4.7759,7.0346) -- (4.6851,7.1126) -- (4.8424,6.9846) -- (4.9331,6.9067)--cycle;%
+\pgfsetfillcolor{cyan!50!white!36.68!black}%
+\pgfsetstrokecolor{cyan!50!white!36.68!black}%
+\draw[fill] (4.9331,6.9067) -- (4.8424,6.9846) -- (4.9996,6.8923) -- (5.0904,6.8143)--cycle;%
+\pgfsetfillcolor{cyan!50!white!37.78!black}%
+\pgfsetstrokecolor{cyan!50!white!37.78!black}%
+\draw[fill] (6.6449,6.998) -- (6.5541,6.9607) -- (6.7114,7.0709) -- (6.8022,7.1082)--cycle;%
+\pgfsetfillcolor{cyan!50!white!52.52!black}%
+\pgfsetstrokecolor{cyan!50!white!52.52!black}%
+\draw[fill] (6.3969,6.8505) -- (6.3061,6.8493) -- (6.4634,6.9595) -- (6.5541,6.9607)--cycle;%
+\pgfsetfillcolor{cyan!50!white!59.81!black}%
+\pgfsetstrokecolor{cyan!50!white!59.81!black}%
+\draw[fill] (5.4956,6.6745) -- (5.4048,6.7455) -- (5.5621,6.7678) -- (5.6529,6.6968)--cycle;%
+\pgfsetfillcolor{cyan!50!white!59.67!black}%
+\pgfsetstrokecolor{cyan!50!white!59.67!black}%
+\draw[fill] (6.1489,6.7488) -- (6.0581,6.7789) -- (6.2153,6.8795) -- (6.3061,6.8493)--cycle;%
+\pgfsetfillcolor{cyan!50!white!47.84!black}%
+\pgfsetstrokecolor{cyan!50!white!47.84!black}%
+\draw[fill] (5.0904,6.8143) -- (4.9996,6.8923) -- (5.1568,6.8384) -- (5.2476,6.7604)--cycle;%
+\pgfsetfillcolor{cyan!50!white!63.05!black}%
+\pgfsetstrokecolor{cyan!50!white!63.05!black}%
+\draw[fill] (5.9009,6.6972) -- (5.8101,6.7519) -- (5.9673,6.8337) -- (6.0581,6.7789)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.77!black}%
+\pgfsetstrokecolor{cyan!50!white!55.77!black}%
+\draw[fill] (5.2476,6.7604) -- (5.1568,6.8384) -- (5.3141,6.8235) -- (5.4048,6.7455)--cycle;%
+\pgfsetfillcolor{cyan!37.5!black}%
+\pgfsetstrokecolor{cyan!37.5!black}%
+\draw[fill] (4.3706,7.4527) -- (4.2799,7.5279) -- (4.4371,7.3461) -- (4.5279,7.2709)--cycle;%
+\pgfsetfillcolor{cyan!50!white!63.59!black}%
+\pgfsetstrokecolor{cyan!50!white!63.59!black}%
+\draw[fill] (5.6529,6.6968) -- (5.5621,6.7678) -- (5.7193,6.8229) -- (5.8101,6.7519)--cycle;%
+\pgfsetfillcolor{cyan!41.01!black}%
+\pgfsetstrokecolor{cyan!41.01!black}%
+\draw[fill] (4.2134,7.6493) -- (4.1226,7.7246) -- (4.2799,7.5279) -- (4.3706,7.4527)--cycle;%
+\pgfsetfillcolor{cyan!29.97!black}%
+\pgfsetstrokecolor{cyan!29.97!black}%
+\draw[fill] (4.5279,7.2709) -- (4.4371,7.3461) -- (4.5943,7.1878) -- (4.6851,7.1126)--cycle;%
+\pgfsetfillcolor{cyan!50!white!34.76!black}%
+\pgfsetstrokecolor{cyan!50!white!34.76!black}%
+\draw[fill] (6.8022,7.1082) -- (6.7114,7.0709) -- (6.8686,7.1714) -- (6.9594,7.2087)--cycle;%
+\pgfsetfillcolor{cyan!50!white!52.52!black}%
+\pgfsetstrokecolor{cyan!50!white!52.52!black}%
+\draw[fill] (6.5541,6.9607) -- (6.4634,6.9595) -- (6.6206,7.0697) -- (6.7114,7.0709)--cycle;%
+\pgfsetfillcolor{cyan!50!white!11.34!black}%
+\pgfsetstrokecolor{cyan!50!white!11.34!black}%
+\draw[fill] (4.6851,7.1126) -- (4.5943,7.1878) -- (4.7516,7.0599) -- (4.8424,6.9846)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.56!black}%
+\pgfsetstrokecolor{cyan!50!white!60.56!black}%
+\draw[fill] (6.3061,6.8493) -- (6.2153,6.8795) -- (6.3726,6.9897) -- (6.4634,6.9595)--cycle;%
+\pgfsetfillcolor{cyan!50!white!35.1!black}%
+\pgfsetstrokecolor{cyan!50!white!35.1!black}%
+\draw[fill] (4.8424,6.9846) -- (4.7516,7.0599) -- (4.9088,6.9675) -- (4.9996,6.8923)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.56!black}%
+\pgfsetstrokecolor{cyan!50!white!64.56!black}%
+\draw[fill] (6.0581,6.7789) -- (5.9673,6.8337) -- (6.1246,6.9342) -- (6.2153,6.8795)--cycle;%
+\pgfsetfillcolor{cyan!50!white!61.25!black}%
+\pgfsetstrokecolor{cyan!50!white!61.25!black}%
+\draw[fill] (5.4048,6.7455) -- (5.3141,6.8235) -- (5.4713,6.8457) -- (5.5621,6.7678)--cycle;%
+\pgfsetfillcolor{cyan!50!white!46.85!black}%
+\pgfsetstrokecolor{cyan!50!white!46.85!black}%
+\draw[fill] (4.9996,6.8923) -- (4.9088,6.9675) -- (5.066,6.9136) -- (5.1568,6.8384)--cycle;%
+\pgfsetfillcolor{cyan!50!white!65.9!black}%
+\pgfsetstrokecolor{cyan!50!white!65.9!black}%
+\draw[fill] (5.8101,6.7519) -- (5.7193,6.8229) -- (5.8765,6.9047) -- (5.9673,6.8337)--cycle;%
+\pgfsetfillcolor{cyan!50!white!26.47!black}%
+\pgfsetstrokecolor{cyan!50!white!26.47!black}%
+\draw[fill] (6.9594,7.2087) -- (6.8686,7.1714) -- (7.0258,7.2532) -- (7.1166,7.2905)--cycle;%
+\pgfsetfillcolor{cyan!50!white!51.14!black}%
+\pgfsetstrokecolor{cyan!50!white!51.14!black}%
+\draw[fill] (6.7114,7.0709) -- (6.6206,7.0697) -- (6.7778,7.1703) -- (6.8686,7.1714)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.56!black}%
+\pgfsetstrokecolor{cyan!50!white!60.56!black}%
+\draw[fill] (6.4634,6.9595) -- (6.3726,6.9897) -- (6.5298,7.0999) -- (6.6206,7.0697)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.06!black}%
+\pgfsetstrokecolor{cyan!50!white!55.06!black}%
+\draw[fill] (5.1568,6.8384) -- (5.066,6.9136) -- (5.2233,6.8987) -- (5.3141,6.8235)--cycle;%
+\pgfsetfillcolor{cyan!43.57!black}%
+\pgfsetstrokecolor{cyan!43.57!black}%
+\draw[fill] (4.2799,7.5279) -- (4.1891,7.5908) -- (4.3463,7.409) -- (4.4371,7.3461)--cycle;%
+\pgfsetfillcolor{cyan!46.33!black}%
+\pgfsetstrokecolor{cyan!46.33!black}%
+\draw[fill] (4.1226,7.7246) -- (4.0318,7.7874) -- (4.1891,7.5908) -- (4.2799,7.5279)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.8!black}%
+\pgfsetstrokecolor{cyan!50!white!64.8!black}%
+\draw[fill] (5.5621,6.7678) -- (5.4713,6.8457) -- (5.6285,6.9009) -- (5.7193,6.8229)--cycle;%
+\pgfsetfillcolor{cyan!38.04!black}%
+\pgfsetstrokecolor{cyan!38.04!black}%
+\draw[fill] (4.4371,7.3461) -- (4.3463,7.409) -- (4.5036,7.2507) -- (4.5943,7.1878)--cycle;%
+\pgfsetfillcolor{cyan!26.53!black}%
+\pgfsetstrokecolor{cyan!26.53!black}%
+\draw[fill] (4.5943,7.1878) -- (4.5036,7.2507) -- (4.6608,7.1227) -- (4.7516,7.0599)--cycle;%
+\pgfsetfillcolor{cyan!50!white!65.23!black}%
+\pgfsetstrokecolor{cyan!50!white!65.23!black}%
+\draw[fill] (6.2153,6.8795) -- (6.1246,6.9342) -- (6.2818,7.0444) -- (6.3726,6.9897)--cycle;%
+\pgfsetfillcolor{cyan!50!white!25.57!black}%
+\pgfsetstrokecolor{cyan!50!white!25.57!black}%
+\draw[fill] (4.7516,7.0599) -- (4.6608,7.1227) -- (4.818,7.0304) -- (4.9088,6.9675)--cycle;%
+\pgfsetfillcolor{cyan!50!white!67.19!black}%
+\pgfsetstrokecolor{cyan!50!white!67.19!black}%
+\draw[fill] (5.9673,6.8337) -- (5.8765,6.9047) -- (6.0338,7.0052) -- (6.1246,6.9342)--cycle;%
+\pgfsetfillcolor{cyan!21.51!black}%
+\pgfsetstrokecolor{cyan!21.51!black}%
+\draw[fill] (7.1166,7.2905) -- (7.0258,7.2532) -- (7.1831,7.3084) -- (7.2739,7.3457)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.69!black}%
+\pgfsetstrokecolor{cyan!50!white!60.69!black}%
+\draw[fill] (5.3141,6.8235) -- (5.2233,6.8987) -- (5.3805,6.921) -- (5.4713,6.8457)--cycle;%
+\pgfsetfillcolor{cyan!50!white!47.99!black}%
+\pgfsetstrokecolor{cyan!50!white!47.99!black}%
+\draw[fill] (6.8686,7.1714) -- (6.7778,7.1703) -- (6.9351,7.2521) -- (7.0258,7.2532)--cycle;%
+\pgfsetfillcolor{cyan!50!white!41.74!black}%
+\pgfsetstrokecolor{cyan!50!white!41.74!black}%
+\draw[fill] (4.9088,6.9675) -- (4.818,7.0304) -- (4.9753,6.9765) -- (5.066,6.9136)--cycle;%
+\pgfsetfillcolor{cyan!50!white!66.98!black}%
+\pgfsetstrokecolor{cyan!50!white!66.98!black}%
+\draw[fill] (5.7193,6.8229) -- (5.6285,6.9009) -- (5.7858,6.9827) -- (5.8765,6.9047)--cycle;%
+\pgfsetfillcolor{cyan!50!white!59.67!black}%
+\pgfsetstrokecolor{cyan!50!white!59.67!black}%
+\draw[fill] (6.6206,7.0697) -- (6.5298,7.0999) -- (6.687,7.2005) -- (6.7778,7.1703)--cycle;%
+\pgfsetfillcolor{cyan!50!white!65.23!black}%
+\pgfsetstrokecolor{cyan!50!white!65.23!black}%
+\draw[fill] (6.3726,6.9897) -- (6.2818,7.0444) -- (6.439,7.1546) -- (6.5298,7.0999)--cycle;%
+\pgfsetfillcolor{cyan!52.22!black}%
+\pgfsetstrokecolor{cyan!52.22!black}%
+\draw[fill] (4.1891,7.5908) -- (4.0983,7.6325) -- (4.2555,7.4508) -- (4.3463,7.409)--cycle;%
+\pgfsetfillcolor{cyan!54.18!black}%
+\pgfsetstrokecolor{cyan!54.18!black}%
+\draw[fill] (4.0318,7.7874) -- (3.9411,7.8292) -- (4.0983,7.6325) -- (4.1891,7.5908)--cycle;%
+\pgfsetfillcolor{cyan!50!white!51.52!black}%
+\pgfsetstrokecolor{cyan!50!white!51.52!black}%
+\draw[fill] (5.066,6.9136) -- (4.9753,6.9765) -- (5.1325,6.9616) -- (5.2233,6.8987)--cycle;%
+\pgfsetfillcolor{cyan!48.45!black}%
+\pgfsetstrokecolor{cyan!48.45!black}%
+\draw[fill] (4.3463,7.409) -- (4.2555,7.4508) -- (4.4128,7.2924) -- (4.5036,7.2507)--cycle;%
+\pgfsetfillcolor{cyan!40.47!black}%
+\pgfsetstrokecolor{cyan!40.47!black}%
+\draw[fill] (7.2739,7.3457) -- (7.1831,7.3084) -- (7.3403,7.3306) -- (7.4311,7.3679)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.33!black}%
+\pgfsetstrokecolor{cyan!50!white!64.33!black}%
+\draw[fill] (5.4713,6.8457) -- (5.3805,6.921) -- (5.5377,6.9761) -- (5.6285,6.9009)--cycle;%
+\pgfsetfillcolor{cyan!41.69!black}%
+\pgfsetstrokecolor{cyan!41.69!black}%
+\draw[fill] (4.5036,7.2507) -- (4.4128,7.2924) -- (4.57,7.1645) -- (4.6608,7.1227)--cycle;%
+\pgfsetfillcolor{cyan!50!white!67.77!black}%
+\pgfsetstrokecolor{cyan!50!white!67.77!black}%
+\draw[fill] (6.1246,6.9342) -- (6.0338,7.0052) -- (6.191,7.1154) -- (6.2818,7.0444)--cycle;%
+\pgfsetfillcolor{cyan!50!white!41.93!black}%
+\pgfsetstrokecolor{cyan!50!white!41.93!black}%
+\draw[fill] (7.0258,7.2532) -- (6.9351,7.2521) -- (7.0923,7.3072) -- (7.1831,7.3084)--cycle;%
+\pgfsetfillcolor{cyan!28.31!black}%
+\pgfsetstrokecolor{cyan!28.31!black}%
+\draw[fill] (4.6608,7.1227) -- (4.57,7.1645) -- (4.7272,7.0721) -- (4.818,7.0304)--cycle;%
+\pgfsetfillcolor{cyan!50!white!68.2!black}%
+\pgfsetstrokecolor{cyan!50!white!68.2!black}%
+\draw[fill] (5.8765,6.9047) -- (5.7858,6.9827) -- (5.943,7.0832) -- (6.0338,7.0052)--cycle;%
+\pgfsetfillcolor{cyan!50!white!57.69!black}%
+\pgfsetstrokecolor{cyan!50!white!57.69!black}%
+\draw[fill] (6.7778,7.1703) -- (6.687,7.2005) -- (6.8443,7.2822) -- (6.9351,7.2521)--cycle;%
+\pgfsetfillcolor{cyan!50!white!57.96!black}%
+\pgfsetstrokecolor{cyan!50!white!57.96!black}%
+\draw[fill] (5.2233,6.8987) -- (5.1325,6.9616) -- (5.2897,6.9838) -- (5.3805,6.921)--cycle;%
+\pgfsetfillcolor{cyan!53.37!black}%
+\pgfsetstrokecolor{cyan!53.37!black}%
+\draw[fill] (7.4311,7.3679) -- (7.3403,7.3306) -- (7.4976,7.3157) -- (7.5883,7.353)--cycle;%
+\pgfsetfillcolor{cyan!50!white!27.67!black}%
+\pgfsetstrokecolor{cyan!50!white!27.67!black}%
+\draw[fill] (4.818,7.0304) -- (4.7272,7.0721) -- (4.8845,7.0182) -- (4.9753,6.9765)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.56!black}%
+\pgfsetstrokecolor{cyan!50!white!64.56!black}%
+\draw[fill] (6.5298,7.0999) -- (6.439,7.1546) -- (6.5963,7.2552) -- (6.687,7.2005)--cycle;%
+\pgfsetfillcolor{cyan!50!white!66.56!black}%
+\pgfsetstrokecolor{cyan!50!white!66.56!black}%
+\draw[fill] (5.6285,6.9009) -- (5.5377,6.9761) -- (5.695,7.0579) -- (5.7858,6.9827)--cycle;%
+\pgfsetfillcolor{cyan!50!white!29.34!black}%
+\pgfsetstrokecolor{cyan!50!white!29.34!black}%
+\draw[fill] (7.1831,7.3084) -- (7.0923,7.3072) -- (7.2495,7.3294) -- (7.3403,7.3306)--cycle;%
+\pgfsetfillcolor{cyan!62!black}%
+\pgfsetstrokecolor{cyan!62!black}%
+\draw[fill] (4.0983,7.6325) -- (4.0075,7.6457) -- (4.1648,7.4639) -- (4.2555,7.4508)--cycle;%
+\pgfsetfillcolor{cyan!63.25!black}%
+\pgfsetstrokecolor{cyan!63.25!black}%
+\draw[fill] (3.9411,7.8292) -- (3.8503,7.8423) -- (4.0075,7.6457) -- (4.0983,7.6325)--cycle;%
+\pgfsetfillcolor{cyan!59.58!black}%
+\pgfsetstrokecolor{cyan!59.58!black}%
+\draw[fill] (4.2555,7.4508) -- (4.1648,7.4639) -- (4.322,7.3056) -- (4.4128,7.2924)--cycle;%
+\pgfsetfillcolor{cyan!50!white!67.77!black}%
+\pgfsetstrokecolor{cyan!50!white!67.77!black}%
+\draw[fill] (6.2818,7.0444) -- (6.191,7.1154) -- (6.3483,7.2257) -- (6.439,7.1546)--cycle;%
+\pgfsetfillcolor{cyan!63.01!black}%
+\pgfsetstrokecolor{cyan!63.01!black}%
+\draw[fill] (7.5883,7.353) -- (7.4976,7.3157) -- (7.6548,7.2618) -- (7.7456,7.2991)--cycle;%
+\pgfsetfillcolor{cyan!50!white!43.41!black}%
+\pgfsetstrokecolor{cyan!50!white!43.41!black}%
+\draw[fill] (4.9753,6.9765) -- (4.8845,7.0182) -- (5.0417,7.0034) -- (5.1325,6.9616)--cycle;%
+\pgfsetfillcolor{cyan!55.34!black}%
+\pgfsetstrokecolor{cyan!55.34!black}%
+\draw[fill] (4.4128,7.2924) -- (4.322,7.3056) -- (4.4792,7.1776) -- (4.57,7.1645)--cycle;%
+\pgfsetfillcolor{cyan!50!white!62.05!black}%
+\pgfsetstrokecolor{cyan!50!white!62.05!black}%
+\draw[fill] (5.3805,6.921) -- (5.2897,6.9838) -- (5.447,7.039) -- (5.5377,6.9761)--cycle;%
+\pgfsetfillcolor{cyan!50!white!54.1!black}%
+\pgfsetstrokecolor{cyan!50!white!54.1!black}%
+\draw[fill] (6.9351,7.2521) -- (6.8443,7.2822) -- (7.0015,7.3374) -- (7.0923,7.3072)--cycle;%
+\pgfsetfillcolor{cyan!50!white!68.75!black}%
+\pgfsetstrokecolor{cyan!50!white!68.75!black}%
+\draw[fill] (6.0338,7.0052) -- (5.943,7.0832) -- (6.1002,7.1934) -- (6.191,7.1154)--cycle;%
+\pgfsetfillcolor{cyan!48.08!black}%
+\pgfsetstrokecolor{cyan!48.08!black}%
+\draw[fill] (4.57,7.1645) -- (4.4792,7.1776) -- (4.6365,7.0853) -- (4.7272,7.0721)--cycle;%
+\pgfsetfillcolor{cyan!69.43!black}%
+\pgfsetstrokecolor{cyan!69.43!black}%
+\draw[fill] (7.7456,7.2991) -- (7.6548,7.2618) -- (7.812,7.1695) -- (7.9028,7.2068)--cycle;%
+\pgfsetfillcolor{cyan!27.89!black}%
+\pgfsetstrokecolor{cyan!27.89!black}%
+\draw[fill] (7.3403,7.3306) -- (7.2495,7.3294) -- (7.4068,7.3146) -- (7.4976,7.3157)--cycle;%
+\pgfsetfillcolor{cyan!50!white!63.05!black}%
+\pgfsetstrokecolor{cyan!50!white!63.05!black}%
+\draw[fill] (6.687,7.2005) -- (6.5963,7.2552) -- (6.7535,7.337) -- (6.8443,7.2822)--cycle;%
+\pgfsetfillcolor{cyan!73.12!black}%
+\pgfsetstrokecolor{cyan!73.12!black}%
+\draw[fill] (7.9028,7.2068) -- (7.812,7.1695) -- (7.9693,7.0415) -- (8.06,7.0788)--cycle;%
+\pgfsetfillcolor{cyan!50!white!67.81!black}%
+\pgfsetstrokecolor{cyan!50!white!67.81!black}%
+\draw[fill] (5.7858,6.9827) -- (5.695,7.0579) -- (5.8522,7.1584) -- (5.943,7.0832)--cycle;%
+\pgfsetfillcolor{cyan!50!white!52.07!black}%
+\pgfsetstrokecolor{cyan!50!white!52.07!black}%
+\draw[fill] (5.1325,6.9616) -- (5.0417,7.0034) -- (5.199,7.0256) -- (5.2897,6.9838)--cycle;%
+\pgfsetfillcolor{cyan!35.28!black}%
+\pgfsetstrokecolor{cyan!35.28!black}%
+\draw[fill] (4.7272,7.0721) -- (4.6365,7.0853) -- (4.7937,7.0314) -- (4.8845,7.0182)--cycle;%
+\pgfsetfillcolor{cyan!75.03!black}%
+\pgfsetstrokecolor{cyan!75.03!black}%
+\draw[fill] (8.06,7.0788) -- (7.9693,7.0415) -- (8.1265,6.8832) -- (8.2173,6.9205)--cycle;%
+\pgfsetfillcolor{cyan!76.36!black}%
+\pgfsetstrokecolor{cyan!76.36!black}%
+\draw[fill] (8.3745,6.7387) -- (8.2837,6.7014) -- (8.441,6.5048) -- (8.5317,6.5421)--cycle;%
+\pgfsetfillcolor{cyan!75.95!black}%
+\pgfsetstrokecolor{cyan!75.95!black}%
+\draw[fill] (8.2173,6.9205) -- (8.1265,6.8832) -- (8.2837,6.7014) -- (8.3745,6.7387)--cycle;%
+\pgfsetfillcolor{cyan!50!white!67.19!black}%
+\pgfsetstrokecolor{cyan!50!white!67.19!black}%
+\draw[fill] (6.439,7.1546) -- (6.3483,7.2257) -- (6.5055,7.3262) -- (6.5963,7.2552)--cycle;%
+\pgfsetfillcolor{cyan!50!white!47.93!black}%
+\pgfsetstrokecolor{cyan!50!white!47.93!black}%
+\draw[fill] (7.0923,7.3072) -- (7.0015,7.3374) -- (7.1588,7.3596) -- (7.2495,7.3294)--cycle;%
+\pgfsetfillcolor{cyan!71.88!black}%
+\pgfsetstrokecolor{cyan!71.88!black}%
+\draw[fill] (4.0075,7.6457) -- (3.9167,7.6245) -- (4.074,7.4427) -- (4.1648,7.4639)--cycle;%
+\pgfsetfillcolor{cyan!45.27!black}%
+\pgfsetstrokecolor{cyan!45.27!black}%
+\draw[fill] (7.4976,7.3157) -- (7.4068,7.3146) -- (7.564,7.2607) -- (7.6548,7.2618)--cycle;%
+\pgfsetfillcolor{cyan!72.52!black}%
+\pgfsetstrokecolor{cyan!72.52!black}%
+\draw[fill] (3.8503,7.8423) -- (3.7595,7.8212) -- (3.9167,7.6245) -- (4.0075,7.6457)--cycle;%
+\pgfsetfillcolor{cyan!70.56!black}%
+\pgfsetstrokecolor{cyan!70.56!black}%
+\draw[fill] (4.1648,7.4639) -- (4.074,7.4427) -- (4.2312,7.2844) -- (4.322,7.3056)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.53!black}%
+\pgfsetstrokecolor{cyan!50!white!64.53!black}%
+\draw[fill] (5.5377,6.9761) -- (5.447,7.039) -- (5.6042,7.1208) -- (5.695,7.0579)--cycle;%
+\pgfsetfillcolor{cyan!68.04!black}%
+\pgfsetstrokecolor{cyan!68.04!black}%
+\draw[fill] (4.322,7.3056) -- (4.2312,7.2844) -- (4.3884,7.1565) -- (4.4792,7.1776)--cycle;%
+\pgfsetfillcolor{cyan!50!white!20.27!black}%
+\pgfsetstrokecolor{cyan!50!white!20.27!black}%
+\draw[fill] (4.8845,7.0182) -- (4.7937,7.0314) -- (4.9509,7.0165) -- (5.0417,7.0034)--cycle;%
+\pgfsetfillcolor{cyan!50!white!68.75!black}%
+\pgfsetstrokecolor{cyan!50!white!68.75!black}%
+\draw[fill] (6.191,7.1154) -- (6.1002,7.1934) -- (6.2575,7.3036) -- (6.3483,7.2257)--cycle;%
+\pgfsetfillcolor{cyan!55.08!black}%
+\pgfsetstrokecolor{cyan!55.08!black}%
+\draw[fill] (7.6548,7.2618) -- (7.564,7.2607) -- (7.7212,7.1683) -- (7.812,7.1695)--cycle;%
+\pgfsetfillcolor{cyan!63.51!black}%
+\pgfsetstrokecolor{cyan!63.51!black}%
+\draw[fill] (4.4792,7.1776) -- (4.3884,7.1565) -- (4.5457,7.0641) -- (4.6365,7.0853)--cycle;%
+\pgfsetfillcolor{cyan!50!white!57.3!black}%
+\pgfsetstrokecolor{cyan!50!white!57.3!black}%
+\draw[fill] (5.2897,6.9838) -- (5.199,7.0256) -- (5.3562,7.0807) -- (5.447,7.039)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.36!black}%
+\pgfsetstrokecolor{cyan!50!white!60.36!black}%
+\draw[fill] (6.8443,7.2822) -- (6.7535,7.337) -- (6.9107,7.3921) -- (7.0015,7.3374)--cycle;%
+\pgfsetfillcolor{cyan!60.98!black}%
+\pgfsetstrokecolor{cyan!60.98!black}%
+\draw[fill] (7.812,7.1695) -- (7.7212,7.1683) -- (7.8785,7.0404) -- (7.9693,7.0415)--cycle;%
+\pgfsetfillcolor{cyan!50!white!37.06!black}%
+\pgfsetstrokecolor{cyan!50!white!37.06!black}%
+\draw[fill] (7.2495,7.3294) -- (7.1588,7.3596) -- (7.316,7.3447) -- (7.4068,7.3146)--cycle;%
+\pgfsetfillcolor{cyan!50!white!68.37!black}%
+\pgfsetstrokecolor{cyan!50!white!68.37!black}%
+\draw[fill] (5.943,7.0832) -- (5.8522,7.1584) -- (6.0095,7.2686) -- (6.1002,7.1934)--cycle;%
+\pgfsetfillcolor{cyan!64.41!black}%
+\pgfsetstrokecolor{cyan!64.41!black}%
+\draw[fill] (7.9693,7.0415) -- (7.8785,7.0404) -- (8.0357,6.882) -- (8.1265,6.8832)--cycle;%
+\pgfsetfillcolor{cyan!67.3!black}%
+\pgfsetstrokecolor{cyan!67.3!black}%
+\draw[fill] (8.2837,6.7014) -- (8.193,6.7003) -- (8.3502,6.5036) -- (8.441,6.5048)--cycle;%
+\pgfsetfillcolor{cyan!55.93!black}%
+\pgfsetstrokecolor{cyan!55.93!black}%
+\draw[fill] (4.6365,7.0853) -- (4.5457,7.0641) -- (4.7029,7.0102) -- (4.7937,7.0314)--cycle;%
+\pgfsetfillcolor{cyan!66.33!black}%
+\pgfsetstrokecolor{cyan!66.33!black}%
+\draw[fill] (8.1265,6.8832) -- (8.0357,6.882) -- (8.193,6.7003) -- (8.2837,6.7014)--cycle;%
+\pgfsetfillcolor{cyan!50!white!39.86!black}%
+\pgfsetstrokecolor{cyan!50!white!39.86!black}%
+\draw[fill] (5.0417,7.0034) -- (4.9509,7.0165) -- (5.1082,7.0387) -- (5.199,7.0256)--cycle;%
+\pgfsetfillcolor{cyan!50!white!65.9!black}%
+\pgfsetstrokecolor{cyan!50!white!65.9!black}%
+\draw[fill] (6.5963,7.2552) -- (6.5055,7.3262) -- (6.6627,7.408) -- (6.7535,7.337)--cycle;%
+\pgfsetfillcolor{cyan!80.88!black}%
+\pgfsetstrokecolor{cyan!80.88!black}%
+\draw[fill] (3.9167,7.6245) -- (3.826,7.5654) -- (3.9832,7.3837) -- (4.074,7.4427)--cycle;%
+\pgfsetfillcolor{cyan!81.03!black}%
+\pgfsetstrokecolor{cyan!81.03!black}%
+\draw[fill] (3.7595,7.8212) -- (3.6687,7.7621) -- (3.826,7.5654) -- (3.9167,7.6245)--cycle;%
+\pgfsetfillcolor{cyan!80.42!black}%
+\pgfsetstrokecolor{cyan!80.42!black}%
+\draw[fill] (4.074,7.4427) -- (3.9832,7.3837) -- (4.1404,7.2253) -- (4.2312,7.2844)--cycle;%
+\pgfsetfillcolor{cyan!50!white!65.93!black}%
+\pgfsetstrokecolor{cyan!50!white!65.93!black}%
+\draw[fill] (5.695,7.0579) -- (5.6042,7.1208) -- (5.7614,7.2213) -- (5.8522,7.1584)--cycle;%
+\pgfsetfillcolor{cyan!79.19!black}%
+\pgfsetstrokecolor{cyan!79.19!black}%
+\draw[fill] (4.2312,7.2844) -- (4.1404,7.2253) -- (4.2977,7.0974) -- (4.3884,7.1565)--cycle;%
+\pgfsetfillcolor{cyan!10.63!black}%
+\pgfsetstrokecolor{cyan!10.63!black}%
+\draw[fill] (7.4068,7.3146) -- (7.316,7.3447) -- (7.4732,7.2908) -- (7.564,7.2607)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.89!black}%
+\pgfsetstrokecolor{cyan!50!white!55.89!black}%
+\draw[fill] (7.0015,7.3374) -- (6.9107,7.3921) -- (7.068,7.4143) -- (7.1588,7.3596)--cycle;%
+\pgfsetfillcolor{cyan!44.38!black}%
+\pgfsetstrokecolor{cyan!44.38!black}%
+\draw[fill] (4.7937,7.0314) -- (4.7029,7.0102) -- (4.8602,6.9953) -- (4.9509,7.0165)--cycle;%
+\pgfsetfillcolor{cyan!50!white!68.2!black}%
+\pgfsetstrokecolor{cyan!50!white!68.2!black}%
+\draw[fill] (6.3483,7.2257) -- (6.2575,7.3036) -- (6.4147,7.4042) -- (6.5055,7.3262)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.4!black}%
+\pgfsetstrokecolor{cyan!50!white!60.4!black}%
+\draw[fill] (5.447,7.039) -- (5.3562,7.0807) -- (5.5134,7.1625) -- (5.6042,7.1208)--cycle;%
+\pgfsetfillcolor{cyan!76.39!black}%
+\pgfsetstrokecolor{cyan!76.39!black}%
+\draw[fill] (4.3884,7.1565) -- (4.2977,7.0974) -- (4.4549,7.005) -- (4.5457,7.0641)--cycle;%
+\pgfsetfillcolor{cyan!37.86!black}%
+\pgfsetstrokecolor{cyan!37.86!black}%
+\draw[fill] (7.564,7.2607) -- (7.4732,7.2908) -- (7.6305,7.1985) -- (7.7212,7.1683)--cycle;%
+\pgfsetfillcolor{cyan!50!white!48.31!black}%
+\pgfsetstrokecolor{cyan!50!white!48.31!black}%
+\draw[fill] (5.199,7.0256) -- (5.1082,7.0387) -- (5.2654,7.0939) -- (5.3562,7.0807)--cycle;%
+\pgfsetfillcolor{cyan!50!white!68.37!black}%
+\pgfsetstrokecolor{cyan!50!white!68.37!black}%
+\draw[fill] (6.1002,7.1934) -- (6.0095,7.2686) -- (6.1667,7.3788) -- (6.2575,7.3036)--cycle;%
+\pgfsetfillcolor{cyan!71.1!black}%
+\pgfsetstrokecolor{cyan!71.1!black}%
+\draw[fill] (4.5457,7.0641) -- (4.4549,7.005) -- (4.6121,6.9511) -- (4.7029,7.0102)--cycle;%
+\pgfsetfillcolor{cyan!47.72!black}%
+\pgfsetstrokecolor{cyan!47.72!black}%
+\draw[fill] (7.7212,7.1683) -- (7.6305,7.1985) -- (7.7877,7.0706) -- (7.8785,7.0404)--cycle;%
+\pgfsetfillcolor{cyan!88.11!black}%
+\pgfsetstrokecolor{cyan!88.11!black}%
+\draw[fill] (3.826,7.5654) -- (3.7352,7.4672) -- (3.8924,7.2855) -- (3.9832,7.3837)--cycle;%
+\pgfsetfillcolor{cyan!50!white!63.59!black}%
+\pgfsetstrokecolor{cyan!50!white!63.59!black}%
+\draw[fill] (6.7535,7.337) -- (6.6627,7.408) -- (6.82,7.4631) -- (6.9107,7.3921)--cycle;%
+\pgfsetfillcolor{cyan!87.92!black}%
+\pgfsetstrokecolor{cyan!87.92!black}%
+\draw[fill] (3.6687,7.7621) -- (3.5779,7.6639) -- (3.7352,7.4672) -- (3.826,7.5654)--cycle;%
+\pgfsetfillcolor{cyan!88.21!black}%
+\pgfsetstrokecolor{cyan!88.21!black}%
+\draw[fill] (3.9832,7.3837) -- (3.8924,7.2855) -- (4.0497,7.1271) -- (4.1404,7.2253)--cycle;%
+\pgfsetfillcolor{cyan!50!white!48.76!black}%
+\pgfsetstrokecolor{cyan!50!white!48.76!black}%
+\draw[fill] (7.1588,7.3596) -- (7.068,7.4143) -- (7.2252,7.3995) -- (7.316,7.3447)--cycle;%
+\pgfsetfillcolor{cyan!53.24!black}%
+\pgfsetstrokecolor{cyan!53.24!black}%
+\draw[fill] (7.8785,7.0404) -- (7.7877,7.0706) -- (7.9449,6.9122) -- (8.0357,6.882)--cycle;%
+\pgfsetfillcolor{cyan!58.03!black}%
+\pgfsetstrokecolor{cyan!58.03!black}%
+\draw[fill] (8.193,6.7003) -- (8.1022,6.7305) -- (8.2594,6.5338) -- (8.3502,6.5036)--cycle;%
+\pgfsetfillcolor{cyan!56.39!black}%
+\pgfsetstrokecolor{cyan!56.39!black}%
+\draw[fill] (8.0357,6.882) -- (7.9449,6.9122) -- (8.1022,6.7305) -- (8.193,6.7003)--cycle;%
+\pgfsetfillcolor{cyan!87.79!black}%
+\pgfsetstrokecolor{cyan!87.79!black}%
+\draw[fill] (4.1404,7.2253) -- (4.0497,7.1271) -- (4.2069,6.9992) -- (4.2977,7.0974)--cycle;%
+\pgfsetfillcolor{cyan!26.06!black}%
+\pgfsetstrokecolor{cyan!26.06!black}%
+\draw[fill] (4.9509,7.0165) -- (4.8602,6.9953) -- (5.0174,7.0176) -- (5.1082,7.0387)--cycle;%
+\pgfsetfillcolor{cyan!50!white!66.55!black}%
+\pgfsetstrokecolor{cyan!50!white!66.55!black}%
+\draw[fill] (5.8522,7.1584) -- (5.7614,7.2213) -- (5.9187,7.3315) -- (6.0095,7.2686)--cycle;%
+\pgfsetfillcolor{cyan!86.08!black}%
+\pgfsetstrokecolor{cyan!86.08!black}%
+\draw[fill] (4.2977,7.0974) -- (4.2069,6.9992) -- (4.3641,6.9069) -- (4.4549,7.005)--cycle;%
+\pgfsetfillcolor{cyan!50!white!66.98!black}%
+\pgfsetstrokecolor{cyan!50!white!66.98!black}%
+\draw[fill] (6.5055,7.3262) -- (6.4147,7.4042) -- (6.5719,7.486) -- (6.6627,7.408)--cycle;%
+\pgfsetfillcolor{cyan!62.96!black}%
+\pgfsetstrokecolor{cyan!62.96!black}%
+\draw[fill] (4.7029,7.0102) -- (4.6121,6.9511) -- (4.7694,6.9363) -- (4.8602,6.9953)--cycle;%
+\pgfsetfillcolor{cyan!50!white!62.13!black}%
+\pgfsetstrokecolor{cyan!50!white!62.13!black}%
+\draw[fill] (5.6042,7.1208) -- (5.5134,7.1625) -- (5.6707,7.2631) -- (5.7614,7.2213)--cycle;%
+\pgfsetfillcolor{cyan!50!white!37.46!black}%
+\pgfsetstrokecolor{cyan!50!white!37.46!black}%
+\draw[fill] (7.316,7.3447) -- (7.2252,7.3995) -- (7.3824,7.3456) -- (7.4732,7.2908)--cycle;%
+\pgfsetfillcolor{cyan!93.14!black}%
+\pgfsetstrokecolor{cyan!93.14!black}%
+\draw[fill] (3.7352,7.4672) -- (3.6444,7.3312) -- (3.8016,7.1494) -- (3.8924,7.2855)--cycle;%
+\pgfsetfillcolor{cyan!92.8!black}%
+\pgfsetstrokecolor{cyan!92.8!black}%
+\draw[fill] (3.5779,7.6639) -- (3.4872,7.5279) -- (3.6444,7.3312) -- (3.7352,7.4672)--cycle;%
+\pgfsetfillcolor{cyan!93.48!black}%
+\pgfsetstrokecolor{cyan!93.48!black}%
+\draw[fill] (3.8924,7.2855) -- (3.8016,7.1494) -- (3.9589,6.9911) -- (4.0497,7.1271)--cycle;%
+\pgfsetfillcolor{cyan!50!white!52.93!black}%
+\pgfsetstrokecolor{cyan!50!white!52.93!black}%
+\draw[fill] (5.3562,7.0807) -- (5.2654,7.0939) -- (5.4226,7.1757) -- (5.5134,7.1625)--cycle;%
+\pgfsetfillcolor{cyan!50!white!59.81!black}%
+\pgfsetstrokecolor{cyan!50!white!59.81!black}%
+\draw[fill] (6.9107,7.3921) -- (6.82,7.4631) -- (6.9772,7.4854) -- (7.068,7.4143)--cycle;%
+\pgfsetfillcolor{cyan!82.12!black}%
+\pgfsetstrokecolor{cyan!82.12!black}%
+\draw[fill] (4.4549,7.005) -- (4.3641,6.9069) -- (4.5214,6.853) -- (4.6121,6.9511)--cycle;%
+\pgfsetfillcolor{cyan!93.42!black}%
+\pgfsetstrokecolor{cyan!93.42!black}%
+\draw[fill] (4.0497,7.1271) -- (3.9589,6.9911) -- (4.1161,6.8632) -- (4.2069,6.9992)--cycle;%
+\pgfsetfillcolor{cyan!50!white!67.81!black}%
+\pgfsetstrokecolor{cyan!50!white!67.81!black}%
+\draw[fill] (6.2575,7.3036) -- (6.1667,7.3788) -- (6.3239,7.4794) -- (6.4147,7.4042)--cycle;%
+\pgfsetfillcolor{cyan!50!white!27.85!black}%
+\pgfsetstrokecolor{cyan!50!white!27.85!black}%
+\draw[fill] (5.1082,7.0387) -- (5.0174,7.0176) -- (5.1746,7.0727) -- (5.2654,7.0939)--cycle;%
+\pgfsetfillcolor{cyan!50!white!12.01!black}%
+\pgfsetstrokecolor{cyan!50!white!12.01!black}%
+\draw[fill] (7.4732,7.2908) -- (7.3824,7.3456) -- (7.5397,7.2532) -- (7.6305,7.1985)--cycle;%
+\pgfsetfillcolor{cyan!92.23!black}%
+\pgfsetstrokecolor{cyan!92.23!black}%
+\draw[fill] (4.2069,6.9992) -- (4.1161,6.8632) -- (4.2733,6.7708) -- (4.3641,6.9069)--cycle;%
+\pgfsetfillcolor{cyan!52.66!black}%
+\pgfsetstrokecolor{cyan!52.66!black}%
+\draw[fill] (4.8602,6.9953) -- (4.7694,6.9363) -- (4.9266,6.9585) -- (5.0174,7.0176)--cycle;%
+\pgfsetfillcolor{cyan!50!white!66.55!black}%
+\pgfsetstrokecolor{cyan!50!white!66.55!black}%
+\draw[fill] (6.0095,7.2686) -- (5.9187,7.3315) -- (6.0759,7.4417) -- (6.1667,7.3788)--cycle;%
+\pgfsetfillcolor{cyan!33.42!black}%
+\pgfsetstrokecolor{cyan!33.42!black}%
+\draw[fill] (7.6305,7.1985) -- (7.5397,7.2532) -- (7.6969,7.1253) -- (7.7877,7.0706)--cycle;%
+\pgfsetfillcolor{cyan!96.2!black}%
+\pgfsetstrokecolor{cyan!96.2!black}%
+\draw[fill] (3.6444,7.3312) -- (3.5536,7.1608) -- (3.7109,6.9791) -- (3.8016,7.1494)--cycle;%
+\pgfsetfillcolor{cyan!95.86!black}%
+\pgfsetstrokecolor{cyan!95.86!black}%
+\draw[fill] (3.4872,7.5279) -- (3.3964,7.3575) -- (3.5536,7.1608) -- (3.6444,7.3312)--cycle;%
+\pgfsetfillcolor{cyan!96.57!black}%
+\pgfsetstrokecolor{cyan!96.57!black}%
+\draw[fill] (3.8016,7.1494) -- (3.7109,6.9791) -- (3.8681,6.8207) -- (3.9589,6.9911)--cycle;%
+\pgfsetfillcolor{cyan!75.56!black}%
+\pgfsetstrokecolor{cyan!75.56!black}%
+\draw[fill] (4.6121,6.9511) -- (4.5214,6.853) -- (4.6786,6.8381) -- (4.7694,6.9363)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.8!black}%
+\pgfsetstrokecolor{cyan!50!white!64.8!black}%
+\draw[fill] (6.6627,7.408) -- (6.5719,7.486) -- (6.7292,7.5411) -- (6.82,7.4631)--cycle;%
+\pgfsetfillcolor{cyan!42.4!black}%
+\pgfsetstrokecolor{cyan!42.4!black}%
+\draw[fill] (7.7877,7.0706) -- (7.6969,7.1253) -- (7.8542,6.9669) -- (7.9449,6.9122)--cycle;%
+\pgfsetfillcolor{cyan!49.51!black}%
+\pgfsetstrokecolor{cyan!49.51!black}%
+\draw[fill] (8.1022,6.7305) -- (8.0114,6.7852) -- (8.1686,6.5885) -- (8.2594,6.5338)--cycle;%
+\pgfsetfillcolor{cyan!47.11!black}%
+\pgfsetstrokecolor{cyan!47.11!black}%
+\draw[fill] (7.9449,6.9122) -- (7.8542,6.9669) -- (8.0114,6.7852) -- (8.1022,6.7305)--cycle;%
+\pgfsetfillcolor{cyan!50!white!53.93!black}%
+\pgfsetstrokecolor{cyan!50!white!53.93!black}%
+\draw[fill] (7.068,7.4143) -- (6.9772,7.4854) -- (7.1344,7.4705) -- (7.2252,7.3995)--cycle;%
+\pgfsetfillcolor{cyan!96.57!black}%
+\pgfsetstrokecolor{cyan!96.57!black}%
+\draw[fill] (3.9589,6.9911) -- (3.8681,6.8207) -- (4.0253,6.6928) -- (4.1161,6.8632)--cycle;%
+\pgfsetfillcolor{cyan!89.04!black}%
+\pgfsetstrokecolor{cyan!89.04!black}%
+\draw[fill] (4.3641,6.9069) -- (4.2733,6.7708) -- (4.4306,6.7169) -- (4.5214,6.853)--cycle;%
+\pgfsetfillcolor{cyan!50!white!62.9!black}%
+\pgfsetstrokecolor{cyan!50!white!62.9!black}%
+\draw[fill] (5.7614,7.2213) -- (5.6707,7.2631) -- (5.8279,7.3733) -- (5.9187,7.3315)--cycle;%
+\pgfsetfillcolor{cyan!95.55!black}%
+\pgfsetstrokecolor{cyan!95.55!black}%
+\draw[fill] (4.1161,6.8632) -- (4.0253,6.6928) -- (4.1826,6.6004) -- (4.2733,6.7708)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.44!black}%
+\pgfsetstrokecolor{cyan!50!white!55.44!black}%
+\draw[fill] (5.5134,7.1625) -- (5.4226,7.1757) -- (5.5799,7.2762) -- (5.6707,7.2631)--cycle;%
+\pgfsetfillcolor{cyan!97.89!black}%
+\pgfsetstrokecolor{cyan!97.89!black}%
+\draw[fill] (3.5536,7.1608) -- (3.4628,6.9618) -- (3.6201,6.7801) -- (3.7109,6.9791)--cycle;%
+\pgfsetfillcolor{cyan!97.58!black}%
+\pgfsetstrokecolor{cyan!97.58!black}%
+\draw[fill] (3.3964,7.3575) -- (3.3056,7.1585) -- (3.4628,6.9618) -- (3.5536,7.1608)--cycle;%
+\pgfsetfillcolor{cyan!98.19!black}%
+\pgfsetstrokecolor{cyan!98.19!black}%
+\draw[fill] (3.7109,6.9791) -- (3.6201,6.7801) -- (3.7773,6.6217) -- (3.8681,6.8207)--cycle;%
+\pgfsetfillcolor{cyan!50!white!38.66!black}%
+\pgfsetstrokecolor{cyan!50!white!38.66!black}%
+\draw[fill] (5.2654,7.0939) -- (5.1746,7.0727) -- (5.3319,7.1545) -- (5.4226,7.1757)--cycle;%
+\pgfsetfillcolor{cyan!50!white!66.56!black}%
+\pgfsetstrokecolor{cyan!50!white!66.56!black}%
+\draw[fill] (6.4147,7.4042) -- (6.3239,7.4794) -- (6.4812,7.5612) -- (6.5719,7.486)--cycle;%
+\pgfsetfillcolor{cyan!98.13!black}%
+\pgfsetstrokecolor{cyan!98.13!black}%
+\draw[fill] (3.8681,6.8207) -- (3.7773,6.6217) -- (3.9345,6.4938) -- (4.0253,6.6928)--cycle;%
+\pgfsetfillcolor{cyan!41.18!black}%
+\pgfsetstrokecolor{cyan!41.18!black}%
+\draw[fill] (5.0174,7.0176) -- (4.9266,6.9585) -- (5.0838,7.0136) -- (5.1746,7.0727)--cycle;%
+\pgfsetfillcolor{cyan!50!white!45.25!black}%
+\pgfsetstrokecolor{cyan!50!white!45.25!black}%
+\draw[fill] (7.2252,7.3995) -- (7.1344,7.4705) -- (7.2917,7.4166) -- (7.3824,7.3456)--cycle;%
+\pgfsetfillcolor{cyan!67.3!black}%
+\pgfsetstrokecolor{cyan!67.3!black}%
+\draw[fill] (4.7694,6.9363) -- (4.6786,6.8381) -- (4.8358,6.8603) -- (4.9266,6.9585)--cycle;%
+\pgfsetfillcolor{cyan!83.52!black}%
+\pgfsetstrokecolor{cyan!83.52!black}%
+\draw[fill] (4.5214,6.853) -- (4.4306,6.7169) -- (4.5878,6.702) -- (4.6786,6.8381)--cycle;%
+\pgfsetfillcolor{cyan!92.78!black}%
+\pgfsetstrokecolor{cyan!92.78!black}%
+\draw[fill] (4.2733,6.7708) -- (4.1826,6.6004) -- (4.3398,6.5465) -- (4.4306,6.7169)--cycle;%
+\pgfsetfillcolor{cyan!98.73!black}%
+\pgfsetstrokecolor{cyan!98.73!black}%
+\draw[fill] (3.4628,6.9618) -- (3.3721,6.7417) -- (3.5293,6.56) -- (3.6201,6.7801)--cycle;%
+\pgfsetfillcolor{cyan!98.47!black}%
+\pgfsetstrokecolor{cyan!98.47!black}%
+\draw[fill] (3.3056,7.1585) -- (3.2148,6.9384) -- (3.3721,6.7417) -- (3.4628,6.9618)--cycle;%
+\pgfsetfillcolor{cyan!98.97!black}%
+\pgfsetstrokecolor{cyan!98.97!black}%
+\draw[fill] (3.6201,6.7801) -- (3.5293,6.56) -- (3.6865,6.4016) -- (3.7773,6.6217)--cycle;%
+\pgfsetfillcolor{cyan!97.13!black}%
+\pgfsetstrokecolor{cyan!97.13!black}%
+\draw[fill] (4.0253,6.6928) -- (3.9345,6.4938) -- (4.0918,6.4014) -- (4.1826,6.6004)--cycle;%
+\pgfsetfillcolor{cyan!50!white!61.25!black}%
+\pgfsetstrokecolor{cyan!50!white!61.25!black}%
+\draw[fill] (6.82,7.4631) -- (6.7292,7.5411) -- (6.8864,7.5633) -- (6.9772,7.4854)--cycle;%
+\pgfsetfillcolor{cyan!50!white!65.93!black}%
+\pgfsetstrokecolor{cyan!50!white!65.93!black}%
+\draw[fill] (6.1667,7.3788) -- (6.0759,7.4417) -- (6.2331,7.5423) -- (6.3239,7.4794)--cycle;%
+\pgfsetfillcolor{cyan!98.83!black}%
+\pgfsetstrokecolor{cyan!98.83!black}%
+\draw[fill] (3.7773,6.6217) -- (3.6865,6.4016) -- (3.8438,6.2737) -- (3.9345,6.4938)--cycle;%
+\pgfsetfillcolor{cyan!50!white!32.39!black}%
+\pgfsetstrokecolor{cyan!50!white!32.39!black}%
+\draw[fill] (7.3824,7.3456) -- (7.2917,7.4166) -- (7.4489,7.3242) -- (7.5397,7.2532)--cycle;%
+\pgfsetfillcolor{cyan!99.1!black}%
+\pgfsetstrokecolor{cyan!99.1!black}%
+\draw[fill] (3.3721,6.7417) -- (3.2813,6.5093) -- (3.4385,6.3275) -- (3.5293,6.56)--cycle;%
+\pgfsetfillcolor{cyan!98.87!black}%
+\pgfsetstrokecolor{cyan!98.87!black}%
+\draw[fill] (3.2148,6.9384) -- (3.124,6.7059) -- (3.2813,6.5093) -- (3.3721,6.7417)--cycle;%
+\pgfsetfillcolor{cyan!99.29!black}%
+\pgfsetstrokecolor{cyan!99.29!black}%
+\draw[fill] (3.5293,6.56) -- (3.4385,6.3275) -- (3.5958,6.1692) -- (3.6865,6.4016)--cycle;%
+\pgfsetfillcolor{cyan!97.82!black}%
+\pgfsetstrokecolor{cyan!97.82!black}%
+\draw[fill] (3.9345,6.4938) -- (3.8438,6.2737) -- (4.001,6.1813) -- (4.0918,6.4014)--cycle;%
+\pgfsetfillcolor{cyan!94.61!black}%
+\pgfsetstrokecolor{cyan!94.61!black}%
+\draw[fill] (4.1826,6.6004) -- (4.0918,6.4014) -- (4.249,6.3475) -- (4.3398,6.5465)--cycle;%
+\pgfsetfillcolor{cyan!50!white!62.9!black}%
+\pgfsetstrokecolor{cyan!50!white!62.9!black}%
+\draw[fill] (5.9187,7.3315) -- (5.8279,7.3733) -- (5.9851,7.4835) -- (6.0759,7.4417)--cycle;%
+\pgfsetfillcolor{cyan!99.11!black}%
+\pgfsetstrokecolor{cyan!99.11!black}%
+\draw[fill] (3.6865,6.4016) -- (3.5958,6.1692) -- (3.753,6.0412) -- (3.8438,6.2737)--cycle;%
+\pgfsetfillcolor{cyan!15.33!black}%
+\pgfsetstrokecolor{cyan!15.33!black}%
+\draw[fill] (7.5397,7.2532) -- (7.4489,7.3242) -- (7.6061,7.1963) -- (7.6969,7.1253)--cycle;%
+\pgfsetfillcolor{cyan!88.03!black}%
+\pgfsetstrokecolor{cyan!88.03!black}%
+\draw[fill] (4.4306,6.7169) -- (4.3398,6.5465) -- (4.497,6.5317) -- (4.5878,6.702)--cycle;%
+\pgfsetfillcolor{cyan!76.5!black}%
+\pgfsetstrokecolor{cyan!76.5!black}%
+\draw[fill] (4.6786,6.8381) -- (4.5878,6.702) -- (4.7451,6.7243) -- (4.8358,6.8603)--cycle;%
+\pgfsetfillcolor{cyan!99.17!black}%
+\pgfsetstrokecolor{cyan!99.17!black}%
+\draw[fill] (3.2813,6.5093) -- (3.1905,6.274) -- (3.3477,6.0923) -- (3.4385,6.3275)--cycle;%
+\pgfsetfillcolor{cyan!98.95!black}%
+\pgfsetstrokecolor{cyan!98.95!black}%
+\draw[fill] (3.124,6.7059) -- (3.0333,6.4707) -- (3.1905,6.274) -- (3.2813,6.5093)--cycle;%
+\pgfsetfillcolor{cyan!50!white!56.54!black}%
+\pgfsetstrokecolor{cyan!50!white!56.54!black}%
+\draw[fill] (5.6707,7.2631) -- (5.5799,7.2762) -- (5.7371,7.3864) -- (5.8279,7.3733)--cycle;%
+\pgfsetfillcolor{cyan!33!black}%
+\pgfsetstrokecolor{cyan!33!black}%
+\draw[fill] (7.6969,7.1253) -- (7.6061,7.1963) -- (7.7634,7.0379) -- (7.8542,6.9669)--cycle;%
+\pgfsetfillcolor{cyan!99.35!black}%
+\pgfsetstrokecolor{cyan!99.35!black}%
+\draw[fill] (3.4385,6.3275) -- (3.3477,6.0923) -- (3.505,5.9339) -- (3.5958,6.1692)--cycle;%
+\pgfsetfillcolor{cyan!42.91!black}%
+\pgfsetstrokecolor{cyan!42.91!black}%
+\draw[fill] (8.0114,6.7852) -- (7.9206,6.8562) -- (8.0778,6.6595) -- (8.1686,6.5885)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.33!black}%
+\pgfsetstrokecolor{cyan!50!white!64.33!black}%
+\draw[fill] (6.5719,7.486) -- (6.4812,7.5612) -- (6.6384,7.6163) -- (6.7292,7.5411)--cycle;%
+\pgfsetfillcolor{cyan!58.8!black}%
+\pgfsetstrokecolor{cyan!58.8!black}%
+\draw[fill] (4.9266,6.9585) -- (4.8358,6.8603) -- (4.9931,6.9155) -- (5.0838,7.0136)--cycle;%
+\pgfsetfillcolor{cyan!39.69!black}%
+\pgfsetstrokecolor{cyan!39.69!black}%
+\draw[fill] (7.8542,6.9669) -- (7.7634,7.0379) -- (7.9206,6.8562) -- (8.0114,6.7852)--cycle;%
+\pgfsetfillcolor{cyan!50!white!43.46!black}%
+\pgfsetstrokecolor{cyan!50!white!43.46!black}%
+\draw[fill] (5.4226,7.1757) -- (5.3319,7.1545) -- (5.4891,7.255) -- (5.5799,7.2762)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.77!black}%
+\pgfsetstrokecolor{cyan!50!white!55.77!black}%
+\draw[fill] (6.9772,7.4854) -- (6.8864,7.5633) -- (7.0437,7.5484) -- (7.1344,7.4705)--cycle;%
+\pgfsetfillcolor{cyan!28.59!black}%
+\pgfsetstrokecolor{cyan!28.59!black}%
+\draw[fill] (5.1746,7.0727) -- (5.0838,7.0136) -- (5.2411,7.0954) -- (5.3319,7.1545)--cycle;%
+\pgfsetfillcolor{cyan!98.09!black}%
+\pgfsetstrokecolor{cyan!98.09!black}%
+\draw[fill] (3.8438,6.2737) -- (3.753,6.0412) -- (3.9102,5.9489) -- (4.001,6.1813)--cycle;%
+\pgfsetfillcolor{cyan!99.16!black}%
+\pgfsetstrokecolor{cyan!99.16!black}%
+\draw[fill] (3.5958,6.1692) -- (3.505,5.9339) -- (3.6622,5.806) -- (3.753,6.0412)--cycle;%
+\pgfsetfillcolor{cyan!95.45!black}%
+\pgfsetstrokecolor{cyan!95.45!black}%
+\draw[fill] (4.0918,6.4014) -- (4.001,6.1813) -- (4.1582,6.1274) -- (4.249,6.3475)--cycle;%
+\pgfsetfillcolor{cyan!98.99!black}%
+\pgfsetstrokecolor{cyan!98.99!black}%
+\draw[fill] (3.1905,6.274) -- (3.0997,6.0458) -- (3.257,5.864) -- (3.3477,6.0923)--cycle;%
+\pgfsetfillcolor{cyan!98.74!black}%
+\pgfsetstrokecolor{cyan!98.74!black}%
+\draw[fill] (3.0333,6.4707) -- (2.9425,6.2425) -- (3.0997,6.0458) -- (3.1905,6.274)--cycle;%
+\pgfsetfillcolor{cyan!99.19!black}%
+\pgfsetstrokecolor{cyan!99.19!black}%
+\draw[fill] (3.3477,6.0923) -- (3.257,5.864) -- (3.4142,5.7057) -- (3.505,5.9339)--cycle;%
+\pgfsetfillcolor{cyan!90.4!black}%
+\pgfsetstrokecolor{cyan!90.4!black}%
+\draw[fill] (4.3398,6.5465) -- (4.249,6.3475) -- (4.4063,6.3327) -- (4.497,6.5317)--cycle;%
+\pgfsetfillcolor{cyan!98.14!black}%
+\pgfsetstrokecolor{cyan!98.14!black}%
+\draw[fill] (3.753,6.0412) -- (3.6622,5.806) -- (3.8194,5.7137) -- (3.9102,5.9489)--cycle;%
+\pgfsetfillcolor{cyan!99.02!black}%
+\pgfsetstrokecolor{cyan!99.02!black}%
+\draw[fill] (3.505,5.9339) -- (3.4142,5.7057) -- (3.5714,5.5778) -- (3.6622,5.806)--cycle;%
+\pgfsetfillcolor{cyan!95.79!black}%
+\pgfsetstrokecolor{cyan!95.79!black}%
+\draw[fill] (4.001,6.1813) -- (3.9102,5.9489) -- (4.0675,5.895) -- (4.1582,6.1274)--cycle;%
+\pgfsetfillcolor{cyan!50!white!64.53!black}%
+\pgfsetstrokecolor{cyan!50!white!64.53!black}%
+\draw[fill] (6.3239,7.4794) -- (6.2331,7.5423) -- (6.3904,7.6241) -- (6.4812,7.5612)--cycle;%
+\pgfsetfillcolor{cyan!81.97!black}%
+\pgfsetstrokecolor{cyan!81.97!black}%
+\draw[fill] (4.5878,6.702) -- (4.497,6.5317) -- (4.6543,6.5539) -- (4.7451,6.7243)--cycle;%
+\pgfsetfillcolor{cyan!98.44!black}%
+\pgfsetstrokecolor{cyan!98.44!black}%
+\draw[fill] (3.0997,6.0458) -- (3.0089,5.8338) -- (3.1662,5.6521) -- (3.257,5.864)--cycle;%
+\pgfsetfillcolor{cyan!50!white!47.84!black}%
+\pgfsetstrokecolor{cyan!50!white!47.84!black}%
+\draw[fill] (7.1344,7.4705) -- (7.0437,7.5484) -- (7.2009,7.4946) -- (7.2917,7.4166)--cycle;%
+\pgfsetfillcolor{cyan!98.16!black}%
+\pgfsetstrokecolor{cyan!98.16!black}%
+\draw[fill] (2.9425,6.2425) -- (2.8517,6.0305) -- (3.0089,5.8338) -- (3.0997,6.0458)--cycle;%
+\pgfsetfillcolor{cyan!98.7!black}%
+\pgfsetstrokecolor{cyan!98.7!black}%
+\draw[fill] (3.257,5.864) -- (3.1662,5.6521) -- (3.3234,5.4937) -- (3.4142,5.7057)--cycle;%
+\pgfsetfillcolor{cyan!98.01!black}%
+\pgfsetstrokecolor{cyan!98.01!black}%
+\draw[fill] (3.6622,5.806) -- (3.5714,5.5778) -- (3.7287,5.4854) -- (3.8194,5.7137)--cycle;%
+\pgfsetfillcolor{cyan!91.58!black}%
+\pgfsetstrokecolor{cyan!91.58!black}%
+\draw[fill] (4.249,6.3475) -- (4.1582,6.1274) -- (4.3155,6.1125) -- (4.4063,6.3327)--cycle;%
+\pgfsetfillcolor{cyan!69.34!black}%
+\pgfsetstrokecolor{cyan!69.34!black}%
+\draw[fill] (4.8358,6.8603) -- (4.7451,6.7243) -- (4.9023,6.7794) -- (4.9931,6.9155)--cycle;%
+\pgfsetfillcolor{cyan!98.6!black}%
+\pgfsetstrokecolor{cyan!98.6!black}%
+\draw[fill] (3.4142,5.7057) -- (3.3234,5.4937) -- (3.4806,5.3658) -- (3.5714,5.5778)--cycle;%
+\pgfsetfillcolor{cyan!95.85!black}%
+\pgfsetstrokecolor{cyan!95.85!black}%
+\draw[fill] (3.9102,5.9489) -- (3.8194,5.7137) -- (3.9767,5.6598) -- (4.0675,5.895)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.69!black}%
+\pgfsetstrokecolor{cyan!50!white!60.69!black}%
+\draw[fill] (6.7292,7.5411) -- (6.6384,7.6163) -- (6.7956,7.6385) -- (6.8864,7.5633)--cycle;%
+\pgfsetfillcolor{cyan!50!white!62.13!black}%
+\pgfsetstrokecolor{cyan!50!white!62.13!black}%
+\draw[fill] (6.0759,7.4417) -- (5.9851,7.4835) -- (6.1424,7.584) -- (6.2331,7.5423)--cycle;%
+\pgfsetfillcolor{cyan!51.25!black}%
+\pgfsetstrokecolor{cyan!51.25!black}%
+\draw[fill] (5.0838,7.0136) -- (4.9931,6.9155) -- (5.1503,6.9972) -- (5.2411,7.0954)--cycle;%
+\pgfsetfillcolor{cyan!85.06!black}%
+\pgfsetstrokecolor{cyan!85.06!black}%
+\draw[fill] (4.497,6.5317) -- (4.4063,6.3327) -- (4.5635,6.3549) -- (4.6543,6.5539)--cycle;%
+\pgfsetfillcolor{cyan!50!white!36.68!black}%
+\pgfsetstrokecolor{cyan!50!white!36.68!black}%
+\draw[fill] (7.2917,7.4166) -- (7.2009,7.4946) -- (7.3581,7.4022) -- (7.4489,7.3242)--cycle;%
+\pgfsetfillcolor{cyan!97.29!black}%
+\pgfsetstrokecolor{cyan!97.29!black}%
+\draw[fill] (3.0089,5.8338) -- (2.9182,5.6464) -- (3.0754,5.4647) -- (3.1662,5.6521)--cycle;%
+\pgfsetfillcolor{cyan!92.1!black}%
+\pgfsetstrokecolor{cyan!92.1!black}%
+\draw[fill] (4.1582,6.1274) -- (4.0675,5.895) -- (4.2247,5.8801) -- (4.3155,6.1125)--cycle;%
+\pgfsetfillcolor{cyan!97.6!black}%
+\pgfsetstrokecolor{cyan!97.6!black}%
+\draw[fill] (3.5714,5.5778) -- (3.4806,5.3658) -- (3.6379,5.2734) -- (3.7287,5.4854)--cycle;%
+\pgfsetfillcolor{cyan!96.96!black}%
+\pgfsetstrokecolor{cyan!96.96!black}%
+\draw[fill] (2.8517,6.0305) -- (2.7609,5.8431) -- (2.9182,5.6464) -- (3.0089,5.8338)--cycle;%
+\pgfsetfillcolor{cyan!50!white!56.54!black}%
+\pgfsetstrokecolor{cyan!50!white!56.54!black}%
+\draw[fill] (5.8279,7.3733) -- (5.7371,7.3864) -- (5.8944,7.4966) -- (5.9851,7.4835)--cycle;%
+\pgfsetfillcolor{cyan!97.62!black}%
+\pgfsetstrokecolor{cyan!97.62!black}%
+\draw[fill] (3.1662,5.6521) -- (3.0754,5.4647) -- (3.2326,5.3063) -- (3.3234,5.4937)--cycle;%
+\pgfsetfillcolor{cyan!10.47!black}%
+\pgfsetstrokecolor{cyan!10.47!black}%
+\draw[fill] (5.3319,7.1545) -- (5.2411,7.0954) -- (5.3983,7.196) -- (5.4891,7.255)--cycle;%
+\pgfsetfillcolor{cyan!95.68!black}%
+\pgfsetstrokecolor{cyan!95.68!black}%
+\draw[fill] (3.8194,5.7137) -- (3.7287,5.4854) -- (3.8859,5.4315) -- (3.9767,5.6598)--cycle;%
+\pgfsetfillcolor{cyan!50!white!45.46!black}%
+\pgfsetstrokecolor{cyan!50!white!45.46!black}%
+\draw[fill] (5.5799,7.2762) -- (5.4891,7.255) -- (5.6463,7.3652) -- (5.7371,7.3864)--cycle;%
+\pgfsetfillcolor{cyan!97.59!black}%
+\pgfsetstrokecolor{cyan!97.59!black}%
+\draw[fill] (3.3234,5.4937) -- (3.2326,5.3063) -- (3.3899,5.1784) -- (3.4806,5.3658)--cycle;%
+\pgfsetfillcolor{cyan!50!white!17.63!black}%
+\pgfsetstrokecolor{cyan!50!white!17.63!black}%
+\draw[fill] (7.4489,7.3242) -- (7.3581,7.4022) -- (7.5154,7.2743) -- (7.6061,7.1963)--cycle;%
+\pgfsetfillcolor{cyan!92.2!black}%
+\pgfsetstrokecolor{cyan!92.2!black}%
+\draw[fill] (4.0675,5.895) -- (3.9767,5.6598) -- (4.1339,5.6449) -- (4.2247,5.8801)--cycle;%
+\pgfsetfillcolor{cyan!75.76!black}%
+\pgfsetstrokecolor{cyan!75.76!black}%
+\draw[fill] (4.7451,6.7243) -- (4.6543,6.5539) -- (4.8115,6.609) -- (4.9023,6.7794)--cycle;%
+\pgfsetfillcolor{cyan!86.71!black}%
+\pgfsetstrokecolor{cyan!86.71!black}%
+\draw[fill] (4.4063,6.3327) -- (4.3155,6.1125) -- (4.4727,6.1348) -- (4.5635,6.3549)--cycle;%
+\pgfsetfillcolor{cyan!27.73!black}%
+\pgfsetstrokecolor{cyan!27.73!black}%
+\draw[fill] (7.6061,7.1963) -- (7.5154,7.2743) -- (7.6726,7.1159) -- (7.7634,7.0379)--cycle;%
+\pgfsetfillcolor{cyan!50!white!62.05!black}%
+\pgfsetstrokecolor{cyan!50!white!62.05!black}%
+\draw[fill] (6.4812,7.5612) -- (6.3904,7.6241) -- (6.5476,7.6792) -- (6.6384,7.6163)--cycle;%
+\pgfsetfillcolor{cyan!39.71!black}%
+\pgfsetstrokecolor{cyan!39.71!black}%
+\draw[fill] (7.9206,6.8562) -- (7.8298,6.9342) -- (7.9871,6.7375) -- (8.0778,6.6595)--cycle;%
+\pgfsetfillcolor{cyan!95.17!black}%
+\pgfsetstrokecolor{cyan!95.17!black}%
+\draw[fill] (3.7287,5.4854) -- (3.6379,5.2734) -- (3.7951,5.2196) -- (3.8859,5.4315)--cycle;%
+\pgfsetfillcolor{cyan!35.97!black}%
+\pgfsetstrokecolor{cyan!35.97!black}%
+\draw[fill] (7.7634,7.0379) -- (7.6726,7.1159) -- (7.8298,6.9342) -- (7.9206,6.8562)--cycle;%
+\pgfsetfillcolor{cyan!96.59!black}%
+\pgfsetstrokecolor{cyan!96.59!black}%
+\draw[fill] (3.4806,5.3658) -- (3.3899,5.1784) -- (3.5471,5.086) -- (3.6379,5.2734)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.06!black}%
+\pgfsetstrokecolor{cyan!50!white!55.06!black}%
+\draw[fill] (6.8864,7.5633) -- (6.7956,7.6385) -- (6.9529,7.6237) -- (7.0437,7.5484)--cycle;%
+\pgfsetfillcolor{cyan!95.08!black}%
+\pgfsetstrokecolor{cyan!95.08!black}%
+\draw[fill] (2.9182,5.6464) -- (2.8274,5.4903) -- (2.9846,5.3086) -- (3.0754,5.4647)--cycle;%
+\pgfsetfillcolor{cyan!94.73!black}%
+\pgfsetstrokecolor{cyan!94.73!black}%
+\draw[fill] (2.7609,5.8431) -- (2.6701,5.687) -- (2.8274,5.4903) -- (2.9182,5.6464)--cycle;%
+\pgfsetfillcolor{cyan!95.45!black}%
+\pgfsetstrokecolor{cyan!95.45!black}%
+\draw[fill] (3.0754,5.4647) -- (2.9846,5.3086) -- (3.1419,5.1502) -- (3.2326,5.3063)--cycle;%
+\pgfsetfillcolor{cyan!91.93!black}%
+\pgfsetstrokecolor{cyan!91.93!black}%
+\draw[fill] (3.9767,5.6598) -- (3.8859,5.4315) -- (4.0431,5.4166) -- (4.1339,5.6449)--cycle;%
+\pgfsetfillcolor{cyan!63.15!black}%
+\pgfsetstrokecolor{cyan!63.15!black}%
+\draw[fill] (4.9931,6.9155) -- (4.9023,6.7794) -- (5.0595,6.8612) -- (5.1503,6.9972)--cycle;%
+\pgfsetfillcolor{cyan!87.48!black}%
+\pgfsetstrokecolor{cyan!87.48!black}%
+\draw[fill] (4.3155,6.1125) -- (4.2247,5.8801) -- (4.3819,5.9023) -- (4.4727,6.1348)--cycle;%
+\pgfsetfillcolor{cyan!95.45!black}%
+\pgfsetstrokecolor{cyan!95.45!black}%
+\draw[fill] (3.2326,5.3063) -- (3.1419,5.1502) -- (3.2991,5.0223) -- (3.3899,5.1784)--cycle;%
+\pgfsetfillcolor{cyan!79.56!black}%
+\pgfsetstrokecolor{cyan!79.56!black}%
+\draw[fill] (4.6543,6.5539) -- (4.5635,6.3549) -- (4.7207,6.41) -- (4.8115,6.609)--cycle;%
+\pgfsetfillcolor{cyan!50!white!60.4!black}%
+\pgfsetstrokecolor{cyan!50!white!60.4!black}%
+\draw[fill] (6.2331,7.5423) -- (6.1424,7.584) -- (6.2996,7.6658) -- (6.3904,7.6241)--cycle;%
+\pgfsetfillcolor{cyan!93.98!black}%
+\pgfsetstrokecolor{cyan!93.98!black}%
+\draw[fill] (3.6379,5.2734) -- (3.5471,5.086) -- (3.7043,5.0321) -- (3.7951,5.2196)--cycle;%
+\pgfsetfillcolor{cyan!45.51!black}%
+\pgfsetstrokecolor{cyan!45.51!black}%
+\draw[fill] (5.2411,7.0954) -- (5.1503,6.9972) -- (5.3075,7.0978) -- (5.3983,7.196)--cycle;%
+\pgfsetfillcolor{cyan!91.17!black}%
+\pgfsetstrokecolor{cyan!91.17!black}%
+\draw[fill] (3.8859,5.4315) -- (3.7951,5.2196) -- (3.9524,5.2047) -- (4.0431,5.4166)--cycle;%
+\pgfsetfillcolor{cyan!94.38!black}%
+\pgfsetstrokecolor{cyan!94.38!black}%
+\draw[fill] (3.3899,5.1784) -- (3.2991,5.0223) -- (3.4563,4.93) -- (3.5471,5.086)--cycle;%
+\pgfsetfillcolor{cyan!87.63!black}%
+\pgfsetstrokecolor{cyan!87.63!black}%
+\draw[fill] (4.2247,5.8801) -- (4.1339,5.6449) -- (4.2912,5.6671) -- (4.3819,5.9023)--cycle;%
+\pgfsetfillcolor{cyan!50!white!46.85!black}%
+\pgfsetstrokecolor{cyan!50!white!46.85!black}%
+\draw[fill] (7.0437,7.5484) -- (6.9529,7.6237) -- (7.1101,7.5698) -- (7.2009,7.4946)--cycle;%
+\pgfsetfillcolor{cyan!50!white!55.44!black}%
+\pgfsetstrokecolor{cyan!50!white!55.44!black}%
+\draw[fill] (5.9851,7.4835) -- (5.8944,7.4966) -- (6.0516,7.5972) -- (6.1424,7.584)--cycle;%
+\pgfsetfillcolor{cyan!50!white!18.85!black}%
+\pgfsetstrokecolor{cyan!50!white!18.85!black}%
+\draw[fill] (5.4891,7.255) -- (5.3983,7.196) -- (5.5556,7.3062) -- (5.6463,7.3652)--cycle;%
+\pgfsetfillcolor{cyan!91.22!black}%
+\pgfsetstrokecolor{cyan!91.22!black}%
+\draw[fill] (2.8274,5.4903) -- (2.7366,5.3704) -- (2.8938,5.1887) -- (2.9846,5.3086)--cycle;%
+\pgfsetfillcolor{cyan!50!white!45.46!black}%
+\pgfsetstrokecolor{cyan!50!white!45.46!black}%
+\draw[fill] (5.7371,7.3864) -- (5.6463,7.3652) -- (5.8036,7.4754) -- (5.8944,7.4966)--cycle;%
+\pgfsetfillcolor{cyan!81.68!black}%
+\pgfsetstrokecolor{cyan!81.68!black}%
+\draw[fill] (4.5635,6.3549) -- (4.4727,6.1348) -- (4.6299,6.1899) -- (4.7207,6.41)--cycle;%
+\pgfsetfillcolor{cyan!90.93!black}%
+\pgfsetstrokecolor{cyan!90.93!black}%
+\draw[fill] (2.6701,5.687) -- (2.5794,5.5671) -- (2.7366,5.3704) -- (2.8274,5.4903)--cycle;%
+\pgfsetfillcolor{cyan!50!white!57.96!black}%
+\pgfsetstrokecolor{cyan!50!white!57.96!black}%
+\draw[fill] (6.6384,7.6163) -- (6.5476,7.6792) -- (6.7049,7.7014) -- (6.7956,7.6385)--cycle;%
+\pgfsetfillcolor{cyan!91.49!black}%
+\pgfsetstrokecolor{cyan!91.49!black}%
+\draw[fill] (2.9846,5.3086) -- (2.8938,5.1887) -- (3.0511,5.0303) -- (3.1419,5.1502)--cycle;%
+\pgfsetfillcolor{cyan!70.41!black}%
+\pgfsetstrokecolor{cyan!70.41!black}%
+\draw[fill] (4.9023,6.7794) -- (4.8115,6.609) -- (4.9687,6.6908) -- (5.0595,6.8612)--cycle;%
+\pgfsetfillcolor{cyan!87.23!black}%
+\pgfsetstrokecolor{cyan!87.23!black}%
+\draw[fill] (4.1339,5.6449) -- (4.0431,5.4166) -- (4.2004,5.4389) -- (4.2912,5.6671)--cycle;%
+\pgfsetfillcolor{cyan!91.33!black}%
+\pgfsetstrokecolor{cyan!91.33!black}%
+\draw[fill] (3.1419,5.1502) -- (3.0511,5.0303) -- (3.2083,4.9024) -- (3.2991,5.0223)--cycle;%
+\pgfsetfillcolor{cyan!91.46!black}%
+\pgfsetstrokecolor{cyan!91.46!black}%
+\draw[fill] (3.5471,5.086) -- (3.4563,4.93) -- (3.6136,4.8761) -- (3.7043,5.0321)--cycle;%
+\pgfsetfillcolor{cyan!89.57!black}%
+\pgfsetstrokecolor{cyan!89.57!black}%
+\draw[fill] (3.7951,5.2196) -- (3.7043,5.0321) -- (3.8616,5.0173) -- (3.9524,5.2047)--cycle;%
+\pgfsetfillcolor{cyan!50!white!35.1!black}%
+\pgfsetstrokecolor{cyan!50!white!35.1!black}%
+\draw[fill] (7.2009,7.4946) -- (7.1101,7.5698) -- (7.2673,7.4774) -- (7.3581,7.4022)--cycle;%
+\pgfsetfillcolor{cyan!82.71!black}%
+\pgfsetstrokecolor{cyan!82.71!black}%
+\draw[fill] (4.4727,6.1348) -- (4.3819,5.9023) -- (4.5392,5.9575) -- (4.6299,6.1899)--cycle;%
+\pgfsetfillcolor{cyan!89.97!black}%
+\pgfsetstrokecolor{cyan!89.97!black}%
+\draw[fill] (3.2991,5.0223) -- (3.2083,4.9024) -- (3.3655,4.81) -- (3.4563,4.93)--cycle;%
+\pgfsetfillcolor{cyan!86.12!black}%
+\pgfsetstrokecolor{cyan!86.12!black}%
+\draw[fill] (4.0431,5.4166) -- (3.9524,5.2047) -- (4.1096,5.2269) -- (4.2004,5.4389)--cycle;%
+\pgfsetfillcolor{cyan!58.65!black}%
+\pgfsetstrokecolor{cyan!58.65!black}%
+\draw[fill] (5.1503,6.9972) -- (5.0595,6.8612) -- (5.2168,6.9617) -- (5.3075,7.0978)--cycle;%
+\pgfsetfillcolor{cyan!50!white!11.34!black}%
+\pgfsetstrokecolor{cyan!50!white!11.34!black}%
+\draw[fill] (7.3581,7.4022) -- (7.2673,7.4774) -- (7.4246,7.3495) -- (7.5154,7.2743)--cycle;%
+\pgfsetfillcolor{cyan!74.78!black}%
+\pgfsetstrokecolor{cyan!74.78!black}%
+\draw[fill] (4.8115,6.609) -- (4.7207,6.41) -- (4.878,6.4918) -- (4.9687,6.6908)--cycle;%
+\pgfsetfillcolor{cyan!50!white!57.3!black}%
+\pgfsetstrokecolor{cyan!50!white!57.3!black}%
+\draw[fill] (6.3904,7.6241) -- (6.2996,7.6658) -- (6.4568,7.7209) -- (6.5476,7.6792)--cycle;%
+\pgfsetfillcolor{cyan!82.92!black}%
+\pgfsetstrokecolor{cyan!82.92!black}%
+\draw[fill] (4.3819,5.9023) -- (4.2912,5.6671) -- (4.4484,5.7223) -- (4.5392,5.9575)--cycle;%
+\pgfsetfillcolor{cyan!29.97!black}%
+\pgfsetstrokecolor{cyan!29.97!black}%
+\draw[fill] (7.5154,7.2743) -- (7.4246,7.3495) -- (7.5818,7.1911) -- (7.6726,7.1159)--cycle;%
+\pgfsetfillcolor{cyan!41.01!black}%
+\pgfsetstrokecolor{cyan!41.01!black}%
+\draw[fill] (7.8298,6.9342) -- (7.739,7.0094) -- (7.8963,6.8127) -- (7.9871,6.7375)--cycle;%
+\pgfsetfillcolor{cyan!37.5!black}%
+\pgfsetstrokecolor{cyan!37.5!black}%
+\draw[fill] (7.6726,7.1159) -- (7.5818,7.1911) -- (7.739,7.0094) -- (7.8298,6.9342)--cycle;%
+\pgfsetfillcolor{cyan!50!white!51.52!black}%
+\pgfsetstrokecolor{cyan!50!white!51.52!black}%
+\draw[fill] (6.7956,7.6385) -- (6.7049,7.7014) -- (6.8621,7.6865) -- (6.9529,7.6237)--cycle;%
+\pgfsetfillcolor{cyan!86.41!black}%
+\pgfsetstrokecolor{cyan!86.41!black}%
+\draw[fill] (3.7043,5.0321) -- (3.6136,4.8761) -- (3.7708,4.8612) -- (3.8616,5.0173)--cycle;%
+\pgfsetfillcolor{cyan!42.34!black}%
+\pgfsetstrokecolor{cyan!42.34!black}%
+\draw[fill] (5.3983,7.196) -- (5.3075,7.0978) -- (5.4648,7.208) -- (5.5556,7.3062)--cycle;%
+\pgfsetfillcolor{cyan!86.5!black}%
+\pgfsetstrokecolor{cyan!86.5!black}%
+\draw[fill] (3.4563,4.93) -- (3.3655,4.81) -- (3.5228,4.7561) -- (3.6136,4.8761)--cycle;%
+\pgfsetfillcolor{cyan!83.94!black}%
+\pgfsetstrokecolor{cyan!83.94!black}%
+\draw[fill] (3.9524,5.2047) -- (3.8616,5.0173) -- (4.0188,5.0395) -- (4.1096,5.2269)--cycle;%
+\pgfsetfillcolor{cyan!50!white!52.93!black}%
+\pgfsetstrokecolor{cyan!50!white!52.93!black}%
+\draw[fill] (6.1424,7.584) -- (6.0516,7.5972) -- (6.2088,7.679) -- (6.2996,7.6658)--cycle;%
+\pgfsetfillcolor{cyan!77.3!black}%
+\pgfsetstrokecolor{cyan!77.3!black}%
+\draw[fill] (4.7207,6.41) -- (4.6299,6.1899) -- (4.7872,6.2717) -- (4.878,6.4918)--cycle;%
+\pgfsetfillcolor{cyan!82.37!black}%
+\pgfsetstrokecolor{cyan!82.37!black}%
+\draw[fill] (4.2912,5.6671) -- (4.2004,5.4389) -- (4.3576,5.494) -- (4.4484,5.7223)--cycle;%
+\pgfsetfillcolor{cyan!50!white!18.85!black}%
+\pgfsetstrokecolor{cyan!50!white!18.85!black}%
+\draw[fill] (5.6463,7.3652) -- (5.5556,7.3062) -- (5.7128,7.4164) -- (5.8036,7.4754)--cycle;%
+\pgfsetfillcolor{cyan!50!white!43.46!black}%
+\pgfsetstrokecolor{cyan!50!white!43.46!black}%
+\draw[fill] (5.8944,7.4966) -- (5.8036,7.4754) -- (5.9608,7.576) -- (6.0516,7.5972)--cycle;%
+\pgfsetfillcolor{cyan!66.53!black}%
+\pgfsetstrokecolor{cyan!66.53!black}%
+\draw[fill] (5.0595,6.8612) -- (4.9687,6.6908) -- (5.126,6.7913) -- (5.2168,6.9617)--cycle;%
+\pgfsetfillcolor{cyan!78.54!black}%
+\pgfsetstrokecolor{cyan!78.54!black}%
+\draw[fill] (4.6299,6.1899) -- (4.5392,5.9575) -- (4.6964,6.0393) -- (4.7872,6.2717)--cycle;%
+\pgfsetfillcolor{cyan!50!white!41.74!black}%
+\pgfsetstrokecolor{cyan!50!white!41.74!black}%
+\draw[fill] (6.9529,7.6237) -- (6.8621,7.6865) -- (7.0193,7.6327) -- (7.1101,7.5698)--cycle;%
+\pgfsetfillcolor{cyan!80.92!black}%
+\pgfsetstrokecolor{cyan!80.92!black}%
+\draw[fill] (4.2004,5.4389) -- (4.1096,5.2269) -- (4.2668,5.282) -- (4.3576,5.494)--cycle;%
+\pgfsetfillcolor{cyan!80.57!black}%
+\pgfsetstrokecolor{cyan!80.57!black}%
+\draw[fill] (3.6136,4.8761) -- (3.5228,4.7561) -- (3.68,4.7413) -- (3.7708,4.8612)--cycle;%
+\pgfsetfillcolor{cyan!50!white!52.07!black}%
+\pgfsetstrokecolor{cyan!50!white!52.07!black}%
+\draw[fill] (6.5476,7.6792) -- (6.4568,7.7209) -- (6.6141,7.7432) -- (6.7049,7.7014)--cycle;%
+\pgfsetfillcolor{cyan!79.97!black}%
+\pgfsetstrokecolor{cyan!79.97!black}%
+\draw[fill] (3.8616,5.0173) -- (3.7708,4.8612) -- (3.928,4.8834) -- (4.0188,5.0395)--cycle;%
+\pgfsetfillcolor{cyan!56.29!black}%
+\pgfsetstrokecolor{cyan!56.29!black}%
+\draw[fill] (5.3075,7.0978) -- (5.2168,6.9617) -- (5.374,7.0719) -- (5.4648,7.208)--cycle;%
+\pgfsetfillcolor{cyan!71.33!black}%
+\pgfsetstrokecolor{cyan!71.33!black}%
+\draw[fill] (4.9687,6.6908) -- (4.878,6.4918) -- (5.0352,6.5924) -- (5.126,6.7913)--cycle;%
+\pgfsetfillcolor{cyan!78.8!black}%
+\pgfsetstrokecolor{cyan!78.8!black}%
+\draw[fill] (4.5392,5.9575) -- (4.4484,5.7223) -- (4.6056,5.804) -- (4.6964,6.0393)--cycle;%
+\pgfsetfillcolor{cyan!50!white!25.57!black}%
+\pgfsetstrokecolor{cyan!50!white!25.57!black}%
+\draw[fill] (7.1101,7.5698) -- (7.0193,7.6327) -- (7.1766,7.5403) -- (7.2673,7.4774)--cycle;%
+\pgfsetfillcolor{cyan!78.16!black}%
+\pgfsetstrokecolor{cyan!78.16!black}%
+\draw[fill] (4.1096,5.2269) -- (4.0188,5.0395) -- (4.176,5.0946) -- (4.2668,5.282)--cycle;%
+\pgfsetfillcolor{cyan!50!white!48.31!black}%
+\pgfsetstrokecolor{cyan!50!white!48.31!black}%
+\draw[fill] (6.2996,7.6658) -- (6.2088,7.679) -- (6.3661,7.7341) -- (6.4568,7.7209)--cycle;%
+\pgfsetfillcolor{cyan!78.14!black}%
+\pgfsetstrokecolor{cyan!78.14!black}%
+\draw[fill] (4.4484,5.7223) -- (4.3576,5.494) -- (4.5148,5.5758) -- (4.6056,5.804)--cycle;%
+\pgfsetfillcolor{cyan!42.34!black}%
+\pgfsetstrokecolor{cyan!42.34!black}%
+\draw[fill] (5.5556,7.3062) -- (5.4648,7.208) -- (5.622,7.3182) -- (5.7128,7.4164)--cycle;%
+\pgfsetfillcolor{cyan!26.53!black}%
+\pgfsetstrokecolor{cyan!26.53!black}%
+\draw[fill] (7.2673,7.4774) -- (7.1766,7.5403) -- (7.3338,7.4124) -- (7.4246,7.3495)--cycle;%
+\pgfsetfillcolor{cyan!74.12!black}%
+\pgfsetstrokecolor{cyan!74.12!black}%
+\draw[fill] (4.878,6.4918) -- (4.7872,6.2717) -- (4.9444,6.3722) -- (5.0352,6.5924)--cycle;%
+\pgfsetfillcolor{cyan!50!white!38.66!black}%
+\pgfsetstrokecolor{cyan!50!white!38.66!black}%
+\draw[fill] (6.0516,7.5972) -- (5.9608,7.576) -- (6.118,7.6578) -- (6.2088,7.679)--cycle;%
+\pgfsetfillcolor{cyan!10.47!black}%
+\pgfsetstrokecolor{cyan!10.47!black}%
+\draw[fill] (5.8036,7.4754) -- (5.7128,7.4164) -- (5.87,7.5169) -- (5.9608,7.576)--cycle;%
+\pgfsetfillcolor{cyan!38.04!black}%
+\pgfsetstrokecolor{cyan!38.04!black}%
+\draw[fill] (7.4246,7.3495) -- (7.3338,7.4124) -- (7.491,7.254) -- (7.5818,7.1911)--cycle;%
+\pgfsetfillcolor{cyan!73.06!black}%
+\pgfsetstrokecolor{cyan!73.06!black}%
+\draw[fill] (3.7708,4.8612) -- (3.68,4.7413) -- (3.8373,4.7635) -- (3.928,4.8834)--cycle;%
+\pgfsetfillcolor{cyan!50!white!43.41!black}%
+\pgfsetstrokecolor{cyan!50!white!43.41!black}%
+\draw[fill] (6.7049,7.7014) -- (6.6141,7.7432) -- (6.7713,7.7283) -- (6.8621,7.6865)--cycle;%
+\pgfsetfillcolor{cyan!46.33!black}%
+\pgfsetstrokecolor{cyan!46.33!black}%
+\draw[fill] (7.739,7.0094) -- (7.6483,7.0723) -- (7.8055,6.8756) -- (7.8963,6.8127)--cycle;%
+\pgfsetfillcolor{cyan!43.57!black}%
+\pgfsetstrokecolor{cyan!43.57!black}%
+\draw[fill] (7.5818,7.1911) -- (7.491,7.254) -- (7.6483,7.0723) -- (7.739,7.0094)--cycle;%
+\pgfsetfillcolor{cyan!64.51!black}%
+\pgfsetstrokecolor{cyan!64.51!black}%
+\draw[fill] (5.2168,6.9617) -- (5.126,6.7913) -- (5.2832,6.9016) -- (5.374,7.0719)--cycle;%
+\pgfsetfillcolor{cyan!76.39!black}%
+\pgfsetstrokecolor{cyan!76.39!black}%
+\draw[fill] (4.3576,5.494) -- (4.2668,5.282) -- (4.4241,5.3638) -- (4.5148,5.5758)--cycle;%
+\pgfsetfillcolor{cyan!73.37!black}%
+\pgfsetstrokecolor{cyan!73.37!black}%
+\draw[fill] (4.0188,5.0395) -- (3.928,4.8834) -- (4.0853,4.9386) -- (4.176,5.0946)--cycle;%
+\pgfsetfillcolor{cyan!75.51!black}%
+\pgfsetstrokecolor{cyan!75.51!black}%
+\draw[fill] (4.7872,6.2717) -- (4.6964,6.0393) -- (4.8536,6.1398) -- (4.9444,6.3722)--cycle;%
+\pgfsetfillcolor{cyan!75.8!black}%
+\pgfsetstrokecolor{cyan!75.8!black}%
+\draw[fill] (4.6964,6.0393) -- (4.6056,5.804) -- (4.7629,5.9046) -- (4.8536,6.1398)--cycle;%
+\pgfsetfillcolor{cyan!69.53!black}%
+\pgfsetstrokecolor{cyan!69.53!black}%
+\draw[fill] (5.126,6.7913) -- (5.0352,6.5924) -- (5.1924,6.7026) -- (5.2832,6.9016)--cycle;%
+\pgfsetfillcolor{cyan!56.29!black}%
+\pgfsetstrokecolor{cyan!56.29!black}%
+\draw[fill] (5.4648,7.208) -- (5.374,7.0719) -- (5.5312,7.1822) -- (5.622,7.3182)--cycle;%
+\pgfsetfillcolor{cyan!50!white!27.67!black}%
+\pgfsetstrokecolor{cyan!50!white!27.67!black}%
+\draw[fill] (6.8621,7.6865) -- (6.7713,7.7283) -- (6.9285,7.6744) -- (7.0193,7.6327)--cycle;%
+\pgfsetfillcolor{cyan!73.16!black}%
+\pgfsetstrokecolor{cyan!73.16!black}%
+\draw[fill] (4.2668,5.282) -- (4.176,5.0946) -- (4.3333,5.1764) -- (4.4241,5.3638)--cycle;%
+\pgfsetfillcolor{cyan!50!white!39.86!black}%
+\pgfsetstrokecolor{cyan!50!white!39.86!black}%
+\draw[fill] (6.4568,7.7209) -- (6.3661,7.7341) -- (6.5233,7.7563) -- (6.6141,7.7432)--cycle;%
+\pgfsetfillcolor{cyan!75.06!black}%
+\pgfsetstrokecolor{cyan!75.06!black}%
+\draw[fill] (4.6056,5.804) -- (4.5148,5.5758) -- (4.6721,5.6763) -- (4.7629,5.9046)--cycle;%
+\pgfsetfillcolor{cyan!65.38!black}%
+\pgfsetstrokecolor{cyan!65.38!black}%
+\draw[fill] (3.928,4.8834) -- (3.8373,4.7635) -- (3.9945,4.8186) -- (4.0853,4.9386)--cycle;%
+\pgfsetfillcolor{cyan!45.51!black}%
+\pgfsetstrokecolor{cyan!45.51!black}%
+\draw[fill] (5.7128,7.4164) -- (5.622,7.3182) -- (5.7792,7.4187) -- (5.87,7.5169)--cycle;%
+\pgfsetfillcolor{cyan!50!white!27.85!black}%
+\pgfsetstrokecolor{cyan!50!white!27.85!black}%
+\draw[fill] (6.2088,7.679) -- (6.118,7.6578) -- (6.2753,7.7129) -- (6.3661,7.7341)--cycle;%
+\pgfsetfillcolor{cyan!72.46!black}%
+\pgfsetstrokecolor{cyan!72.46!black}%
+\draw[fill] (5.0352,6.5924) -- (4.9444,6.3722) -- (5.1017,6.4825) -- (5.1924,6.7026)--cycle;%
+\pgfsetfillcolor{cyan!28.31!black}%
+\pgfsetstrokecolor{cyan!28.31!black}%
+\draw[fill] (7.0193,7.6327) -- (6.9285,7.6744) -- (7.0858,7.582) -- (7.1766,7.5403)--cycle;%
+\pgfsetfillcolor{cyan!28.59!black}%
+\pgfsetstrokecolor{cyan!28.59!black}%
+\draw[fill] (5.9608,7.576) -- (5.87,7.5169) -- (6.0273,7.5987) -- (6.118,7.6578)--cycle;%
+\pgfsetfillcolor{cyan!67.69!black}%
+\pgfsetstrokecolor{cyan!67.69!black}%
+\draw[fill] (4.176,5.0946) -- (4.0853,4.9386) -- (4.2425,5.0203) -- (4.3333,5.1764)--cycle;%
+\pgfsetfillcolor{cyan!64.51!black}%
+\pgfsetstrokecolor{cyan!64.51!black}%
+\draw[fill] (5.374,7.0719) -- (5.2832,6.9016) -- (5.4405,7.0118) -- (5.5312,7.1822)--cycle;%
+\pgfsetfillcolor{cyan!73.11!black}%
+\pgfsetstrokecolor{cyan!73.11!black}%
+\draw[fill] (4.5148,5.5758) -- (4.4241,5.3638) -- (4.5813,5.4644) -- (4.6721,5.6763)--cycle;%
+\pgfsetfillcolor{cyan!41.69!black}%
+\pgfsetstrokecolor{cyan!41.69!black}%
+\draw[fill] (7.1766,7.5403) -- (7.0858,7.582) -- (7.243,7.4541) -- (7.3338,7.4124)--cycle;%
+\pgfsetfillcolor{cyan!73.93!black}%
+\pgfsetstrokecolor{cyan!73.93!black}%
+\draw[fill] (4.9444,6.3722) -- (4.8536,6.1398) -- (5.0109,6.25) -- (5.1017,6.4825)--cycle;%
+\pgfsetfillcolor{cyan!50!white!20.27!black}%
+\pgfsetstrokecolor{cyan!50!white!20.27!black}%
+\draw[fill] (6.6141,7.7432) -- (6.5233,7.7563) -- (6.6805,7.7414) -- (6.7713,7.7283)--cycle;%
+\pgfsetfillcolor{cyan!48.45!black}%
+\pgfsetstrokecolor{cyan!48.45!black}%
+\draw[fill] (7.3338,7.4124) -- (7.243,7.4541) -- (7.4003,7.2958) -- (7.491,7.254)--cycle;%
+\pgfsetfillcolor{cyan!54.18!black}%
+\pgfsetstrokecolor{cyan!54.18!black}%
+\draw[fill] (7.6483,7.0723) -- (7.5575,7.114) -- (7.7147,6.9173) -- (7.8055,6.8756)--cycle;%
+\pgfsetfillcolor{cyan!52.22!black}%
+\pgfsetstrokecolor{cyan!52.22!black}%
+\draw[fill] (7.491,7.254) -- (7.4003,7.2958) -- (7.5575,7.114) -- (7.6483,7.0723)--cycle;%
+\pgfsetfillcolor{cyan!74.23!black}%
+\pgfsetstrokecolor{cyan!74.23!black}%
+\draw[fill] (4.8536,6.1398) -- (4.7629,5.9046) -- (4.9201,6.0148) -- (5.0109,6.25)--cycle;%
+\pgfsetfillcolor{cyan!69.55!black}%
+\pgfsetstrokecolor{cyan!69.55!black}%
+\draw[fill] (4.4241,5.3638) -- (4.3333,5.1764) -- (4.4905,5.277) -- (4.5813,5.4644)--cycle;%
+\pgfsetfillcolor{cyan!58.65!black}%
+\pgfsetstrokecolor{cyan!58.65!black}%
+\draw[fill] (5.622,7.3182) -- (5.5312,7.1822) -- (5.6885,7.2827) -- (5.7792,7.4187)--cycle;%
+\pgfsetfillcolor{cyan!69.53!black}%
+\pgfsetstrokecolor{cyan!69.53!black}%
+\draw[fill] (5.2832,6.9016) -- (5.1924,6.7026) -- (5.3497,6.8128) -- (5.4405,7.0118)--cycle;%
+\pgfsetfillcolor{cyan!26.06!black}%
+\pgfsetstrokecolor{cyan!26.06!black}%
+\draw[fill] (6.3661,7.7341) -- (6.2753,7.7129) -- (6.4325,7.7351) -- (6.5233,7.7563)--cycle;%
+\pgfsetfillcolor{cyan!58.72!black}%
+\pgfsetstrokecolor{cyan!58.72!black}%
+\draw[fill] (4.0853,4.9386) -- (3.9945,4.8186) -- (4.1517,4.9004) -- (4.2425,5.0203)--cycle;%
+\pgfsetfillcolor{cyan!35.28!black}%
+\pgfsetstrokecolor{cyan!35.28!black}%
+\draw[fill] (6.7713,7.7283) -- (6.6805,7.7414) -- (6.8378,7.6876) -- (6.9285,7.6744)--cycle;%
+\pgfsetfillcolor{cyan!73.45!black}%
+\pgfsetstrokecolor{cyan!73.45!black}%
+\draw[fill] (4.7629,5.9046) -- (4.6721,5.6763) -- (4.8293,5.7865) -- (4.9201,6.0148)--cycle;%
+\pgfsetfillcolor{cyan!51.25!black}%
+\pgfsetstrokecolor{cyan!51.25!black}%
+\draw[fill] (5.87,7.5169) -- (5.7792,7.4187) -- (5.9365,7.5005) -- (6.0273,7.5987)--cycle;%
+\pgfsetfillcolor{cyan!41.18!black}%
+\pgfsetstrokecolor{cyan!41.18!black}%
+\draw[fill] (6.118,7.6578) -- (6.0273,7.5987) -- (6.1845,7.6538) -- (6.2753,7.7129)--cycle;%
+\pgfsetfillcolor{cyan!72.46!black}%
+\pgfsetstrokecolor{cyan!72.46!black}%
+\draw[fill] (5.1924,6.7026) -- (5.1017,6.4825) -- (5.2589,6.5927) -- (5.3497,6.8128)--cycle;%
+\pgfsetfillcolor{cyan!63.58!black}%
+\pgfsetstrokecolor{cyan!63.58!black}%
+\draw[fill] (4.3333,5.1764) -- (4.2425,5.0203) -- (4.3997,5.1209) -- (4.4905,5.277)--cycle;%
+\pgfsetfillcolor{cyan!66.53!black}%
+\pgfsetstrokecolor{cyan!66.53!black}%
+\draw[fill] (5.5312,7.1822) -- (5.4405,7.0118) -- (5.5977,7.1123) -- (5.6885,7.2827)--cycle;%
+\pgfsetfillcolor{cyan!71.4!black}%
+\pgfsetstrokecolor{cyan!71.4!black}%
+\draw[fill] (4.6721,5.6763) -- (4.5813,5.4644) -- (4.7385,5.5746) -- (4.8293,5.7865)--cycle;%
+\pgfsetfillcolor{cyan!48.08!black}%
+\pgfsetstrokecolor{cyan!48.08!black}%
+\draw[fill] (6.9285,7.6744) -- (6.8378,7.6876) -- (6.995,7.5952) -- (7.0858,7.582)--cycle;%
+\pgfsetfillcolor{cyan!73.93!black}%
+\pgfsetstrokecolor{cyan!73.93!black}%
+\draw[fill] (5.1017,6.4825) -- (5.0109,6.25) -- (5.1681,6.3602) -- (5.2589,6.5927)--cycle;%
+\pgfsetfillcolor{cyan!44.38!black}%
+\pgfsetstrokecolor{cyan!44.38!black}%
+\draw[fill] (6.5233,7.7563) -- (6.4325,7.7351) -- (6.5898,7.7203) -- (6.6805,7.7414)--cycle;%
+\pgfsetfillcolor{cyan!55.34!black}%
+\pgfsetstrokecolor{cyan!55.34!black}%
+\draw[fill] (7.0858,7.582) -- (6.995,7.5952) -- (7.1522,7.4673) -- (7.243,7.4541)--cycle;%
+\pgfsetfillcolor{cyan!63.15!black}%
+\pgfsetstrokecolor{cyan!63.15!black}%
+\draw[fill] (5.7792,7.4187) -- (5.6885,7.2827) -- (5.8457,7.3645) -- (5.9365,7.5005)--cycle;%
+\pgfsetfillcolor{cyan!59.58!black}%
+\pgfsetstrokecolor{cyan!59.58!black}%
+\draw[fill] (7.243,7.4541) -- (7.1522,7.4673) -- (7.3095,7.3089) -- (7.4003,7.2958)--cycle;%
+\pgfsetfillcolor{cyan!74.23!black}%
+\pgfsetstrokecolor{cyan!74.23!black}%
+\draw[fill] (5.0109,6.25) -- (4.9201,6.0148) -- (5.0773,6.125) -- (5.1681,6.3602)--cycle;%
+\pgfsetfillcolor{cyan!67.66!black}%
+\pgfsetstrokecolor{cyan!67.66!black}%
+\draw[fill] (4.5813,5.4644) -- (4.4905,5.277) -- (4.6478,5.3872) -- (4.7385,5.5746)--cycle;%
+\pgfsetfillcolor{cyan!63.25!black}%
+\pgfsetstrokecolor{cyan!63.25!black}%
+\draw[fill] (7.5575,7.114) -- (7.4667,7.1272) -- (7.6239,6.9305) -- (7.7147,6.9173)--cycle;%
+\pgfsetfillcolor{cyan!62!black}%
+\pgfsetstrokecolor{cyan!62!black}%
+\draw[fill] (7.4003,7.2958) -- (7.3095,7.3089) -- (7.4667,7.1272) -- (7.5575,7.114)--cycle;%
+\pgfsetfillcolor{cyan!71.33!black}%
+\pgfsetstrokecolor{cyan!71.33!black}%
+\draw[fill] (5.4405,7.0118) -- (5.3497,6.8128) -- (5.5069,6.9133) -- (5.5977,7.1123)--cycle;%
+\pgfsetfillcolor{cyan!52.66!black}%
+\pgfsetstrokecolor{cyan!52.66!black}%
+\draw[fill] (6.2753,7.7129) -- (6.1845,7.6538) -- (6.3417,7.6761) -- (6.4325,7.7351)--cycle;%
+\pgfsetfillcolor{cyan!53.82!black}%
+\pgfsetstrokecolor{cyan!53.82!black}%
+\draw[fill] (4.2425,5.0203) -- (4.1517,4.9004) -- (4.309,5.0009) -- (4.3997,5.1209)--cycle;%
+\pgfsetfillcolor{cyan!58.8!black}%
+\pgfsetstrokecolor{cyan!58.8!black}%
+\draw[fill] (6.0273,7.5987) -- (5.9365,7.5005) -- (6.0937,7.5557) -- (6.1845,7.6538)--cycle;%
+\pgfsetfillcolor{cyan!73.45!black}%
+\pgfsetstrokecolor{cyan!73.45!black}%
+\draw[fill] (4.9201,6.0148) -- (4.8293,5.7865) -- (4.9866,5.8968) -- (5.0773,6.125)--cycle;%
+\pgfsetfillcolor{cyan!55.93!black}%
+\pgfsetstrokecolor{cyan!55.93!black}%
+\draw[fill] (6.6805,7.7414) -- (6.5898,7.7203) -- (6.747,7.6664) -- (6.8378,7.6876)--cycle;%
+\pgfsetfillcolor{cyan!74.12!black}%
+\pgfsetstrokecolor{cyan!74.12!black}%
+\draw[fill] (5.3497,6.8128) -- (5.2589,6.5927) -- (5.4161,6.6932) -- (5.5069,6.9133)--cycle;%
+\pgfsetfillcolor{cyan!61.43!black}%
+\pgfsetstrokecolor{cyan!61.43!black}%
+\draw[fill] (4.4905,5.277) -- (4.3997,5.1209) -- (4.557,5.2311) -- (4.6478,5.3872)--cycle;%
+\pgfsetfillcolor{cyan!70.41!black}%
+\pgfsetstrokecolor{cyan!70.41!black}%
+\draw[fill] (5.6885,7.2827) -- (5.5977,7.1123) -- (5.7549,7.1941) -- (5.8457,7.3645)--cycle;%
+\pgfsetfillcolor{cyan!71.4!black}%
+\pgfsetstrokecolor{cyan!71.4!black}%
+\draw[fill] (4.8293,5.7865) -- (4.7385,5.5746) -- (4.8958,5.6848) -- (4.9866,5.8968)--cycle;%
+\pgfsetfillcolor{cyan!63.51!black}%
+\pgfsetstrokecolor{cyan!63.51!black}%
+\draw[fill] (6.8378,7.6876) -- (6.747,7.6664) -- (6.9042,7.574) -- (6.995,7.5952)--cycle;%
+\pgfsetfillcolor{cyan!75.51!black}%
+\pgfsetstrokecolor{cyan!75.51!black}%
+\draw[fill] (5.2589,6.5927) -- (5.1681,6.3602) -- (5.3253,6.4608) -- (5.4161,6.6932)--cycle;%
+\pgfsetfillcolor{cyan!62.96!black}%
+\pgfsetstrokecolor{cyan!62.96!black}%
+\draw[fill] (6.4325,7.7351) -- (6.3417,7.6761) -- (6.499,7.6612) -- (6.5898,7.7203)--cycle;%
+\pgfsetfillcolor{cyan!69.34!black}%
+\pgfsetstrokecolor{cyan!69.34!black}%
+\draw[fill] (5.9365,7.5005) -- (5.8457,7.3645) -- (6.0029,7.4196) -- (6.0937,7.5557)--cycle;%
+\pgfsetfillcolor{cyan!67.3!black}%
+\pgfsetstrokecolor{cyan!67.3!black}%
+\draw[fill] (6.1845,7.6538) -- (6.0937,7.5557) -- (6.251,7.5779) -- (6.3417,7.6761)--cycle;%
+\pgfsetfillcolor{cyan!68.04!black}%
+\pgfsetstrokecolor{cyan!68.04!black}%
+\draw[fill] (6.995,7.5952) -- (6.9042,7.574) -- (7.0615,7.4461) -- (7.1522,7.4673)--cycle;%
+\pgfsetfillcolor{cyan!74.78!black}%
+\pgfsetstrokecolor{cyan!74.78!black}%
+\draw[fill] (5.5977,7.1123) -- (5.5069,6.9133) -- (5.6641,6.9951) -- (5.7549,7.1941)--cycle;%
+\pgfsetfillcolor{cyan!75.8!black}%
+\pgfsetstrokecolor{cyan!75.8!black}%
+\draw[fill] (5.1681,6.3602) -- (5.0773,6.125) -- (5.2346,6.2255) -- (5.3253,6.4608)--cycle;%
+\pgfsetfillcolor{cyan!67.66!black}%
+\pgfsetstrokecolor{cyan!67.66!black}%
+\draw[fill] (4.7385,5.5746) -- (4.6478,5.3872) -- (4.805,5.4974) -- (4.8958,5.6848)--cycle;%
+\pgfsetfillcolor{cyan!70.56!black}%
+\pgfsetstrokecolor{cyan!70.56!black}%
+\draw[fill] (7.1522,7.4673) -- (7.0615,7.4461) -- (7.2187,7.2877) -- (7.3095,7.3089)--cycle;%
+\pgfsetfillcolor{cyan!72.52!black}%
+\pgfsetstrokecolor{cyan!72.52!black}%
+\draw[fill] (7.4667,7.1272) -- (7.3759,7.106) -- (7.5332,6.9093) -- (7.6239,6.9305)--cycle;%
+\pgfsetfillcolor{cyan!51.21!black}%
+\pgfsetstrokecolor{cyan!51.21!black}%
+\draw[fill] (4.3997,5.1209) -- (4.309,5.0009) -- (4.4662,5.1112) -- (4.557,5.2311)--cycle;%
+\pgfsetfillcolor{cyan!71.88!black}%
+\pgfsetstrokecolor{cyan!71.88!black}%
+\draw[fill] (7.3095,7.3089) -- (7.2187,7.2877) -- (7.3759,7.106) -- (7.4667,7.1272)--cycle;%
+\pgfsetfillcolor{cyan!71.1!black}%
+\pgfsetstrokecolor{cyan!71.1!black}%
+\draw[fill] (6.5898,7.7203) -- (6.499,7.6612) -- (6.6562,7.6073) -- (6.747,7.6664)--cycle;%
+\pgfsetfillcolor{cyan!75.06!black}%
+\pgfsetstrokecolor{cyan!75.06!black}%
+\draw[fill] (5.0773,6.125) -- (4.9866,5.8968) -- (5.1438,5.9973) -- (5.2346,6.2255)--cycle;%
+\pgfsetfillcolor{cyan!77.3!black}%
+\pgfsetstrokecolor{cyan!77.3!black}%
+\draw[fill] (5.5069,6.9133) -- (5.4161,6.6932) -- (5.5734,6.775) -- (5.6641,6.9951)--cycle;%
+\pgfsetfillcolor{cyan!75.76!black}%
+\pgfsetstrokecolor{cyan!75.76!black}%
+\draw[fill] (5.8457,7.3645) -- (5.7549,7.1941) -- (5.9122,7.2492) -- (6.0029,7.4196)--cycle;%
+\pgfsetfillcolor{cyan!61.43!black}%
+\pgfsetstrokecolor{cyan!61.43!black}%
+\draw[fill] (4.6478,5.3872) -- (4.557,5.2311) -- (4.7142,5.3413) -- (4.805,5.4974)--cycle;%
+\pgfsetfillcolor{cyan!75.56!black}%
+\pgfsetstrokecolor{cyan!75.56!black}%
+\draw[fill] (6.3417,7.6761) -- (6.251,7.5779) -- (6.4082,7.563) -- (6.499,7.6612)--cycle;%
+\pgfsetfillcolor{cyan!73.11!black}%
+\pgfsetstrokecolor{cyan!73.11!black}%
+\draw[fill] (4.9866,5.8968) -- (4.8958,5.6848) -- (5.053,5.7853) -- (5.1438,5.9973)--cycle;%
+\pgfsetfillcolor{cyan!76.5!black}%
+\pgfsetstrokecolor{cyan!76.5!black}%
+\draw[fill] (6.0937,7.5557) -- (6.0029,7.4196) -- (6.1602,7.4418) -- (6.251,7.5779)--cycle;%
+\pgfsetfillcolor{cyan!76.39!black}%
+\pgfsetstrokecolor{cyan!76.39!black}%
+\draw[fill] (6.747,7.6664) -- (6.6562,7.6073) -- (6.8134,7.5149) -- (6.9042,7.574)--cycle;%
+\pgfsetfillcolor{cyan!78.54!black}%
+\pgfsetstrokecolor{cyan!78.54!black}%
+\draw[fill] (5.4161,6.6932) -- (5.3253,6.4608) -- (5.4826,6.5425) -- (5.5734,6.775)--cycle;%
+\pgfsetfillcolor{cyan!79.56!black}%
+\pgfsetstrokecolor{cyan!79.56!black}%
+\draw[fill] (5.7549,7.1941) -- (5.6641,6.9951) -- (5.8214,7.0502) -- (5.9122,7.2492)--cycle;%
+\pgfsetfillcolor{cyan!79.19!black}%
+\pgfsetstrokecolor{cyan!79.19!black}%
+\draw[fill] (6.9042,7.574) -- (6.8134,7.5149) -- (6.9707,7.387) -- (7.0615,7.4461)--cycle;%
+\pgfsetfillcolor{cyan!78.8!black}%
+\pgfsetstrokecolor{cyan!78.8!black}%
+\draw[fill] (5.3253,6.4608) -- (5.2346,6.2255) -- (5.3918,6.3073) -- (5.4826,6.5425)--cycle;%
+\pgfsetfillcolor{cyan!69.55!black}%
+\pgfsetstrokecolor{cyan!69.55!black}%
+\draw[fill] (4.8958,5.6848) -- (4.805,5.4974) -- (4.9622,5.5979) -- (5.053,5.7853)--cycle;%
+\pgfsetfillcolor{cyan!80.42!black}%
+\pgfsetstrokecolor{cyan!80.42!black}%
+\draw[fill] (7.0615,7.4461) -- (6.9707,7.387) -- (7.1279,7.2287) -- (7.2187,7.2877)--cycle;%
+\pgfsetfillcolor{cyan!81.03!black}%
+\pgfsetstrokecolor{cyan!81.03!black}%
+\draw[fill] (7.3759,7.106) -- (7.2851,7.0469) -- (7.4424,6.8502) -- (7.5332,6.9093)--cycle;%
+\pgfsetfillcolor{cyan!80.88!black}%
+\pgfsetstrokecolor{cyan!80.88!black}%
+\draw[fill] (7.2187,7.2877) -- (7.1279,7.2287) -- (7.2851,7.0469) -- (7.3759,7.106)--cycle;%
+\pgfsetfillcolor{cyan!82.12!black}%
+\pgfsetstrokecolor{cyan!82.12!black}%
+\draw[fill] (6.499,7.6612) -- (6.4082,7.563) -- (6.5654,7.5091) -- (6.6562,7.6073)--cycle;%
+\pgfsetfillcolor{cyan!51.21!black}%
+\pgfsetstrokecolor{cyan!51.21!black}%
+\draw[fill] (4.557,5.2311) -- (4.4662,5.1112) -- (4.6234,5.2214) -- (4.7142,5.3413)--cycle;%
+\pgfsetfillcolor{cyan!81.97!black}%
+\pgfsetstrokecolor{cyan!81.97!black}%
+\draw[fill] (6.0029,7.4196) -- (5.9122,7.2492) -- (6.0694,7.2715) -- (6.1602,7.4418)--cycle;%
+\pgfsetfillcolor{cyan!81.68!black}%
+\pgfsetstrokecolor{cyan!81.68!black}%
+\draw[fill] (5.6641,6.9951) -- (5.5734,6.775) -- (5.7306,6.8301) -- (5.8214,7.0502)--cycle;%
+\pgfsetfillcolor{cyan!78.14!black}%
+\pgfsetstrokecolor{cyan!78.14!black}%
+\draw[fill] (5.2346,6.2255) -- (5.1438,5.9973) -- (5.301,6.0791) -- (5.3918,6.3073)--cycle;%
+\pgfsetfillcolor{cyan!83.52!black}%
+\pgfsetstrokecolor{cyan!83.52!black}%
+\draw[fill] (6.251,7.5779) -- (6.1602,7.4418) -- (6.3174,7.427) -- (6.4082,7.563)--cycle;%
+\pgfsetfillcolor{cyan!86.08!black}%
+\pgfsetstrokecolor{cyan!86.08!black}%
+\draw[fill] (6.6562,7.6073) -- (6.5654,7.5091) -- (6.7227,7.4168) -- (6.8134,7.5149)--cycle;%
+\pgfsetfillcolor{cyan!63.58!black}%
+\pgfsetstrokecolor{cyan!63.58!black}%
+\draw[fill] (4.805,5.4974) -- (4.7142,5.3413) -- (4.8714,5.4418) -- (4.9622,5.5979)--cycle;%
+\pgfsetfillcolor{cyan!82.71!black}%
+\pgfsetstrokecolor{cyan!82.71!black}%
+\draw[fill] (5.5734,6.775) -- (5.4826,6.5425) -- (5.6398,6.5977) -- (5.7306,6.8301)--cycle;%
+\pgfsetfillcolor{cyan!76.39!black}%
+\pgfsetstrokecolor{cyan!76.39!black}%
+\draw[fill] (5.1438,5.9973) -- (5.053,5.7853) -- (5.2102,5.8671) -- (5.301,6.0791)--cycle;%
+\pgfsetfillcolor{cyan!85.06!black}%
+\pgfsetstrokecolor{cyan!85.06!black}%
+\draw[fill] (5.9122,7.2492) -- (5.8214,7.0502) -- (5.9786,7.0725) -- (6.0694,7.2715)--cycle;%
+\pgfsetfillcolor{cyan!87.79!black}%
+\pgfsetstrokecolor{cyan!87.79!black}%
+\draw[fill] (6.8134,7.5149) -- (6.7227,7.4168) -- (6.8799,7.2889) -- (6.9707,7.387)--cycle;%
+\pgfsetfillcolor{cyan!89.04!black}%
+\pgfsetstrokecolor{cyan!89.04!black}%
+\draw[fill] (6.4082,7.563) -- (6.3174,7.427) -- (6.4746,7.3731) -- (6.5654,7.5091)--cycle;%
+\pgfsetfillcolor{cyan!82.92!black}%
+\pgfsetstrokecolor{cyan!82.92!black}%
+\draw[fill] (5.4826,6.5425) -- (5.3918,6.3073) -- (5.549,6.3625) -- (5.6398,6.5977)--cycle;%
+\pgfsetfillcolor{cyan!88.03!black}%
+\pgfsetstrokecolor{cyan!88.03!black}%
+\draw[fill] (6.1602,7.4418) -- (6.0694,7.2715) -- (6.2266,7.2566) -- (6.3174,7.427)--cycle;%
+\pgfsetfillcolor{cyan!88.21!black}%
+\pgfsetstrokecolor{cyan!88.21!black}%
+\draw[fill] (6.9707,7.387) -- (6.8799,7.2889) -- (7.0371,7.1305) -- (7.1279,7.2287)--cycle;%
+\pgfsetfillcolor{cyan!87.92!black}%
+\pgfsetstrokecolor{cyan!87.92!black}%
+\draw[fill] (7.2851,7.0469) -- (7.1944,6.9487) -- (7.3516,6.7521) -- (7.4424,6.8502)--cycle;%
+\pgfsetfillcolor{cyan!88.11!black}%
+\pgfsetstrokecolor{cyan!88.11!black}%
+\draw[fill] (7.1279,7.2287) -- (7.0371,7.1305) -- (7.1944,6.9487) -- (7.2851,7.0469)--cycle;%
+\pgfsetfillcolor{cyan!73.16!black}%
+\pgfsetstrokecolor{cyan!73.16!black}%
+\draw[fill] (5.053,5.7853) -- (4.9622,5.5979) -- (5.1195,5.6797) -- (5.2102,5.8671)--cycle;%
+\pgfsetfillcolor{cyan!86.71!black}%
+\pgfsetstrokecolor{cyan!86.71!black}%
+\draw[fill] (5.8214,7.0502) -- (5.7306,6.8301) -- (5.8878,6.8524) -- (5.9786,7.0725)--cycle;%
+\pgfsetfillcolor{cyan!82.37!black}%
+\pgfsetstrokecolor{cyan!82.37!black}%
+\draw[fill] (5.3918,6.3073) -- (5.301,6.0791) -- (5.4583,6.1342) -- (5.549,6.3625)--cycle;%
+\pgfsetfillcolor{cyan!53.82!black}%
+\pgfsetstrokecolor{cyan!53.82!black}%
+\draw[fill] (4.7142,5.3413) -- (4.6234,5.2214) -- (4.7807,5.3219) -- (4.8714,5.4418)--cycle;%
+\pgfsetfillcolor{cyan!92.23!black}%
+\pgfsetstrokecolor{cyan!92.23!black}%
+\draw[fill] (6.5654,7.5091) -- (6.4746,7.3731) -- (6.6319,7.2807) -- (6.7227,7.4168)--cycle;%
+\pgfsetfillcolor{cyan!90.4!black}%
+\pgfsetstrokecolor{cyan!90.4!black}%
+\draw[fill] (6.0694,7.2715) -- (5.9786,7.0725) -- (6.1358,7.0576) -- (6.2266,7.2566)--cycle;%
+\pgfsetfillcolor{cyan!87.48!black}%
+\pgfsetstrokecolor{cyan!87.48!black}%
+\draw[fill] (5.7306,6.8301) -- (5.6398,6.5977) -- (5.7971,6.6199) -- (5.8878,6.8524)--cycle;%
+\pgfsetfillcolor{cyan!92.78!black}%
+\pgfsetstrokecolor{cyan!92.78!black}%
+\draw[fill] (6.3174,7.427) -- (6.2266,7.2566) -- (6.3839,7.2027) -- (6.4746,7.3731)--cycle;%
+\pgfsetfillcolor{cyan!93.42!black}%
+\pgfsetstrokecolor{cyan!93.42!black}%
+\draw[fill] (6.7227,7.4168) -- (6.6319,7.2807) -- (6.7891,7.1528) -- (6.8799,7.2889)--cycle;%
+\pgfsetfillcolor{cyan!80.92!black}%
+\pgfsetstrokecolor{cyan!80.92!black}%
+\draw[fill] (5.301,6.0791) -- (5.2102,5.8671) -- (5.3675,5.9223) -- (5.4583,6.1342)--cycle;%
+\pgfsetfillcolor{cyan!67.69!black}%
+\pgfsetstrokecolor{cyan!67.69!black}%
+\draw[fill] (4.9622,5.5979) -- (4.8714,5.4418) -- (5.0287,5.5236) -- (5.1195,5.6797)--cycle;%
+\pgfsetfillcolor{cyan!93.48!black}%
+\pgfsetstrokecolor{cyan!93.48!black}%
+\draw[fill] (6.8799,7.2889) -- (6.7891,7.1528) -- (6.9464,6.9944) -- (7.0371,7.1305)--cycle;%
+\pgfsetfillcolor{cyan!92.8!black}%
+\pgfsetstrokecolor{cyan!92.8!black}%
+\draw[fill] (7.1944,6.9487) -- (7.1036,6.8127) -- (7.2608,6.616) -- (7.3516,6.7521)--cycle;%
+\pgfsetfillcolor{cyan!93.14!black}%
+\pgfsetstrokecolor{cyan!93.14!black}%
+\draw[fill] (7.0371,7.1305) -- (6.9464,6.9944) -- (7.1036,6.8127) -- (7.1944,6.9487)--cycle;%
+\pgfsetfillcolor{cyan!87.63!black}%
+\pgfsetstrokecolor{cyan!87.63!black}%
+\draw[fill] (5.6398,6.5977) -- (5.549,6.3625) -- (5.7063,6.3847) -- (5.7971,6.6199)--cycle;%
+\pgfsetfillcolor{cyan!91.58!black}%
+\pgfsetstrokecolor{cyan!91.58!black}%
+\draw[fill] (5.9786,7.0725) -- (5.8878,6.8524) -- (6.0451,6.8375) -- (6.1358,7.0576)--cycle;%
+\pgfsetfillcolor{cyan!95.55!black}%
+\pgfsetstrokecolor{cyan!95.55!black}%
+\draw[fill] (6.4746,7.3731) -- (6.3839,7.2027) -- (6.5411,7.1103) -- (6.6319,7.2807)--cycle;%
+\pgfsetfillcolor{cyan!94.61!black}%
+\pgfsetstrokecolor{cyan!94.61!black}%
+\draw[fill] (6.2266,7.2566) -- (6.1358,7.0576) -- (6.2931,7.0037) -- (6.3839,7.2027)--cycle;%
+\pgfsetfillcolor{cyan!78.16!black}%
+\pgfsetstrokecolor{cyan!78.16!black}%
+\draw[fill] (5.2102,5.8671) -- (5.1195,5.6797) -- (5.2767,5.7348) -- (5.3675,5.9223)--cycle;%
+\pgfsetfillcolor{cyan!87.23!black}%
+\pgfsetstrokecolor{cyan!87.23!black}%
+\draw[fill] (5.549,6.3625) -- (5.4583,6.1342) -- (5.6155,6.1565) -- (5.7063,6.3847)--cycle;%
+\pgfsetfillcolor{cyan!92.1!black}%
+\pgfsetstrokecolor{cyan!92.1!black}%
+\draw[fill] (5.8878,6.8524) -- (5.7971,6.6199) -- (5.9543,6.605) -- (6.0451,6.8375)--cycle;%
+\pgfsetfillcolor{cyan!96.57!black}%
+\pgfsetstrokecolor{cyan!96.57!black}%
+\draw[fill] (6.6319,7.2807) -- (6.5411,7.1103) -- (6.6983,6.9824) -- (6.7891,7.1528)--cycle;%
+\pgfsetfillcolor{cyan!58.72!black}%
+\pgfsetstrokecolor{cyan!58.72!black}%
+\draw[fill] (4.8714,5.4418) -- (4.7807,5.3219) -- (4.9379,5.4037) -- (5.0287,5.5236)--cycle;%
+\pgfsetfillcolor{cyan!96.57!black}%
+\pgfsetstrokecolor{cyan!96.57!black}%
+\draw[fill] (6.7891,7.1528) -- (6.6983,6.9824) -- (6.8556,6.8241) -- (6.9464,6.9944)--cycle;%
+\pgfsetfillcolor{cyan!95.86!black}%
+\pgfsetstrokecolor{cyan!95.86!black}%
+\draw[fill] (7.1036,6.8127) -- (7.0128,6.6423) -- (7.17,6.4456) -- (7.2608,6.616)--cycle;%
+\pgfsetfillcolor{cyan!96.2!black}%
+\pgfsetstrokecolor{cyan!96.2!black}%
+\draw[fill] (6.9464,6.9944) -- (6.8556,6.8241) -- (7.0128,6.6423) -- (7.1036,6.8127)--cycle;%
+\pgfsetfillcolor{cyan!95.45!black}%
+\pgfsetstrokecolor{cyan!95.45!black}%
+\draw[fill] (6.1358,7.0576) -- (6.0451,6.8375) -- (6.2023,6.7836) -- (6.2931,7.0037)--cycle;%
+\pgfsetfillcolor{cyan!97.13!black}%
+\pgfsetstrokecolor{cyan!97.13!black}%
+\draw[fill] (6.3839,7.2027) -- (6.2931,7.0037) -- (6.4503,6.9113) -- (6.5411,7.1103)--cycle;%
+\pgfsetfillcolor{cyan!86.12!black}%
+\pgfsetstrokecolor{cyan!86.12!black}%
+\draw[fill] (5.4583,6.1342) -- (5.3675,5.9223) -- (5.5247,5.9445) -- (5.6155,6.1565)--cycle;%
+\pgfsetfillcolor{cyan!92.2!black}%
+\pgfsetstrokecolor{cyan!92.2!black}%
+\draw[fill] (5.7971,6.6199) -- (5.7063,6.3847) -- (5.8635,6.3698) -- (5.9543,6.605)--cycle;%
+\pgfsetfillcolor{cyan!73.37!black}%
+\pgfsetstrokecolor{cyan!73.37!black}%
+\draw[fill] (5.1195,5.6797) -- (5.0287,5.5236) -- (5.1859,5.5788) -- (5.2767,5.7348)--cycle;%
+\pgfsetfillcolor{cyan!98.13!black}%
+\pgfsetstrokecolor{cyan!98.13!black}%
+\draw[fill] (6.5411,7.1103) -- (6.4503,6.9113) -- (6.6076,6.7834) -- (6.6983,6.9824)--cycle;%
+\pgfsetfillcolor{cyan!95.79!black}%
+\pgfsetstrokecolor{cyan!95.79!black}%
+\draw[fill] (6.0451,6.8375) -- (5.9543,6.605) -- (6.1115,6.5511) -- (6.2023,6.7836)--cycle;%
+\pgfsetfillcolor{cyan!91.93!black}%
+\pgfsetstrokecolor{cyan!91.93!black}%
+\draw[fill] (5.7063,6.3847) -- (5.6155,6.1565) -- (5.7727,6.1416) -- (5.8635,6.3698)--cycle;%
+\pgfsetfillcolor{cyan!97.82!black}%
+\pgfsetstrokecolor{cyan!97.82!black}%
+\draw[fill] (6.2931,7.0037) -- (6.2023,6.7836) -- (6.3595,6.6912) -- (6.4503,6.9113)--cycle;%
+\pgfsetfillcolor{cyan!98.19!black}%
+\pgfsetstrokecolor{cyan!98.19!black}%
+\draw[fill] (6.6983,6.9824) -- (6.6076,6.7834) -- (6.7648,6.6251) -- (6.8556,6.8241)--cycle;%
+\pgfsetfillcolor{cyan!97.58!black}%
+\pgfsetstrokecolor{cyan!97.58!black}%
+\draw[fill] (7.0128,6.6423) -- (6.922,6.4433) -- (7.0793,6.2466) -- (7.17,6.4456)--cycle;%
+\pgfsetfillcolor{cyan!97.89!black}%
+\pgfsetstrokecolor{cyan!97.89!black}%
+\draw[fill] (6.8556,6.8241) -- (6.7648,6.6251) -- (6.922,6.4433) -- (7.0128,6.6423)--cycle;%
+\pgfsetfillcolor{cyan!83.94!black}%
+\pgfsetstrokecolor{cyan!83.94!black}%
+\draw[fill] (5.3675,5.9223) -- (5.2767,5.7348) -- (5.4339,5.7571) -- (5.5247,5.9445)--cycle;%
+\pgfsetfillcolor{cyan!95.85!black}%
+\pgfsetstrokecolor{cyan!95.85!black}%
+\draw[fill] (5.9543,6.605) -- (5.8635,6.3698) -- (6.0207,6.3159) -- (6.1115,6.5511)--cycle;%
+\pgfsetfillcolor{cyan!98.83!black}%
+\pgfsetstrokecolor{cyan!98.83!black}%
+\draw[fill] (6.4503,6.9113) -- (6.3595,6.6912) -- (6.5168,6.5633) -- (6.6076,6.7834)--cycle;%
+\pgfsetfillcolor{cyan!98.09!black}%
+\pgfsetstrokecolor{cyan!98.09!black}%
+\draw[fill] (6.2023,6.7836) -- (6.1115,6.5511) -- (6.2688,6.4588) -- (6.3595,6.6912)--cycle;%
+\pgfsetfillcolor{cyan!91.17!black}%
+\pgfsetstrokecolor{cyan!91.17!black}%
+\draw[fill] (5.6155,6.1565) -- (5.5247,5.9445) -- (5.6819,5.9296) -- (5.7727,6.1416)--cycle;%
+\pgfsetfillcolor{cyan!98.97!black}%
+\pgfsetstrokecolor{cyan!98.97!black}%
+\draw[fill] (6.6076,6.7834) -- (6.5168,6.5633) -- (6.674,6.405) -- (6.7648,6.6251)--cycle;%
+\pgfsetfillcolor{cyan!98.47!black}%
+\pgfsetstrokecolor{cyan!98.47!black}%
+\draw[fill] (6.922,6.4433) -- (6.8312,6.2232) -- (6.9885,6.0265) -- (7.0793,6.2466)--cycle;%
+\pgfsetfillcolor{cyan!65.38!black}%
+\pgfsetstrokecolor{cyan!65.38!black}%
+\draw[fill] (5.0287,5.5236) -- (4.9379,5.4037) -- (5.0951,5.4588) -- (5.1859,5.5788)--cycle;%
+\pgfsetfillcolor{cyan!98.73!black}%
+\pgfsetstrokecolor{cyan!98.73!black}%
+\draw[fill] (6.7648,6.6251) -- (6.674,6.405) -- (6.8312,6.2232) -- (6.922,6.4433)--cycle;%
+\pgfsetfillcolor{cyan!95.68!black}%
+\pgfsetstrokecolor{cyan!95.68!black}%
+\draw[fill] (5.8635,6.3698) -- (5.7727,6.1416) -- (5.93,6.0877) -- (6.0207,6.3159)--cycle;%
+\pgfsetfillcolor{cyan!99.11!black}%
+\pgfsetstrokecolor{cyan!99.11!black}%
+\draw[fill] (6.3595,6.6912) -- (6.2688,6.4588) -- (6.426,6.3309) -- (6.5168,6.5633)--cycle;%
+\pgfsetfillcolor{cyan!79.97!black}%
+\pgfsetstrokecolor{cyan!79.97!black}%
+\draw[fill] (5.2767,5.7348) -- (5.1859,5.5788) -- (5.3432,5.601) -- (5.4339,5.7571)--cycle;%
+\pgfsetfillcolor{cyan!98.14!black}%
+\pgfsetstrokecolor{cyan!98.14!black}%
+\draw[fill] (6.1115,6.5511) -- (6.0207,6.3159) -- (6.178,6.2236) -- (6.2688,6.4588)--cycle;%
+\pgfsetfillcolor{cyan!99.29!black}%
+\pgfsetstrokecolor{cyan!99.29!black}%
+\draw[fill] (6.5168,6.5633) -- (6.426,6.3309) -- (6.5832,6.1725) -- (6.674,6.405)--cycle;%
+\pgfsetfillcolor{cyan!98.87!black}%
+\pgfsetstrokecolor{cyan!98.87!black}%
+\draw[fill] (6.8312,6.2232) -- (6.7405,5.9908) -- (6.8977,5.7941) -- (6.9885,6.0265)--cycle;%
+\pgfsetfillcolor{cyan!89.57!black}%
+\pgfsetstrokecolor{cyan!89.57!black}%
+\draw[fill] (5.5247,5.9445) -- (5.4339,5.7571) -- (5.5912,5.7422) -- (5.6819,5.9296)--cycle;%
+\pgfsetfillcolor{cyan!99.1!black}%
+\pgfsetstrokecolor{cyan!99.1!black}%
+\draw[fill] (6.674,6.405) -- (6.5832,6.1725) -- (6.7405,5.9908) -- (6.8312,6.2232)--cycle;%
+\pgfsetfillcolor{cyan!95.17!black}%
+\pgfsetstrokecolor{cyan!95.17!black}%
+\draw[fill] (5.7727,6.1416) -- (5.6819,5.9296) -- (5.8392,5.8757) -- (5.93,6.0877)--cycle;%
+\pgfsetfillcolor{cyan!99.16!black}%
+\pgfsetstrokecolor{cyan!99.16!black}%
+\draw[fill] (6.2688,6.4588) -- (6.178,6.2236) -- (6.3352,6.0956) -- (6.426,6.3309)--cycle;%
+\pgfsetfillcolor{cyan!98.01!black}%
+\pgfsetstrokecolor{cyan!98.01!black}%
+\draw[fill] (6.0207,6.3159) -- (5.93,6.0877) -- (6.0872,5.9953) -- (6.178,6.2236)--cycle;%
+\pgfsetfillcolor{cyan!99.35!black}%
+\pgfsetstrokecolor{cyan!99.35!black}%
+\draw[fill] (6.426,6.3309) -- (6.3352,6.0956) -- (6.4925,5.9373) -- (6.5832,6.1725)--cycle;%
+\pgfsetfillcolor{cyan!98.95!black}%
+\pgfsetstrokecolor{cyan!98.95!black}%
+\draw[fill] (6.7405,5.9908) -- (6.6497,5.7555) -- (6.8069,5.5589) -- (6.8977,5.7941)--cycle;%
+\pgfsetfillcolor{cyan!99.17!black}%
+\pgfsetstrokecolor{cyan!99.17!black}%
+\draw[fill] (6.5832,6.1725) -- (6.4925,5.9373) -- (6.6497,5.7555) -- (6.7405,5.9908)--cycle;%
+\pgfsetfillcolor{cyan!99.02!black}%
+\pgfsetstrokecolor{cyan!99.02!black}%
+\draw[fill] (6.178,6.2236) -- (6.0872,5.9953) -- (6.2444,5.8674) -- (6.3352,6.0956)--cycle;%
+\pgfsetfillcolor{cyan!73.06!black}%
+\pgfsetstrokecolor{cyan!73.06!black}%
+\draw[fill] (5.1859,5.5788) -- (5.0951,5.4588) -- (5.2524,5.4811) -- (5.3432,5.601)--cycle;%
+\pgfsetfillcolor{cyan!97.6!black}%
+\pgfsetstrokecolor{cyan!97.6!black}%
+\draw[fill] (5.93,6.0877) -- (5.8392,5.8757) -- (5.9964,5.7834) -- (6.0872,5.9953)--cycle;%
+\pgfsetfillcolor{cyan!86.41!black}%
+\pgfsetstrokecolor{cyan!86.41!black}%
+\draw[fill] (5.4339,5.7571) -- (5.3432,5.601) -- (5.5004,5.5861) -- (5.5912,5.7422)--cycle;%
+\pgfsetfillcolor{cyan!93.98!black}%
+\pgfsetstrokecolor{cyan!93.98!black}%
+\draw[fill] (5.6819,5.9296) -- (5.5912,5.7422) -- (5.7484,5.6883) -- (5.8392,5.8757)--cycle;%
+\pgfsetfillcolor{cyan!99.19!black}%
+\pgfsetstrokecolor{cyan!99.19!black}%
+\draw[fill] (6.3352,6.0956) -- (6.2444,5.8674) -- (6.4017,5.7091) -- (6.4925,5.9373)--cycle;%
+\pgfsetfillcolor{cyan!98.74!black}%
+\pgfsetstrokecolor{cyan!98.74!black}%
+\draw[fill] (6.6497,5.7555) -- (6.5589,5.5273) -- (6.7161,5.3306) -- (6.8069,5.5589)--cycle;%
+\pgfsetfillcolor{cyan!98.99!black}%
+\pgfsetstrokecolor{cyan!98.99!black}%
+\draw[fill] (6.4925,5.9373) -- (6.4017,5.7091) -- (6.5589,5.5273) -- (6.6497,5.7555)--cycle;%
+\pgfsetfillcolor{cyan!98.6!black}%
+\pgfsetstrokecolor{cyan!98.6!black}%
+\draw[fill] (6.0872,5.9953) -- (5.9964,5.7834) -- (6.1537,5.6554) -- (6.2444,5.8674)--cycle;%
+\pgfsetfillcolor{cyan!98.7!black}%
+\pgfsetstrokecolor{cyan!98.7!black}%
+\draw[fill] (6.2444,5.8674) -- (6.1537,5.6554) -- (6.3109,5.4971) -- (6.4017,5.7091)--cycle;%
+\pgfsetfillcolor{cyan!98.16!black}%
+\pgfsetstrokecolor{cyan!98.16!black}%
+\draw[fill] (6.5589,5.5273) -- (6.4681,5.3153) -- (6.6254,5.1187) -- (6.7161,5.3306)--cycle;%
+\pgfsetfillcolor{cyan!96.59!black}%
+\pgfsetstrokecolor{cyan!96.59!black}%
+\draw[fill] (5.8392,5.8757) -- (5.7484,5.6883) -- (5.9056,5.5959) -- (5.9964,5.7834)--cycle;%
+\pgfsetfillcolor{cyan!98.44!black}%
+\pgfsetstrokecolor{cyan!98.44!black}%
+\draw[fill] (6.4017,5.7091) -- (6.3109,5.4971) -- (6.4681,5.3153) -- (6.5589,5.5273)--cycle;%
+\pgfsetfillcolor{cyan!91.46!black}%
+\pgfsetstrokecolor{cyan!91.46!black}%
+\draw[fill] (5.5912,5.7422) -- (5.5004,5.5861) -- (5.6576,5.5322) -- (5.7484,5.6883)--cycle;%
+\pgfsetfillcolor{cyan!80.57!black}%
+\pgfsetstrokecolor{cyan!80.57!black}%
+\draw[fill] (5.3432,5.601) -- (5.2524,5.4811) -- (5.4096,5.4662) -- (5.5004,5.5861)--cycle;%
+\pgfsetfillcolor{cyan!97.59!black}%
+\pgfsetstrokecolor{cyan!97.59!black}%
+\draw[fill] (5.9964,5.7834) -- (5.9056,5.5959) -- (6.0629,5.468) -- (6.1537,5.6554)--cycle;%
+\pgfsetfillcolor{cyan!97.62!black}%
+\pgfsetstrokecolor{cyan!97.62!black}%
+\draw[fill] (6.1537,5.6554) -- (6.0629,5.468) -- (6.2201,5.3097) -- (6.3109,5.4971)--cycle;%
+\pgfsetfillcolor{cyan!96.96!black}%
+\pgfsetstrokecolor{cyan!96.96!black}%
+\draw[fill] (6.4681,5.3153) -- (6.3773,5.1279) -- (6.5346,4.9312) -- (6.6254,5.1187)--cycle;%
+\pgfsetfillcolor{cyan!97.29!black}%
+\pgfsetstrokecolor{cyan!97.29!black}%
+\draw[fill] (6.3109,5.4971) -- (6.2201,5.3097) -- (6.3773,5.1279) -- (6.4681,5.3153)--cycle;%
+\pgfsetfillcolor{cyan!94.38!black}%
+\pgfsetstrokecolor{cyan!94.38!black}%
+\draw[fill] (5.7484,5.6883) -- (5.6576,5.5322) -- (5.8149,5.4399) -- (5.9056,5.5959)--cycle;%
+\pgfsetfillcolor{cyan!86.5!black}%
+\pgfsetstrokecolor{cyan!86.5!black}%
+\draw[fill] (5.5004,5.5861) -- (5.4096,5.4662) -- (5.5668,5.4123) -- (5.6576,5.5322)--cycle;%
+\pgfsetfillcolor{cyan!95.45!black}%
+\pgfsetstrokecolor{cyan!95.45!black}%
+\draw[fill] (5.9056,5.5959) -- (5.8149,5.4399) -- (5.9721,5.3119) -- (6.0629,5.468)--cycle;%
+\draw[fill] (6.0629,5.468) -- (5.9721,5.3119) -- (6.1293,5.1536) -- (6.2201,5.3097)--cycle;%
+\pgfsetfillcolor{cyan!94.73!black}%
+\pgfsetstrokecolor{cyan!94.73!black}%
+\draw[fill] (6.3773,5.1279) -- (6.2866,4.9718) -- (6.4438,4.7752) -- (6.5346,4.9312)--cycle;%
+\pgfsetfillcolor{cyan!95.08!black}%
+\pgfsetstrokecolor{cyan!95.08!black}%
+\draw[fill] (6.2201,5.3097) -- (6.1293,5.1536) -- (6.2866,4.9718) -- (6.3773,5.1279)--cycle;%
+\pgfsetfillcolor{cyan!89.97!black}%
+\pgfsetstrokecolor{cyan!89.97!black}%
+\draw[fill] (5.6576,5.5322) -- (5.5668,5.4123) -- (5.7241,5.3199) -- (5.8149,5.4399)--cycle;%
+\pgfsetfillcolor{cyan!91.33!black}%
+\pgfsetstrokecolor{cyan!91.33!black}%
+\draw[fill] (5.8149,5.4399) -- (5.7241,5.3199) -- (5.8813,5.192) -- (5.9721,5.3119)--cycle;%
+\pgfsetfillcolor{cyan!91.49!black}%
+\pgfsetstrokecolor{cyan!91.49!black}%
+\draw[fill] (5.9721,5.3119) -- (5.8813,5.192) -- (6.0386,5.0337) -- (6.1293,5.1536)--cycle;%
+\pgfsetfillcolor{cyan!90.93!black}%
+\pgfsetstrokecolor{cyan!90.93!black}%
+\draw[fill] (6.2866,4.9718) -- (6.1958,4.8519) -- (6.353,4.6552) -- (6.4438,4.7752)--cycle;%
+\pgfsetfillcolor{cyan!91.22!black}%
+\pgfsetstrokecolor{cyan!91.22!black}%
+\draw[fill] (6.1293,5.1536) -- (6.0386,5.0337) -- (6.1958,4.8519) -- (6.2866,4.9718)--cycle;%
+\pgfsetfillpattern{north west lines}{black}%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\draw[-] (9.6324,3.6135) node[] {$x_1$} (7.4537,1.7267) node[] {$x_2$} (1.9439,2.5835) node[] {$y_1$} (5.7176,1.4941) node[] {$y_2$} (1.1156,3.137) node[] {$0$};%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

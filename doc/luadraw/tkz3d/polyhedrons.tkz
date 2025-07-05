@@ -1,0 +1,803 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (9.5,9.5);%
+\fill[gray] (-0.5,-0.5) rectangle (9.5,9.5);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.5);%
+\pgfsetroundjoin%
+\begin{scope}%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!82.7!black}%
+\draw[fill] (2.25,8.6986) -- (3.75,6.8505) -- (0.201,6.375)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\draw[fill] (2.799,5.076) -- (0.201,6.375) -- (3.75,6.8505)--cycle;%
+\pgfsetfillcolor{Crimson!67.76!black}%
+\draw[fill] (2.25,8.6986) -- (2.799,5.076) -- (3.75,6.8505)--cycle;%
+\pgfsetfillcolor{Crimson!88.85!black}%
+\draw[fill] (2.25,8.6986) -- (0.201,6.375) -- (2.799,5.076)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\fill[opacity=1,ball color=black] (2.25,8.6986) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (2.799,5.076) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (3.75,6.8505) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (0.201,6.375) circle [radius=0.075cm];%
+\draw[-] (2.25,9) node[] {\small Tétraèdre régulier};%
+\end{scope}%
+\begin{scope}%
+\begin{scope}%
+\pgfsetstrokecolor{Crimson!50!white!54.41!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!54.41!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.2276,4.8911) -- (5.4943,5.645) -- (4.5186,6.4711) -- (5.2761,6.5433) -- (7.0094,5.7894) -- (7.9851,4.9633)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!77.03!black}%
+\pgfsetfillcolor{Crimson!50!white!77.03!black}%
+\fill[] (6.7706,7.6932) -- (7.5075,8.7708) -- (8.4833,7.9447) -- (8.7221,6.041) -- (7.9851,4.9633) -- (7.0094,5.7894)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!56.44!black}%
+\pgfsetfillcolor{Crimson!50!white!56.44!black}%
+\fill[] (5.2761,6.5433) -- (4.5186,6.4711) -- (5.2555,7.5487) -- (6.75,8.6986) -- (7.5075,8.7708) -- (6.7706,7.6932)--cycle;%
+\pgfsetstrokecolor{Gold!50!white!99.13!black}%
+\pgfsetdash{}{0pt}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{Gold!50!white!99.13!black}%
+\pgfsetstrokeopacity{1}%
+\draw[fill] (5.2761,6.5433) -- (6.7706,7.6932) -- (7.0094,5.7894)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetroundcap%
+\draw[] (5.2761,6.5433) -- (4.5186,6.4711);%
+\draw[] (7.9851,4.9633) -- (7.0094,5.7894);%
+\draw[] (6.7706,7.6932) -- (7.0094,5.7894);%
+\draw[] (7.0094,5.7894) -- (5.2761,6.5433);%
+\draw[] (5.2761,6.5433) -- (6.7706,7.6932);%
+\draw[] (7.5075,8.7708) -- (6.7706,7.6932);%
+\fill[opacity=1,ball color=black] (6.7706,7.6932) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (7.0094,5.7894) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (5.2761,6.5433) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Gold!54.41!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!54.41!black}%
+\draw[fill] (6.75,8.6986) -- (8.4833,7.9447) -- (7.5075,8.7708)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (8.4833,7.9447) -- (7.5075,8.7708);%
+\draw[] (7.5075,8.7708) -- (6.75,8.6986);%
+\fill[opacity=1,ball color=black] (7.5075,8.7708) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Gold!77.03!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!77.03!black}%
+\draw[fill] (5.4943,5.645) -- (5.2555,7.5487) -- (4.5186,6.4711)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (5.2555,7.5487) -- (4.5186,6.4711);%
+\draw[] (4.5186,6.4711) -- (5.4943,5.645);%
+\fill[opacity=1,ball color=black] (4.5186,6.4711) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Gold!56.44!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!56.44!black}%
+\draw[fill] (8.7221,6.041) -- (7.2276,4.8911) -- (7.9851,4.9633)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (7.9851,4.9633) -- (8.7221,6.041);%
+\draw[] (7.2276,4.8911) -- (7.9851,4.9633);%
+\fill[opacity=1,ball color=black] (7.9851,4.9633) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!99.13!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!99.13!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.75,8.6986) -- (5.2555,7.5487) -- (5.4943,5.645) -- (7.2276,4.8911) -- (8.7221,6.041) -- (8.4833,7.9447)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.75,8.6986) -- (8.4833,7.9447);%
+\draw[] (8.4833,7.9447) -- (8.7221,6.041);%
+\draw[] (8.7221,6.041) -- (7.2276,4.8911);%
+\draw[] (7.2276,4.8911) -- (5.4943,5.645);%
+\draw[] (5.4943,5.645) -- (5.2555,7.5487);%
+\draw[] (5.2555,7.5487) -- (6.75,8.6986);%
+\fill[opacity=1,ball color=black] (8.4833,7.9447) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (8.7221,6.041) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (6.75,8.6986) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (7.2276,4.8911) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (5.2555,7.5487) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (5.4943,5.645) circle [radius=0.075cm];%
+\end{scope}%
+\draw[-] (6.75,9) node[] {\small Tétraèdre tronqué};%
+\end{scope}%
+\begin{scope}%
+\begin{scope}%
+\pgfsetstrokecolor{Crimson!50!white!35.43!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!35.43!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (2.25,4.1986) -- (2.9249,4.1383) -- (0.7516,3.8471)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!61.78!black}%
+\pgfsetfillcolor{Crimson!50!white!61.78!black}%
+\fill[] (0.7516,1.8985) -- (0.0767,1.9588) -- (0.7516,3.8471)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!84.99!black}%
+\pgfsetfillcolor{Crimson!50!white!84.99!black}%
+\fill[] (2.9249,2.1897) -- (2.9249,4.1383) -- (4.4233,2.5412)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!95.5!black}%
+\pgfsetfillcolor{Crimson!50!white!95.5!black}%
+\fill[] (0.7516,1.8985) -- (2.9249,2.1897) -- (2.25,0.3014)--cycle;%
+\pgfsetstrokecolor{Gold!50!white!35.43!black}%
+\pgfsetdash{}{0pt}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{Gold!50!white!35.43!black}%
+\pgfsetstrokeopacity{1}%
+\draw[fill] (0.7516,1.8985) -- (2.25,2.25) -- (2.9249,2.1897)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetroundcap%
+\draw[] (2.9249,2.1897) -- (0.7516,1.8985);%
+\pgfsetstrokecolor{Gold!50!white!95.5!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!95.5!black}%
+\draw[fill] (2.25,2.25) -- (0.7516,3.8471) -- (2.9249,4.1383)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (0.7516,3.8471) -- (2.9249,4.1383);%
+\pgfsetstrokecolor{Gold!50!white!61.78!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!61.78!black}%
+\draw[fill] (2.25,0.3014) -- (2.25,4.1986) -- (2.9249,4.1383) -- (2.9249,2.1897)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (2.9249,4.1383) -- (2.9249,2.1897);%
+\pgfsetstrokecolor{Gold!50!white!35.43!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!35.43!black}%
+\draw[fill] (2.25,2.25) -- (4.4233,2.5412) -- (2.9249,2.1897)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (2.9249,2.1897) -- (2.25,0.3014);%
+\draw[] (4.4233,2.5412) -- (2.9249,2.1897);%
+\fill[opacity=1,ball color=black] (2.9249,2.1897) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Gold!50!white!95.5!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!95.5!black}%
+\draw[fill] (3.7484,0.6529) -- (2.25,2.25) -- (2.9249,4.1383) -- (4.4233,2.5412)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (2.25,4.1986) -- (2.9249,4.1383);%
+\draw[] (2.9249,4.1383) -- (4.4233,2.5412);%
+\fill[opacity=1,ball color=black] (2.9249,4.1383) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Gold!50!white!35.43!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!35.43!black}%
+\draw[fill] (2.25,2.25) -- (3.7484,2.6015) -- (4.4233,2.5412)--cycle;%
+\pgfsetstrokecolor{Gold!84.99!black}%
+\pgfsetfillcolor{Gold!84.99!black}%
+\draw[fill] (0.7516,1.8985) -- (2.25,0.3014) -- (3.7484,0.6529) -- (3.7484,2.6015) -- (2.25,4.1986) -- (0.7516,3.8471)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (0.7516,3.8471) -- (0.7516,1.8985);%
+\pgfsetstrokecolor{Gold!50!white!35.43!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!35.43!black}%
+\draw[fill] (2.25,2.25) -- (0.7516,1.8985) -- (0.0767,1.9588)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (0.7516,1.8985) -- (2.25,0.3014);%
+\draw[] (0.7516,1.8985) -- (0.0767,1.9588);%
+\fill[opacity=1,ball color=black] (0.7516,1.8985) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Gold!50!white!95.5!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!95.5!black}%
+\draw[fill] (1.5751,0.3617) -- (0.0767,1.9588) -- (0.7516,3.8471) -- (2.25,2.25)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (2.25,4.1986) -- (0.7516,3.8471);%
+\draw[] (0.0767,1.9588) -- (0.7516,3.8471);%
+\fill[opacity=1,ball color=black] (0.7516,3.8471) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Gold!50!white!35.43!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Gold!50!white!35.43!black}%
+\draw[fill] (1.5751,2.3103) -- (2.25,2.25) -- (0.0767,1.9588)--cycle;%
+\pgfsetstrokecolor{Gold!50!white!61.78!black}%
+\pgfsetfillcolor{Gold!50!white!61.78!black}%
+\draw[fill] (2.25,0.3014) -- (1.5751,0.3617) -- (1.5751,2.3103) -- (2.25,4.1986)--cycle;%
+\pgfsetstrokecolor{Gold!50!white!95.5!black}%
+\pgfsetfillcolor{Gold!50!white!95.5!black}%
+\draw[fill] (1.5751,0.3617) -- (2.25,2.25) -- (3.7484,0.6529)--cycle;%
+\pgfsetstrokecolor{Gold!50!white!35.43!black}%
+\pgfsetfillcolor{Gold!50!white!35.43!black}%
+\draw[fill] (3.7484,2.6015) -- (2.25,2.25) -- (1.5751,2.3103)--cycle;%
+\pgfsetstrokecolor{Crimson!35.43!black}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!35.43!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (2.25,0.3014) -- (3.7484,0.6529) -- (1.5751,0.3617)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (2.25,0.3014) -- (1.5751,0.3617);%
+\draw[] (2.25,0.3014) -- (3.7484,0.6529);%
+\draw[] (3.7484,0.6529) -- (1.5751,0.3617);%
+\fill[opacity=1,ball color=black] (2.25,0.3014) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!61.78!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!61.78!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (3.7484,0.6529) -- (4.4233,2.5412) -- (3.7484,2.6015)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (4.4233,2.5412) -- (3.7484,0.6529);%
+\draw[] (3.7484,2.6015) -- (4.4233,2.5412);%
+\draw[] (3.7484,0.6529) -- (3.7484,2.6015);%
+\fill[opacity=1,ball color=black] (4.4233,2.5412) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (3.7484,0.6529) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!84.99!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!84.99!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (0.0767,1.9588) -- (1.5751,0.3617) -- (1.5751,2.3103)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (1.5751,0.3617) -- (0.0767,1.9588);%
+\draw[] (1.5751,0.3617) -- (1.5751,2.3103);%
+\draw[] (0.0767,1.9588) -- (1.5751,2.3103);%
+\fill[opacity=1,ball color=black] (0.0767,1.9588) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (1.5751,0.3617) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!95.5!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!95.5!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (1.5751,2.3103) -- (3.7484,2.6015) -- (2.25,4.1986)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (3.7484,2.6015) -- (2.25,4.1986);%
+\draw[] (1.5751,2.3103) -- (2.25,4.1986);%
+\draw[] (1.5751,2.3103) -- (3.7484,2.6015);%
+\fill[opacity=1,ball color=black] (2.25,4.1986) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (3.7484,2.6015) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (1.5751,2.3103) circle [radius=0.075cm];%
+\end{scope}%
+\draw[-] (2.25,0) node[] {\small Octahémioctaèdre};%
+\end{scope}%
+\begin{scope}%
+\begin{scope}%
+\pgfsetstrokecolor{Crimson!50!white!62.16!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!62.16!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.987,2.5207) -- (7.6743,2.4604) -- (8.2456,3.7947)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!74.81!black}%
+\pgfsetfillcolor{Crimson!50!white!74.81!black}%
+\fill[] (6.9098,3.4974) -- (8.2456,3.7947) -- (7.0086,3.064)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!99.25!black}%
+\pgfsetfillcolor{Crimson!50!white!99.25!black}%
+\fill[] (7.0086,3.064) -- (8.2456,3.7947) -- (7.6743,2.4604)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (7.0086,3.064) -- (8.2456,3.7947);%
+\draw[] (8.2456,3.7947) -- (7.6743,2.4604);%
+\pgfsetstrokecolor{Crimson!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.9098,3.4974) -- (7.5145,3.1616) -- (8.2456,3.7947)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (8.2456,3.7947) -- (6.9098,3.4974);%
+\pgfsetstrokecolor{Crimson!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (8.2456,3.7947) -- (7.5145,3.1616) -- (7.987,2.5207)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (7.987,2.5207) -- (8.2456,3.7947);%
+\draw[] (7.5145,3.1616) -- (8.2456,3.7947);%
+\fill[opacity=1,ball color=black] (8.2456,3.7947) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!50!white!61.34!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!61.34!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.75,4.1986) -- (7.5145,3.1616) -- (6.9098,3.4974)--cycle;%
+\fill[] (7.5145,3.1616) -- (8.4928,2.6183) -- (7.987,2.5207)--cycle;%
+\fill[] (7.987,2.5207) -- (8.7514,1.4838) -- (7.6743,2.4604)--cycle;%
+\fill[] (7.6743,2.4604) -- (7.1684,2.3628) -- (7.0086,3.064)--cycle;%
+\fill[] (7.0086,3.064) -- (5.9315,4.0407) -- (6.9098,3.4974)--cycle;%
+\fill[] (6.9098,3.4974) -- (7.5145,3.1616) -- (7.987,2.5207) -- (7.6743,2.4604) -- (7.0086,3.064)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!75.79!black}%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\fill[] (8.7514,1.4838) -- (7.4157,1.1864) -- (7.3212,1.6358)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!99.25!black}%
+\pgfsetfillcolor{Crimson!50!white!99.25!black}%
+\fill[] (8.7514,1.4838) -- (7.3212,1.6358) -- (7.6743,2.4604)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (8.7514,1.4838) -- (7.3212,1.6358);%
+\draw[] (7.6743,2.4604) -- (8.7514,1.4838);%
+\pgfsetstrokecolor{Crimson!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.987,2.5207) -- (7.8271,1.7333) -- (8.7514,1.4838)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (8.7514,1.4838) -- (7.987,2.5207);%
+\pgfsetstrokecolor{Crimson!74.81!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!74.81!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (8.7514,1.4838) -- (7.8271,1.7333) -- (7.4157,1.1864)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (8.7514,1.4838) -- (7.4157,1.1864);%
+\draw[] (7.8271,1.7333) -- (8.7514,1.4838);%
+\fill[opacity=1,ball color=black] (8.7514,1.4838) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!50!white!62.16!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!62.16!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.987,2.5207) -- (8.4928,2.6183) -- (7.8271,1.7333)--cycle;%
+\fill[] (7.8271,1.7333) -- (7.5685,0.4593) -- (7.4157,1.1864)--cycle;%
+\fill[] (7.4157,1.1864) -- (6.75,0.3014) -- (7.3212,1.6358)--cycle;%
+\fill[] (7.3212,1.6358) -- (7.1684,2.3628) -- (7.6743,2.4604)--cycle;%
+\fill[] (7.987,2.5207) -- (7.8271,1.7333) -- (7.4157,1.1864) -- (7.3212,1.6358) -- (7.6743,2.4604)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!82.11!black}%
+\pgfsetfillcolor{Crimson!50!white!82.11!black}%
+\fill[] (6.2441,2.6124) -- (5.6729,2.7667) -- (5.9315,4.0407)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!99.25!black}%
+\pgfsetfillcolor{Crimson!50!white!99.25!black}%
+\fill[] (6.2441,2.6124) -- (5.9315,4.0407) -- (7.0086,3.064)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.2441,2.6124) -- (5.9315,4.0407);%
+\draw[] (5.9315,4.0407) -- (7.0086,3.064);%
+\pgfsetstrokecolor{Crimson!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.9315,4.0407) -- (6.0843,3.3136) -- (6.9098,3.4974)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.9098,3.4974) -- (5.9315,4.0407);%
+\pgfsetstrokecolor{Crimson!62.16!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!62.16!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.0843,3.3136) -- (5.9315,4.0407) -- (5.6729,2.7667)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.6729,2.7667) -- (5.9315,4.0407);%
+\draw[] (5.9315,4.0407) -- (6.0843,3.3136);%
+\fill[opacity=1,ball color=black] (5.9315,4.0407) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!50!white!74.81!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!74.81!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.2441,2.6124) -- (7.0086,3.064) -- (7.1684,2.3628)--cycle;%
+\fill[] (5.6729,2.7667) -- (6.2441,2.6124) -- (5.0072,1.8817)--cycle;%
+\fill[] (6.0843,3.3136) -- (5.6729,2.7667) -- (4.7486,3.0162)--cycle;%
+\fill[] (6.9098,3.4974) -- (6.0843,3.3136) -- (6.75,4.1986)--cycle;%
+\fill[] (7.0086,3.064) -- (6.2441,2.6124) -- (5.6729,2.7667) -- (6.0843,3.3136) -- (6.9098,3.4974)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!82.11!black}%
+\pgfsetfillcolor{Crimson!50!white!82.11!black}%
+\fill[] (5.9855,1.3384) -- (6.4373,1.7297) -- (6.75,0.3014)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!99.25!black}%
+\pgfsetfillcolor{Crimson!50!white!99.25!black}%
+\fill[] (7.3212,1.6358) -- (6.75,0.3014) -- (6.4373,1.7297)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.75,0.3014) -- (6.4373,1.7297);%
+\draw[] (7.3212,1.6358) -- (6.75,0.3014);%
+\pgfsetstrokecolor{Crimson!50!white!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.0072,1.8817) -- (6.4373,1.7297) -- (5.9855,1.3384)--cycle;%
+\fill[] (7.1684,2.3628) -- (7.3212,1.6358) -- (6.4373,1.7297)--cycle;%
+\fill[] (6.5902,1.0026) -- (5.9855,1.3384) -- (6.4373,1.7297) -- (7.3212,1.6358) -- (7.4157,1.1864)--cycle;%
+\pgfsetstrokecolor{Crimson!50!white!99.25!black}%
+\pgfsetfillcolor{Crimson!50!white!99.25!black}%
+\fill[] (6.2441,2.6124) -- (6.4373,1.7297) -- (5.0072,1.8817)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.0072,1.8817) -- (6.2441,2.6124);%
+\draw[] (6.4373,1.7297) -- (5.0072,1.8817);%
+\pgfsetstrokecolor{Crimson!50!white!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.4373,1.7297) -- (6.2441,2.6124) -- (7.1684,2.3628)--cycle;%
+\fill[] (6.2441,2.6124) -- (6.4373,1.7297) -- (5.9855,1.3384) -- (5.513,1.9793) -- (5.6729,2.7667)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.2441,2.6124) -- (7.1684,2.3628);%
+\draw[] (7.1684,2.3628) -- (7.3212,1.6358);%
+\draw[] (7.1684,2.3628) -- (6.4373,1.7297);%
+\draw[] (7.0086,3.064) -- (7.1684,2.3628);%
+\draw[] (7.1684,2.3628) -- (7.6743,2.4604);%
+\fill[opacity=1,ball color=black] (7.1684,2.3628) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!50!white!99.25!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!99.25!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.3212,1.6358) -- (6.4373,1.7297) -- (6.2441,2.6124) -- (7.0086,3.064) -- (7.6743,2.4604)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.4373,1.7297) -- (6.2441,2.6124);%
+\draw[] (5.6729,2.7667) -- (6.2441,2.6124);%
+\draw[] (6.2441,2.6124) -- (7.0086,3.064);%
+\draw[] (7.3212,1.6358) -- (7.4157,1.1864);%
+\draw[] (6.4373,1.7297) -- (5.9855,1.3384);%
+\draw[] (6.9912,3.1404) -- (7.0086,3.064);%
+\draw[] (7.3212,1.6358) -- (6.4373,1.7297);%
+\draw[] (7.0086,3.064) -- (7.6743,2.4604);%
+\draw[] (7.6743,2.4604) -- (7.3212,1.6358);%
+\draw[] (6.9098,3.4974) -- (6.9912,3.1404);%
+\draw[] (7.6743,2.4604) -- (7.987,2.5207);%
+\pgfsetstrokecolor{Crimson!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.9098,3.4974) -- (6.0843,3.3136) -- (6.1788,2.8642) -- (7.0627,2.7703) -- (7.5145,3.1616)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.9098,3.4974) -- (6.0843,3.3136);%
+\draw[] (6.75,4.1986) -- (6.9098,3.4974);%
+\draw[] (7.5145,3.1616) -- (6.9098,3.4974);%
+\pgfsetstrokecolor{Crimson!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.0627,2.7703) -- (7.5145,3.1616) -- (6.75,4.1986)--cycle;%
+\fill[] (7.987,2.5207) -- (7.5145,3.1616) -- (7.0627,2.7703) -- (7.2559,1.8876) -- (7.8271,1.7333)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (7.8271,1.7333) -- (7.987,2.5207);%
+\draw[] (7.987,2.5207) -- (7.5145,3.1616);%
+\draw[] (7.987,2.5207) -- (8.4928,2.6183);%
+\pgfsetstrokecolor{Crimson!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (8.4928,2.6183) -- (7.5145,3.1616) -- (7.0627,2.7703)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (7.0627,2.7703) -- (7.5145,3.1616);%
+\draw[] (7.5145,3.1616) -- (6.75,4.1986);%
+\draw[] (8.4928,2.6183) -- (7.5145,3.1616);%
+\pgfsetstrokecolor{Crimson!99.25!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!99.25!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.1788,2.8642) -- (7.0627,2.7703) -- (6.75,4.1986)--cycle;%
+\fill[] (8.4928,2.6183) -- (7.0627,2.7703) -- (7.2559,1.8876)--cycle;%
+\fill[] (7.2559,1.8876) -- (7.0627,2.7703) -- (6.1788,2.8642) -- (5.8257,2.0396) -- (6.4914,1.436)--cycle;%
+\pgfsetstrokecolor{Crimson!75.79!black}%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\fill[] (7.0627,2.7703) -- (6.1788,2.8642) -- (6.3316,2.1372)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.1788,2.8642) -- (7.0627,2.7703);%
+\pgfsetstrokecolor{Crimson!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.3316,2.1372) -- (7.2559,1.8876) -- (7.0627,2.7703)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (7.0627,2.7703) -- (7.2559,1.8876);%
+\draw[] (6.3316,2.1372) -- (7.0627,2.7703);%
+\draw[] (6.75,4.1986) -- (7.0627,2.7703);%
+\draw[] (7.0627,2.7703) -- (8.4928,2.6183);%
+\pgfsetstrokecolor{Crimson!74.81!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!74.81!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (8.4928,2.6183) -- (7.2559,1.8876) -- (7.8271,1.7333)--cycle;%
+\fill[] (7.2559,1.8876) -- (6.3316,2.1372) -- (6.4914,1.436)--cycle;%
+\fill[] (6.5902,1.0026) -- (6.75,0.3014) -- (7.4157,1.1864)--cycle;%
+\fill[] (6.5902,1.0026) -- (7.4157,1.1864) -- (7.8271,1.7333) -- (7.2559,1.8876) -- (6.4914,1.436)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.75,0.3014) -- (7.4157,1.1864);%
+\pgfsetstrokecolor{Crimson!50!white!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.4157,1.1864) -- (7.5685,0.4593) -- (6.5902,1.0026)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (7.4157,1.1864) -- (7.5685,0.4593);%
+\draw[] (7.4157,1.1864) -- (6.5902,1.0026);%
+\draw[] (7.4157,1.1864) -- (7.8271,1.7333);%
+\pgfsetstrokecolor{Crimson!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.8271,1.7333) -- (7.2559,1.8876) -- (7.5685,0.4593)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (7.5685,0.4593) -- (7.8271,1.7333);%
+\draw[] (7.2559,1.8876) -- (7.8271,1.7333);%
+\draw[] (7.8271,1.7333) -- (8.4928,2.6183);%
+\pgfsetstrokecolor{Crimson!99.25!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!99.25!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (7.5685,0.4593) -- (7.2559,1.8876) -- (6.4914,1.436)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.4914,1.436) -- (7.2559,1.8876);%
+\draw[] (7.2559,1.8876) -- (7.5685,0.4593);%
+\draw[] (6.3316,2.1372) -- (7.2559,1.8876);%
+\draw[] (7.2559,1.8876) -- (8.4928,2.6183);%
+\fill[opacity=1,ball color=black] (8.4928,2.6183) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!62.16!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!62.16!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.1788,2.8642) -- (6.75,4.1986) -- (6.0843,3.3136)--cycle;%
+\fill[] (5.513,1.9793) -- (5.6729,2.7667) -- (5.0072,1.8817)--cycle;%
+\fill[] (6.1788,2.8642) -- (5.8257,2.0396) -- (6.3316,2.1372)--cycle;%
+\fill[] (5.6729,2.7667) -- (5.513,1.9793) -- (5.8257,2.0396) -- (6.1788,2.8642) -- (6.0843,3.3136)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.6729,2.7667) -- (5.0072,1.8817);%
+\pgfsetstrokecolor{Crimson!50!white!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.6729,2.7667) -- (5.513,1.9793) -- (4.7486,3.0162)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (4.7486,3.0162) -- (5.6729,2.7667);%
+\draw[] (6.0843,3.3136) -- (5.6729,2.7667);%
+\draw[] (5.513,1.9793) -- (5.6729,2.7667);%
+\pgfsetstrokecolor{Crimson!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (4.7486,3.0162) -- (6.1788,2.8642) -- (6.0843,3.3136)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.0843,3.3136) -- (4.7486,3.0162);%
+\draw[] (6.0843,3.3136) -- (6.1788,2.8642);%
+\draw[] (6.75,4.1986) -- (6.0843,3.3136);%
+\pgfsetstrokecolor{Crimson!99.25!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!99.25!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.1788,2.8642) -- (4.7486,3.0162) -- (5.8257,2.0396)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (4.7486,3.0162) -- (6.1788,2.8642);%
+\draw[] (6.75,4.1986) -- (5.8257,2.0396);%
+\draw[] (6.1788,2.8642) -- (6.3316,2.1372);%
+\fill[opacity=1,ball color=black] (6.75,4.1986) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!61.34!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!61.34!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.9855,1.3384) -- (5.513,1.9793) -- (5.0072,1.8817)--cycle;%
+\fill[] (6.75,0.3014) -- (6.5902,1.0026) -- (5.9855,1.3384)--cycle;%
+\fill[] (7.5685,0.4593) -- (6.4914,1.436) -- (6.5902,1.0026)--cycle;%
+\fill[] (6.3316,2.1372) -- (5.8257,2.0396) -- (6.4914,1.436)--cycle;%
+\fill[] (4.7486,3.0162) -- (5.513,1.9793) -- (5.8257,2.0396)--cycle;%
+\fill[] (5.9855,1.3384) -- (6.5902,1.0026) -- (6.4914,1.436) -- (5.8257,2.0396) -- (5.513,1.9793)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.75,0.3014) -- (5.9855,1.3384);%
+\pgfsetstrokecolor{Crimson!50!white!75.79!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.2544,0.7053) -- (5.9855,1.3384) -- (6.5902,1.0026)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.9855,1.3384) -- (5.0072,1.8817);%
+\pgfsetstrokecolor{Crimson!50!white!82.11!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!50!white!82.11!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.513,1.9793) -- (5.9855,1.3384) -- (5.2544,0.7053)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.9855,1.3384) -- (5.513,1.9793);%
+\draw[] (5.9855,1.3384) -- (5.2544,0.7053);%
+\draw[] (6.5902,1.0026) -- (5.9855,1.3384);%
+\pgfsetstrokecolor{Crimson!99.25!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!99.25!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.8257,2.0396) -- (5.2544,0.7053) -- (6.4914,1.436)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.8257,2.0396) -- (6.4914,1.436);%
+\pgfsetstrokecolor{Crimson!74.81!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!74.81!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (6.5902,1.0026) -- (6.4914,1.436) -- (5.2544,0.7053)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (6.4914,1.436) -- (6.75,0.3014);%
+\draw[] (6.5902,1.0026) -- (5.2544,0.7053);%
+\draw[] (7.4832,0.5067) -- (6.5902,1.0026);%
+\draw[] (5.2544,0.7053) -- (6.4914,1.436);%
+\draw[] (7.5685,0.4593) -- (7.4832,0.5067);%
+\draw[] (6.4914,1.436) -- (7.5685,0.4593);%
+\draw[] (6.3316,2.1372) -- (6.4914,1.436);%
+\fill[opacity=1,ball color=black] (6.75,0.3014) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (7.5685,0.4593) circle [radius=0.075cm];%
+\pgfsetstrokecolor{Crimson!62.16!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Crimson!62.16!black}%
+\pgfsetstrokeopacity{0.8}%
+\fill[] (5.2544,0.7053) -- (5.8257,2.0396) -- (5.513,1.9793)--cycle;%
+\pgfsetstrokecolor{Pink}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.0072,1.8817) -- (5.513,1.9793);%
+\draw[] (5.513,1.9793) -- (4.7486,3.0162);%
+\draw[] (5.2544,0.7053) -- (5.513,1.9793);%
+\draw[] (5.513,1.9793) -- (5.8257,2.0396);%
+\draw[] (4.7486,3.0162) -- (5.8257,2.0396);%
+\draw[] (5.8257,2.0396) -- (5.2544,0.7053);%
+\draw[] (5.8257,2.0396) -- (6.3316,2.1372);%
+\fill[opacity=1,ball color=black] (5.0072,1.8817) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (5.2544,0.7053) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (4.7486,3.0162) circle [radius=0.075cm];%
+\fill[opacity=1,ball color=black] (6.3316,2.1372) circle [radius=0.075cm];%
+\end{scope}%
+\draw[-] (6.75,0) node[] {\small Petit dodécaèdre étoilé};%
+\end{scope}%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

@@ -1,0 +1,29 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (9.5,9.5);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.5);%
+\pgfsetroundjoin%
+\pgfsetstrokecolor{Gold}%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!98.86!black}%
+\draw[fill] (6.75,6.4486) -- (4.5,0.6029) -- (0.6029,5.625)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!74.04!black}%
+\draw[fill] (8.3971,3.375) -- (4.5,0.6029) -- (6.75,6.4486)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!68.92!black}%
+\draw[fill] (4.5,8.3971) -- (6.75,6.4486) -- (0.6029,5.625)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!40.7!black}%
+\draw[fill] (0.6029,5.625) -- (4.5,0.6029) -- (2.25,2.5514)--cycle;%
+\pgfsetfillcolor{Crimson!40.7!black}%
+\draw[fill] (4.5,8.3971) -- (8.3971,3.375) -- (6.75,6.4486)--cycle;%
+\pgfsetfillcolor{Crimson!68.92!black}%
+\draw[fill] (2.25,2.5514) -- (4.5,0.6029) -- (8.3971,3.375)--cycle;%
+\pgfsetfillcolor{Crimson!74.04!black}%
+\draw[fill] (4.5,8.3971) -- (0.6029,5.625) -- (2.25,2.5514)--cycle;%
+\pgfsetfillcolor{Crimson!98.86!black}%
+\draw[fill] (4.5,8.3971) -- (2.25,2.5514) -- (8.3971,3.375)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{black}%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

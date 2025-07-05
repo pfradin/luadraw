@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2025/02/21
--- version 1.0
+-- date 2025/07/04
+-- version 2.0
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -147,7 +147,8 @@ function arcb(b,a,c,r,sens) --renvoie un arc de cercle sous forme de chemin avec
     local u,v = r*(b-a)/cpx.abs(b-a)
     local n = cpx.I*u
     if sens < 0 then n = -n end
-    angle = cpx.arg((c-a)/(b-a))
+    local angle = cpx.arg((c-a)/(b-a))
+    if math.abs(angle) < 1e-12 then angle = 0 end
     if (sens > 0) and (angle <= 0) then angle = angle+2*math.pi
     else
         if sens < 0 then

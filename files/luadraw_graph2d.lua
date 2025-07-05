@@ -1,6 +1,6 @@
 -- luadraw_graph2d.lua
--- date 2025/02/21
--- version 1.0
+-- date 2025/07/04
+-- version 2.0
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.

@@ -1,0 +1,53 @@
+\begin{tikzpicture}%
+\useasboundingbox (-0.5,-0.5) rectangle (9.5,9.5);%
+\fill[cyan!30] (-0.5,-0.5) rectangle (9.5,9.5);%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.5);%
+\draw[draw=none,fill=Maroon,fill opacity=0.3] (4.5,8.1) -- (2.7,2.7) -- (7.65,4.5)--cycle;%
+\pgfsetlinewidth{0.6pt}%
+\pgfsetfillopacity{0.2}%
+\pgfsetfillcolor{blue}%
+\fill[] (6.2355,3.9857) -- (6.1586,4.1971) -- (5.9472,4.1202) -- (6.0241,3.9088)--cycle;%
+\pgfsetdash{}{0pt}%
+\draw[] (6.2355,3.9857) -- (6.1586,4.1971) -- (5.9472,4.1202);%
+\fill[] (3.6638,5.5915) -- (3.8773,5.5204) -- (3.9485,5.7338) -- (3.735,5.805)--cycle;%
+\pgfsetdash{}{0pt}%
+\draw[] (3.6638,5.5915) -- (3.8773,5.5204) -- (3.9485,5.7338);%
+\pgfsetfillopacity{0.5}%
+\pgfsetfillcolor{cyan}%
+\fill[] (6.7962,4.7846) .. controls (6.6633,4.386) and (6.8205,3.9536) .. (7.1784,3.7334) -- (7.65,4.5)--cycle;%
+\pgfsetdash{}{0pt}%
+\draw[] (6.7962,4.7846) .. controls (6.6633,4.386) and (6.8205,3.9536) .. (7.1784,3.7334);%
+\fill[] (4.2154,7.2462) .. controls (4.409,7.1817) and (4.6158,7.1844) .. (4.8076,7.2542) -- (4.5,8.1)--cycle;%
+\pgfsetdash{}{0pt}%
+\draw[] (4.2154,7.2462) .. controls (4.409,7.1817) and (4.6158,7.1844) .. (4.8076,7.2542);%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{black}%
+\draw[] (6.6377,4.518) -- (6.8626,4.514);%
+\draw[] (6.6385,4.4547) -- (6.8633,4.4648);%
+\draw[] (6.8457,3.885) -- (7.0244,4.0217);%
+\draw[] (6.8857,3.836) -- (7.0555,3.9835);%
+\draw[] (4.482,7.0877) -- (4.486,7.3126);%
+\draw[] (4.5453,7.0885) -- (4.5352,7.3133);%
+\pgfsetlinewidth{0.8pt}%
+\draw[] (4.725,8.775) -- (2.475,2.025);%
+\draw[] (8.2688,4.725) -- (2.0813,2.475);%
+\draw[] (4.1063,8.55) -- (8.0438,4.05);%
+\pgfsetstrokecolor{red}%
+\draw[] (7.7001,5.0509) .. controls (7.7001,6.7451) and (6.3417,8.1036) .. (4.6474,8.1036) .. controls (2.9532,8.1036) and (1.5947,6.7451) .. (1.5947,5.0509) .. controls (1.5947,3.3566) and (2.9532,1.9982) .. (4.6474,1.9982) .. controls (6.3417,1.9982) and (7.7001,3.3566) .. (7.7001,5.0509);%
+\pgfsetstrokecolor{blue}%
+\draw[] (7.4455,0) -- (4.1727,9);%
+\draw[] (0,7.05) -- (9,4.05);%
+\draw[] (6.493,2.6192) -- (7.65,4.5);%
+\pgfsetstrokecolor{red}%
+\draw[] (5.5552,5.1983) -- (6.493,2.6192);%
+\draw[] (5.6685,4.654) -- (5.8724,4.5588);%
+\draw[] (5.7069,4.5482) -- (5.9108,4.4531);%
+\draw[] (6.1374,3.3644) -- (6.3413,3.2693);%
+\draw[] (6.1758,3.2587) -- (6.3797,3.1636);%
+\draw[-,color=blue] (4.5,8.1) node[above left=0.1cm] {$A$} (2.7,2.7) node[below left=0.1cm] {$B$} (6.493,2.6192) node[right=0.1cm] {$A_2$} (7.65,4.5) node[below=0.1cm] {$C$} (5.5552,5.1983) node[above right=0.1cm] {$H$} (6.0241,3.9088) node[below left=0.1cm] {$A_1$};%
+\pgfsetstrokecolor{black}%
+\draw[mark=*,mark size=1.8pt] plot coordinates {(4.5,8.1)} plot coordinates {(2.7,2.7)} plot coordinates {(7.65,4.5)} plot coordinates {(5.5552,5.1983)} plot coordinates {(6.0241,3.9088)} plot coordinates {(6.493,2.6192)};%
+\pgfsetlinewidth{0.4pt}%
+\end{scope}%
+\end{tikzpicture}%

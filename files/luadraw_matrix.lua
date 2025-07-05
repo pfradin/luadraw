@@ -1,6 +1,6 @@
 -- luadraw__matrix.lua (chargé par luadraw__calc, qui charge avant luadraw_complex.lua)
--- date 2025/02/21
--- version 1.0
+-- date 2025/07/04
+-- version 2.0
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -104,4 +104,8 @@ function invmatrix(M)
             return { -c.re*A - c.im*B, A, B } -- matrice inverse
         end
     end
+end
+
+function isID(m)  -- teste la matrice unité
+    return (toComplex(m[1]) == Z(0,0)) and (toComplex(m[2]) == Z(1,0)) and (toComplex(m[3]) == Z(0,1))
 end

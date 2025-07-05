@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2025/02/21
--- version 1.0
+-- date 2025/07/04
+-- version 2.0
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -22,7 +22,9 @@ function luadraw_graph:new(args) -- argument de la forme :
     setmetatable(graph, {__index = luadraw_graph})  -- obligatoire, permet d'utiliser self
     
     graph.LF = "\\par" --line feed pour TeX
-    graph.export = {""}  -- table de chaînes contenant les instructions graphiques
+    graph.currentexport = {""} -- export courant
+    graph.deferedexport = {""} -- export en fin de graphique
+    graph.export = graph.currentexport
     
     -- styles par défaut
     graph.param = {
@@ -63,6 +65,12 @@ function luadraw_graph:Coord(z)
     end
 end
 
+function luadraw_graph:Box2d()
+-- renvoie la fenêtre 2d courante sous forme d'une ligne polygonale
+    local x1,x2,y1,y2 = table.unpack(self.param.coordsystem)
+    return {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2)}
+end
+
 -- sauvegarde et restauration des paramètres graphiques (fenêtre, styles, matrice)
 function luadraw_graph:Saveattr()
     table.insert(self.pile, table.copy(self.matrix))
@@ -74,6 +82,21 @@ function luadraw_graph:Restoreattr()
     self.param = table.remove(self.pile)
     self.matrix = table.remove(self.pile)
     self:Writeln("\\end{scope}")
+end
+
+function luadraw_graph:Defaultattr()
+    self:Lineoptions("solid","black",4,"-") -- "noline" ou "solid" ou "dashed" ou "dotted" ou  dash( motif )
+    self:Linecap("butt") --"butt" ou "round" ou "square"
+    self:Linejoin("miter") -- "miter" ou "round" ou "bevel"
+    self:Lineopacity(1)  -- opacité du trait
+    self:Filloptions("none","black",1,false) --ou "full" "bdiag" "fdiag" "hvcross" "diagcross" "horizontal" "vertical" "gradient"
+    self:Gradstyle("left color=white, right color=red") -- gradient linéaire de gauche à droite
+    self:Dotstyle("*") -- style par défaut (point rond)
+    self:Dotscale(1) -- scale
+    self:Labelstyle("center") -- position du label "center" ou "N" ou "S" ou "E" etc...
+    self:Labelcolor("") -- couleur du  document  par défaut
+    self:Labelsize("") --taille normale par défaut, ou "tiny" ou "small" ou ...
+    self:Labelangle(0) -- orientation du label
 end
 
 function luadraw_graph:Savematrix()
@@ -151,9 +174,21 @@ function luadraw_graph:Writeln(str)
     table.insert(self.export,"") -- on démarre une nouvelle ligne   
 end
 
---afficher le graphique dans le document TeX 
-function luadraw_graph:Show()
-    local str = concat(self:beginDraw(),self.export,self:endDraw())
+function luadraw_graph:Begindefer()
+-- pour repousser les instructions en fin de graphique
+    self.export = self.deferedexport
+end
+
+function luadraw_graph:Enddefer()
+-- pour arrêter de repousser les instructions en fin de graphique
+    self.export = self.currentexport
+end
+
+
+--afficher le graphique dans le document TeX  (utilisée par le fichier luadraw.sty pour la méthode Show())
+function luadraw_graph:Sendtotex()
+    if #self.deferedexport ~= 0 then self:Defaultattr() end
+    local str = concat(self:beginDraw(),self.currentexport,self.deferedexport,self:endDraw())
     tex.sprint(table.unpack(str))
 end
 
@@ -165,12 +200,16 @@ function luadraw_graph:Savetofile(nom)
     if not file then
         return
     end
+    if #self.deferedexport ~= 0 then self:Defaultattr() end
   -- On écrit dans le fichier    
     for _, lg in ipairs(self:beginDraw()) do
         file:write(lg.."%\n")
     end
-    for _, lg in ipairs(self.export) do
-        file:write(lg.."%\n")
+    for _, lg in ipairs(self.currentexport) do
+        if lg ~= "" then file:write(lg.."%\n") end
+    end
+    for _, lg in ipairs(self.deferedexport) do
+        if lg ~= "" then file:write(lg.."%\n") end
     end
     for _, lg in ipairs(self:endDraw()) do
         file:write(lg.."%\n")
@@ -199,6 +238,23 @@ end
 
 ------------- gestion des attributs de dessin --------------------------
 
+local color2str = function(coul)
+-- une couleur peut être soit une chaîne de caractères (un nom de couleur ou "{rgb,1:red,r;green,g;blue,b}" )
+-- soit une table {r,g,b}
+-- la  fonction renvoie une chaîne
+    if coul == nil then return end
+    local strCoul
+    if type(coul) == "table" then -- c'est une table {r,g,b}
+        strCoul = rgb(coul)
+    else
+        strCoul = coul
+        if string.sub(strCoul,1,1) == "{" then -- on retire les accolades
+            strCoul = string.sub(strCoul,2,#strCoul-1) 
+        end 
+    end
+    return strCoul
+end
+
 function luadraw_graph:Linewidth(ep)
 -- ep est une épaisseur en dixième de point ex 4 pour 0.4pt
     if self.param.linewidth ~= ep then
@@ -209,7 +265,7 @@ end
 
 function luadraw_graph:Linecolor(strCoul) 
 -- pour modifier la couleur du tracé (strCoul doit être une chaîne)
-    if string.sub(strCoul,1,1) == "{" then strCoul = string.sub(strCoul,2,#strCoul-1) end -- on retire les accolades
+    strCoul = color2str(strCoul)
     if self.param.linecolor ~= strCoul then
         self:Writeln("\\pgfsetstrokecolor{"..strCoul.."}")
         self.param.linecolor = strCoul
@@ -273,7 +329,7 @@ function luadraw_graph:Linestyle(style)
             if style == "dashed" then
                 self.param.linestyle = "dashed" 
                 self:Linecap("butt")
-                self:Writeln("\\pgfsetdash{{5pt}{3pt}}{0pt}")
+                self:Writeln("\\pgfsetdash{{2.5pt}{2pt}}{0pt}")
             else
                 if style == "dotted" then
                 self.param.linestyle = "dotted"
@@ -295,12 +351,12 @@ function luadraw_graph:Lineopacity(x)
     x = (x or 1)
     if (0 <= x) and (x <= 1) then
         self.param.lineopacity = x
-        self:Writeln("\\pgfsetstrokeopacity{"..x.."}%")
+        self:Writeln("\\pgfsetstrokeopacity{"..x.."}")
     end
 end
     
 function luadraw_graph:Arrows(style) -- style = "->", "<-", "<->", nil
-    if style == self.param.arrowss then return end
+    if style == self.param.arrows then return end
     if style == "->" then self:Writeln("\\pgfsetarrows{-to}"); self.param.arrows = style
     else if style == "<-" then self:Writeln("\\pgfsetarrows{to-}"); self.param.arrows = style
         else if style == "<->" then self:Writeln("\\pgfsetarrows{to-to}"); self.param.arrows = style
@@ -322,15 +378,20 @@ function luadraw_graph:Lineoptions(style,strCoul,width,arrows)
 end
 
 function luadraw_graph:Filloptions(style,strCoul,opacity,evenOdd)
+    if opacity ~= nil then self:Fillopacity(opacity) end
+    if evenOdd ~= nil then self:Filleo(evenOdd) end
+    if style == "gradient" then -- dans ce cas l'argument strCoul contient le style du gradient
+        self.param.fillstyle = style
+        if strCoul ~= nil then self:Gradstyle(strCoul) end
+        return 
+    end
+    strCoul = color2str(strCoul)
     if strCoul == nil then strCoul = self.param.fillcolor end -- on ne change pas la couleur
-    if string.sub(strCoul,1,1) == "{" then strCoul = string.sub(strCoul,2,#strCoul-1) end
     if style == nil then style = self.param.fillstyle end -- on ne change pas le style
     local ok = (self.param.fillcolor == strCoul)
     if not ok then
         self.param.fillcolor = strCoul
     end
-    if opacity ~= nil then self:Fillopacity(opacity) end
-    if evenOdd ~= nil then self:Filleo(evenOdd) end
     if (style == self.param.fillstyle) and ok then return end
     --if (style == "none") then self.param.fillstyle = style; return end    
     if (style == "none") or (style == "full") then 
@@ -344,7 +405,6 @@ function luadraw_graph:Filloptions(style,strCoul,opacity,evenOdd)
     if style == "fdiag" then self.param.fillstyle = style; self:Writeln("\\pgfsetfillpattern{north west lines}{"..self.param.fillcolor.."}"); return end
     if style == "horizontal" then self.param.fillstyle = style; self:Writeln("\\pgfsetfillpattern{horizontal lines}{"..self.param.fillcolor.."}"); return end
     if style == "vertical" then self.param.fillstyle = style; self:Writeln("\\pgfsetfillpattern{vertical lines}{"..self.param.fillcolor.."}"); return end    
-    if style == "gradient" then self.param.fillstyle = style; return end
     self.param.fillstyle = style  -- en espérant que ce style existe !
     self:Writeln("\\pgfsetfillpattern{"..style.."}{"..self.param.fillcolor.."}")
 end
@@ -377,9 +437,10 @@ function luadraw_graph:Labelstyle(position)
 end
 
 function luadraw_graph:Labelcolor(color)
--- couleur du label, color est une chaîne représentant une cou_leur pour tikz
+-- couleur du label, color est une chaîne représentant une couleur pour tikz
     color = color or "" -- la chaîne vide représente la couleur courante du document
-    self.param.labelcolor = color
+    --color = color2str(color)
+    self.param.labelcolor = color -- utilisée en local seulement
 end
 
 function luadraw_graph:Labelsize(size)
@@ -451,12 +512,12 @@ function luadraw_graph:Dpolyline(L,close,draw_options) -- close vaut true ou fal
         clippe = false
         local len = #cp
         if len > 1 then
-            if self.matrix ~= ID then
+            if not isID(self.matrix) then
                 cp = self:Mtransform(cp)
             end
             local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
             cp, clippee = clippolyline(cp,X1,X2,Y1,Y2,close)
-            if (not clippee) and close then table.remove(cp[1]) end
+            if (cp[1] ~= nil) and (not clippee) and close then table.remove(cp[1]) end
             for _, cpp in ipairs(cp) do
                 len = #cpp
                 if len > 1 then
@@ -724,7 +785,7 @@ function luadraw_graph:Dseg(segm,scale,draw_options) -- Dseg({a,b}, scale, draw_
     if (a == nil) or (b == nil) then return end
     local u = b-a
     if (u.re == 0) and (u.im == 0) then return end
-    if self.matrix ~= ID then
+    if not isID(self.matrix) then
         a, b = applymatrix(a,self.matrix), applymatrix(b,self.matrix)
     end
     if scale ~= 1 then
@@ -820,7 +881,7 @@ function luadraw_graph:Dbezier(L,draw_options) -- où L = {A1,c1,c2,A2,c3,c4,A3,
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
     local a, c1, c2, b
     local i = 1
-    if self.matrix ~= ID then
+    if not isID(self.matrix) then
         L = self:Mtransform(L) -- image des points de L par la matrice de transformation courante
         if L == nil then return end
     end
@@ -906,7 +967,7 @@ function luadraw_graph:Dline(d,B,draw_options)
     end
     A = toComplex(A) ; u = toComplex(u)
     if(A == nil) or (u == nil) or (u.re == 0) and (u.im == 0) then return end
-    if self.matrix ~= ID then
+    if not isID(self.matrix) then
         A, u = applymatrix(A,self.matrix), applyLmatrix(u,self.matrix)
     end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
@@ -931,7 +992,7 @@ function luadraw_graph:DlineEq(a, b, c,draw_options)
     A = toComplex(A)
     u = toComplex(u)
     if (A == nil) or (u == nil) or ((u.re == 0) and (u.im == 0)) then return end
-    if self.matrix ~= ID then
+    if not isID(self.matrix) then
         A, u = applymatrix(A,self.matrix), applyLmatrix(u,self.matrix)
     end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
@@ -967,7 +1028,7 @@ function luadraw_graph:Dhline(d,B,draw_options)
     end
     A = toComplex(A) ; u = toComplex(u)
     if(A == nil) or (u == nil) or (u.re == 0) and (u.im == 0) then return end        
-    if self.matrix ~= ID then
+    if not isID(self.matrix) then
         A, u = applymatrix(A,self.matrix), applyLmatrix(u,self.matrix)
     end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
@@ -1031,9 +1092,10 @@ end
 ----- Labels -----------------------------------------------------
 function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,options, ... )
 -- dessiner un label, anchor est un complexe (point), 
--- args est une table à 3 entrées { pos = nil, dist = 0, node_options = "" }
+-- args est une table à 3 entrées { pos = nil, dist = 0, dir=nil, node_options = "" }
 -- pos est "center" ou "N", "NE", "NE", "SE", "S", "SW", "W" ou "NW"
 -- dist est la distance en cm du texte par rapport au node, si dist = nil c'est 0 par défaut
+-- dir={dirX,dirY,dep} est la direction de l'écriture (nil pour le sens par défaut)
 -- node_options est une chaîne passée directement à tikz, ex: "rotate=45, draw, fill=red" (options locales)
    local style = { ["N"] = "above", ["NE"] = "above right", ["NW"] = "above left",
                     ["S"] = "below", ["SE"] = "below right", ["SW"] = "below left",
@@ -1041,7 +1103,7 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
     local options, first, sep = "", true, ""
     if self.param.labelcolor ~= "" then options = "color="..self.param.labelcolor; sep = "," end
     local commande = "\\draw[-"..sep..options.."]"
-    local texte, anchor, pos, dist = "", nil, self.param.labelstyle, 0
+    local texte, anchor, pos, dist, dir = "", nil, self.param.labelstyle, 0, nil
     local node_options = ""
     local args = {}
     local x1,x2,y1,y2 = table.unpack(self:Getview())
@@ -1053,21 +1115,35 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
         if self.param.labelsize ~= "" then texte = "\\"..self.param.labelsize.." "..texte end
         pos = args.pos or pos
         dist = args.dist or dist
+        dir = args.dir or dir
         node_options = args.node_options or node_options
         anchor = toComplex(anchor)
         if (anchor == nil) then return end
+        local dir_str = ""
+        if dir ~= nil then -- changement de direction de l'écriture
+            local u, v, dep = table.unpack(dir)
+            u = toComplex(u); v = toComplex(v)
+            if dep == nil then dep = 0 end
+            dep = toComplex(dep)
+            u, v = u/cpx.abs(u), v/cpx.abs(v)
+            dir_str = "cm={"..strReal(u.re)..","..strReal(u.im)..","..strReal(v.re)..","..strReal(v.im)..",("..strReal(dep.re)..","..strReal(dep.im)..")}"
+        end
         local tikz_pos = style[pos]
         sep = ""
         if tikz_pos ~= nil then sep = "," else tikz_pos = "" end
-        if (dist > 0) and (tikz_pos ~= nil) then tikz_pos = tikz_pos.."="..dist.."cm" end
-        if self.matrix ~= ID then
+        if (dist > 0) and (tikz_pos ~= "") then tikz_pos = tikz_pos.."="..dist.."cm" end
+        if not isID(self.matrix) then
             anchor = applymatrix(anchor,self.matrix)
         end
         if (anchor.re < x1-epX) or (anchor.re > x2+epX) or (anchor.im < y1-epY) or (anchor.im > y2+epY) then return end -- point en dehors de la vue courante
         if (self.param.labelangle ~= 0) then tikz_pos = tikz_pos..sep.."rotate="..self.param.labelangle end
         if first then self:Write(commande); first = false end
+        local opt_str = tikz_pos
         if (node_options == "") or (tikz_pos == "") then sep = "" else sep = "," end
-        self:Write(" "..self:Coord(anchor).." node["..tikz_pos..sep..node_options.."] {"..texte.."}")
+        opt_str = opt_str..sep..node_options
+        if (opt_str == "") or (dir_str == "") then sep = "" else sep = "," end
+        opt_str = opt_str..sep..dir_str
+        self:Write(" "..self:Coord(anchor).." node["..opt_str.."] {"..texte.."}")
     end
     for k, aux in ipairs{...} do
         if k%3 == 1 then texte = aux
@@ -1108,7 +1184,7 @@ function luadraw_graph:Ddots(L, mark_options)
     for _, aux in ipairs(L) do
         local len = #aux
         if len > 0 then
-            if self.matrix ~= ID then
+            if not isID(self.matrix) then
                 aux = self:Mtransform(aux)  --application de la matrice courante
             end
             local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
@@ -1177,7 +1253,7 @@ function luadraw_graph:Dpath(L,draw_options)
         return self:Coord(applymatrix(z,self.matrix))
     end
     
-    if self.matrix ~= ID then Mcoord = Tcoord end -- transformation des points par la matrice courante
+    if not isID(self.matrix) then Mcoord = Tcoord end -- transformation des points par la matrice courante
     
     local lineto = function() -- traitement du lineto
         -- on relie les points par une ligne
@@ -1343,7 +1419,7 @@ function luadraw_graph:Dpath(L,draw_options)
 -- corps de la fonction dpath
     local clippee
     local aux2 = path(L)
-    if self.matrix ~= ID then aux2 = self:Mtransform(aux2) end
+    if not isID(self.matrix) then aux2 = self:Mtransform(aux2) end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
     clippee = needclip(aux2,X1,X2,Y1,Y2)
     if clippee then
@@ -1413,5 +1489,12 @@ end
 -- gestion des couleurs ------------------------------------------------
 
 require("luadraw_colors.lua")
+
+function luadraw_graph:Newcolor(name, rgbtable)
+-- definit dans l'export tikz une nouvelle couleur
+-- name est le nom (chaîne)
+-- rgbtable est une table de trois compoantes: rouge, vert, bleu (entre 0 et 1)
+    self:Writeln("\\definecolor{"..name.."}{rgb}{"..strReal(rgbtable[1])..","..strReal(rgbtable[2])..","..strReal(rgbtable[3]).."}")
+end
 
 return luadraw_graph
