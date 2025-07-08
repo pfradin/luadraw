@@ -1,0 +1,119 @@
+\documentclass[%
+10pt,%
+oneside,
+a4paper,%
+french,%
+]%
+{book}%
+
+
+\usepackage{luatextra}
+\usepackage{amsmath,amssymb,marvosym,stmaryrd,calrsfs,minted,setspace,array,caption,fvextra}%
+\usepackage[math-style=french]{unicode-math}
+\usepackage[math-style=french]{fourier-otf}%
+\usepackage[svgnames]{xcolor}
+\usepackage[margin=1.5cm,top=1cm,bottom=1.5cm,headheight=5mm,headsep=2mm]{geometry}
+\usepackage[unicode,pdfstartview = FitH, colorlinks, linkcolor=blue]{hyperref}
+\usepackage{babel,microtype,multicol}%
+%\usepackage{minitoc}
+\frenchsetup{ListOldLayout=true}
+\usepackage[Lenny]{fncychap}
+
+\usepackage[noexec,3d]{luadraw}
+\def\version{2.0}
+
+\def\luadrawTkzDir{tkz/}% sauvegarde des fichiers *.tkz dans le sous-dossier tkz
+
+\hypersetup{
+  pdfauthor={P. Fradin},
+  pdflang={fr},
+  %hidelinks,
+  pdfcreator={LuaLatex}
+}
+
+\title{\textbf{Le paquet} \emph{luadraw} \\ version \version\\ Dessin 2d et 3d avec lua (et tikz).\\
+\vspace{1cm}
+\begin{minipage}{16cm}
+\small
+\selectlanguage{english}
+
+\hfil\textbf{Abstract}\hfil
+
+The \emph{luadraw} package defines the environment of the same name, which lets you create mathematical graphs using the Lua language. These graphs are ultimately drawn by tikz (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language with good computational capabilities.
+
+\vspace{1cm}
+
+\hfil\textbf{Résumé}\hfil
+
+\selectlanguage{french}
+Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet de créer des graphiques mathématiques en utilisant le langage Lua. Ces graphiques sont dessinés au final par tikz (et automatiquement sauvegardés), alors pourquoi les faire en Lua ? Parce que celui-ci apporte toute la puissance d'un langage de programmation simple, efficace, capable de faire des calculs, tout en utilisant les possibilités graphiques de tikz.
+\end{minipage}
+}
+\author{P. Fradin}
+%\date{}
+
+\onehalfspacing
+\newminted{Lua}{bgcolor=Beige,ignorelexererrors=true,linenos,numbersep=6pt,breaklines,fontsize=\footnotesize}%
+\newminted{TeX}{bgcolor=Gray!30,breaklines,fontsize=\footnotesize}%
+
+%\columnseprule 0.4pt
+\columnsep 25pt
+
+\definecolor{bgcol}{RGB}{238,240,252}% couleur de fond des listings
+
+\newenvironment*{demo}[2][]{%
+\gdef\legende{#2}%
+\gdef\lab{#1}%
+\bgroup
+\VerbatimOut{\jobname.tmp}%
+}%
+{%
+\endVerbatimOut%
+\egroup%
+%\begin{center}
+%\begin{tabular}{|m{10cm}|m{7cm}|}
+%\hline
+%\begin{minipage}{10cm}
+\inputminted[ignorelexererrors=true,breaklines,bgcolor=Beige,linenos,numbersep=6pt,frame=single,fontsize=\footnotesize]{Lua}{\jobname.tmp}%
+%\end{minipage}
+%&
+\begin{minipage}{0.9\textwidth}
+%\par\smallskip
+\begin{center}
+\captionof{figure}{\legende}\label{\lab}%
+\input{\jobname.tmp}%
+%\end{center}
+%\par\smallskip
+%\hline
+%\end{tabular}
+\end{center}
+\end{minipage}
+}
+
+\begin{document}
+\maketitle
+%\dominitoc
+
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+
+%\clearpage
+
+\listoffigures
+
+%\clearpage
+
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{--}
+\renewcommand{\labelitemiii}{$*$}
+%\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\Roman{section}~}
+\renewcommand{\thesubsection}{\arabic{subsection})}
+\renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
+\renewcommand{\thefigure}{\arabic{figure}}
+
+\include{luadraw-doc2d}%
+\include{luadraw-doc3d}%
+
+\end{document}

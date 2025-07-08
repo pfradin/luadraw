@@ -1,108 +1,4 @@
-\documentclass[%
-10pt,%
-a4paper,%
-french,%
-]%
-{article}%
-
-
-\usepackage{luatextra}
-\usepackage{amsmath,amssymb,marvosym,stmaryrd,calrsfs,minted,setspace,array,caption,fvextra}%
-\usepackage[math-style=french]{unicode-math}
-\usepackage[math-style=french]{fourier-otf}%
-\usepackage[svgnames]{xcolor}
-\usepackage[margin=1.5cm,top=1cm,bottom=1.5cm,headheight=5mm,headsep=2mm]{geometry}
-\usepackage[unicode,pdfstartview = FitH, colorlinks, linkcolor=blue]{hyperref}
-\usepackage{babel,microtype,multicol}%
-\frenchsetup{ListOldLayout=true}
-
-\usepackage[noexec,3d]{luadraw}
-\def\version{2.0}
-
-\def\luadrawTkzDir{tkz3d/}% sauvegarde des fichiers *.tkz dans le sous-dossier tkz3d
-
-\hypersetup{
-  pdfauthor={P. Fradin},
-  pdflang={fr},
-  %hidelinks,
-  pdfcreator={LuaLatex}
-}
-
-\title{\textbf{Le paquet} \emph{luadraw} version \version\\ Dessin 3d avec lua (et tikz)}
-\author{P. Fradin}
-%\date{}
-
-\onehalfspacing
-\newminted{Lua}{bgcolor=Beige,ignorelexererrors=true,linenos,numbersep=6pt,breaklines,frame=single,fontsize=\footnotesize}%
-\newminted{TeX}{bgcolor=Gray!30,breaklines,fontsize=\footnotesize}%
-
-%\columnseprule 0.4pt
-\columnsep 25pt
-
-\definecolor{bgcol}{RGB}{238,240,252}% couleur de fond des listings
-
-\newenvironment*{demo}[2][]{%
-\gdef\legende{#2}%
-\gdef\lab{#1}%
-\bgroup
-\VerbatimOut{\jobname.tmp}%
-}%
-{%
-\endVerbatimOut%
-\egroup%
-%\begin{center}
-%\begin{tabular}{|m{10cm}|m{7cm}|}
-%\hline
-%\begin{minipage}{10cm}
-\inputminted[ignorelexererrors=true,breaklines,bgcolor=Beige,linenos,numbersep=6pt,frame=single,fontsize=\footnotesize]{Lua}{\jobname.tmp}%
-%\end{minipage}
-%&
-\begin{minipage}{0.9\textwidth}
-%\par\smallskip
-\begin{center}
-\captionof{figure}{\legende}\label{\lab}%
-\input{\jobname.tmp}%
-%\end{center}
-%\par\smallskip
-%\hline
-%\end{tabular}
-\end{center}
-\end{minipage}
-}
-
-\begin{document}
-\maketitle
-
-%\selectlanguage{english}
-%\begin{abstract}
-%The \emph{luadraw} package defines the environment of the same name, which lets you create mathematical graphs using the Lua language. These graphs are ultimately drawn by tikz (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language with good computational capabilities.
-%\end{abstract}
-
-\selectlanguage{french}
-\begin{abstract}
-Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet de créer des graphiques mathématiques en utilisant le langage Lua. Ces graphiques sont dessinés au final par tikz (et automatiquement sauvegardés), alors pourquoi les faire en Lua ? Parce que celui-ci apporte toute la puissance d'un langage de programmation simple, efficace, capable de faire des calculs, tout en utilisant les possibilités graphiques de tikz.
-
-L'aide se présente en deux parties : le présent fichier relatif à la 3d, et le fichier \href{file://luadraw2d.pdf}{luadraw2d.pdf} relatif à la 2d.
-\end{abstract}
-
-\begin{multicols}{2}
-\tableofcontents
-\end{multicols}
-
-\clearpage
-
-\listoffigures
-
-\clearpage
-
-\renewcommand{\labelitemi}{$\bullet$}
-\renewcommand{\labelitemii}{--}
-\renewcommand{\labelitemiii}{$*$}
-%\renewcommand{\thechapter}{\Roman{chapter}}
-\renewcommand{\thesection}{\Roman{section}~}
-\renewcommand{\thesubsection}{\arabic{subsection})}
-\renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
-\renewcommand{\thefigure}{\arabic{figure}}
+\chapter{Dessin 3d}
 
 \begin{center}
 \captionof{figure}{Point col en $M(0,0,0)$ ($z=x^2-y^2$)}\label{pointcol}\par
@@ -1563,7 +1459,8 @@ La méthode \textbf{g:Shift3d(v)} modifie la matrice 3d de transformation du gra
 \subsection{Fonctions mathématiques supplémentaires}
 
 \subsubsection{clippolyline3d()}
-La fonction \textbf{clippolyline3d(L, poly, exterior)} clippe la ligne polygonale 3d \emph{L} avec le polyèdre \textbf{convexe} \emph{poly}, si l'argument facultatif \emph{exterior} vaut true, alors c'est la partie extérieure au polyèdre qui est renvoyée (false par défaut). \emph{L} est une liste de points 3d ou une liste de listes de points 3d.
+La fonction \textbf{clippolyline3d(L, poly, exterior, close)} clippe la ligne polygonale 3d \emph{L} avec le polyèdre \textbf{convexe} \emph{poly}, si l'argument facultatif \emph{exterior} vaut true, alors c'est la partie extérieure au polyèdre qui est renvoyée (false par défaut), si l'argument facultatif \emph{close} vaut true, alors la ligne polygonale est refermée (false par défaut). \emph{L} est une liste de points 3d ou une liste de listes de points 3d.\par
+\textbf{Remarque} : le résultat n'est pas toujours satisfaisant pour la partie extérieure.
 
 \subsubsection{clipline3d()}
 La fonction \textbf{clipline3d(line, poly)} clippe la droite \emph{line} avec le polyèdre \textbf{convexe} \emph{poly}, la fonction renvoie la partie de la droite intérieure au polyèdre. L'argument \emph{line} et une table de la forme \{A,u\} où $A$ est un point de la droite et $u$ un vecteur directeur (deux points 3d).
@@ -1965,4 +1862,16 @@ On pourrait ne pas construire à la main la surface (appelée \emph{dessus} dans
 g:Dfacet( surface(function(u,v) return M(u,v*u^2,v^2*u^4) end, 0,1,0,1), {mode=5, color="cyan"})
 \end{Luacode}
 mais elle comporte bien plus de facettes (25*25) que la construction sous forme de cylindre (21 facettes), ce qui est moins intéressant.
-\end{document}
+
+\section{Historique}
+
+\subsection{Version 2.0}
+
+\begin{itemize}
+    \item Introduction du module \emph{luadraw\_graph3d.lua} pour les dessins en 3d.
+    \item Introduction de l'option \emph{dir} pour la méthode \textbf{g:Dlabel}.
+    \item Menus changements dans la gestion des couleurs.
+\end{itemize}
+
+\subsection{Version 1.0}
+Première version.
