@@ -32,7 +32,10 @@ french,%
 }
 
 \title{\textbf{Le paquet} \emph{luadraw} \\ version \version\\ Dessin 2d et 3d avec lua (et tikz).\\
+{\small \url{https://github.com/pfradin/luadraw}} \\
+
 \vspace{1cm}
+
 \begin{minipage}{16cm}
 \small
 \selectlanguage{english}
@@ -49,8 +52,9 @@ The \emph{luadraw} package defines the environment of the same name, which lets 
 Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet de créer des graphiques mathématiques en utilisant le langage Lua. Ces graphiques sont dessinés au final par tikz (et automatiquement sauvegardés), alors pourquoi les faire en Lua ? Parce que celui-ci apporte toute la puissance d'un langage de programmation simple, efficace, capable de faire des calculs, tout en utilisant les possibilités graphiques de tikz.
 \end{minipage}
 }
-\author{P. Fradin}
+\author{Patrick Fradin}
 %\date{}
+
 
 \onehalfspacing
 \newminted{Lua}{bgcolor=Beige,ignorelexererrors=true,linenos,numbersep=6pt,breaklines,fontsize=\footnotesize}%
@@ -92,17 +96,15 @@ Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet 
 
 \begin{document}
 \maketitle
-%\dominitoc
+
+\setcounter{tocdepth}{3}%
+\setcounter{secnumdepth}{2}%
 
 \begin{multicols}{2}
 \tableofcontents
 \end{multicols}
 
-%\clearpage
-
 \listoffigures
-
-%\clearpage
 
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{--}
