@@ -1,4 +1,4 @@
-% luadraw.sty version 2.0 du 04/07/2025%
+% luadraw.sty version 2.1 du 07/09/2025%
 %% ---------------------------------------%
 %% Copyright (C) 2025 Patrick Fradin%
 %% ---------------------------------------%
@@ -14,12 +14,13 @@
 % exec =         : (true ou false): exécute ou non le code lua, true par defaut,%
 % auto =         : (true ou false, true par défaut)): inclut ou non automatiquement le fichier tikz lorsque exec est false%
 %%
-%%%% Les options globales du package sont au nombre de 2:%
+%%%% Les options globales du package sont au nombre de 3:%
 %%
 % noexec  : redéfinit la valeur par défaut de l'option exec à la valeur false,%
 %           par conséquent les environnements luadraw ne sont pas exécutés par lua%
 %           sauf si l'option exec (ou exec=true) est mentionnée dans les options de l'environnement%
 % 3d : si cette option est utilisée alors la classe graph3d sera définie (ainsi que la classe graph), sinon seule la classe graph sera définie
+% cachdir = <directory> : sous-dossier où seront enregistrés les fichiers tkz, par défaut c'est le sous-dossier _luadraw.
 %%
 \RequirePackage{ifluatex}%
 \ifluatex%
@@ -30,7 +31,7 @@
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2025/07/04 version 2.0, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2025/09/05 version 2.1, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%
@@ -39,23 +40,32 @@
 \usetikzlibrary{patterns}%%
 \usetikzlibrary{plotmarks}%%
 \usetikzlibrary{arrows.meta}%%
-\usetikzlibrary{decorations.markings}% %
+\usetikzlibrary{decorations.markings}%%
+\usetikzlibrary{backgrounds}%%
 %
+\def\luadraw@TkzDir{_luadraw/}% répertoire de travail par défaut%
+\directlua{cachedir = ""}
 \newif\ifluaDraw@DefaultExec\luaDraw@DefaultExectrue%%
 \newif\ifluaDraw@DefaultThreeD\luaDraw@DefaultThreeDfalse%%
 \define@key{luadraw.sty}{noexec}[]{\luaDraw@DefaultExecfalse}%%
 \define@key{luadraw.sty}{3d}[]{\luaDraw@DefaultThreeDtrue}%%
+\define@key{luadraw.sty}{cachedir}[]{%%
+\def\luadraw@TkzDir{#1/}%
+\directlua{
+    cachedir = \luastring{\luadraw@TkzDir}
+    local lfs = require 'lfs'
+    lfs.mkdir(cachedir)
+}}%%
 \ProcessOptionsX%%
 %
-\def\luadrawTkzDir{}% répertoire de travail%
 \define@key{luaDraw}{name}{%%
-    \def\luaDraw@nom{\luadrawTkzDir#1}%%
+    \def\luaDraw@nom{\luadraw@TkzDir#1}%%
     \directlua{graph_name = \luastring{\luaDraw@nom}..".tkz"}%
 }%%
 \define@boolkey{luaDraw}{exec}[true]{%%
 \ifKV@luaDraw@exec%%
-\def\luaDraw@dep{\luacode}%%
-\def\luaDraw@enddep{\endluacode}%%
+\def\luaDraw@dep{\luacodestar}%%
+\def\luaDraw@enddep{\endluacodestar}%%
 \else%%
 \def\luaDraw@dep{\comment}%%
 \def\luaDraw@enddep{\endcomment}%%
@@ -80,8 +90,11 @@
 \setkeys{luaDraw}{#2}%%
 \ifKV@luaDraw@exec% code lua exécuté%
 \directlua{% on efface l'ancien fichier tkz s'il existe%
+    print()
+    print("graph file = "..graph_name)
     local file = io.open(graph_name, "r")
-    if not file then return
+    if not file then 
+        return
     else 
         file:close()
         os.remove(graph_name)
@@ -102,8 +115,13 @@
 \egroup%%
 \luaDraw@loading%%
 }%%
-%
-\begin{luacode}
+% code exécuté au lancement
+\begin{luacode*}
+if cachedir == "" then 
+    cachedir = "_luadraw/"
+    local lfs = require 'lfs'
+    lfs.mkdir(cachedir)
+end    
 graph = require 'luadraw_graph2d'  -- définition de la classe graph
 graph_name = "" -- nom du graphique (l'extension .tkz a été ajoutée)
 function graph:Show() -- on écrit la méthode Show pour afficher et faire une sauvegarde du fichier tkz
@@ -113,7 +131,7 @@ end
 function graph:Save() -- on écrit la méthode Save pour faire une sauvegarde du fichier tkz uniquement
     self:Savetofile(graph_name)
 end
-\end{luacode}
+\end{luacode*}
 \ifluaDraw@DefaultThreeD%
 \directlua{graph3d = require 'luadraw_graph3d'}% définition de la classe graph3d
 \fi%

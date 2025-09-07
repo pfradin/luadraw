@@ -1,5 +1,4 @@
-\begin{tikzpicture}%
-\useasboundingbox (-0.5,-0.5) rectangle (7.1780790115413,9.5);%
+\begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (7.1780790115413,9.5);%
 \pgfsetroundjoin%
@@ -78,7 +77,7 @@
 \draw[] (5.7335,1.9886) -- (5.8257,1.9499);%
 \draw[] (6.0468,2.1753) -- (6.139,2.1366);%
 \draw[] (6.3601,2.362) -- (6.4523,2.3233);%
-\draw[-] (6.3607,1.5664) node[] {\footnotesize $x$} (5.1164,1.2932) node[] {\footnotesize 0} (5.4297,1.4798) node[] {\footnotesize 1} (5.743,1.6665) node[] {\footnotesize 2} (6.0562,1.8532) node[] {\footnotesize 3} (6.3695,2.0399) node[] {\footnotesize 4} (6.6828,2.2266) node[] {\footnotesize 5};%
+\draw[-] (6.3607,1.5664) node[] {\footnotesize $x$} (5.1164,1.2932) node[] {\footnotesize $0$} (5.4297,1.4798) node[] {\footnotesize $1$} (5.743,1.6665) node[] {\footnotesize $2$} (6.0562,1.8532) node[] {\footnotesize $3$} (6.3695,2.0399) node[] {\footnotesize $4$} (6.6828,2.2266) node[] {\footnotesize $5$};%
 \draw[] (4.7936,1.4286) -- (1.06,2.995);%
 \draw[] (4.7936,1.4286) -- (4.7077,1.3774);%
 \draw[] (4.4203,1.5852) -- (4.3344,1.534);%
@@ -91,7 +90,7 @@
 \draw[] (1.8067,2.6817) -- (1.7208,2.6305);%
 \draw[] (1.4334,2.8384) -- (1.3475,2.7872);%
 \draw[] (1.06,2.995) -- (0.9741,2.9438);%
-\draw[-] (2.1966,1.7767) node[] {\footnotesize $y$} (4.493,1.2494) node[] {\footnotesize 0} (4.1196,1.4061) node[] {\footnotesize 1} (3.7462,1.5627) node[] {\footnotesize 2} (3.3729,1.7193) node[] {\footnotesize 3} (2.9995,1.876) node[] {\footnotesize 4} (2.6262,2.0326) node[] {\footnotesize 5} (2.2528,2.1893) node[] {\footnotesize 6} (1.8794,2.3459) node[] {\footnotesize 7} (1.5061,2.5026) node[] {\footnotesize 8} (1.1327,2.6592) node[] {\footnotesize 9} (0.7593,2.8159) node[] {\footnotesize 10};%
+\draw[-] (2.1966,1.7767) node[] {\footnotesize $y$} (4.493,1.2494) node[] {\footnotesize $0$} (4.1196,1.4061) node[] {\footnotesize $1$} (3.7462,1.5627) node[] {\footnotesize $2$} (3.3729,1.7193) node[] {\footnotesize $3$} (2.9995,1.876) node[] {\footnotesize $4$} (2.6262,2.0326) node[] {\footnotesize $5$} (2.2528,2.1893) node[] {\footnotesize $6$} (1.8794,2.3459) node[] {\footnotesize $7$} (1.5061,2.5026) node[] {\footnotesize $8$} (1.1327,2.6592) node[] {\footnotesize $9$} (0.7593,2.8159) node[] {\footnotesize $10$};%
 \draw[] (1.06,2.995) -- (1.06,7.638);%
 \draw[] (1.06,2.995) -- (0.9678,3.0337);%
 \draw[] (1.06,3.4171) -- (0.9678,3.4558);%
@@ -105,7 +104,7 @@
 \draw[] (1.06,6.7938) -- (0.9678,6.8325);%
 \draw[] (1.06,7.2159) -- (0.9678,7.2546);%
 \draw[] (1.06,7.638) -- (0.9678,7.6767);%
-\draw[-] (0.2762,5.6454) node[] {\footnotesize $z$} (0.7373,3.1304) node[] {\footnotesize 0} (0.7373,3.5525) node[] {\footnotesize 1} (0.7373,3.9746) node[] {\footnotesize 2} (0.7373,4.3967) node[] {\footnotesize 3} (0.7373,4.8188) node[] {\footnotesize 4} (0.7373,5.2409) node[] {\footnotesize 5} (0.7373,5.663) node[] {\footnotesize 6} (0.7373,6.0851) node[] {\footnotesize 7} (0.7373,6.5072) node[] {\footnotesize 8} (0.7373,6.9292) node[] {\footnotesize 9} (0.7373,7.3513) node[] {\footnotesize 10} (0.7373,7.7734) node[] {\footnotesize 11};%
+\draw[-] (0.2762,5.6454) node[] {\footnotesize $z$} (0.7373,3.1304) node[] {\footnotesize $0$} (0.7373,3.5525) node[] {\footnotesize $1$} (0.7373,3.9746) node[] {\footnotesize $2$} (0.7373,4.3967) node[] {\footnotesize $3$} (0.7373,4.8188) node[] {\footnotesize $4$} (0.7373,5.2409) node[] {\footnotesize $5$} (0.7373,5.663) node[] {\footnotesize $6$} (0.7373,6.0851) node[] {\footnotesize $7$} (0.7373,6.5072) node[] {\footnotesize $8$} (0.7373,6.9292) node[] {\footnotesize $9$} (0.7373,7.3513) node[] {\footnotesize $10$} (0.7373,7.7734) node[] {\footnotesize $11$};%
 \pgfsetlinewidth{0.05pt}%
 \pgfsetfillcolor{rgb,1:red,0.2254;green,0.6761;blue,0}%
 \draw[fill] (2.324,6.2808) -- (2.3024,6.223) -- (2.3345,6.2544)--cycle;%

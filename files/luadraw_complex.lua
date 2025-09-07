@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -102,6 +102,13 @@ function complex.abs(u)
     if x == 0 then return 0 else return x*math.sqrt(1 + (y/x)^2) end
 end
 
+function complex.abs2(u) -- module au carré
+    if type(u) == "number" then return math.abs(u) end
+    u = toComplex(u)
+    if (u == nil) then return end
+    return u.re^2 + u.im^2
+end
+
 -- argument principal 
 function complex.arg(u)
     u = toComplex(u)
@@ -118,6 +125,13 @@ function complex.arg(u)
             end
         end
     end
+end
+
+function complex.angle(u,v) -- return angle between vectors u and v (radians)
+    u = toComplex(u)
+    v = toComplex(v)
+    if (u == nil) or (v == nil) then return end  
+    return complex.arg(v/u)
 end
 
 -- conjugué 
@@ -265,5 +279,13 @@ function map(f,list)
     end
     return res
 end   
+
+function reverse(list)
+    local rep = {}
+    for _,x in ipairs(list) do
+        table.insert(rep,1,x)
+    end
+    return rep
+end
 
 return complex

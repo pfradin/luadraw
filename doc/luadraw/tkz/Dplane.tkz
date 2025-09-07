@@ -1,16 +1,15 @@
-\begin{tikzpicture}%
-\useasboundingbox (-0.5,-0.5) rectangle (7.5,7.5);%
+\begin{tikzpicture}[background rectangle/.style={,draw=black},show background rectangle]%
 \begin{scope}%
-\clip (-0.5,-0.5) rectangle (7.5,7.5);%
+\clip (0,0) rectangle (8.0,4.8484848484848);%
 \pgfsetroundjoin%
-\draw[] (2.7313,4.9343) -- (0.6313,3.1157) -- (4.2687,2.0657);%
-\draw[] (3.5839,3.4581) -- (3.4161,3.5419);%
-\draw[] (3.4161,3.4581) -- (3.5839,3.5419);%
-\draw[->] (3.5,3.5) -- (3.5,4.7124);%
-\draw[] (3.3484,3.5437) -- (3.3484,3.6953) -- (3.5,3.6516);%
-\draw[->] (0.4563,2.9641) -- (4.0937,1.9141);%
-\draw[->] (0.3282,3.2032) -- (2.4282,5.0218);%
-\draw[-] (3.5,3.5) node[right] {\footnotesize $A$} (3.5,4.7124) node[right] {\footnotesize $u$} (0.6313,3.1157) node[above right,cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {\footnotesize $P$} (2.275,2.4391) node[below,cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {\footnotesize $L_1\frac{V}{\|V\|}$} (1.3782,4.1125) node[above,cm={0.7559,0.6547,-0.9608,0.2774,(0,0)}] {\footnotesize $L_2\frac{W}{\|W\|}$};%
+\draw[] (4.0261,4.4112) -- (1.117,1.8918) -- (6.1557,0.4373);%
+\draw[] (5.1748,2.3823) -- (5.0071,2.4662);%
+\draw[] (5.0071,2.3823) -- (5.1748,2.4662);%
+\draw[->] (5.0909,2.4242) -- (5.0909,4.1038);%
+\draw[] (4.881,2.4848) -- (4.881,2.6948) -- (5.0909,2.6342);%
+\draw[->,line width=0.8pt] (0.8746,1.6819) -- (5.9133,0.2274);%
+\draw[->,line width=0.8pt] (0.6971,2.0131) -- (3.6062,4.5324);%
+\draw[-] (5.0909,2.4242) node[right] {\footnotesize $A$} (5.0909,4.1038) node[right] {\footnotesize $u$} (1.117,1.8918) node[above right,cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {\footnotesize $P$} (3.3939,0.9546) node[below,cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {\footnotesize $L_1\frac{V}{\|V\|}$ (bottom)} (2.1517,3.2727) node[above,cm={0.7559,0.6547,-0.9608,0.2774,(0,0)}] {\footnotesize $L_2\frac{W}{\|W\|}$ (left)};%
 \pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

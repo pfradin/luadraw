@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -100,7 +100,11 @@ function cut(L,A,before)
             if not coupee then table.insert(avant,cp) end
         end
     end
-    if before then return apres else return avant end
+    if #apres == 1 then apres = apres[1] end
+    if #avant == 1 then avant = avant[1] end
+    if before then return apres, avant 
+    else return avant, apres
+    end
 end
 
 function sequence(f, u0, n)
@@ -357,8 +361,30 @@ function ellipticarcb(b, a, c, rx, ry, sens, inclin)
     return mtransform(C,mat2)
 end 
 
+-- triangles
+function sss_triangle(ab,bc,ac)  -- returns 3 points A,B,C (table), the arguments are the lengths of the 3 sides.
+    local A, B = 0, ab
+    local alpha = math.acos((ab^2+ac^2-bc^2)/(ab*ac*2))
+    local C = ac*cpx.exp(cpx.I*alpha)
+    return {A,B,C} -- returns triangle with A=0 and B=ab
+end
 
-function polyreg(centre,sommet,nbcotes,sens) -- ou polyreg(sommet1,sommet2,nbcotes, sens) appelée par la méthode Dpolyreg
+function sas_triangle(ab,gamma,ac)  -- returns 3 points A,B,C (table), the arguments are length, angle (AB,AC) (degrees), length
+    local A, B = 0, ab
+    local C = ac*cpx.exp(cpx.I*gamma*deg) 
+    return {A,B,C} -- returns triangle with A=0 and B=ab
+end
+
+function asa_triangle(alpha,ab,beta)  -- returns 3 points A,B,C (table), the arguments are a length, angles (AB,AC) and (BA,BC)
+    local A, B = 0, ab
+    local D1 = {0,cpx.exp(cpx.I*alpha*deg)}
+    local D2 = {ab,cpx.exp(-cpx.I*beta*deg)}
+    local C = interD(D1,D2)
+    return {A,B,C} -- returns triangle with A=0 and B=ab
+end
+
+
+function polyreg(centre,sommet,nbcotes,sens) -- ou polyreg(sommet1,sommet2,nbcotes) appelée par la méthode Dpolyreg
 -- renvoie une ligne polygonale représentant un polygone régulier
     if sens == nil then
         centre = toComplex(centre)
@@ -412,6 +438,23 @@ function tangentC(f,x0,long)
     local A = Z(x0,y0)
     if (A == nil) then return end
     local v = Z(1, (f(x0+1E-6)-y0)*1E6) -- vecteur tangent
+    if (v == nil) or cpx.isNul(v) then return end
+    if long == nil then return {A,v} -- on renvoie une droite
+    else 
+        local u = long*v/cpx.abs(v)/2
+        return {A-u,A+u} -- on renvoie un segment
+    end
+end
+
+function tangentI(f,x0,y0,long)
+-- tangente à la courbe implicite d'équation f(x,y)=0
+-- si long vaut nil on renvoie une droite, sinon un segment
+-- on suppose que f(x0,y0)=0, donc on a bien un point de la courbe
+    if (f == nil) or (x0 == nil) or (y0 == nil) then return end
+    local h = 1e-6
+    local A = Z(x0,y0)
+    local a,b = (f(x0+h,y0)-f(x0-h,y0))/(2*h), (f(x0,y0+h)-f(x0,y0-h))/(2*h)
+    local v = Z(-b,a)
     if (v == nil) or cpx.isNul(v) then return end
     if long == nil then return {A,v} -- on renvoie une droite
     else 
@@ -726,6 +769,49 @@ function clipdots(L,xmin,xmax,ymin,ymax)
     return res
 end
 
+function cutpolyline(L,line,close)
+-- cut the polyline L (list of complex numbers or list of lists of complex numbers)
+-- with the line, where line = {A,n} (point and a direction vector)
+-- the part in the half-plane containing i*n is kept
+-- close indicates whether L should be closed
+-- the function returns the conserved part (polyline), the non-conserved part (polyline) and the intersection points
+
+    if isComplex(L[1]) then L = {L} end -- pour avoir une liste de listes
+    local S,n = table.unpack(line)
+    n = cpx.I*n -- vecteur normal à la droite
+    close = close or false
+    local res, res2, coupe = {}, {}, {} -- res = sortie, res2 = autre partie 
+    for _,F in ipairs(L) do
+        if close then table.insert(F,F[1]) end
+        local nb, aux, aux2 = #F, {}, {}
+        local A1, B1 = nil, F[1]
+        local p1, p2, I = nil, cpx.dot(B1-S,n)
+        if math.abs(p2)<1e-8 then p2 = 0 end
+        if (p2 >= 0) then table.insert(aux,B1) end
+        if (p2 <= 0) then table.insert(aux2,B1) end
+        for k = 2, nb do
+            --if k == nb+1 then k = 1 end -- on ferme le polygon
+            A1 = B1; p1 = p2; B1 = F[k]; p2 = cpx.dot(B1-S,n)
+            if math.abs(p2) < 1e-8 then p2 = 0 end
+            if (p1*p2 < 0) or (p2 == 0) then
+                if p2 == 0 then I = B1 else I = projO(A1,line,B1-A1) end
+                if I ~= nil then 
+                    table.insert(aux,I) ; table.insert(aux2,I)
+                    table.insert(coupe,I)
+                end
+            end
+            if (p2 > 0) and (p1 ~= nil) then table.insert(aux,B1) end
+            if (p2 < 0) and (p1 ~= nil) then table.insert(aux2,B1) end
+        end
+        if aux[1] == aux[#aux] then table.remove(aux) end
+        if aux2[1] == aux2[#aux2] then table.remove(aux2) end
+        if #aux>1 then table.insert(res,aux) end
+        if #aux2>1 then table.insert(res2,aux2) end
+    end
+    return res, res2, coupe -- returns the two polygons and intersection points
+end
+
+
 -- recoller des composantes connexes, utilisé par les courbes implicites
 function merge(L)
 -- L est une liste de liste de complexes
@@ -1019,7 +1105,7 @@ function path(chemin)
         if first ~= nil then 
             table.insert(aux,1,first); table.remove(crt)
         end
-        local C = bezier(table.unpack(aux)) -- renvoie une liste de liste de complexes
+        local C = bezier(table.unpack(aux)) -- renvoie une liste de listes de complexes
         for _, z in ipairs(C[1]) do
             table.insert(crt,z)
         end
@@ -1172,7 +1258,7 @@ function path(chemin)
 end
 
 
--- ensembles
+-- ensembles (diagrammes de Venn), intersection, réunion, différence
 function set(center,angle,scale)
 -- renvoie un chemin représentant un ensemble centré sur center, penché de angle degrés
 -- scale permet de jouer sur la taille
@@ -1220,4 +1306,130 @@ function inside(I,L)
     else
         return (#res%2 == 1)
     end
+end
+
+function cap(C1, C2) -- contour de l'intersection de C1 et C2
+-- C1 et C2 sont deux courbes fermées simples (représentant des ensembles)
+-- la fonction renvoie le contour de l'intersection (liste de complexes)
+    local L = interL(C1,C2)
+    if L == nil then
+        if inside(C1[1],C2) then return C1
+            elseif inside(C2[1],C1) then return C2
+            else return 
+        end
+    end
+    local rep = {}
+    local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
+    local C1B, C1A = cut(C1,L1) -- C1B = avant L1, C1A = après L1
+    table.remove(C1A) --on enlève le dernier
+    C1 = concat(C1A, C1B)
+    local C2B, C2A = cut(C2,L1) -- C2B = avant L1, C2A = après L1
+    table.remove(C2A) --on enlève le dernier
+    C2 = concat(C2A, C2B) 
+    -- on parcourt L par paire (L1,L2)
+    local L2 = table.remove(L,1)
+    table.insert(L,L1)
+    local aux, aux2 = {}, {}
+    for _, z in ipairs(L)  do
+        L1 = L2; L2 = z
+        local A = cpx.round(C1[2],12) -- point suivant L1
+        if inside(A,C2) then -- on prend la partie [L1,L2] de C1
+            aux = cut(C1,L2)
+        else -- on prend la partie [L1,L2] de C2
+            aux = cut( cut(C2,L1,true), L2)
+            if aux == nil then
+                aux2 = cut(C2,L1,true)
+                table.remove(aux2)
+                aux = concat(aux2, cut(C2,L2))
+            end
+        end
+        table.remove(aux); C1 = cut(C1,L2,true) -- on coupe C1 avant L2
+        insert(rep,aux)
+    end
+    table.insert(rep,C2[1])
+    return rep
+end
+
+function cup(C1, C2)
+-- C1 et C2 sont deux courbes fermées simples (listes de complexes, représentant des ensembles)
+-- la fonction renvoie le contour de la réunion (liste de complexes)
+    local L = interL(C1,C2)
+    if L == nil then -- disjoints
+        if isComplex(C1[1]) then C1 = {C1} end
+        if isComplex(C2[1]) then C2 = {C2} end
+        return concat(C1,C2)
+    end
+    local rep = {}
+    local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
+    local C1B, C1A = cut(C1,L1) -- C1B = avant L1, C1A = après L1
+    table.remove(C1A) --on enlève le dernier
+    C1 = concat(C1A, C1B)
+    local C2B, C2A = cut(C2,L1) -- C2B = avant L1, C2A = après L1
+    table.remove(C2A) --on enlève le dernier
+    C2 = concat(C2A, C2B) 
+    -- on parcourt L par paire (L1,L2)
+    local L2 = table.remove(L,1)
+    table.insert(L,L1)
+    local aux, aux2 = {}, {}
+    for _, z in ipairs(L)  do
+        L1 = L2; L2 = z
+        local A = cpx.round(C1[2],12) -- point suivant L1, est-il dans C2 ?
+        if inside(A,C2) then -- on prend la partie [L1,L2] de C2
+            aux = cut( cut(C2,L1,true), L2)
+            if aux == nil then
+                aux2 = cut(C2,L1,true)
+                table.remove(aux2)
+                aux = concat(aux2, cut(C2,L2))
+            end
+        else -- on prend la partie [L1,L2] de C1
+            aux = cut(C1,L2)
+        end
+        table.remove(aux); C1 = cut(C1,L2,true) -- on coupe C1 avant L2
+        insert(rep,aux)
+    end
+    table.insert(rep,C2[1])
+    return rep
+end
+
+
+function setminus(C1, C2)
+-- C1 et C2 sont deux courbes fermées simples (listes de complexes, représentant des ensembles)
+-- la fonction renvoie le contour de C1-C2
+    local L = interL(C1,C2)
+    if L == nil then -- disjoints
+        if isComplex(C1[1]) then C1 = {C1} end
+        if isComplex(C2[1]) then C2 = {C2} end
+        return concat(C1,C2)
+    end
+    local rep = {}
+    local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
+    local C1B, C1A = cut(C1,L1) -- C1B = avant L1, C1A = après L1
+    table.remove(C1A) --on enlève le dernier
+    C1 = concat(C1A, C1B)
+    local C2B, C2A = cut(C2,L1) -- C2B = avant L1, C2A = après L1
+    table.remove(C2A) --on enlève le dernier
+    C2 = concat(C2A, C2B) 
+    -- on parcourt L par paire (L1,L2)
+    local L2 = table.remove(L,1)
+    table.insert(L,L1)
+    local aux, aux2 = {}, {}
+    for _, z in ipairs(L)  do
+        L1 = L2; L2 = z
+        local A = cpx.round(C1[2],12) -- point suivant L1, est-il dans C2 ?
+        if inside(A,C2) then -- on prend la partie [L2,L1] de C2
+            aux = cut( cut(C2,L2,true), L1)
+            if aux == nil then
+                aux2 = cut(C2,L1)
+                table.remove(aux2)
+                aux = concat(aux2, cut(C2,L2,true))
+            end
+            aux = reverse(aux)
+        else -- on prend la partie [L1,L2] de C1
+            aux = cut(C1,L2)
+        end
+        table.remove(aux); C1 = cut(C1,L2,true) -- on coupe C1 avant L2
+        insert(rep,aux)
+    end
+    table.insert(rep,C2[1])
+    return rep
 end

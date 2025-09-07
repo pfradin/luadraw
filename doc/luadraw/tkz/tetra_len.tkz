@@ -1,0 +1,58 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (0,0) rectangle (10.0,10.0);%
+\pgfsetroundjoin%
+\pgfsetstrokecolor{LightGray}%
+\begin{scope}%
+\clip (0,0) rectangle (10,10);%
+\draw[fill,ball color=orange] (8.8373,8.2055) .. controls (7.0582,10.3352) and (3.9241,10.6163) .. (1.7945,8.8373) .. controls (-0.3352,7.0582) and (-0.6163,3.9241) .. (1.1627,1.7945) .. controls (2.9418,-0.3352) and (6.0759,-0.6163) .. (8.2055,1.1627) .. controls (10.3352,2.9418) and (10.6163,6.0759) .. (8.8373,8.2055);%
+\end{scope}%
+\pgfsetstrokecolor{black}%
+\pgfsetstrokecolor{DarkGreen}%
+\pgfsetroundcap%
+\draw[] (7.8679,3.2691) -- (7.8679,3.2691);%
+\pgfsetstrokecolor{Blue}%
+\draw[] (0,5) .. controls (0,3.8272) and (2.225,2.8869) .. (5,2.8869) .. controls (7.775,2.8869) and (10,3.8272) .. (10,5);%
+\draw[] (2.5883,0.6201) .. controls (2.0529,0.9149) and (2.6969,3.1003) .. (4.0353,5.5312) .. controls (5.3738,7.962) and (6.8763,9.6747) .. (7.4117,9.3799);%
+\draw[] (7.8315,0.879) .. controls (8.6303,1.4278) and (8.0107,3.7017) .. (6.4392,5.9889) .. controls (4.8677,8.276) and (2.9673,9.6698) .. (2.1685,9.121);%
+\pgfsetstrokecolor{DarkGreen}%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (5.2516,7.4846) -- (7.8679,3.2691);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (2.8869,3.0849) -- (7.8679,3.2691);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (7.8679,3.2691) -- (5,5);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (5,5) -- (2.8869,3.0849);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (5,5) -- (5.2516,7.4846);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (5.2516,7.4846) -- (2.8869,3.0849);%
+\pgfsetstrokecolor{Blue}%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (0,5) .. controls (0,6.1728) and (2.225,7.1131) .. (5,7.1131) .. controls (7.775,7.1131) and (10,6.1728) .. (10,5);%
+\draw[] (2.5883,0.6201) .. controls (3.1237,0.3253) and (4.6262,2.038) .. (5.9647,4.4688) .. controls (7.3031,6.8997) and (7.9471,9.0851) .. (7.4117,9.3799);%
+\draw[] (7.8315,0.879) .. controls (7.0327,0.3302) and (5.1323,1.724) .. (3.5608,4.0111) .. controls (1.9893,6.2983) and (1.3697,8.5722) .. (2.1685,9.121);%
+\draw[-] (5.956,4.423) node[below,DarkGray] {$R$};%
+\pgfsetstrokecolor{black}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(5,5)} plot coordinates {(2.8869,3.0849)} plot coordinates {(7.8679,3.2691)} plot coordinates {(5.2516,7.4846)};%
+\draw[-] (5,5) node[below] {$A$} (2.8869,3.0849) node[below left] {$B$} (7.8679,3.2691) node[below left] {$C$} (5.2516,7.4846) node[above] {$D$};%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

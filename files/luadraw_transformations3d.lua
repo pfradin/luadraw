@@ -1,6 +1,6 @@
 -- luadraw_transformations3d.lua (chargé par luadraw_graph3d.lua)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -186,6 +186,19 @@ function dsym3d(L,d)
     return ftransform3d(L,dsym1)
 end
 
+function psym3d(L,point)
+-- image de L par la symétrie par rapport au point (point 3d)
+-- L est un point3d ou une liste de points 3d ou une liste de listes de points 3d
+    if (point == nil) or (L == nil) then return end
+    
+   local psym1 = function(A) -- image d'un seul point
+    --  image d'un seul point
+            return 2*point - A 
+    end
+    
+    return ftransform3d(L,psym1)
+end
+
 
 function shift3d(L,u)
 -- image de L par la translation de vecteur u
@@ -230,4 +243,21 @@ function scale3d(L,k,center)
     end
     
     return ftransform3d(L,scale3d1)
+end
+
+function rotateaxe3d(L,v1,v2,center)
+-- L est un point3d ou une liste de point3d ou une liste de listes de point3d
+-- on renvoie L transformé par une rotation de centre center et qui transforme v1 en v2 (normalisés)
+    center = center or Origin
+    if (v1 == nil) or (v2 == nil) or (v1 == v2) then return L end
+    v1 = pt3d.normalize(v1); v2 = pt3d.normalize(v2)
+    local theta = angle3d(v1,v2) --en radians
+    local u = pt3d.prod(v1,v2)
+    if pt3d.N1(u) < 1e-12 then --u ==0
+        u = pt3d.prod(v1,vecI)
+        if pt3d.N1(u) < 1e-12 then --u ==0
+            u = pt3d.prod(v1,vecJ)
+        end
+    end
+    return rotate3d(L,theta*rad, {center,u})
 end

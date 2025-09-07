@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -10,7 +10,32 @@
 
 -- construction d'objets 3d
 
-function planeEqn(a,b,c,d)
+function plane(A,B,C)
+-- renvoie leplan passant par A, B et C
+    local n = pt3d.prod(B-A,C-A)
+    if pt3d.N1(n) > 1e-12 then 
+        return {A,n}
+    end
+end
+
+function orthoframe(P) -- returns an orthonormal frame of the plane P={A,n}
+    local A, n = table.unpack(P)
+    n = pt3d.normalize(n)
+    local u = pt3d.prod(n,vecI)
+    if pt3d.N1(u) < 1e-12 then -- u = 0
+        u = pt3d.prod(n,vecJ)
+    end
+    u = pt3d.normalize(u)
+    local v = pt3d.prod(n,u)
+    return A, u, v
+end
+
+function plane2ABC(P) -- returns 3 points of plane P={A,n}
+    local A,u,v = orthoframe(P)
+    return A, A+u, A+v
+end
+
+function planeEq(a,b,c,d)
 -- renvoie le plan d'équation ax+by+cz+d=0
     local A, n
     n = M(a,b,c)
@@ -24,6 +49,10 @@ function planeEqn(a,b,c,d)
     end
     return {A,n}
 end
+
+function planeEqn(a,b,c,d) -- old version
+    return planeEq(a,b,c,d)
+end    
 
 function classify3d(L, n)
 -- classe les points 3d de la liste L (supposés coplanaires) pour former une facette orientée par n
@@ -121,6 +150,24 @@ function facet2poly(facetlist,eps)
         table.insert(poly.facets,aux)
     end
     return poly
+end
+
+function reverse_face_orientation(F)
+-- F est une facette, une liste de facettes, ou un polyèdre
+    if (F == nil) or (type(F) ~= "table") then return end
+    local rep = {}
+    if isPoint3d(F[1]) then -- une facette
+        return reverse(F)
+    elseif (F.vertices == nil) then -- liste de facettes
+        for _,f in ipairs(F) do 
+            table.insert(rep,reverse(f))
+        end
+        return rep
+    else -- polyèdre
+        rep.vertices = F.vertices
+        rep.facets = map(reverse,F.facets)
+        return rep
+    end    
 end
 
 function splitseg(F,plane)
@@ -237,6 +284,9 @@ function cutfacet(L,plane,close)
 -- si close vaut true la section est ajoutée, sinon il est ouvert
 -- la fonction renvoie la partie conservée (facettes), la partie non conservée (facettes), et la section (liste de point3d orientée par -n)
     if isPoint3d(L[1]) then L = {L} end -- pour avoir une liste de facettes
+    if L.vertices ~= nil then -- polyèdre
+        L = poly2facet(L)
+    end
     local S,n = table.unpack(plane)
     close = close or false
     local res, res2, coupe = {}, {}, {} -- res = sortie, res2 = autre partie du polyèdre coupé
@@ -493,11 +543,61 @@ function pyramid(base,vertex,open)
     return P
 end
 
-function cylinder(A,V,R,nbfacet,open)
+function truncated_pyramid(base,vertex,height,open)
+-- construit une pyramide tronquée, base est liste de point3d, vertex est le sommet (point3d)
+-- height indique la hauteur partant de la base
+-- open est un booléen indiquant si la base est ouverte ou non, false par défaut
+-- la base doit être orientée par le sommet
+    local Pyr = pyramid(base,vertex,open)
+    local Pb = facet2plane(base)
+    local n = pt3d.normalize(Pb[2])
+    local A = proj3d(vertex,Pb)
+    local B = A+height*n
+    return cutpoly(Pyr,{B,-n},not open)
+end
+
+function regular_pyramid(n,side,height,open,center,axe)
+-- pyramide régulière
+-- n = nombre de côtés, side = longueur d'un côté, center= centre de la base, axe = vecteur directeur de l'axe
+-- open est un booléen indiquant si la base est ouverte ou non, false par défaut
+    open = open or false
+    center = center or Origin
+    axe = axe or vecK
+    axe = pt3d.normalize(axe)
+    local X = side/(2*math.sin(math.pi/n))
+    local base = polyreg(0,X,n) -- regular n-sided 2d polygon 
+    local A, u, v = center, vecI, vecJ
+    if axe ~= vecK then 
+        A, u, v = orthoframe({center,axe})
+    end
+    base = map( function(z) return A+z.re*u+z.im*v end, base) -- conversion 2d -> 3d 
+    local S = height*axe
+    if (base ~= nil) and (S ~= nil) then return pyramid(base,S,open) end
+end
+
+function cylinder(A,V,R,nbfacet,open,aux) -- ou cylinder(C,R,A,nbfacet,open) ou cylinder(C,R,V,A,nbfacet,open)
 -- construit un cylindre de rayon R, d'axe {A,V} (V vecteur 3d non nul)
 -- nbfacet vaut 35 par défaut
 -- open=true/false vaut false par défaut
-    local B = A+V
+    local B
+    if type(V) == "number" then -- format 2 ou format 3
+        if (nbfacet == nil) or (type(nbfacet) == "number") then -- format 2
+            local r = V -- radius
+            V = A-R -- sommet - centre
+            A = R; R = r
+            B = A+V
+        else -- format 3
+            local r = V -- radius
+            B = A -- center
+            V = R -- vecteur normal à la base
+            A = nbfacet -- sommet
+            if pt3d.dot(V,B-A) < 0 then V = -V end
+            nbfacet = open
+            open = aux
+            R = r
+        end
+    else B = A+V
+    end
     local vect = pt3d.normalize(V)
     nbfacet = nbfacet or 35
     open = open or false
@@ -526,11 +626,29 @@ function cylinder(A,V,R,nbfacet,open)
 end
 
 
-function cone(A,V,R,nbfacet,open)
+function cone(A,V,R,nbfacet,open,aux) -- ou cone(C,R,A,nbfacet,open) ou cone(C,R,V,A,nbfacet,open)
 -- construit un cône de rayon A, base en A+V et de rayon R à la base (V vecteur 3d non nul)
 -- nbfacet vaut 35 par défaut
 -- open=true/false vaut false par défaut
-    local B = A+V
+    local B
+    if type(V) == "number" then -- format 2 ou format 3
+        if (nbfacet == nil) or (type(nbfacet) == "number") then -- format 2
+            local r = V -- radius
+            V = A-R -- sommet - centre
+            A = R; R = r
+            B = A+V
+        else -- format 3
+            local r = V -- radius
+            B = A -- center
+            V = R -- vecteur normal à la base
+            A = nbfacet -- sommet
+            if pt3d.dot(V,B-A) < 0 then V = -V end
+            nbfacet = open
+            open = aux
+            R = r
+        end
+    else B = A+V
+    end
     local vect = pt3d.normalize(V)
     nbfacet = nbfacet or 35
     nbfacet = nbfacet+1
@@ -551,6 +669,31 @@ function cone(A,V,R,nbfacet,open)
     for k2 = 2, nbfacet-1 do table.insert(P.facets, {k2+1,k2,1}) end
     table.insert(P.facets, {2,nbfacet,1})
     return P    
+end
+
+function frustum(C,R,r,V,A,nb,open) -- ou frustum(C,R,r,V,nb,open), frustum build with facets (tronc de cône droit ou penché)
+    if type(A) == "number" then -- syntaxe C,V,R,nb,open
+        open = nb; nb = A; A = nil
+    elseif isPoint3d(A) then V = dproj3d(A,{C,V}) - C -- frustum penché
+    end
+    nb = nb or 35
+    open = open or false
+    if R == r then -- cylinder
+        if A == nil then return cylinder(C,V,R,nb,open)
+        else return cylinder(C,V,R,A,nb,open)
+        end
+    end
+    local k = R/(R-r)
+    local H = k*V
+    local Co
+    if A == nil then Co = cone(C,R,C+H,nb,open) --cone(C+H,-H,R,nb,open)
+    else 
+        local S = k*(A-r/R*C)
+        Co = cone(C,R,V,S,nb,open)
+    end
+    local P = {C+V,-V}
+    local rep = cutpoly(Co, P, not open)
+    return rep
 end
 
 function sphere(A,R,nbu,nbv)
@@ -601,12 +744,12 @@ function surface(f,u1,u2,v1,v2,grid)
 -- grid={nbu,nbv} donne le nombre de points suivant u et suivant v
     local F = function(u,v)
         local R = f(u,v)
-        if R == nil then return cpx.Jump
+        if (R == nil) then return cpx.Jump
         else return R
         end
     end
     local different = function(A,B)
-        return pt3d.N1(B-A)>1e-10
+            return pt3d.N1(B-A)>1e-10
     end
     local S = {}
     grid = grid or {25,25}
@@ -631,11 +774,11 @@ function surface(f,u1,u2,v1,v2,grid)
             A = S[i][j]; first = A; last = A
             if A ~= cpx.Jump then table.insert(aux,A) end
             A = S[i+1][j]
-            if (A ~= cpx.Jump) and different(A,last) then table.insert(aux,A); last = A end
+            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then table.insert(aux,A); last = A end
             A = S[i+1][j+1]
-            if (A ~= cpx.Jump) and different(A,last) then table.insert(aux,A); last = A end
+            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then table.insert(aux,A); last = A end
             A = S[i][j+1]
-            if (A ~= cpx.Jump) and different(A,last) and different(A,first) then table.insert(aux,A) end
+            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) and ((first == cpx.Jump) or different(A,first)) then table.insert(aux,A) end
             if #aux > 2 then table.insert(rep,aux) end
         end
     end
@@ -728,7 +871,6 @@ function line2tube(L,r,args)
                 if b ~= nil then -- première section au début de cp
                     u = pt3d.prod(b-c,vecI)
                     if pt3d.isNul(u) then u = pt3d.prod(b-c,vecJ) end
-                    print("u=",u)
                     u = r*pt3d.normalize(u)
                     b1, v, theta = b+u, c-b, 2*math.pi/nbfacet*rad
                     list = {b1}
@@ -874,4 +1016,71 @@ function rotline(L,axe,angle1,angle2,args)
         end
     end
     return surface(f,1,n,angle1,angle2,{n,nb}), sep
+end
+
+function read_obj_file(file) -- Contribution de Christophe BAL 2025/09/02
+-- prototype::
+--    file : le chemin d'un fichier ext::''OBJ'' au format \wavefront
+--           simplifié (non gestion des textures, ni des normales).
+--
+--    :return: ''polyhedron,{xmin, xmax, ymin, ymax, zmin, zmax}'' où
+--             les valeurs extrémales correspondent à celles obtenues
+--             en analysant le fichier, et le polyèdre est une version
+--             \luadraw du modèle 3D indiqué par le fichier.
+------
+
+    local update_extreme_vals = function (a, a_min, a_max)
+    -- sert à déterminer la bounding box du polyèdre
+        return math.min(a, a_min), math.max(a, a_max)
+    end
+
+    local polyhedron = {}
+    local vertices   = {}
+    local facets     = {}
+    local xmin, xmax = math.huge, -math.huge
+    local ymin, ymax = math.huge, -math.huge
+    local zmin, zmax = math.huge, -math.huge
+
+    local pattern_decimal = "([%-%d%.e%+%-]+)"
+    local pattern_vertex  = "^v%s+" .. pattern_decimal ..
+                              "%s+" .. pattern_decimal .. 
+                              "%s+" .. pattern_decimal
+    
+    -- Dans les \regexs \lua, ''%'' est le caractère d'échappement.
+    for line in io.lines(file) do
+        -- Nettoyage des espaces finaux et initiaux : en \lua, ''-''
+        -- est un caractère spécial pour une recherche non gourmande.
+        line = line:match("^%s*(.-)%s*$")
+        -- On ignore les lignes vides et les commentaires.
+        if line ~= "" and not line:match("^#") then
+        -- Cas d'un sommet.
+            if line:match("^v%s") then
+                -- La \regex suivante est très fragile, mais nous faisons 
+                -- confiance aux fichiers ext::''obj'' utilisés.
+                local x, y, z = line:match(pattern_vertex)
+                --local x, y, z = line:match("^v%s+([%-%d%.]+)%s+([%-%d%.]+)%s+([%-%d%.]+)")
+                if x and y and z then
+                  x, y, z = tonumber(x), tonumber(y), tonumber(z)
+                -- Gestion des valeurs extrémales.
+                  xmin, xmax = update_extreme_vals(x, xmin, xmax)
+                  ymin, ymax = update_extreme_vals(y, ymin, ymax)
+                  zmin, zmax = update_extreme_vals(z, zmin, zmax)
+                -- Un nouveau sommet.
+                  table.insert(vertices, M(x, y, z))
+                end
+            -- Cas d'une face.
+            elseif line:match("^f%s") then
+                local face = {}
+                for idx in line:gmatch("(%d+)[^ ]*") do
+                  table.insert(face, tonumber(idx))
+                end
+                if #face > 0 then
+                  table.insert(facets, face)
+                end
+            end
+        end
+    end
+    polyhedron.vertices = vertices
+    polyhedron.facets   = facets
+    return polyhedron, {xmin, xmax, ymin, ymax, zmin, zmax}  -- polyhedron first
 end

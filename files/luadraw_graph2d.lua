@@ -1,6 +1,6 @@
 -- luadraw_graph2d.lua
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -16,6 +16,85 @@ defaultlabelshift = 0.1875
 defaultxylabelsep = 0
 defaultlegendsep = 0.2
 dollar = true -- pour les labels des graduations, ajout ou on des dollars
+
+function simplifyFrac(a,b)
+-- renvoie la fraction d'entiers a/b simplifiée
+    local sg = 1
+    if ((a < 0) and (b > 0)) or ((a > 0) and (b < 0)) then sg = -1 end
+    a, b = math.abs(a), math.abs(b)
+    if (math.floor(a) == a) and (math.floor(b) == b) then 
+        local d = gcd(a,b)
+        return sg*a//d, b//d
+    else return sg*a, b
+    end
+end
+
+function addFrac(a,b,c,d)
+-- renvoie la somme a/b + c/d sous forme de fraction
+-- a, b, c, d sont supposés être des entiers avec b et d non nuls.
+    local num, den = a*d+b*c, b*d
+    return simplifyFrac(num, den)
+end
+
+function gradLabel(a,b,text)
+-- mise en forme d'un label pour une graduation : a*text/b, renvoie une chaîne
+-- dollar = true/false indique s'il faut des dollars ou non
+    function label(x)
+            local str
+            if type(x) == "number" then str = num(x) else str = x end
+            if dollar then return "$"..str.."$"
+            else return str
+            end
+        end
+    if a == 0 then return label(0) -- \fraction nulle
+    else
+        if text == "" then -- pas de text
+            if b == 1 then return label(a)
+            else
+                if a > 0 then
+                    if dollar then return "$\\frac{".. num(a).."}{"..num(b).."}$" 
+                    else return num(a).."/"..num(b) 
+                    end 
+                else -- a < 0
+                    if dollar then return "$-\\frac{".. num(-a).."}{"..num(b).."}$" 
+                    else return num(a).."/"..num(b) 
+                    end
+                end
+            end
+        else -- text non vide
+            if b == 1 then
+                        if a == -1 then return label("-"..text)
+                        else 
+                            if  a == 1 then return label(text)
+                            else return label(num(a)..text)
+                            end
+                        end
+            else -- b différent de 1 
+                if  a > 0 then 
+                        if dollar then 
+                            if a ~= 1 then return "$\\frac{"..num(a)..text.."}{"..num(b).."}$"
+                            else return "$\\frac{"..text.."}{"..num(b).."}$"
+                            end
+                        else 
+                            if a ~= 1 then return num(a)..text.."/"..num(b)
+                            else return text.."/"..num(b)
+                            end
+                        end 
+                else  -- a < 0    
+                        if dollar then 
+                            if a ~= -1 then return "$-\\frac{"..num(-a)..text.."}{"..num(b).."}$"
+                            else return "$-\\frac{"..text.."}{"..num(b).."}$"
+                            end
+                        else 
+                            if a ~= -1 then return num(a)..text.."/"..num(b)
+                            else return "-"..text.."/"..num(b)
+                            end
+                        end 
+                end
+            end
+        end
+    end
+end
 
 function luadraw_graph2d:Poslab(dir,alpha)
 -- renvoie la position du label quand celui-ci est placé au bout du vecteur dir
@@ -68,7 +147,7 @@ function luadraw_graph2d:Dgradline(d, options)
     local labelshift = options.labelshift or 0 -- décalage systématique des labels
     local nbdeci = options.nbdeci or 2 -- nb de décimales, 2 par défaut
     local numericFormat = options.numericFormat or 0 -- format d'affichage
-    local mylabels = options.mylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} ATTENTION : pos est l'abscisse sur l'axe (O,u)
+    local mylabels = options.mylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} ATTENTION : pos est l'abscisse sur l'axe (A,u)
     
     local A, u = nil, nil
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
@@ -122,6 +201,8 @@ function luadraw_graph2d:Dgradline(d, options)
     if showaxe == 1 then self:Dseg(L,1,arrows) end -- dessin de l'axe
     --local oldarrows = self.param.arrows
     local oldstyle = self.param.linestyle
+    local oldlabelangle = self.param.labelangle
+    local oldlabelcolor = self.param.labelcolor
     self:Linestyle("solid") --; self:Arrows("-")
     if legend ~= "" then -- 
         if legendangle == "auto" then
@@ -154,6 +235,7 @@ function luadraw_graph2d:Dgradline(d, options)
         else
             self:Dlabel(legend,lpos, {pos = legendstyle})
         end
+
     end
     -- graduations
     local O = A+(k1-1)*pas
@@ -203,7 +285,7 @@ function luadraw_graph2d:Dgradline(d, options)
     --if langle ~= 0 then optlab.node_options = "rotate="..langle; sep = "," end
     --if labelcolor ~= "" then optlab.node_options = optlab.node_options..sep.."color="..labelcolor end
     self.param.labelangle = langle
-    self.param.color = labelcolor
+    self.param.labelcolor = labelcolor
     if labelpos ~= "none" and (mylabels == "") then
      --label origine
          local dec
@@ -221,7 +303,7 @@ function luadraw_graph2d:Dgradline(d, options)
          local texte, fracN, fracD
          if dec ~= "" then
             fracN, fracD = simplifyFrac(originnum,labelden)
-            texte = gradLabel(fracN,fracD,labeltext,dollar)
+            texte = gradLabel(fracN,fracD,labeltext)
             insert(labelList, {texte,O+dec,optlab})
             --self:Dlabel(texte,O+dec,optlab)
         end
@@ -231,7 +313,7 @@ function luadraw_graph2d:Dgradline(d, options)
         local k2_, k1_ = k2//(1+nbsubdiv), k1//(1+nbsubdiv)
         for k = 1, k2_-1 do
             if k >= k1_ then
-                texte = gradLabel(fracN, fracD,labeltext,dollar)
+                texte = gradLabel(fracN, fracD,labeltext)
                 insert(labelList, {texte,O,optlab})
                 --self:Dlabel(texte,O,optlab)
             end
@@ -239,7 +321,7 @@ function luadraw_graph2d:Dgradline(d, options)
         end
         if (k2_ >= 1) and (arrows == "-") or (self:Abs(A+k2_*u-L[2]) > 0.2) 
         then 
-            texte = gradLabel(fracN, fracD,labeltext,dollar)
+            texte = gradLabel(fracN, fracD,labeltext)
             insert(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
         end
@@ -247,7 +329,7 @@ function luadraw_graph2d:Dgradline(d, options)
         O = dep-u+labelshift*uDir; fracN, fracD = originnum, labelden; fracN, fracD = addFrac(fracN, fracD,-unit,labelden)
         k1_ = (-k1)//(1+nbsubdiv)
         for k = 1, k1_ do
-            texte = gradLabel(fracN, fracD,labeltext,dollar)
+            texte = gradLabel(fracN, fracD,labeltext)
             insert(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
             O = O-u; fracN, fracD = addFrac(fracN, fracD,-unit,labelden)
@@ -267,7 +349,7 @@ function luadraw_graph2d:Dgradline(d, options)
         if #dots > 0 then self:Ddots(dots) end
     end
     if #labelList > 0 then self:Dlabel( table.unpack(labelList) ) end
-    self:Linestyle(oldstyle)
+    self:Linestyle(oldstyle); self:Labelangle(oldlabelangle); self:Labelcolor(oldlabelcolor)
     self:Restorematrix()
 end    
 

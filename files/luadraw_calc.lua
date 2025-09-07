@@ -1,6 +1,6 @@
 -- luadraw__calc.lua (chargé par luadraw_graph.lua)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -67,6 +67,15 @@ function luadraw_calc:Composematrix(M)
 -- on multiplie la matrice courante (self.matrix) par M (M est à droite)
     local R = composematrix(self.matrix,M)
     if M ~= nil then self.matrix = R end
+end
+
+function luadraw_calc:Det2d()
+-- renvoie +1 ou -1 suivant que le déterminant de la matrice de transformation est positif ou négatif
+    local o,u,v = table.unpack(self.matrix)
+    if cpx.det(u,v) > 0 then 
+        return 1
+    else return -1
+    end
 end
 
 function luadraw_calc:Shift(V)

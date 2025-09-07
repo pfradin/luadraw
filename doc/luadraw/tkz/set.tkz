@@ -1,0 +1,13 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.0714285714286);%
+\pgfsetroundjoin%
+\pgfsetfillopacity{0.3}%
+\draw[fill=orange] (4.5,8.5714) .. controls (3.0714,8.5714) and (1.8878,6.4286) .. (1.9286,4.7143) .. controls (1.9694,3) and (3.2347,1.7143) .. (4.5,1.7143) .. controls (5.7653,1.7143) and (7.0306,3) .. (7.0714,4.7143) .. controls (7.1122,6.4286) and (5.9286,8.5714) .. (4.5,8.5714);%
+\draw[fill=blue] (1.3367,6.5359) .. controls (0.042,5.9322) and (-0.1251,3.4898) .. (0.6363,1.9534) .. controls (1.3978,0.417) and (3.0879,-0.2135) .. (4.2347,0.3212) .. controls (5.3814,0.856) and (5.9848,2.556) .. (5.2973,4.1269) .. controls (4.6098,5.6978) and (2.6315,7.1397) .. (1.3367,6.5359);%
+\draw[fill=green] (7.6633,6.5359) .. controls (6.3685,7.1397) and (4.3902,5.6978) .. (3.7027,4.1269) .. controls (3.0152,2.556) and (3.6186,0.856) .. (4.7653,0.3212) .. controls (5.9121,-0.2135) and (7.6022,0.417) .. (8.3637,1.9534) .. controls (9.1251,3.4898) and (8.958,5.9322) .. (7.6633,6.5359);%
+\pgfsetfillopacity{1}%
+\draw[-] (4.5,8.5714) node[above] {$A$} (1.0714,6.8571) node[left] {$B$} (7.9286,6.8571) node[right] {$C$};%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

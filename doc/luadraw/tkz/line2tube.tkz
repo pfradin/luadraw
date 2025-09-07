@@ -1,5 +1,4 @@
-\begin{tikzpicture}%
-\useasboundingbox (0,0) rectangle (10.0,6.9230769230769);%
+\begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (0,0) rectangle (10.0,6.9230769230769);%
 \pgfsetroundjoin%

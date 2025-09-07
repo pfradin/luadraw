@@ -1,6 +1,6 @@
 -- luadraw_transformations.lua (chargé par luadraw_calc.lua)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.

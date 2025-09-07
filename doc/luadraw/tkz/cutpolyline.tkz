@@ -1,0 +1,35 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (0,0) rectangle (10.0,10.0);%
+\pgfsetroundjoin%
+\pgfsetlinewidth{0.6pt}%
+\begin{scope}%
+\pgfsetstrokecolor{LightGray}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetroundcap%
+\draw[-] (0,0) -- (0,10) (1,0) -- (1,10) (2,0) -- (2,10) (3,0) -- (3,10) (4,0) -- (4,10) (5,0) -- (5,10) (6,0) -- (6,10) (7,0) -- (7,10) (8,0) -- (8,10) (9,0) -- (9,10) (10,0) -- (10,10) (0,0) -- (10,0) (0,1) -- (10,1) (0,2) -- (10,2) (0,3) -- (10,3) (0,4) -- (10,4) (0,5) -- (10,5) (0,6) -- (10,6) (0,7) -- (10,7) (0,8) -- (10,8) (0,9) -- (10,9) (0,10) -- (10,10);%
+\end{scope}%
+\draw[->] (0,5) -- (10,5);%
+\draw[-] (9.7595,5.2) node[above] {$x$};%
+\draw[-] (0,4.9) -- (0,5.1) (1,4.9) -- (1,5.1) (2,4.9) -- (2,5.1) (3,4.9) -- (3,5.1) (4,4.9) -- (4,5.1) (5,4.9) -- (5,5.1) (6,4.9) -- (6,5.1) (7,4.9) -- (7,5.1) (8,4.9) -- (8,5.1) (9,4.9) -- (9,5.1);%
+\draw[-] (5.1875,4.9) node[below] {$0$} (6.1875,4.9) node[below] {$1$} (7.1875,4.9) node[below] {$2$} (8.1875,4.9) node[below] {$3$} (9.1875,4.9) node[below] {$4$} (4.1875,4.9) node[below] {$-1$} (3.1875,4.9) node[below] {$-2$} (2.1875,4.9) node[below] {$-3$} (1.1875,4.9) node[below] {$-4$} (0.1875,4.9) node[below] {$-5$};%
+\draw[->] (5,0) -- (5,10);%
+\draw[-] (5.2,9.7595) node[right] {$y$};%
+\draw[-] (5.1,0) -- (4.9,0) (5.1,1) -- (4.9,1) (5.1,2) -- (4.9,2) (5.1,3) -- (4.9,3) (5.1,4) -- (4.9,4) (5.1,5) -- (4.9,5) (5.1,6) -- (4.9,6) (5.1,7) -- (4.9,7) (5.1,8) -- (4.9,8) (5.1,9) -- (4.9,9);%
+\draw[-] (4.9,5.1875) node[left] {$0$} (4.9,6.1875) node[left] {$1$} (4.9,7.1875) node[left] {$2$} (4.9,8.1875) node[left] {$3$} (4.9,9.1875) node[left] {$4$} (4.9,4.1875) node[left] {$-1$} (4.9,3.1875) node[left] {$-2$} (4.9,2.1875) node[left] {$-3$} (4.9,1.1875) node[left] {$-4$} (4.9,0.1875) node[left] {$-5$};%
+\pgfsetfillpattern{horizontal lines}{blue}%
+\draw[fill,draw=none] (0,0) -- (10,10) -- (0,10)--cycle;%
+\pgfsetfillpattern{north west lines}{red}%
+\draw[fill,draw=none] (7.5,0) -- (10,0) -- (10,10) -- (7.5,10)--cycle;%
+\pgfsetfillpattern{north east lines}{green}%
+\draw[fill,draw=none] (0,0) -- (10,0) -- (10,3.25) -- (0,0.75)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetlinewidth{0.8pt}%
+\draw[blue] (0,0) -- (10,10);%
+\draw[red] (7.5,10) -- (7.5,0);%
+\draw[green] (10,3.25) -- (0,0.75);%
+\draw[-] (2,2) node[above=0.1cm,fill=white,fill opacity=0.8,cm={0.7071,0.7071,-0.7071,0.7071,(0,0)}] {$x-y\leqslant 0$} (7.5,6) node[above=0.1cm,fill=white,fill opacity=0.8,cm={0,-1,1,0,(0,0)}] {$x-2.5\geqslant0$} (2,1.25) node[below=0.1cm,fill=white,fill opacity=0.8,cm={0.9701,0.2425,-0.2425,0.9701,(0,0)}] {$-\frac{x}{4}+y+3\leqslant0$};%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

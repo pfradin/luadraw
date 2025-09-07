@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -17,17 +17,21 @@ setmetatable(luadraw_graph, {__index = luadraw_calc}) -- obligatoire pour l'hér
 
 --- Constructeur
 function luadraw_graph:new(args) -- argument de la forme :
--- {window={x1,x2,y1,y2,xscale,yscale}, margin={left, right, top, bottom}, size={large, haut, ratio}, bg="color", border = true/false}
+-- {window={x1,x2,y1,y2,xscale,yscale}, margin={left, right, top, bottom}, size={large, haut, ratio}, bg="color", border = true/false, bbox=true/false ,pictureoptions=""}
     local graph = luadraw_calc:new(args) -- obligatoire, on utilise le constructeur de luadraw_calc
     setmetatable(graph, {__index = luadraw_graph})  -- obligatoire, permet d'utiliser self
     
     graph.LF = "\\par" --line feed pour TeX
+    graph.advancedexport = {""} -- export en début de graphique
+    graph.advanced = false
     graph.currentexport = {""} -- export courant
-    graph.deferedexport = {""} -- export en fin de graphique
+    graph.deferredexport = {""} -- export en fin de graphique
+    graph.deferred = false
     graph.export = graph.currentexport
+    graph.pictureoptions = args.pictureoptions or ""
     
     -- styles par défaut
-    graph.param = {
+    graph.currentparam = {
             ["viewport"] = {graph.Xmin, graph.Xmax, graph.Ymin, graph.Ymax},  -- définit la vue courante
             ["coordsystem"] = {graph.Xmin, graph.Xmax, graph.Ymin, graph.Ymax},  -- coordonnées de la vue courante
             ["linestyle"] = "solid", -- "noline", ou "solid" ou "dashed" ou "dotted" ou  dash( motif )
@@ -50,7 +54,23 @@ function luadraw_graph:new(args) -- argument de la forme :
             ["labelsize"] = "", --taille normale par défaut, ou "tiny", ou "small" ou ...
             ["labelangle"] = 0 -- orientation du label
             }
-    
+    graph.advancedparam = table.copy(graph.currentparam)
+    graph.deferredparam = table.copy(graph.currentparam)
+    graph.param = graph.currentparam
+    graph.tikzpictureoptions = "line join=round"
+    if graph.border or (graph.bg ~= "") then
+        graph.tikzpictureoptions = "background rectangle/.style={"
+        if graph.border then 
+            graph.tikzpictureoptions = graph.tikzpictureoptions..",draw=black"
+        end
+        if graph.bg ~= "" then
+            graph.tikzpictureoptions = graph.tikzpictureoptions..",fill="..graph.bg
+        end
+        graph.tikzpictureoptions = graph.tikzpictureoptions.."},show background rectangle"
+    end
+    if graph.pictureoptions ~= "" then
+        graph.tikzpictureoptions = graph.tikzpictureoptions..","..graph.pictureoptions
+    end
     graph.matrix = ID -- matrice de transformation [f(0), Lf(1), Lf(i) ], identité par défaut
     
     graph.pile = {} -- pour sauvegarder la fenêtre, les styles et la matrice
@@ -97,6 +117,15 @@ function luadraw_graph:Defaultattr()
     self:Labelcolor("") -- couleur du  document  par défaut
     self:Labelsize("") --taille normale par défaut, ou "tiny" ou "small" ou ...
     self:Labelangle(0) -- orientation du label
+end
+
+function luadraw_graph:Cleargraph()
+    self.advancedexport = {""} -- export en début de graphique
+    self.advanced = false
+    self.currentexport = {""} -- export courant
+    self.deferredexport = {""} -- export en fin de graphique
+    self.deferred = false
+    self.export = self.currentexport
 end
 
 function luadraw_graph:Savematrix()
@@ -174,21 +203,40 @@ function luadraw_graph:Writeln(str)
     table.insert(self.export,"") -- on démarre une nouvelle ligne   
 end
 
-function luadraw_graph:Begindefer()
+function luadraw_graph:Begindeferred()
 -- pour repousser les instructions en fin de graphique
-    self.export = self.deferedexport
+    self.deferred = true
+    self.export = self.deferredexport
+    self.param = self.deferredparam
 end
 
-function luadraw_graph:Enddefer()
+function luadraw_graph:Enddeferred()
 -- pour arrêter de repousser les instructions en fin de graphique
     self.export = self.currentexport
+    self.param = self.currentparam
+end
+
+function luadraw_graph:Beginadvanced()
+-- pour avancer les instructions en début de graphique
+    self.advanced = true
+    self.export = self.advancedexport
+    self.param = self.advancedparam
+end
+
+function luadraw_graph:Endadvanced()
+-- pour arrêter d'avancer les instructions en début de graphique
+    self.export = self.currentexport
+    self.param = self.currentparam
 end
 
 
 --afficher le graphique dans le document TeX  (utilisée par le fichier luadraw.sty pour la méthode Show())
 function luadraw_graph:Sendtotex()
-    if #self.deferedexport ~= 0 then self:Defaultattr() end
-    local str = concat(self:beginDraw(),self.currentexport,self.deferedexport,self:endDraw())
+    --if #self.deferredexport ~= 0 then self:Defaultattr() end -- pour que les instructions décalées démarrent avec les paramètres par défaut
+    local before, after = {""}, {""}
+    if self.advanced then before = {"\\end{scope}%","\\begin{scope}%"} end
+    if self.deferred then after = {"\\end{scope}%","\\begin{scope}%"} end
+    local str = concat(self:beginDraw(),self.advancedexport,before,self.currentexport,after,self.deferredexport,self:endDraw())
     tex.sprint(table.unpack(str))
 end
 
@@ -198,17 +246,27 @@ function luadraw_graph:Savetofile(nom)
   -- Attention, si un fichier existe déjà avec ce nom, il sera écrasé !
     local file = io.open(nom, "w")
     if not file then
+        print("I can't open the file "..nom)
         return
     end
-    if #self.deferedexport ~= 0 then self:Defaultattr() end
+    if #self.deferredexport ~= 0 then self:Defaultattr() end
   -- On écrit dans le fichier    
     for _, lg in ipairs(self:beginDraw()) do
         file:write(lg.."%\n")
     end
+    for _, lg in ipairs(self.advancedexport) do
+        if lg ~= "" then file:write(lg.."%\n") end
+    end
+    if self.advanced then 
+        file:write("\\end{scope}%\n\\begin{scope}%\n") 
+    end
     for _, lg in ipairs(self.currentexport) do
         if lg ~= "" then file:write(lg.."%\n") end
     end
-    for _, lg in ipairs(self.deferedexport) do
+    if self.deferred then 
+        file:write("\\end{scope}%\n\\begin{scope}%\n")
+    end    
+    for _, lg in ipairs(self.deferredexport) do
         if lg ~= "" then file:write(lg.."%\n") end
     end
     for _, lg in ipairs(self:endDraw()) do
@@ -218,17 +276,20 @@ function luadraw_graph:Savetofile(nom)
 end
 
 function luadraw_graph:beginDraw() -- début du dessin
-    local str = {"\\begin{tikzpicture}"}
-    table.insert(str,"\\useasboundingbox ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");") -- fixe la taille de l'image
-    if self.bg ~= "" then -- couleur de fond
-        table.insert(str,"\\fill["..self.bg.."] ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
-    end
-    if self.border then
-        table.insert(str,"\\draw ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
-    end
+    local str = {"\\begin{tikzpicture}["..self.tikzpictureoptions.."]"}
+    --if self.bbox then
+        --table.insert(str,"\\useasboundingbox ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");") -- fixe la taille de l'image
+    --end
+    --if self.bg ~= "" then -- couleur de fond
+        --table.insert(str,"\\fill["..self.bg.."] ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
+    --end
+    --if self.border then
+        --table.insert(str,"\\draw ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
+    --end
     table.insert(str,"\\begin{scope}")
-    --str = str.."\\clip (0,0) rectangle ("..tostring(self:graphWidth())..","..tostring(self:graphHeight())..");"..self.LF
-    table.insert(str,"\\clip ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
+    if self.bbox then
+        table.insert(str,"\\clip ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
+    end
     return str
 end
 
@@ -497,26 +558,33 @@ function luadraw_graph:drawcmd(draw_options)
     return commande
 end
 
-function luadraw_graph:Dpolyline(L,close,draw_options) -- close vaut true ou false
+function luadraw_graph:Dpolyline(L,close,draw_options,clip) -- close vaut true ou false
 -- dessine une ligne polygonale avec les attributs courants
 -- L est une liste de complexes ou une liste de listes de complexes
+-- clip = {x1,x2,y1,y2} rectangle de clipping, ou nil  pour la fenêtre par défaut
     local clippee
     if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
-    if type(close) == "string" then draw_options = close; close = false end
+    if type(close) == "string" then clip = draw_options; draw_options = close; close = false end
     close = close or false
     draw_options = draw_options or ""
     local commande = self:drawcmd(draw_options)
     if commande == nil then return end
     if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
+    local X1,X2,Y1,Y2
+    if clip == nil then X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
+    else X1,X2,Y1,Y2 = table.unpack(clip)
+    end
     for _, cp in ipairs(L) do
         clippe = false
         local len = #cp
         if len > 1 then
+            if clip ~= nil then
+                cp, clippee = clippolyline(cp,X1,X2,Y1,Y2,close)
+            end
             if not isID(self.matrix) then
                 cp = self:Mtransform(cp)
             end
-            local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-            cp, clippee = clippolyline(cp,X1,X2,Y1,Y2,close)
+            if clip == nil then cp, clippee = clippolyline(cp,X1,X2,Y1,Y2,close) end
             if (cp[1] ~= nil) and (not clippee) and close then table.remove(cp[1]) end
             for _, cpp in ipairs(cp) do
                 len = #cpp
@@ -540,7 +608,7 @@ end
 -- courbe cartésienne
 function luadraw_graph:Dcartesian(f,args)
 -- dessin d'une courbe cartésienne d'équation y=f(x) dans l'intervalle [x1;x2]
--- args est une table à 5 entrées args = { x = {x1,x2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "" }
+-- args est une table à 5 entrées args = { x = {x1,x2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "",clip={x1,x2,y1,y2} }
     args = args or {}
     local x = args.x or {self:Xinf(), self:Xsup()}
     local nbdots = args.nbdots or 50
@@ -550,13 +618,13 @@ function luadraw_graph:Dcartesian(f,args)
     local x1, x2 = table.unpack(x)
     if x1 > x2 then x1, x2 = x2, x1 end
     local C = cartesian(f,x1,x2,nbdots,discont,nbdiv)
-    self:Dpolyline(C,false,draw_options)
+    self:Dpolyline(C,false,draw_options,args.clip)
 end
 
 -- courbe paramétrée
 function luadraw_graph:Dparametric(p,args)
 -- dessin d'une courbe paramétrée par la fonction p:t -> p(t) sur l'intervalle [t1;t2] (à valeurs complexes)
--- args est une table à 5 entrées args = { t = {t1,t2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "" }
+-- args est une table à 5 entrées args = { t = {t1,t2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "", clip={x1,x2,y1,y2} }
     args = args or {}
     local t = args.t or {self:Xinf(), self:Xsup()}
     local nbdots = args.nbdots or 50
@@ -568,13 +636,13 @@ function luadraw_graph:Dparametric(p,args)
     local t1, t2 = table.unpack(t)
     if t1 > t2 then t1, t2 = t2, t1 end
     local C = parametric(p,t1,t2,nbdots,discont,nbdiv)
-    self:Dpolyline(C,false,draw_options)
+    self:Dpolyline(C,false,draw_options,args.clip)
 end
 
 -- courbe polaire
 function luadraw_graph:Dpolar(rho,args)
 -- dessin d'une courbe polaire parmétrée par la fonction rho:t -> rho(t) sur l'intervalle [t1;t2] (à valeurs réelles)
--- args est une table à 5 entrées args = { t = {t1,t2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "" }
+-- args est une table à 6 entrées args = { t = {t1,t2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "", clip={x1,x2,y1,y2} } }
     args = args or {}
     local t = args.t or {-math.pi, math.pi}
     local nbdots = args.nbdots or 50
@@ -584,14 +652,14 @@ function luadraw_graph:Dpolar(rho,args)
     local t1, t2 = table.unpack(t)
     if t1 > t2 then t1, t2 = t2, t1 end
     local C = polar(rho,t1,t2,nbdots,discont,nbdiv)
-    self:Dpolyline(C,false,draw_options)
+    self:Dpolyline(C,false,draw_options,args.clip)
 end
 
 -- courbe cartésienne périodique
 function luadraw_graph:Dperiodic(f,period,args)
 -- f est une fonction x -> f(x) réelle
 -- period est une liste {a,b} avec a < b représentant une période
--- args est une table à 5 entrées args = { x = {x1,x2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "" }
+-- args est une table à 5 entrées args = { x = {x1,x2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "",clip={x1,x2,y1,y2} }
     if (period == nil) or (type(period) ~= "table") or (#period ~= 2) then return end
     args = args or {}
     local x = args.x or {self:Xinf(), self:Xsup()}
@@ -602,7 +670,7 @@ function luadraw_graph:Dperiodic(f,period,args)
     local x1, x2 = table.unpack(x)
     if x1 > x2 then x1, x2 = x2, x1 end
     local C = periodic(f,period,x1,x2,nbdots,discont,nbdiv)
-    self:Dpolyline(C,false,draw_options)
+    self:Dpolyline(C,false,draw_options,args.clip)
 end
 
 -- courbe d'une fonction en escalier
@@ -611,14 +679,14 @@ function luadraw_graph:Dstepfunction(def, args)
 -- def est une table à 2 entrées permettant la définition de la fonction : { {x1,x2,x3,...,xn}, {c1,c2,...} }
 --{x1,x2,...,xn} forme une subdivision de l'intervalle [x1,xn] sur lequel est dessinée la courbe
 -- sur l'intervalle [x1,x2] la fonction vaut c1, sur [x2,x3] c'est c2, etc
--- args est une table à deux entrées { discont=true/false, draw_options="" }
+-- args est une table à deux entrées { discont=true/false, draw_options="",clip={x1,x2,y1,y2} }
     if (def == nil) or (type(def) ~= "table") or (#def ~= 2) then return end
     args = args or {}
     local discont = args.discont
     local draw_options = args.draw_options or ""
     local C = stepfunction(def,discont)
     if C ~= nil then
-        self:Dpolyline(C,false,draw_options)
+        self:Dpolyline(C,false,draw_options,args.clip)
     end
 end
 
@@ -628,18 +696,18 @@ function luadraw_graph:Daffinebypiece(def, args)
 -- def est une table à 2 entrées permettant la définition de la fonction : { {x1,x2,x3,...,xn}, { {a1,b1}, {a2,b2},...} }
 --{x1,x2,...,xn} forme une subdivision de l'intervalle [x1,xn] sur lequel est dessinée la courbe
 -- sur l'intervalle [x1,x2] la courbe a pour équation y=a1*x+b1, sur [x2,x3] c'est y=a2*x+b2, etc
--- args est une table à deux entrées { discont=true/false, draw_options="" }
+-- args est une table à deux entrées { discont=true/false, draw_options="",clip={x1,x2,y1,y2} }
     if (def == nil) or (type(def) ~= "table") or (#def ~= 2) then return end
     args = args or {}
     local discont = args.discont or true
     local draw_options = args.draw_options or ""
     local C = affinebypiece(def,discont)
     if C ~= nil then
-        self:Dpolyline(C,false,draw_options)
+        self:Dpolyline(C,false,draw_options,args.clip)
     end
 end
 
-function luadraw_graph:DplotXY(X,Y,draw_options)
+function luadraw_graph:DplotXY(X,Y,draw_options,clip)
 -- X et Y sont deux listes de complexes avec #X <= #Y
 -- la fonction dessine la ligne polygonale constituée des points (X[k],Y[k])
     if #Y < #X then return end
@@ -648,7 +716,7 @@ function luadraw_graph:DplotXY(X,Y,draw_options)
             z = Z(x,Y[k])
             if z ~= nil then table.insert(L, z) end
         end
-    self:Dpolyline({L},false,draw_options )
+    self:Dpolyline({L},false,draw_options,clip)
 end
 
 -- solution d'équation différentielle
@@ -657,7 +725,7 @@ function luadraw_graph:Dodesolve(f,t0,Y0,args)
 -- où f: (t,Y) -> f(t,Y) dans R^n avec Y(t)={y1(t),...,yn(t)} (liste de réels)
 -- t0 et Y0 donnent les conditions initiales avec Y0=Y(t0),
 -- la fonction appelée (odeRK4) renvoie une liste M = { {tmin,...,tmax}, {y1(tmin),..., y1(tmax)}, ..., {yn(tmin),..., yn(tmax)} }
--- args est une table à 5 entrées args = { t = {t1,t2}, out = {i1,i2}, nbdots = 50, method = "rkf45"/"rk4", draw_options = "" }
+-- args est une table à 5 entrées args = { t = {t1,t2}, out = {i1,i2}, nbdots = 50, method = "rkf45"/"rk4", draw_options = "",clip={x1,x2,y1,y2} }
 -- l'argument out est une table de deux entiers {i1, i2}, les points dessinés auront pour abscisses les M[i1] et pour ordonnées les M[i2], par défaut i1=1 et i2=2
 -- ce qui correspond à la fonction y1 en fonction de t
    args = args or {}
@@ -672,7 +740,7 @@ function luadraw_graph:Dodesolve(f,t0,Y0,args)
     if (t0 < t1) or (t0 > t2) then return end
     local C = odesolve(f,t0,Y0,t1,t2,nbdots,method)
     if C ~= nil then 
-        self:DplotXY( C[out[1]], C[out[2]],draw_options)
+        self:DplotXY( C[out[1]], C[out[2]],draw_options,args.clip)
     end
 end
 
@@ -1089,6 +1157,17 @@ function luadraw_graph:DtangentC(f,x0,long,draw_options)
     end
 end
 
+function luadraw_graph:DtangentI(f,x0,y0,long,draw_options)
+-- dessin de la tangente à la courbe implicite d'équation f(x,y)=0
+-- au point (x0,y0) supposé sur la courbe
+-- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
+    if type(long) == "string" then draw_options = long; long = nil end
+    local S = tangentI(f,x0,y0,long)
+    if long == nil then self:Dline(S,draw_options)
+    else self:Dseg(S,1,draw_options)
+    end
+end
+
 ----- Labels -----------------------------------------------------
 function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,options, ... )
 -- dessiner un label, anchor est un complexe (point), 
@@ -1422,7 +1501,7 @@ function luadraw_graph:Dpath(L,draw_options)
     if not isID(self.matrix) then aux2 = self:Mtransform(aux2) end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
     clippee = needclip(aux2,X1,X2,Y1,Y2)
-    if clippee then
+    if clippee and self.bbox then
         self:Writeln("\\begin{scope}")
         self:Writeln("\\clip "..self:strCoord(X1,Y1).." rectangle "..self:strCoord(X2,Y2)..";")
     end
@@ -1434,7 +1513,7 @@ function luadraw_graph:Dpath(L,draw_options)
         end
     end
     if not debut then self:Writeln(";") end
-    if clippee then self:Writeln("\\end{scope}") end
+    if clippee and self.bbox then self:Writeln("\\end{scope}") end
 end
 
 -- arc de cercle

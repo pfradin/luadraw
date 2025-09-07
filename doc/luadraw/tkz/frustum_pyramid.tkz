@@ -1,0 +1,47 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\pgfsetroundjoin%
+\draw[fill,left color=white,right color = cyan, shading angle=90] (4.3884,5.8205) -- (3.4911,7.7107) -- (3.4911,7.7107) .. controls (3.432,7.8352) and (3.185,7.9114) .. (2.936,7.8818) .. controls (2.7656,7.8616) and (2.6343,7.7959) .. (2.5938,7.7107) -- (1.6965,5.8205) -- (1.6965,5.8205) .. controls (1.5192,5.447) and (1.976,5.0765) .. (2.723,4.9878) .. controls (3.47,4.8992) and (4.2111,5.1275) .. (4.3884,5.501) .. controls (4.4385,5.6066) and (4.4385,5.715) .. (4.3884,5.8205);%
+\draw[] (3.4911,7.7107) .. controls (3.5502,7.5862) and (3.398,7.4627) .. (3.149,7.4331) .. controls (2.9,7.4036) and (2.6529,7.4797) .. (2.5938,7.6042) .. controls (2.5771,7.6394) and (2.5771,7.6755) .. (2.5938,7.7107);%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\draw[] (1.6965,5.8205) .. controls (1.8738,6.194) and (2.6149,6.4224) .. (3.3619,6.3338) .. controls (3.8731,6.2731) and (4.2671,6.0761) .. (4.3884,5.8205);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\draw[fill,left color=white,right color = orange, shading angle=109.7275] (6.0211,5.2562) .. controls (6.1114,5.0043) and (6.5878,4.8385) .. (7.0916,4.8837) .. controls (7.5955,4.9289) and (7.9269,5.167) .. (7.8366,5.4189) -- (7.0379,7.6462) -- (7.0379,7.6462) .. controls (6.9476,7.8981) and (6.4712,8.0639) .. (5.9674,8.0187) .. controls (5.4636,7.9735) and (5.1321,7.7353) .. (5.2224,7.4834) .. controls (5.2224,7.4834) and (5.2224,7.4834) .. (5.2224,7.4834)--cycle;%
+\draw[] (5.2224,7.4834) .. controls (5.3128,7.2315) and (5.7891,7.0658) .. (6.2929,7.1109) .. controls (6.7968,7.1561) and (7.1283,7.3943) .. (7.0379,7.6462);%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\draw[] (6.0211,5.2562) .. controls (5.9308,5.5081) and (6.2623,5.7463) .. (6.7661,5.7914) .. controls (7.2699,5.8366) and (7.7463,5.6708) .. (7.8366,5.4189) .. controls (7.8366,5.4189) and (7.8366,5.4189) .. (7.8366,5.4189);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!50!white!90.92!black}%
+\draw[fill] (2.0209,3.4071) -- (2.7269,4.8878) -- (3.3305,4.7136) -- (3.4292,3.0006)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!72.15!black}%
+\draw[fill] (0.8124,2.8631) -- (2.209,4.6547) -- (2.7269,4.8878) -- (2.0209,3.4071)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\draw[fill] (0.8124,2.8631) -- (2.0209,3.4071) -- (3.4292,3.0006) -- (3.0911,2.2052) -- (1.4738,2.1202)--cycle;%
+\pgfsetfillcolor{Crimson!54.43!black}%
+\draw[fill] (3.4292,3.0006) -- (3.3305,4.7136) -- (3.1856,4.3727) -- (3.0911,2.2052)--cycle;%
+\pgfsetfillcolor{Crimson!75.79!black}%
+\draw[fill] (2.4925,4.3363) -- (3.1856,4.3727) -- (3.3305,4.7136) -- (2.7269,4.8878) -- (2.209,4.6547)--cycle;%
+\pgfsetfillcolor{Crimson!80.7!black}%
+\draw[fill] (1.4738,2.1202) -- (2.4925,4.3363) -- (2.209,4.6547) -- (0.8124,2.8631)--cycle;%
+\pgfsetfillcolor{Crimson!99.83!black}%
+\draw[fill] (3.0911,2.2052) -- (3.1856,4.3727) -- (2.4925,4.3363) -- (1.4738,2.1202)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\draw[] (0.8124,2.8631) -- (2.0209,3.4071) -- (2.7269,4.8878);%
+\draw[] (2.0209,3.4071) -- (3.4292,3.0006);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\draw[fill,left color=white,right color = Pink, shading angle=81.5252] (6.2206,4.8764) -- (7.1808,2.3242) -- (7.1808,2.3242) .. controls (7.3227,1.947) and (6.8315,1.5876) .. (6.077,1.5166) .. controls (5.3225,1.4456) and (4.6037,1.6912) .. (4.4618,2.0685) .. controls (4.4169,2.1877) and (4.435,2.309) .. (4.5147,2.4235)--cycle;%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\draw[] (7.1808,2.3242) .. controls (7.0389,2.7015) and (6.3201,2.9471) .. (5.5656,2.8761) .. controls (5.076,2.8301) and (4.6783,2.6588) .. (4.5147,2.4235);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetmiterjoin%
+\end{scope}%
+\end{tikzpicture}%

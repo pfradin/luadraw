@@ -1,6 +1,6 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -510,7 +510,7 @@ function bezier(a,c1,c2,b,nbdots)
     local p = function(t)
             return a+t*(w+t*(v+t*u))
         end
-    return parametric(p,0,1,nbdots or 8)
+    return parametric(p,0,1,nbdots or 8,false,2)
 end
 
 function spline(liste,v1,v2)

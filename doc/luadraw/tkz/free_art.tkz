@@ -1,5 +1,4 @@
-\begin{tikzpicture}%
-\useasboundingbox (0,0) rectangle (7.0,7.0);%
+\begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (0,0) rectangle (7.0,7.0);%
 \pgfsetfillopacity{0.1}%

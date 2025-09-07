@@ -1,5 +1,4 @@
-\begin{tikzpicture}%
-\useasboundingbox (-0.5,-0.5) rectangle (9.5,7.25);%
+\begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,7.25);%
 \pgfsetroundjoin%
@@ -18,12 +17,10 @@
 \pgfsetfillcolor{Crimson!89.13!black}%
 \draw[fill] (1.0147,3.7316) -- (1.0147,2.7573) -- (2.9632,2.1948) -- (2.9632,3.1691)--cycle;%
 \pgfsetfillcolor{black}%
-\pgfsetroundcap%
-\pgfsetdash{{0pt}{3pt}}{0pt}%
-\draw[] (1.0147,2.7573) -- (2.1397,3.7316) -- (2.1397,5.6802);%
-\draw[] (4.0882,3.1691) -- (2.1397,3.7316);%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\draw[] (4.0882,3.1691) -- (2.1397,3.7316) -- (2.1397,5.6802);%
 \draw[] (1.5772,5.193) -- (1.0147,3.7316);%
-\pgfsetbuttcap%
+\draw[] (1.0147,2.7573) -- (2.1397,3.7316);%
 \pgfsetdash{}{0pt}%
 \pgfsetfillcolor{Crimson!50!white!89.13!black}%
 \draw[fill] (6.0368,4.5552) -- (7.9853,3.9927) -- (7.9853,2.0441) -- (6.0368,2.6066)--cycle;%
@@ -40,11 +37,9 @@
 \pgfsetfillcolor{Crimson!95.18!black}%
 \draw[fill] (7.4228,3.5055) -- (5.4743,4.068) -- (4.9118,2.6066) -- (6.8603,2.0441)--cycle;%
 \pgfsetfillcolor{black}%
-\pgfsetroundcap%
-\pgfsetdash{{0pt}{3pt}}{0pt}%
-\draw[] (4.9118,1.6323) -- (6.0368,2.6066) -- (6.0368,4.5552);%
-\draw[] (7.9853,2.0441) -- (6.0368,2.6066);%
-\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\draw[] (7.9853,2.0441) -- (6.0368,2.6066) -- (6.0368,4.5552);%
+\draw[] (4.9118,1.6323) -- (6.0368,2.6066);%
 \pgfsetdash{}{0pt}%
 \draw[-] (1.4264,1.9889) node[cm={0.9608,-0.2774,0,1,(0,0)}] {close=false} (5.3236,0.8639) node[cm={0.9608,-0.2774,0,1,(0,0)}] {close=true};%
 \pgfsetstrokecolor{black}%

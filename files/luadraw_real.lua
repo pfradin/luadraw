@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -10,8 +10,10 @@
 digits = 4 -- nombre de décimales dans les exports
 epsilon = 1e-16
 mm = math.floor(7227/254) -- conversion en dixième de point, ex: Linewidth(2*mm) pour une épaisseur de 2 millimètres
+pt = 254/7227  -- conversion en cm, ex : 2*pt pour une longueur en cm équivalente à 2 points
 deg = math.pi/180 -- conversion en radians, ex 180*deg = pi
 rad = 180/math.pi -- conversion en degrés, ex : pi*rad = 180
+siunitx = false  -- utilisé dans la fonction num
 
 function strReal(reel) -- convertit un réel en chaîne avec digits décimales
     local str = string.format("%." ..digits.."f",reel)
@@ -21,6 +23,12 @@ function strReal(reel) -- convertit un réel en chaîne avec digits décimales
     end
     if string.sub(str,n,n) == "." then n = n-1 end
     return string.sub(str,1,n)
+end
+
+function num(x) -- x is a real, returns a string
+    local rep = strReal(x)
+    if siunitx then rep = "\\num{"..rep.."}" end --needs \usepackage{siunitx}
+    return rep
 end
 
 function isNaN(reel)  -- reel est supposé être un nombre
@@ -89,86 +97,6 @@ end
 function lcm(a,b)
     return math.abs(a*b) // gcd(a,b)
 end
-
-function simplifyFrac(a,b)
--- renvoie la fraction d'entiers a/b simplifiée
-    local sg = 1
-    if ((a < 0) and (b > 0)) or ((a > 0) and (b < 0)) then sg = -1 end
-    a, b = math.abs(a), math.abs(b)
-    if (math.floor(a) == a) and (math.floor(b) == b) then 
-        local d = gcd(a,b)
-        return sg*a//d, b//d
-    else return sg*a, b
-    end
-end
-
-function addFrac(a,b,c,d)
--- renvoie la somme a/b + c/d sous forme de fraction
--- a, b, c, d sont supposés être des entiers avec b et d non nuls.
-    local num, den = a*d+b*c, b*d
-    return simplifyFrac(num, den)
-end
-
-function gradLabel(a,b,text,dollar)
--- mise en forme d'un label pour une graduation : a*text/b, renvoie une chaîne
--- dollar = true/false indique s'il faut des dollars ou non
-    function label(x)
-            local str
-            if type(x) == "number" then str = strReal(x) else str = x end
-            if dollar then return "$"..str.."$"
-            else return str
-            end
-        end
-    if a == 0 then return label(0) -- \fraction nulle
-    else
-        if text == "" then -- pas de text
-            if b == 1 then return label(a)
-            else
-                if a > 0 then
-                    if dollar then return "$\\frac{".. strReal(a).."}{"..strReal(b).."}$" 
-                    else return strReal(a).."/"..strReal(b) 
-                    end 
-                else -- a < 0
-                    if dollar then return "$-\\frac{".. strReal(-a).."}{"..strReal(b).."}$" 
-                    else return strReal(a).."/"..strReal(b) 
-                    end
-                end
-            end
-        else -- text non vide
-            if b == 1 then
-                        if a == -1 then return label("-"..text)
-                        else 
-                            if  a == 1 then return label(text)
-                            else return label(strReal(a)..text)
-                            end
-                        end
-            else -- b différent de 1 
-                if  a > 0 then 
-                        if dollar then 
-                            if a ~= 1 then return "$\\frac{"..strReal(a)..text.."}{"..strReal(b).."}$"
-                            else return "$\\frac{"..text.."}{"..strReal(b).."}$"
-                            end
-                        else 
-                            if a ~= 1 then return strReal(a)..text.."/"..strReal(b)
-                            else return text.."/"..strReal(b)
-                            end
-                        end 
-                else  -- a < 0    
-                        if dollar then 
-                            if a ~= -1 then return "$-\\frac{"..strReal(-a)..text.."}{"..strReal(b).."}$"
-                            else return "$-\\frac{"..text.."}{"..strReal(b).."}$"
-                            end
-                        else 
-                            if a ~= -1 then return strReal(a)..text.."/"..strReal(b)
-                            else return "-"..text.."/"..strReal(b)
-                            end
-                        end 
-                end
-            end
-        end
-    end
-end
-
 
 function solve(f,a,b,n)
 -- résout numériquement f(x)=0 dans l'intervalle [a,b], celui-ci est divisé en n morceaux.

@@ -1,6 +1,6 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -15,18 +15,19 @@ setmetatable(luadraw_base, {__index = luadraw_base}) -- obligatoire pour l'héri
 
 --- Constructeur
 function luadraw_base:new(args)  -- argument de la forme :
--- {window={x1,x2,y1,y2,xscale,yscale}, margin={left, right, top, bottom}, size={large, haut, ratio}, bg="color", border=true/false}
+-- {window={x1,x2,y1,y2,xscale,yscale}, margin={top, right, bottom, left}, size={large, haut, ratio}, bg="color", border=true/false,bbox=true/false}
     local graph = {}
     setmetatable(graph, {__index = luadraw_base})  -- obligatoire, permet d'utiliser self
     
     args = args or {}
     graph.bg = args.bg or ""
     graph.border = args.border or false
+    graph.bbox = (args.bbox == nil) or args.bbox
     local window = args.window or {-5,5,-5,5,1,1}
     local margin = args.margin or {0.5,0.5,0.5,0.5}
     local size = args.size  --size = {largeur, hauteur, ratio}
     local x1,x2,y1,y2,xscale,yscale = table.unpack(window)
-    local left,right,top,bottom = table.unpack(margin)
+    local top,right,bottom,left = table.unpack(margin)
     graph.Xmin = (x1 or -5) ; graph.Xmax = (x2 or 5)  
     graph.Ymin = (y1 or -5) ; graph.Ymax = (y2 or 5)  
     graph.Xscale = (xscale or 1) ; graph.Yscale = (yscale or 1) 

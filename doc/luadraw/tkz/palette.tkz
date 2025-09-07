@@ -1,6 +1,4 @@
-\begin{tikzpicture}%
-\useasboundingbox (-0.1,-0.1) rectangle (9.9,2.06);%
-\draw (-0.1,-0.1) rectangle (9.9,2.06);%
+\begin{tikzpicture}[background rectangle/.style={,draw=black},show background rectangle]%
 \begin{scope}%
 \clip (-0.1,-0.1) rectangle (9.9,2.06);%
 \pgfsetlinewidth{1.8pt}%

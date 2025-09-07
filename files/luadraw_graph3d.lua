@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -18,6 +18,17 @@ local Scene3d
 
 Hiddenlines = false
 Hiddenlinestyle = "dotted"
+top, right, bottom, left = 8, 4, 2, 1
+mWireframe, mFlat, mFlatHidden, mShaded, mShadedHidden, mShadedOnly = 0, 1, 2, 3, 4, 5
+mGrid = 1 -- cylinder, sphere, cone
+mBorder = 2 -- sphere
+--MODE_WIREFRAME = 0
+--MODE_FLAT = 1
+--MODE_FLAT_HIDDEN_EDGES = 2
+--MODE_SHADED = 3
+--MODE_SHADED_HIDDEN_EDGES = 4
+--MODE_SHADED_NO_EDGE = 5
+
 
 local luadraw_graph2d = require "luadraw_graph2d"
 
@@ -26,9 +37,9 @@ setmetatable(luadraw_graph3d, {__index = luadraw_graph2d}) -- obligatoire pour l
 
 --- Constructeur
 function luadraw_graph3d:new(args) -- argument de la forme :
--- {window3d={x1,x2,y1,y2,z1,z2}, viewdir={30,60}, adjust2d=true/false, window={x1,x2,y1,y2,xscale,yscale}, margin={left, right, top, bottom}, size={large, haut, ratio}, bg="color", border = true/false}
+-- {window3d={x1,x2,y1,y2,z1,z2}, viewdir={30,60}, adjust2d=true/false, window={x1,x2,y1,y2,xscale,yscale}, margin={left, right, top, bottom}, size={large, haut, ratio}, bg="color", border = true/false, bbox=true/false}
     local graph3d = luadraw_graph2d:new(args) -- obligatoire, on utilise le constructeur de luadraw_calc
-    args.adjust2d = args.adjust2d or false
+    args.adjust2d = args.adjust2d or false -- adjust2d= false or true
     args.viewdir = args.viewdir or {30,60}
     setmetatable(graph3d, {__index = luadraw_graph3d})  -- obligatoire, permet d'utiliser self
     graph3d.param["viewport3d"] = args.window3d or {-5,5,-5,5,-5,5}
@@ -44,7 +55,7 @@ function luadraw_graph3d:new(args) -- argument de la forme :
     graph3d.sinPhi = math.sin(b)
     graph3d.Normal = M(graph3d.cosTheta*graph3d.sinPhi, graph3d.sinTheta*graph3d.sinPhi, graph3d.cosPhi)
     graph3d.matrix3d = ID3d
-    if args.adjust2d then 
+    if args.adjust2d  then 
         local x1,x2,y1,y2,z1,z2 = table.unpack(graph3d.param.viewport3d)
         local lg, ht = (graph3d.Xmax-graph3d.Xmin)*graph3d.Xscale, (graph3d.Ymax-graph3d.Ymin)*graph3d.Yscale
         local box = parallelep( M(x1,y1,z1), (x2-x1)*vecI, (y2-y1)*vecJ, (z2-z1)*vecK ) -- boite 3d
@@ -59,6 +70,8 @@ function luadraw_graph3d:new(args) -- argument de la forme :
         --y1 = math.floor(y1); y2 = math.ceil(y2)
         graph3d.param.viewport = {x1,x2,y1,y2} -- redimensionnement de la vue 2d
         graph3d.param.coordsystem = {x1,x2,y1,y2} -- redimensionnement de la vue utilisateur
+        graph3d.advancedparam = table.copy(graph3d.currentparam)
+        graph3d.deferredparam = table.copy(graph3d.currentparam)
         graph3d.Xmin = x1; graph3d.Xmax = x2; graph3d.Ymin = y1; graph3d.Ymax = y2
         local ratio
         if args.size ~= nil then ratio = args.size[3] end
@@ -76,6 +89,10 @@ function luadraw_graph3d:new(args) -- argument de la forme :
             end
         end    
     end
+    -- infos sur le graphe
+    print("3d window = ", table.unpack(graph3d.param.viewport3d))
+    print("viewdir = ", table.unpack(graph3d.param.viewdir))
+    print("2d window = ", table.unpack(graph3d.param.viewport))
     return graph3d
 end
 
@@ -89,6 +106,15 @@ end
 function luadraw_graph3d:Restorematrix()
     self.matrix3d = table.remove(self.pilematrix)
     self.matrix = table.remove(self.pilematrix)
+end
+
+function luadraw_graph3d:Det3d()
+-- renvoie +1 ou -1 suivant que le déterminant de la matrice de transformation 3d est positif ou négatif
+    local o,u,v,w = table.unpack(self.matrix3d)
+    if pt3d.det(u,v,w) > 0 then 
+        return 1
+    else return -1
+    end
 end
 
 -- sauvegarde et restauration des paramètres graphiques (fenêtre, styles, matrices)
@@ -289,8 +315,11 @@ end
 function luadraw_graph3d:Dcircle3d(C,R,normal, draw_options)
 -- dessine un cercle de centre C de rayon R.
 -- dans le plan défini par C et le vecteur normal
-    local chem = circle3db(C,R,normal)
-    self:Dpath(self:Proj3d(chem),draw_options)
+    if R == 0 then self:Ddots3d(C)
+    else
+        local chem = circle3db(C,R,normal)
+        self:Dpath(self:Proj3d(chem),draw_options)
+    end
 end
 
 function luadraw_graph3d:Dangle3d(B,A,C,r,draw_options)
@@ -321,10 +350,11 @@ function luadraw_graph3d:Dballdots3d(L,color,scale) -- points sphériques
     end
 end
 
-function luadraw_graph3d:Dcrossdots3d(L,color,scale) -- points en forme de croix dans un plan
+function luadraw_graph3d:Dcrossdots3d(L,color,scale,angle) -- points en forme de croix dans un plan
 -- L est une liste du type {point 3d, vecteur normal} ou { {point3d, vecteur normal}, {point3d, vecteur normal}, ...}
     color = color or self.param.linecolor
     scale = scale or 1
+    angle= angle or 0
     local long = 0.125*scale
     local lg, A, normal, a, b, c = {}    
     
@@ -333,6 +363,9 @@ function luadraw_graph3d:Dcrossdots3d(L,color,scale) -- points en forme de croix
         local u = pt3d.prod(n,self.Normal)
         if pt3d.isNul(u) then u = self:ScreenX() end
         local v = pt3d.prod(n,u)
+        if angle ~=0 then
+            u, v = table.unpack( rotate3d({u,v},angle,{A,n}) )
+        end
         a, b, c = table.unpack(self:Proj3d({A,u-v,u+v}))
         b, c = long*b/self:Abs(b), long*c/self:Abs(c)
     end
@@ -367,18 +400,27 @@ end
 
 ------- solides sans facettes (fil de fer)
 
-function luadraw_graph3d:Dcylinder(A,V,r,args)
+function luadraw_graph3d:Dcylinder(A,r,V,B,args) 
+-- ou Dcylinder(A,r,B,args): cylindre droit de A vers B
+-- ou Dcylinder(A,V,r,args): ancienne syntaxe, 
 -- dessine un cylindre en fil de fer
 -- A est le centre d'une face circulaire de rayon r orthogonale au vecteur V
--- l'autre face a pour centre A+V
+-- l'autre face a pour centre B
 -- args est une table à 6 champs :
--- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, color="", opacity=1}
+-- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor=linecolor, color="", opacity=1}
 -- mode = 0 fil de fer
 -- mode = 1 grille
 -- color = "" : pas de remplissage, color ~= "" remplissage avec ball color
+    if isPoint3d(r) then -- ancienne syntaxe A,V,r,args
+        local R = r
+        r = V; V = R; args = B; B = A+V
+    elseif not isPoint3d(B) then -- syntaxe A,r,B,args
+        args = B; B = V; V = B-A
+    end
     args = args or {}
     args.color = args.color or ""
-    args.hiddencolor = args.hiddencolor or self.param.linecolor
+    args.edgecolor = args.edgecolor or self.param.linecolor
+    args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
@@ -390,38 +432,65 @@ function luadraw_graph3d:Dcylinder(A,V,r,args)
     local oldlineopacity = self.param.lineopacity
     local oldlinecolor = self.param.linecolor
     local oldlinewidth = self.param.linewidth
-    
-    if pt3d.dot(self.Normal,V) < 0 then A = A+V; V = -V  end
-    local N = pt3d.prod(V,self.Normal)
-    if (N == nil) or pt3d.isNul(N) then --cylindre orthogonal à l'écran
+    self:Linecolor(args.edgecolor)
+    local mat = self.matrix3d
+    local N = mLtransform3d(self.Normal,invmatrix3d(mat))
+    if pt3d.dot(self.Normal,self:MLtransform3d(V)) <= 0 then V = -V  end
+    if pt3d.dot(self:MLtransform3d(V),self:MLtransform3d(B-A)) < 0 then A,B=B,A  end -- V et B-A dans le même sens
+    local I = pt3d.normalize(V) -- vecteur normal au plan et dans la direction du sommet B
+    local J = pt3d.prod(I,N); J = pt3d.normalize(J)
+    if (J == nil) then -- le plan de la base circulaire est l'écran
+        J = self:ScreenX()
+    end
+    local K = pt3d.prod(I,J) -- base = {A+r.cos(t)J+r.sin(t)K / t in [-pi,pi]}
+    local xn,yn, zn = pt3d.dot(N,I), pt3d.dot(N,J), pt3d.dot(N,K)
+    local W = B-A
+    local xw,yw,zw = pt3d.dot(W,I), pt3d.dot(W,J), pt3d.dot(W,K)
+    local t = solve(function(t) return math.sin(t)*(xn*zw-zn*xw)+math.cos(t)*(xn*yw-xw*yn) end,-math.pi/2,3*math.pi/2)
+        if (t == nil) or (#t == 1) then
         if args.color ~= "" then
-            self:Filloptions("gradient","left color=white, right color="..args.color,args.opacity)
+            self:Dcircle3d(A,r,V,"left color=white,right color="..args.color..",fill opacity="..args.opacity)
         else
-            self:Fillotions("none")
-        end
-        self:Dcircle(self:Proj3d(C),r)
-    else
-        N = r*pt3d.normalize(N)
-        local angle = self:Arg(self:Proj3d(V))*rad
-        if angle < 0 then angle = angle+180
-        elseif angle > 180 then angle = angle-180 end
-        if args.color == "" then 
             self:Filloptions("none") 
-        else
-            self:Filloptions("gradient", "left color=white,right color = "..args.color..", shading angle="..strReal(angle),args.opacity)
+            self:Dcircle3d(A,r,V)
         end
-        if args.mode == 1 then self:Linestyle("noline") end
-        self:Dpath3d( {A-N,A,A+N,r,1,V,"ca",A+N+V,"l",A+V,A-N+V,r,1,V,"ca","cl"}) 
-        self:Filloptions("none")
-        self:Darc3d( A-N+V,A+V,A+N+V,r,1,V)
-        if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
+    else
+        local angle = self:Arg(self:Proj3d(W))*rad
+        if angle < 0 then angle = angle+180
+        elseif angle > 180 then angle = angle-180 
+        end
+        t1, t2 = table.unpack(t) 
+        local M1 = A+math.cos(t1)*r*J+math.sin(t1)*r*K
+        local M2 = A+math.cos(t2)*r*J+math.sin(t2)*r*K
+        if math.cos(t1)*math.sin(t2)-math.cos(t2)*math.sin(t1)< 0 then M1,M2 = M2,M1 end
+        local N1 = M1+W
+        local N2 = M2+W
+        if pt3d.N1(M2-M1) < 1e-12 then -- points confondus
+            g:Dcircle3d(A,r,V,"left color=white,right color="..args.color..",fill opacity="..args.opacity)
+        else
+            if args.color == "" then 
+                self:Filloptions("none") 
+            else
+                self:Filloptions("gradient", "left color=white,right color = "..args.color..", shading angle="..strReal(angle),args.opacity)
+            end
+            if args.mode == 1 then self:Linestyle("noline") end
+            -- on voit la base circulaire en B, le vecteur I sort du cylindre en B et est dirigé vers l'observateur
+            local sens = 1
+            --if pt3d.det(W,A-M1,M2-M1)*pt3d.det(W,B-N1,N2-N1) < 0 then sens = -sens end
+            if cpx.det(self:Proj3d(B-A),self:Proj3d(B-N2))*self:Det3d() < 0 then sens = -sens end
+            self:Dpath3d({M1,A,M2,r,sens,V,"ca",N2,"l",B,N1,r,sens,V,"ca","cl"})
+            self:Filloptions("none")
+            self:Darc3d(N1,B,N2,r,sens,V)
+            if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
                 self:Filloptions("none")
                 self:Lineoptions(args.hiddenstyle,args.hiddencolor)
-                self:Darc3d(A-N,A,A+N,r,-1,V)
-        end
-        if args.mode == 1 then -- arêtes
-            self:Linestyle(oldlinestyle)
-            self:Dpoly(cylinder(A,V,r),{mode=0,hiddenstyle=args.hiddenstyle, hiddencolor=args.hiddencolor})
+                self:Darc3d(M1,A,M2,r,-sens,V)
+            end
+            --self:Ddots3d({B,N1}); self:Dpolyline3d({B,B+I}); self:Darc3d(B+J,B,B+K,r/2,1,I,"->")
+            if args.mode == 1 then -- arêtes
+                self:Linestyle(oldlinestyle)
+                self:Dpoly(cylinder(A,r,V,B,35,false), {mode=0,hiddenstyle=args.hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor})
+            end
         end
     end
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
@@ -429,19 +498,162 @@ function luadraw_graph3d:Dcylinder(A,V,r,args)
     self:Lineopacity(oldlineopacity)
 end
 
-
-function luadraw_graph3d:Dcone(A,V,r,args)
+function luadraw_graph3d:Dcone(C,r,V,A,args) 
+-- ou Dcone(C,r,A,args)
+-- ou Dcone(A,V,r,args) (ancienne syntaxe)
 -- dessine un cône en fil de fer
 -- A est le sommet
--- le centre de la face circulaire de rayon r orthogonale au vecteur V est C=A+V
+-- le centre de la face circulaire de rayon r orthogonale au vecteur V est C
 -- args est une table à 5 champs :
--- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, color="", opacity=1}
+-- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor= linecolor, color="", opacity=1}
 -- mode = 0 fil de fer
 -- mode = 1 grille
 -- color = "" : pas de remplissage, color ~= "" remplissage avec ball color
+    if isPoint3d(r) then -- ancien format : sommet, vecteur, rayon, args (cône droit)
+        args = A; A = C
+        r, V = V, r
+        C = A+V
+    elseif not isPoint3d(A) then -- format C,r,A,args (cône droit)
+            args = A; A = V; V = A-C
+    end
     args = args or {}
     args.color = args.color or ""
-    args.hiddencolor = args.hiddencolor or self.param.linecolor
+    args.edgecolor = args.edgecolor or self.param.linecolor
+    args.hiddencolor = args.hiddencolor or args.edgecolor
+    args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+    args.mode = args.mode or 0
+    args.opacity = args.opacity or 1
+    args.mode = args.mode or 0
+    local oldfillstyle = self.param.fillstyle
+    local oldfillopacity = self.param.fillopacity
+    local oldfillcolor = self.param.fillcolor
+    local oldlinestyle = self.param.linestyle
+    local oldlineopacity = self.param.lineopacity
+    local oldlinecolor = self.param.linecolor
+    local oldlinewidth = self.param.linewidth
+    self:Linecolor(args.edgecolor)
+    if pt3d.dot(self:MLtransform3d(V),self:MLtransform3d(A-C)) < 0 then V = -V  end -- V et A-C dans le même sens
+    local I = pt3d.normalize(V) -- vecteur normal au plan et dans la direction du sommet A
+    local mat = self.matrix3d
+    local N = mLtransform3d(self.Normal,invmatrix3d(mat))
+    local J = pt3d.prod(I,N); J = pt3d.normalize(J)
+    if (J == nil) then -- le plan de la base circulaire est l'écran
+        J = self:ScreenX()
+    end
+    local K = pt3d.prod(I,J) -- base = {C+r.cos(t)J+r.sin(t)K / t in [-pi,pi]}
+    local xn,yn, zn = pt3d.dot(N,I), pt3d.dot(N,J), pt3d.dot(N,K)
+    local W = C-A
+    local xw,yw,zw = pt3d.dot(W,I), pt3d.dot(W,J), pt3d.dot(W,K)
+    local t = solve(function(t) return math.sin(t)*(xn*zw-zn*xw)+math.cos(t)*(xn*yw-xw*yn)+r*xn end,0,2*math.pi)
+    if (t == nil) or (#t == 1) then
+        if args.color ~= "" then
+            self:Dcircle3d(C,r,V,"left color=white,right color="..args.color..",fill opacity="..args.opacity)
+        else
+            self:Filloptions("none") 
+            self:Dcircle3d(C,r,V)
+        end
+    else
+        local angle = self:Arg(self:Proj3d(W))*rad
+        if angle < 0 then angle = angle+180
+        elseif angle > 180 then angle = angle-180 end
+        t1, t2 = table.unpack(t) 
+        local M1 = C+math.cos(t1)*r*J+math.sin(t1)*r*K
+        local M2 = C+math.cos(t2)*r*J+math.sin(t2)*r*K
+        if math.cos(t1)*math.sin(t2)-math.cos(t2)*math.sin(t1)< 0 then M1,M2 = M2,M1 end
+        if pt3d.N1(M2-M1) < 1e-12 then -- points confondus
+            g:Dcircle3d(C,r,V,"left color=white,right color="..args.color..",fill opacity="..args.opacity)
+        else
+            if args.color == "" then 
+                self:Filloptions("none") 
+            else
+                self:Filloptions("gradient", "left color=white,right color = "..args.color..", shading angle="..strReal(angle),args.opacity)
+            end
+            if args.mode == 1 then self:Linestyle("noline") end
+            local sens = 1
+            if cpx.det(self:Proj3d(C-M1),self:Proj3d(M2-M1))*cpx.det(self:Proj3d(A-M1),self:Proj3d(M2-M1)) < 0 then sens = -1 end
+            if pt3d.dot(self.Normal,self:MLtransform3d(V)) <= 0 then -- on voit la base circulaire
+                self:Dpath3d({A,M1,"l",C,M2,r,sens,V,"ca","cl"})
+                self:Filloptions("none")
+                self:Darc3d(M1,C,M2,r,-sens,V)
+                --print("base vue"); self:Ddots3d({C,M1}); self:Darc3d(C+J,C,C+K,r/2,1,'->')
+            else -- on ne voit pas la base circulaire
+                self:Dpath3d({A,M1,"l",C,M2,r,sens,V,"ca","cl"})
+                if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
+                    self:Filloptions("none")
+                    self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                    self:Darc3d(M1,C,M2,r,-sens,V)
+                    --print("base pas vue"); self:Ddots3d({C,M1}); self:Darc3d(C+J,C,C+K,r/2,1,'->')
+                end
+            end
+            if args.mode == 1 then -- arêtes
+                self:Linestyle(oldlinestyle)
+                self:Dpoly(cone(C,r,V,A,35,false), {mode=0,hiddenstyle=args.hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor})
+            end
+        end
+    end
+    self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
+    self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
+    self:Lineopacity(oldlineopacity)
+end
+
+
+function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) pour un cône droit 
+-- frustum drawn without facets (tronc de cône)
+-- dessine un tronc de cône en fil de fer
+-- A est le centre de la face de rayon R
+-- le centre de l'autre face  C=A+V et son rayon est r
+-- args est une table à 5 champs :
+-- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor=linecolor, color="", opacity=1}
+-- mode = 0 fil de fer
+-- mode = 1 grille
+-- color = "" : pas de remplissage, color ~= "" remplissage avec linéaire
+    if R == r then -- cylinder
+        if not isPoint3d(B) then self:Dcylinder(A,V,R,B) -- B is args in this case
+        else self:Dcylinder(A,R,V,B,args)
+        end
+        return
+    end
+    local C
+    if isPoint3d(B) then -- slanted frustum
+        C = dproj3d(B,{A,V})
+        V = C-A
+        local U1, U2, U3, h
+        U1 = pt3d.normalize(V)
+        U2 = pt3d.prod(U1,vecJ)
+        if pt3d.N1(U2) < 1e-12 then U2 = pt3d.prod(U1,vecI) end
+        U2 = pt3d.normalize(U2)
+        U3 = pt3d.prod(U1,U2)
+        h = pt3d.abs(V)
+        local f = function(m)
+            return A + pt3d.dot(m-A,U1)*(B-A)/h + pt3d.dot(m-A,U2)*U2 + pt3d.dot(m-A,U3)*U3
+        end
+        self:Savematrix()
+        self:Composematrix3d( matrix3dof(f) )
+    else C = A+V; args = B; B = nil
+    end
+  
+    local dcircle = function()
+        if args.color ~= "" then
+            self:Filloptions("gradient","left color=white, right color="..args.color,args.opacity)
+        else
+            self:Filloptions("none")
+        end
+        self:Dcircle3d(A,R,V)
+        if pt3d.dot(self:MLtransform3d(V),self.Normal) >= 0 then
+            self:Filloptions("none")
+            self:Dcircle3d(C,r,V)
+        else
+            if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
+                self:Filloptions("none")
+                self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                self:Dcircle3d(C,r,V)
+            end
+        end
+    end
+    args = args or {}
+    args.color = args.color or ""
+    args.edgecolor = args.edgecolor or self.param.linecolor
+    args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
@@ -454,77 +666,91 @@ function luadraw_graph3d:Dcone(A,V,r,args)
     local oldlineopacity = self.param.lineopacity
     local oldlinecolor = self.param.linecolor
     local oldlinewidth = self.param.linewidth
-    local C = A+V
-    local I = pt3d.normalize(V)
-    local J = pt3d.prod(I,self.Normal); J = pt3d.normalize(J)
-    if (J == nil) or pt3d.isNul(J) then -- le plan de la base circulaire est l'écran
-        if args.color ~= "" then
-            self:Filloptions("gradient","left color=white, right color="..args.color,args.opacity)
-        else
-            self:Filloptions("none")
-        end
-        self:Dcircle(self:Proj3d(C),r)
+    self:Linecolor(args.edgecolor)
+    if R < r then
+        A, C = C, A; V = -V
+        R, r = r, R
+    end
+    local k = R/(R-r)
+    local H = V
+    local V = k*V
+    local S = A+V
+    local mat = self.matrix3d
+    local N = mLtransform3d(self.Normal,invmatrix3d(mat))
+    local I = pt3d.normalize(V) 
+    local J = pt3d.prod(I,N); J = pt3d.normalize(J)
+    if (J == nil) then -- le plan de la base circulaire est l'écran
+        J = self:ScreenX()
+    end
+    local K = pt3d.prod(I,J) -- base = {A+r.cos(t)J+r.sin(t)K / t in [-pi,pi]}
+    local xn,yn, zn = pt3d.dot(N,I), pt3d.dot(N,J), pt3d.dot(N,K)
+    local W = A-S
+    local xw,yw,zw = pt3d.dot(W,I), pt3d.dot(W,J), pt3d.dot(W,K)
+    local t = solve(function(t) return math.sin(t)*(xn*zw-zn*xw)+math.cos(t)*(xn*yw-xw*yn)+R*xn end,0,2*math.pi)
+    if (t == nil) or (#t == 1) then
+        dcircle()
     else
-        local K = pt3d.prod(I,J) -- on a M = C+r.cos(t)J+r.sin(t)K point de tangence
-        --le plan tangent doit contenir M, et les vecteurs: N=Normal, AM=V+CM et T=-r.sin(t)J+r.cos(t)K
-        -- donc det(T, CM,N)=0 ce qui entraîne sin(t) = r*(N.I)/(N.K)/abs(V)
-        local xn = pt3d.dot(self.Normal,I)
-        local zn = pt3d.dot(self.Normal,K)
-        local x = xn/zn*r/pt3d.abs(V)
-        local t1, t2
-        local angle = self:Arg(self:Proj3d(V))*rad
+        local angle = self:Arg(self:Proj3d(W))*rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 end
-        if x >= 1 then t1 = math.pi/2 
-        elseif x <= -1 then t1 = -math.pi/2 
-        else t1 = math.asin(x) end
-        t2 = math.pi-t1
-        local M1 = C+math.cos(t1)*r*J+math.sin(t1)*r*K
-        local M2 = C+math.cos(t2)*r*J+math.sin(t2)*r*K
-        if args.color == "" then 
-            self:Filloptions("none") 
-        else
-            self:Filloptions("gradient", "left color=white,right color = "..args.color..", shading angle="..strReal(angle),args.opacity)
-        end
-        if args.mode == 1 then self:Linestyle("noline") end
-        if pt3d.dot(self.Normal,V) >= 0 then -- penché vers l'observateur, on voit la base circulaire
-            self:Dpath3d({A,M1,"l",C,M2,r,1,V,"ca","cl"})
-            self:Filloptions("none")
-            self:Darc3d(M1,C,M2,r,-1,V)
-        else -- penché vers l'arrière, on ne voit pas la base circulaire
-            self:Dpath3d({A,M1,"l",C,M2,r,-1,V,"ca","cl"})
-            if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
+        t1, t2 = table.unpack(t) 
+        local M3 = A+math.cos(t1)*R*J+math.sin(t1)*R*K
+        local M4 = A+math.cos(t2)*R*J+math.sin(t2)*R*K
+        if math.cos(t1)*math.sin(t2)-math.cos(t2)*math.sin(t1)< 0 then M3,M4 = M4,M3 end
+        if pt3d.N1(M3-M4) < 1e-12 then -- points confondus
+            dcircle()
+        else    
+            local M1, M2 = table.unpack( scale3d({M3,M4}, r/R, S) )
+            --self:Ddots3d({M1,M2})
+            if args.color == "" then 
+                self:Filloptions("none") 
+            else
+                self:Filloptions("gradient", "left color=white,right color = "..args.color..", shading angle="..strReal(angle),args.opacity)
+            end
+            if args.mode == 1 then self:Linestyle("noline") end
+            local sens = 1
+            --if cpx.det(self:Proj3d(C-M1),self:Proj3d(M2-M1))*cpx.det(self:Proj3d(A-M1),self:Proj3d(M2-M1)) < 0 then sens = -1 end
+            if pt3d.det(I,C-M1,M2-M1)*pt3d.det(I,A-M1,M2-M1) < 0 then sens = -1 end
+            if pt3d.dot(self.Normal,self:MLtransform3d(V)) >= 0 then -- on voit la petite base circulaire (C,r)
+                self:Dpath3d({M3,M1,"l",C,M2,r,sens,V,"ca",M4,"l",A,M3,R,sens,V,"ca"})
                 self:Filloptions("none")
-                self:Lineoptions(args.hiddenstyle,args.hiddencolor)
-                self:Darc3d(M1,C,M2,r,1,V)
+                self:Darc3d(M1,C,M2,r,-sens,V)
+                if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
+                    self:Filloptions("none")
+                    self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                    self:Darc3d(M4,A,M3,R,-sens,V)
+                end
+            else -- la grande base circulaire (A,R)
+                self:Dpath3d({M3,M1,"l",C,M2,r,sens,V,"ca",M4,"l",A,M3,R,sens,V,"ca"})
+                self:Filloptions("none")
+                self:Darc3d(M4,A,M3,R,-sens,V)            
+                if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
+                    self:Filloptions("none")
+                    self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                    self:Darc3d(M1,C,M2,r,-sens,V)
+                end
+            end
+            if args.mode == 1 then -- arêtes
+                self:Linestyle(oldlinestyle) -- la matrice a déjà été changée!
+                self:Dpoly(frustum(A,R,r,H,35,false),{mode=0, hiddenstyle=args.hiddenstyle, hiddencolor=args.hiddencolor})
             end
         end
-        if args.mode == 1 then -- arêtes
-            self:Linestyle(oldlinestyle)
-            self:Dpoly(cone(A,V,r),{mode=0,hiddenstyle=args.hiddenstyle, hiddencolor=args.hiddencolor})
-        end
     end
+    if B ~= nil then self:Restorematrix() end
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
     self:Lineopacity(oldlineopacity)
 end
+
 
 function luadraw_graph3d:Dplane(P,V,L1,L2,mode,draw_options)
 -- dessine des bords du plan P={A,u}
 -- v doit être un vecteur non nul de ce plan
 -- on construit un parallélogramme dont un côté est L1*v/abs(v) et l'autre L2*W/abs(w) où w = u^v
 -- le mode indique les bords à dessiner :
--- mode = 1 : bas et gauche
--- mode = 2 : bas et droite
--- mode = 3 : haut et droite
--- mode = 4 : haut et gauche
--- mode = 5 : les 4 bords sont dessinés
--- mode = -1 : haut, gauche et droite
--- mode = -2 : haut, bas et gauche
--- mode = -3 : bas, gauche et droite
--- mode = -4 : haut, bas et droite
-    if type(mode) == "string" then draw_options = mode; mode = 5 end
-    if mode ==nil then mode = 5 end
+-- mode = [top(0/1), right(0/1), bottom(0/1), left(0/1)]_2 (écriture binaire)
+    if type(mode) == "string" then draw_options = mode; mode = 15 end
+    if mode ==nil then mode = 15 end
     local A, u = table.unpack(P)
     u = pt3d.normalize(u)
     V = pt3d.normalize(V)
@@ -533,17 +759,12 @@ function luadraw_graph3d:Dplane(P,V,L1,L2,mode,draw_options)
     W = L2*W
     --W = V+W
     local Dep, L = A+W/2-V/2, {}
-    if mode == 1 then L = {Dep, Dep-W, Dep-W+V}
-    elseif mode == 2 then L = {Dep-W,Dep+V-W, Dep+V}
-    elseif mode == 3 then L = {Dep+V-W, Dep+V, Dep}
-    elseif mode == 4 then L = {Dep+V, Dep, Dep-W}
-    elseif mode == -1 then L = {Dep-W, Dep, Dep+V, Dep+V-W}
-    elseif mode == -2 then L = {Dep+V, Dep, Dep-W, Dep-W+V}
-    elseif mode == -3 then L = {Dep, Dep-W, Dep-W+V, Dep+V}
-    elseif mode == -4 then L = {Dep, Dep+V, Dep+V-W, Dep-W}
-    else L = {Dep, Dep-W,Dep-W+V, Dep+V}
-    end
-    self:Dpolyline3d(L,(mode == 5),draw_options) 
+    if mode & 8 == 8 then table.insert(L, {Dep, Dep+V}) end -- top
+    if mode & 4 == 4 then table.insert(L, {Dep+V,Dep+V-W}) end --right
+    if mode & 2 == 2 then table.insert(L, {Dep-W,Dep-W+V}) end --bottom
+    if mode & 1 == 1 then table.insert(L, {Dep,Dep-W}) end --left
+    L = merge3d(L)
+    self:Dpolyline3d(L,(mode == 15),draw_options) 
 end
 
 
@@ -551,15 +772,20 @@ function luadraw_graph3d:Dsphere(A,r,args)
 -- dessine une sphère en fil de fer
 -- A est le sommet, r le rayon
 -- args est une table à 5 champs :
--- {mode=0/1/2, hiddenstyle="dotted", hiddencolor = linecolor, color="", opacity=1}
+-- {mode=0/1/2, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor=linecolor,color="", opacity=1}
 -- color = "" : pas de remplissage, color ~= "" remplissage avec ball color
+-- si mode 1 : edgestyle = linestyle, edgecolor = linecolor, edgewidth = linewidth
 -- mode = 0 contour avec équateur
 -- mode = 1 contour avec méridiens et fuseaux
 -- mode = 2 contour seulement (cercle)
     args = args or {}
     args.color = args.color or ""
-    args.hiddencolor = args.hiddencolor or self.param.linecolor
+    args.edgecolor = args.edgecolor or self.param.linecolor
+    args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+    args.edgestyle = args.edgestyle or self.param.linestyle
+    args.edgecolor = args.edgecolor or self.param.linecolor
+    args.edgewidth = args.edgewidth or self.param.linewidth    
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     
@@ -570,23 +796,26 @@ function luadraw_graph3d:Dsphere(A,r,args)
     local oldlineopacity = self.param.lineopacity
     local oldlinecolor = self.param.linecolor
     local oldlinewidth = self.param.linewidth
-
+    self:Linecolor(args.edgecolor)
     local V = (3*self:ScreenY()+self.Normal)/4
     if args.color ~= "" then
         self:Filloptions("gradient", "ball color="..args.color, args.opacity)
     else
         self:Filloptions("none")
     end
-    self:Dcircle(self:Proj3d(A),r)        
+    --self:Dcircle(self:Proj3d(A),r)
+    local mat = invmatrix3d( self.matrix3d )
+    local N = mLtransform3d(self.Normal,mat)
+    self:Dcircle3d(A,r,N)
     if  args.mode == 0 then -- équateur
-        local u = pt3d.normalize(pt3d.prod(self.Normal,V))
+        local u = pt3d.normalize(pt3d.prod(N,V))
         local M1, M2 = A+r*u, A-r*u
-        self:Filloptions("none"); self:Linestyle("solid")
+        self:Filloptions("none"); self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
         self:Darc3d(M1,A,M2,r,1,V)
         self:Lineoptions(args.hiddenstyle,args.hiddencolor)
         self:Darc3d(M1,A,M2,r,-1,V)
     elseif args.mode == 1 then -- grille
-        self:Dpoly(sphere(A,r),{mode=0,hiddenstyle=args.hiddenstyle, hiddencolor=args.hiddencolor})
+        self:Dpoly(sphere(A,r),{mode=0,hiddenstyle=args.hiddenstyle,hiddencolor=args.hiddencolor,edgestyle=args.edgestyle,edgecolor=args.edgecolor,edgewidth=args.edgewidth})
     end
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
@@ -606,13 +835,14 @@ end
 function luadraw_graph3d:Classifyfacet(F)
 -- F est une liste de facettes ou un polyèdre
 -- la fonction renvoie 2 listes : les facettes visibles, et les facettes cachées
-    local list
+    local list, list2
     if F.vertices ~= nil then list = poly2facet(F) else list = F end
+    if not isID3d(self.matrix3d) then list2 = self:Mtransform3d(list) else list2 = list end
     local V, H = {}, {}
-    for _,F in ipairs(list) do
-        if self:Isvisible(F) then table.insert(V,F)
+    for k,facet in ipairs(list2) do
+        if self:Isvisible(facet) then table.insert(V,list[k])
         else
-            table.insert(H,F)
+            table.insert(H,list[k])
         end
     end
     return V, H
@@ -630,10 +860,10 @@ function luadraw_graph3d:Sortfacet(F,backculling)
     backulling = backculling or false
     local rep, aux = {}, {}
     for k,L in ipairs(F1) do -- on travaille sur les sommets transformés
-        local G = isobar3d(L)
-        table.insert(aux, {k,pt3d.dot(G,self.Normal)})
+        local G1 = isobar3d(L)
+        table.insert(aux, {k,pt3d.dot(G1,self.Normal)})
     end
-    table.sort(aux, function(e1,e2) return e1[2]<e2[2] end)
+    table.sort(aux, function(e1,e2) return ((e1[2]<e2[2])) end)
     for _, L in ipairs(aux) do
         if (not backculling) or self:Isvisible(F1[L[1]]) then
             table.insert(rep, F[L[1]])
@@ -657,7 +887,9 @@ function luadraw_graph3d:Edges(P)
 -- { visible= {{A,B},...}, hidden = {{C,D},...} }, les deux champs sont des lignes polygonales 3d (arêtes "mergées")
     local P1 = {}
     P1.facets = P.facets
-    if not isID3d(self.matrix3d) then P1.vertices = mtransform3d(P.vertices,self.matrix3d) else P1.vertices = P.vertices end
+    if not isID3d(self.matrix3d) then 
+        P1.vertices = mtransform3d(P.vertices,self.matrix3d)
+        else P1.vertices = P.vertices end
     local rep = {} -- contiendra la liste des arêtes sous la forme { ab = {{a,b},true/false} ...}
     
     local build = function(F) -- transforme une facette F avec n° de sommets en facette avec coordonnées 3d transformées
@@ -821,7 +1053,7 @@ function luadraw_graph3d:Dedges(edges,args)
 -- args est une table à  5 champs :
 -- args = {hidden=true/false, visible=true/false, hiddenstyle, style=default, hiddencolor=default, color=default, width=default}
     args = args or {}
-    args.hidden = args.hidden or false
+    if args.hidden == nil then args.hidden = Hiddenlines end
     args.color = args.color or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.color
     args.style = args.style or self.param.linestyle
@@ -877,6 +1109,7 @@ function luadraw_graph3d:drawfacet(S,args) -- usage interne
             if ok then 
                 local neg = args.twoside and (coef < 0)
                 coef = round(math.exp( math.log(math.abs(coef))/2.5*args.contrast),4)
+                if notDef(coef) then coef = 0 end
                 if type(args.color) == "string" then
                     if neg then
                         coul = args.color.."!50!white!"..strReal(100*coef).."!black"
@@ -925,7 +1158,7 @@ function luadraw_graph3d:Dpoly(P,args)
     args.edgestyle = args.edgestyle or self.param.linestyle
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
     args.edgecolor = args.edgecolor or self.param.linecolor
-    args.hiddencolor = args.hiddencolor or self.param.linecolor
+    args.hiddencolor = args.hiddencolor or args.edgecolor
     args.edgewidth = args.edgewidth or self.param.linewidth
     args.opacity = args.opacity or 1
     args.backcull = args.backcull or false
@@ -1077,6 +1310,7 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
             if ok then 
                 local neg = twoside and (coef < 0)
                 coef = round(math.exp( math.log(math.abs(coef))/2.5*args.contrast),4)
+                if notDef(coef) then coef = 0 end
                 if type(args.color) == "string" then
                     if neg then
                         coul = args.color.."!50!white!"..strReal(100*coef).."!black"
@@ -1121,6 +1355,7 @@ function luadraw_graph3d:addFacet(facet,args)
 -- facet : une facette ou une liste de facettes (avec points 3d)
 -- args table à 12 champs
 -- {color="white", opacity=1, boxed=false, backcull=false, edgewidth=6, edge=false, edgecolor="black", hidden=false, hiddenstyle="dotted", contrast=1, twoside=false, matrix=ID3d}
+    if facet == nil then return {{"nul"}} end
     args = args or {}
     if isPoint3d(facet[1]) then facet = {facet} end
     local color = args.color or "White"
@@ -1172,6 +1407,7 @@ function luadraw_graph3d:addFacet(facet,args)
                 if coef < 0 then n = -n; sg = -1 end
                 local neg = twoside and (coef < 0)        
                 coef = sg*round(math.exp(math.log(math.abs(coef))/2.5*contrast),4)
+                if notDef(coef) then coef = 0 end
                 local c = math.abs(coef)
                 if type(color) == "string" then
                     if neg then
@@ -1237,14 +1473,15 @@ function luadraw_graph3d:addPolyline(Line,args)
 -- ajouter une ligne polygonale à la scène 3d
 -- L liste de points 3d ou liste de listes de points 3d
 -- args table à 9 champs
--- { color="black", style="solid", width=4, opacity=1, hidden=false, hiddenstyle=dotted, arrows=0/1/2, arrowscale=1, matrix=ID3d }
-    if Line == nil then return end
+-- { color="black", style="solid", width=4, opacity=1, hidden=false, hiddenstyle=dotted, arrows=0/1/2, arrowscale=1, close=true/false, matrix=ID3d }
+    if Line == nil then return {{"nul"}} end
     args = args or {}
     local color = args.color or "black"
     local style = args.style or "solid"
     local width = args.width or 4
     local opacity = args.opacity or 1
     local arrows = args.arrows or 0
+    local close = args.close or false
     local arrowscale = args.arrowscale or 1
     local hidden = args.hidden
     if hidden == nil then hidden = Hiddenlines end
@@ -1265,6 +1502,7 @@ function luadraw_graph3d:addPolyline(Line,args)
         if not isID3d(matrix) then 
             L = mtransform3d(L,matrix)
         end
+        if close then table.insert(L,L[1]) end
         local seg, n = {}, #L
         if arrows >= 1 then --flèche à l'arrivée
             local a, b = L[n], L[n-1]
@@ -1296,6 +1534,7 @@ function luadraw_graph3d:addDots(dots,args)
 -- dots = point 3d, ou liste de points 3d
 -- args table à 4 champs
 -- { color="black", style="ball", scale=1, matrix=ID3d }
+    if dots == nil then return {{"nul"}} end
     args = args or {}
     local color = args.color or "black"
     local style = args.style or "ball"
@@ -1331,10 +1570,9 @@ function luadraw_graph3d:addLabel(...) -- addLabel(text1,dot1,args1, text2,dot2,
         color = args.color or color
         style = args.style or style
         size = args.size or size
-        size = args.size or size
         angle = args.angle or angle
         dist = args.dist or dist
-        showdot = args.showdot or showdot
+        if args.showdot ~= nil then showdot = args.showdot end
         dir = args.dir or dir
         matrix = args.matrix or matrix
         local mat = composematrix3d(self.matrix3d,matrix)
@@ -1421,6 +1659,7 @@ function luadraw_graph3d:addPoly(P,args)
 -- polyedre P = { vertices={points3d}, facets={ {1,2,3}, ...} }
 -- args table à 9 champs
 -- {color="white", opacity=1, backcull=false, edgewidth=6, edge=false, boxed=false, edgecolor="black", hidden=false, hiddenstyle="dotted", contrast=1, twoside=false, matrix=ID3d}
+    if P == nil then return {{"nul"}} end
     args = args or {}
     args.edge = args.edge or false
     args.edgecolor = args.edgecolor or "black"
@@ -1486,10 +1725,45 @@ function luadraw_graph3d:Plane2facet(plane,scale)
     end
 end
 
+function luadraw_graph3d:Line3d2seg(d,scale)
+    scale = scale or 1
+    local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
+    local A, B, L = interDP(d, {M(0,0,z1),vecK})
+    if A ~= nil then
+        B = interDP(d, {M(0,0,z2),vecK})
+        L = cutpolyline3d({A,B}, {M(x1,0,0),vecI})
+        L = cutpolyline3d(L, {M(x2,0,0),-vecI})
+        L = cutpolyline3d(L, {M(0,y1,0),vecJ})
+        L = cutpolyline3d(L, {M(0,y2,0),-vecJ})
+    else
+        A = interDP(d, {M(x1,0,0),vecI})
+        if A ~= nil then
+            B = interDP(d,{M(x2,0,0),vecI})
+            L = cutpolyline3d({A,B}, {M(0,0,z1),vecK})
+            L = cutpolyline3d(L, {M(0,0,z2),-vecK})
+            L = cutpolyline3d(L, {M(0,y1,0),vecJ})
+            L = cutpolyline3d(L, {M(0,y2,0),-vecJ})
+         else
+             A = interDP(d,{M(0,y1,0),vecJ})
+             B = interDP(d,{M(0,y2,0),-vecJ})
+             L = cutpolyline3d({A,B}, {M(0,0,z1),vecK})
+             L = cutpolyline3d(L, {M(0,0,z2),-vecK})
+             L = cutpolyline3d(L, {M(x1,0,0),vecI})
+             L = cutpolyline3d(L, {M(x2,0,0),-vecI})
+        end
+    end
+    if (L ~= nil) then L = L[1] else return end
+    if scale ~= 1 then
+        L = scale3d(L,scale, (L[1]+L[2])/2)
+    end
+    return L
+end
+
 function luadraw_graph3d:addPlane(plane,args)
 -- ajouter un plan à la scène 3d
 -- plane = {A,n}
 -- args table à 12 champs, ceux de addFacet, plus l'option scale=1
+    if plane == nil then return {{"nul"}} end
     args = args or {}
     args.scale = args.scale or 0.75
     local matrix = args.matrix or ID3d
@@ -1532,6 +1806,7 @@ function luadraw_graph3d:addLine(d,args)
 -- d = {A,u} (points 3d)
 -- args table à 8 champs
 -- { color="black", style="solid", width=4, opacity=1, arrows=0/1/2, arrowscale=1, scale = 1, matrix=ID3d }
+    if d == nil then return {{"nul"}} end
     args = args or {}
     args.scale = args.scale or 1
     local matrix = args.matrix or ID3d
@@ -1546,35 +1821,8 @@ function luadraw_graph3d:addLine(d,args)
         d = {C,v}
     end
     args.matrix = ID3d
-    local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
-    local A, B, L = interDP(d, {M(0,0,z1),vecK})
-    if A ~= nil then
-        B = interDP(d, {M(0,0,z2),vecK})
-        L = cutpolyline3d({A,B}, {M(x1,0,0),vecI})
-        L = cutpolyline3d(L, {M(x2,0,0),-vecI})
-        L = cutpolyline3d(L, {M(0,y1,0),vecJ})
-        L = cutpolyline3d(L, {M(0,y2,0),-vecJ})
-    else
-        A = interDP(d, {M(x1,0,0),vecI})
-        if A ~= nil then
-            B = interDP(d,{M(x2,0,0),vecI})
-            L = cutpolyline3d({A,B}, {M(0,0,z1),vecK})
-            L = cutpolyline3d(L, {M(0,0,z2),-vecK})
-            L = cutpolyline3d(L, {M(0,y1,0),vecJ})
-            L = cutpolyline3d(L, {M(0,y2,0),-vecJ})
-         else
-             A = interDP(d,{M(0,y1,0),vecJ})
-             B = interDP(d,{M(0,y2,0),-vecJ})
-             L = cutpolyline3d({A,B}, {M(0,0,z1),vecK})
-             L = cutpolyline3d(L, {M(0,0,z2),-vecK})
-             L = cutpolyline3d(L, {M(x1,0,0),vecI})
-             L = cutpolyline3d(L, {M(x2,0,0),-vecI})
-        end
-    end
-    if (L ~= nil) then L = L[1] else return {{"nul"}} end
-    if args.scale ~= 1 then
-        L = scale3d(L,args.scale, (L[1]+L[2])/2)
-    end
+    local L = self:Line3d2seg(d,args.scale)
+    if (L == nil) then return {{"nul"}} end
     local res = self:addPolyline(L,args)
     self.matrix3d = oldmatrix    
     return res
@@ -1874,7 +2122,7 @@ local eps = 1e-10
                 u = (b-a)/self:Abs(b-a)
                 dirgrad = (args.xyzticks/2)*u
                 table.insert(grad,{a, a+dirgrad})
-                if args.labels then insert(labels, {strReal(x),a+dirgrad+args.xlabelsep*u,{}}) end
+                if args.labels then insert(labels, {gradLabel(x,1,""),a+dirgrad+args.xlabelsep*u,{}}) end
             end
             self:Dpolyline3d(grad)
             self:Dlabel(table.unpack(labels))
@@ -1898,7 +2146,7 @@ local eps = 1e-10
                 u = (b-a)/self:Abs(b-a)
                 dirgrad = (args.xyzticks/2)*u
                 table.insert(grad,{a, a+dirgrad})
-                if args.labels then insert(labels, {strReal(x),a+dirgrad+args.ylabelsep*u,{}}) end
+                if args.labels then insert(labels, {gradLabel(x,1,""),a+dirgrad+args.ylabelsep*u,{}}) end
             end
             self:Dpolyline3d(grad)
             self:Dlabel(table.unpack(labels))
@@ -1922,7 +2170,7 @@ local eps = 1e-10
                 u = (b-a)/self:Abs(b-a)
                 dirgrad = (args.xyzticks/2)*u
                 table.insert(grad,{a, a+dirgrad})
-                if args.labels then insert(labels, {strReal(x),a+dirgrad+args.zlabelsep*u,{}}) end
+                if args.labels then insert(labels, {gradLabel(x,1,""),a+dirgrad+args.zlabelsep*u,{}}) end
             end
             self:Dpolyline3d(grad)
             self:Dlabel(table.unpack(labels))
@@ -1931,10 +2179,10 @@ local eps = 1e-10
     self:Arrows(oldarrows)
     self:Labelstyle(oldlabelstyle)
     if args.drawbox then 
-        self:Begindefer() -- affichage de la boite en fin de graphique
+        self:Begindeferred() -- affichage de la boite en fin de graphique
         self:Dpoly(parallelep(M(xinf,yinf,zinf),M(xsup-xinf,0,0),M(0,ysup-yinf,0),M(0,0,zsup-zinf)),
             {mode=0, edgewidth=2, edgecolor="black", hiddenstyle="noline"})
-        self:Enddefer()
+        self:Enddeferred()
     end
 end
 

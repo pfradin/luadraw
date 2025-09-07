@@ -1,6 +1,6 @@
 -- luadraw__matrix3d.lua (chargé par luadraw__graph3d)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -91,10 +91,10 @@ function matrix3dof(f) -- renvoie la matrice de la fonction f
     return { a, f(M(1,0,0))-a, f(M(0,1,0))-a, f(M(0,0,1))-a }
 end
 
-function invmatrix3d(M)
+function invmatrix3d(M1)
 -- renvoie la matrice inverse (si possible) de la matrice M
-    if (M == nil) or (type(M) ~= "table") or (#M ~= 4) then return end
-    local t, a, b, c = table.unpack(M)
+    if (M1 == nil) or (type(M1) ~= "table") or (#M1 ~= 4) then return end
+    local t, a, b, c = table.unpack(M1)
     local u, v, w, d = pt3d.prod(b,c), pt3d.prod(c,a), pt3d.prod(a,b), pt3d.det(a,b,c)
     if d ~= 0 then
         local a1 = M(u.x,v.x,w.x)/d

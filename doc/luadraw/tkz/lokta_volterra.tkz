@@ -1,6 +1,4 @@
-\begin{tikzpicture}%
-\useasboundingbox (-0.5,-0.5) rectangle (9.5,9.5);%
-\draw (-0.5,-0.5) rectangle (9.5,9.5);%
+\begin{tikzpicture}[background rectangle/.style={,draw=black},show background rectangle]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,9.5);%
 \draw[-] (0.8182,0.8182) -- (9,0.8182);%

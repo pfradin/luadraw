@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -185,14 +185,16 @@ function circle3db(C,R,normal)
     end
     u = pt3d.normalize(u); v = pt3d.prod(N,u)
     local S = circleb(0,R) -- dans le repère (C,u,v)
-    local chem = {}
-    for _, P in ipairs(S) do
-        if type(P) == "string" then table.insert(chem,P)
-        else
-            table.insert(chem, C+P.re*u+P.im*v)
+    if S ~= nil then
+        local chem = {}
+        for _, P in ipairs(S) do
+            if type(P) == "string" then table.insert(chem,P)
+            else
+                table.insert(chem, C+P.re*u+P.im*v)
+            end
         end
+        return chem -- renvoie un chemin en courbes de Bézier
     end
-    return chem -- renvoie un chemin en courbes de Bézier
 end
 
 -- cercle en ligne polygonale
@@ -205,6 +207,79 @@ function circle3d(A,r,normal)
         if pt3d.isNul(u) then return end
     end
     return arc3d(A+u,A,A+u,r,1,normal, args )
+end
+
+-- cercles de l'espace, ou sphères, circonscrits ou inscrits 
+function circumcircle3d(A,B,C)
+    local n = pt3d.normalize(pt3d.prod(B-A,C-A))
+    local u = pt3d.normalize(B-A)
+    local v = pt3d.prod(n,u)
+    -- now we can do 2d geometry with complex in the direct orthonormal frame (A,u,v)
+    local a, b, c = 0, pt3d.abs(B-A), Z(pt3d.dot(C-A,u), pt3d.dot(C-A,v)) -- affixes of A, B and C
+    local I = interD( med(a,b), med(b,c) ) --intersection of the perpendicular bisectors of the sides
+    local radius =cpx.abs(I)
+    return A+I.re*u+I.im*v, radius, n
+end
+
+function incircle3d(A,B,C) -- returns center, radius, normal
+    local n = pt3d.normalize(pt3d.prod(B-A,C-A))
+    local u = pt3d.normalize(B-A)
+    local v = pt3d.prod(n,u)
+    -- now we can do 2d geometry with complex in the direct orthonormal frame (A,u,v)
+    local a, b, c = 0, pt3d.abs(B-A), Z(pt3d.dot(C-A,u), pt3d.dot(C-A,v)) -- affixes of A, B and C
+    local I = interD( bissec(b,a,c), bissec(a,b,c) ) --intersection of interior bisectors
+    local radius =cpx.abs(I-proj(I,{0,b}))
+    return A+I.re*u+I.im*v, radius, n
+end
+
+function circumsphere(A,B,C,D) -- circumsphere for a tetrahedron, returns center, radius
+    local P1,P2,P3 = {(A+B)/2, B-A}, {(B+C)/2,B-C}, {(C+D)/2,C-D}
+    local D = interPP(P1,P2)
+    if D ~= nil then
+        local I = interDP(D,P3)
+        if I ~= nil then
+            return I, pt3d.abs(I-A)
+        end
+    end
+end
+
+function insphere(A,B,C,D) -- insphere for a tetrahedron, returns center, radius
+    local hA = pt3d.abs(A-proj3d(A,{B,pt3d.prod(C-B,D-B)}))
+    local hB = pt3d.abs(B-proj3d(B,{C,pt3d.prod(D-C,A-C)}))
+    local hC = pt3d.abs(C-proj3d(C,{D,pt3d.prod(A-D,B-D)}))
+    local hD = pt3d.abs(D-proj3d(D,{A,pt3d.prod(B-A,C-A)}))
+    local S = 1/hA+1/hB+1/hC+1/hD
+    local I = (A/hA+B/hB+C/hC+D/hD)/S
+    local R = 1/S
+    if (I ~= nil) and (R ~= nil)  then
+            return I, R  -- center, radius
+        end
+end
+
+function tetra_len(ab,ac,ad,bc,bd,cd)  -- The arguments are the lengths of the 6 sides.
+    local A, B = Origin, ab*vecI
+    local alpha = math.acos((ab^2+ac^2-bc^2)/(ab*ac)/2)
+    local c = ac*cpx.exp(cpx.I*alpha)
+    local C = M(c.re, c.im,0)
+    local xd = (ad^2-bd^2+ab^2)/ab/2
+    local yd = (C.x^2+C.y^2-2*xd*C.x-cd^2+ad^2)/C.y/2
+    local zd = math.sqrt(ad^2-xd^2-yd^2)
+    local D = M(xd,yd,zd)
+    return A,B,C,D -- returns 4 vertices of tetrahedron, A is at Origin, B is on x-axe, A,B and C are on xy-plane
+end
+
+-- 3d triangles
+
+function sss_triangle3d(ab,bc,ac)  -- returns 3 points A,B,C (table), the arguments are the lengths of the 3 sides.
+    return map(toPoint3d, sss_triangle(ab,bc,ac)) -- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
+end
+
+function sas_triangle3d(ab,gamma,ac)  -- returns 3 points A,B,C (table), the arguments are length, angle (AB,AC) (degrees), length
+    return map(toPoint3d, sas_triangle(ab,gamma,ac)) -- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
+end
+
+function asa_triangle3d(alpha,ab,beta) -- returns 3 points A,B,C (table), the arguments are a length, angles (AB,AC) and (BA,BC)
+    return map(toPoint3d, asa_triangle(alpha,ab,beta)) --- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
 end
 
 ---- intersections
@@ -233,6 +308,59 @@ function interDD(D1,D2,eps) -- intersection droite/droite
     if  math.abs(pt3d.det(A2-A1, u1, u2)) <= eps then 
         return A1 + pt3d.det(A2-A1, u2, n)/pt3d.dot(n,n)*u1
     end
+end
+
+function interPS(P,S) -- intersection of plane P={A,n} with sphere S={C,r}, returns nil or a circle
+    local C, r = table.unpack(S)
+    local I = proj3d(C,P)
+    local d, R, u = pt3d.abs(C-I)
+    if d > r then return end -- no intersection
+    if d < 1e-12 then --d quasi nul
+        I = C; R = r --big circle
+    else
+        R = math.sqrt(r^2-d^2) -- radius
+    end
+    return I,R,P[2] -- center, radius, normal vector
+end
+
+function interSS(S1,S2) -- intersection of sphere S1={C1,R1} and S2={C2,R2}, returns nil or a circle
+    local C1,R1 = table.unpack(S1)
+    local C2,R2 = table.unpack(S2)
+    local d = pt3d.abs(C2-C1)
+    if (d > R1+R2) or (d < math.abs(R2-R1)) then return end -- no intersection
+    local t = (R2^2-R1^2)/(2*d^2)+1/2
+    local I = C2+t*(C1-C2) -- center
+    local R = math.sqrt(R1^2-pt3d.abs(I-C1)^2) -- radius
+    return I,R,C2-C1 -- center, radius, normal vector
+end
+
+function interDS(D,S) -- intersection of line D={A,u} with sphere S={C,r}, returns nil or one or two points
+    local C, r = table.unpack(S)
+    local I = dproj3d(C,D)
+    local d = pt3d.abs(C-I)
+    if d > r then return end -- no intersection
+    local A,u = table.unpack(D)
+    u = pt3d.normalize(u)
+    local delta = math.sqrt(r^2-d^2)
+    local A1, A2 = I+delta*u, I-delta*u
+    if A2 == A1 then return A1
+    else return A1, A2
+    end
+end
+
+function interSSS(S1,S2,S3)-- intersection of 3 sphere S1={C1,R1}  S2={C2,R2} and S3= {C3,R3}
+    local I1,r1,n1 = interSS(S1,S2) -- nil or circle
+    if I1 == nil then return end
+    local I2, r2, n2 = interPS({I1,n1},S3)
+    if I2 == nil then return end
+    local d = pt3d.abs(I2-I1)
+    if (d > r1+r2) or (d < math.abs(r2-r1)) then return end
+    local k = (d^2+r1^2-r2^2)/(r1*d*2)
+    if k > 1 then k = 1 elseif k < -1 then k = -1 end
+    local alpha = math.acos(k)*rad
+    local I3 = I1 + r1*(I2-I1)/d
+    local A, B = rotate3d(I3,alpha,{I1,n1}), rotate3d(I3,-alpha,{I1,n1})
+    if A == B then return A else return A, B end
 end
 
 

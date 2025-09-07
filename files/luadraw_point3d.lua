@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2025/07/04
--- version 2.0
+-- date 2025/09/07
+-- version 2.1
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -78,7 +78,13 @@ function point3d.__unm(u)
 end
 
 ---------------- fonctions mathématiques pour nombres complexes 
---  module
+--  norme au carré
+function point3d.abs2(u)
+    if (u == nil) then return end
+    return u.x^2+u.y^2+u.z^2
+end
+
+--  norme au carré
 function point3d.abs(u)
     if (u == nil) then return end
     local x, y, z = math.abs(u.x), math.abs(u.y), math.abs(u.z)
@@ -106,6 +112,19 @@ function point3d.dot(u,v)
     local rep = u.x*v.x + u.y*v.y + u.z*v.z
     if isNul(rep) then return 0 -- nullité à epsilon près
     else return rep
+    end
+end
+
+function point3d.angle(V1,V2,epsilon) --ecart angulaire
+-- renvoie l'écart angulaire (radians) entre les vecteurs 3d V1 et V2 supposés non nuls
+    epsilon = epsilon or 0
+    V1 = point3d.normalize(V1); V2 = point3d.normalize(V2)
+    if (V1 == nil) or (V2 == nil) then return end
+    local alpha = point3d.dot(V1,V2)
+    if alpha >= 1-epsilon then 
+        return 0 
+    elseif alpha <= -1+epsilon then return math.pi 
+    else return math.acos(alpha)
     end
 end
 
@@ -156,7 +175,7 @@ function M(x,y,z)
 end
 
 -- création simplifiée en sphérique
-function Ms(r,theta,phi)
+function Ms(r,theta,phi) -- theta et phi en radians
     if (r == nil) or (theta == nil) or (phi == nil) or notDef(r) or notDef(theta) or notDef(phi) then return end
     return point3d:new(r*math.cos(theta)*math.sin(phi), r*math.sin(theta)*math.sin(phi), r*math.cos(phi))
 end
@@ -168,16 +187,7 @@ function Mc(r,theta,z)
 end
 
 function angle3d(V1,V2,epsilon)
--- renvoie l'écart angulaire (radians) entre les vecteurs 3d V1 et V2 supposés non nuls
-    epsilon = epsilon or 0
-    V1 = point3d.normalize(V1); V2 = point3d.normalize(V2)
-    if (V1 == nil) or (V2 == nil) then return end
-    local alpha = point3d.dot(V1,V2)
-    if alpha >= 1-epsilon then 
-        return 0 
-    elseif alpha <= -1+epsilon then return math.pi 
-    else return math.acos(alpha)
-    end
+    return point3d.angle(V1,V2,epsilon)
 end
 
 function isobar3d(L)
