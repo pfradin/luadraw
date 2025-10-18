@@ -1123,14 +1123,15 @@ end
 
 function luadraw_graph3d:Dedges(edges,args)
 -- dessine les arêtes edges = {visible={{A,B},...}, hidden={{C,D},...} }
--- args est une table à  5 champs :
--- args = {hidden=true/false, visible=true/false, hiddenstyle, style=default, hiddencolor=default, color=default, width=default}
+-- args est une table à  6 champs :
+-- args = {hidden=true/false, visible=true/false, clip=false, hiddenstyle, style=default, hiddencolor=default, color=default, width=default}
     args = args or {}
     if args.hidden == nil then args.hidden = Hiddenlines end
     args.color = args.color or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.color
     args.style = args.style or self.param.linestyle
     args.width = args.width or self.param.linewidth
+    args.clip = args.clip or false
     if args.visible == nil then args.visible = true end
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
     local oldfillstyle = self.param.fillstyle
@@ -1140,11 +1141,11 @@ function luadraw_graph3d:Dedges(edges,args)
     self:Filloptions("none")
     if args.hidden and (args.hiddenstyle ~= "noline") then
         self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.width)    
-        self:Dpolyline3d(edges.hidden,false)
+        self:Dpolyline3d(edges.hidden,false,"",args.clip)
     end
     if args.visible then 
         self:Lineoptions(args.style,args.color,args.width)    
-        self:Dpolyline3d(edges.visible,false) 
+        self:Dpolyline3d(edges.visible,false,"",args.clip) 
     end
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth)
     self:Filloptions(oldfillstyle)
