@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,9.0714285714286);%
-\pgfsetroundjoin%
 \pgfsetfillcolor{LightGray}%
 \fill[] (6.8264,0.4593) -- (0.8879,2.1736) -- (2.6022,3.6582) -- (8.5407,1.944)--cycle;%
 \fill[] (8.5407,6.3978) -- (2.6022,8.1121) -- (2.6022,3.6582) -- (8.5407,1.944)--cycle;%
@@ -81,7 +80,7 @@
 \draw[] (0.8879,5.8852) -- (0.7918,5.9129);%
 \draw[] (0.8879,6.6275) -- (0.7918,6.6552);%
 \draw[-] (0.0713,4.6363) node[] {$z$} (0.5516,2.2707) node[] {$-3$} (0.5516,3.013) node[] {$-2$} (0.5516,3.7553) node[] {$-1$} (0.5516,4.4976) node[] {$0$} (0.5516,5.2399) node[] {$1$} (0.5516,5.9822) node[] {$2$} (0.5516,6.7245) node[] {$3$};%
-\draw[red,line width=2.4pt] (5.5714,2.8011) -- (5.2336,2.8924) -- (4.8892,2.9732) -- (4.5427,3.0425) -- (4.1982,3.0995) -- (3.8603,3.1433) -- (3.5331,3.1736) -- (3.2208,3.1898) -- (2.9273,3.1918) -- (2.6562,3.1795) -- (2.411,3.1531) -- (2.1948,3.113) -- (2.0102,3.0596) -- (1.8597,2.9937) -- (1.7451,2.9159) -- (1.6678,2.8274) -- (1.6288,2.7293) -- (1.6286,2.6227) -- (1.6672,2.509) -- (1.7441,2.3896) -- (1.8584,2.2661) -- (2.0086,2.14) -- (2.1929,2.0129) -- (2.4088,1.8863) -- (2.6537,1.7619) -- (2.9246,1.6412) -- (3.2179,1.5258) -- (3.5301,1.4171) -- (3.8571,1.3165) -- (4.195,1.2252) -- (4.5393,1.1444) -- (4.8859,1.075) -- (5.2303,1.0181) -- (5.5682,0.9742) -- (5.8954,0.944) -- (6.2078,0.9278) -- (6.5013,0.9258) -- (6.7724,0.9381) -- (7.0176,0.9645) -- (7.2338,1.0046) -- (7.4183,1.058) -- (7.5689,1.1239) -- (7.6835,1.2016) -- (7.7608,1.2902) -- (7.7998,1.3883) -- (7.8,1.4949) -- (7.7614,1.6086) -- (7.6844,1.728) -- (7.5701,1.8515) -- (7.4199,1.9776) -- (7.2357,2.1047) -- (7.0198,2.2313) -- (6.7748,2.3557) -- (6.504,2.4763) -- (6.2107,2.5918) -- (5.8985,2.7005) -- (5.5714,2.8011);%
+\draw[red,line width=2.4pt] (5.5714,2.8011) -- (4.8892,2.9732) -- (4.1982,3.0995) -- (3.8603,3.1433) -- (3.5331,3.1736) -- (3.2208,3.1898) -- (2.9273,3.1918) -- (2.6562,3.1795) -- (2.411,3.1531) -- (2.1948,3.113) -- (2.0102,3.0596) -- (1.8597,2.9937) -- (1.7451,2.9159) -- (1.6678,2.8274) -- (1.6288,2.7293) -- (1.6286,2.6227) -- (1.6672,2.509) -- (1.7441,2.3896) -- (1.8584,2.2661) -- (2.0086,2.14) -- (2.1929,2.0129) -- (2.4088,1.8863) -- (2.6537,1.7619) -- (3.2179,1.5258) -- (3.8571,1.3165) -- (4.5393,1.1444) -- (5.2303,1.0181) -- (5.5682,0.9742) -- (5.8954,0.944) -- (6.2078,0.9278) -- (6.5013,0.9258) -- (6.7724,0.9381) -- (7.0176,0.9645) -- (7.2338,1.0046) -- (7.4183,1.058) -- (7.5689,1.1239) -- (7.6835,1.2016) -- (7.7608,1.2902) -- (7.7998,1.3883) -- (7.8,1.4949) -- (7.7614,1.6086) -- (7.6844,1.728) -- (7.5701,1.8515) -- (7.4199,1.9776) -- (7.2357,2.1047) -- (7.0198,2.2313) -- (6.7748,2.3557) -- (6.2107,2.5918) -- (5.5714,2.8011);%
 \pgfsetfillcolor{LightBlue!50!white!63.73!black}%
 \pgfsetstrokecolor{LightBlue!50!white!63.73!black}%
 \pgfsetlinewidth{0.1pt}%
@@ -107,51 +106,39 @@
 \pgfsetfillcolor{LightBlue!50!white!39.11!black}%
 \pgfsetstrokecolor{LightBlue!50!white!39.11!black}%
 \draw[fill] (2.1948,3.113) -- (2.0102,3.0596) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!68.17!black}%
-\pgfsetstrokecolor{LightBlue!50!white!68.17!black}%
-\draw[fill] (4.5427,3.0425) -- (4.1982,3.0995) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!68.24!black}%
+\pgfsetstrokecolor{LightBlue!50!white!68.24!black}%
+\draw[fill] (4.8892,2.9732) -- (4.1982,3.0995) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!14.06!black}%
 \pgfsetstrokecolor{LightBlue!50!white!14.06!black}%
 \draw[fill] (2.0102,3.0596) -- (1.8597,2.9937) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!67.94!black}%
-\pgfsetstrokecolor{LightBlue!50!white!67.94!black}%
-\draw[fill] (4.8892,2.9732) -- (4.5427,3.0425) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!38.07!black}%
 \pgfsetstrokecolor{LightBlue!38.07!black}%
 \draw[fill] (1.8597,2.9937) -- (1.7451,2.9159) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!67.29!black}%
-\pgfsetstrokecolor{LightBlue!50!white!67.29!black}%
-\draw[fill] (5.2336,2.8924) -- (4.8892,2.9732) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!66.94!black}%
+\pgfsetstrokecolor{LightBlue!50!white!66.94!black}%
+\draw[fill] (5.5714,2.8011) -- (4.8892,2.9732) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!51.5!black}%
 \pgfsetstrokecolor{LightBlue!51.5!black}%
 \draw[fill] (1.7451,2.9159) -- (1.6678,2.8274) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!66.21!black}%
-\pgfsetstrokecolor{LightBlue!50!white!66.21!black}%
-\draw[fill] (5.5714,2.8011) -- (5.2336,2.8924) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!60.94!black}%
 \pgfsetstrokecolor{LightBlue!60.94!black}%
 \draw[fill] (1.6678,2.8274) -- (1.6288,2.7293) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!64.68!black}%
-\pgfsetstrokecolor{LightBlue!50!white!64.68!black}%
-\draw[fill] (5.8985,2.7005) -- (5.5714,2.8011) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!63.87!black}%
+\pgfsetstrokecolor{LightBlue!50!white!63.87!black}%
+\draw[fill] (6.2107,2.5918) -- (5.5714,2.8011) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!68.17!black}%
 \pgfsetstrokecolor{LightBlue!68.17!black}%
 \draw[fill] (1.6288,2.7293) -- (1.6286,2.6227) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!62.64!black}%
-\pgfsetstrokecolor{LightBlue!50!white!62.64!black}%
-\draw[fill] (6.2107,2.5918) -- (5.8985,2.7005) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!73.84!black}%
 \pgfsetstrokecolor{LightBlue!73.84!black}%
 \draw[fill] (1.6286,2.6227) -- (1.6672,2.509) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!59.98!black}%
-\pgfsetstrokecolor{LightBlue!50!white!59.98!black}%
-\draw[fill] (6.504,2.4763) -- (6.2107,2.5918) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!58.52!black}%
+\pgfsetstrokecolor{LightBlue!50!white!58.52!black}%
+\draw[fill] (6.7748,2.3557) -- (6.2107,2.5918) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!78.33!black}%
 \pgfsetstrokecolor{LightBlue!78.33!black}%
 \draw[fill] (1.6672,2.509) -- (1.7441,2.3896) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!56.52!black}%
-\pgfsetstrokecolor{LightBlue!50!white!56.52!black}%
-\draw[fill] (6.7748,2.3557) -- (6.504,2.4763) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!81.92!black}%
 \pgfsetstrokecolor{LightBlue!81.92!black}%
 \draw[fill] (1.7441,2.3896) -- (1.8584,2.2661) -- (4.7143,4.2857)--cycle;%
@@ -185,9 +172,6 @@
 \pgfsetfillcolor{LightBlue!50!white!99.25!black}%
 \pgfsetstrokecolor{LightBlue!50!white!99.25!black}%
 \draw[fill] (2.9273,7.6456) -- (3.2208,7.6436) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!92.21!black}%
-\pgfsetstrokecolor{LightBlue!92.21!black}%
-\draw[fill] (2.6537,1.7619) -- (2.9246,1.6412) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!98.82!black}%
 \pgfsetstrokecolor{LightBlue!50!white!98.82!black}%
 \draw[fill] (2.6562,7.6333) -- (2.9273,7.6456) -- (4.7143,4.2857)--cycle;%
@@ -206,96 +190,78 @@
 \pgfsetfillcolor{LightBlue!50!white!96.51!black}%
 \pgfsetstrokecolor{LightBlue!50!white!96.51!black}%
 \draw[fill] (2.1948,7.5668) -- (2.411,7.607) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!92.85!black}%
+\pgfsetstrokecolor{LightBlue!92.85!black}%
+\draw[fill] (2.6537,1.7619) -- (3.2179,1.5258) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!98.86!black}%
 \pgfsetstrokecolor{LightBlue!50!white!98.86!black}%
 \draw[fill] (3.8603,7.5972) -- (4.1982,7.5533) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!94.32!black}%
 \pgfsetstrokecolor{LightBlue!50!white!94.32!black}%
 \draw[fill] (2.0102,7.5135) -- (2.1948,7.5668) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!98.38!black}%
-\pgfsetstrokecolor{LightBlue!50!white!98.38!black}%
-\draw[fill] (4.1982,7.5533) -- (4.5427,7.4964) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!93.44!black}%
-\pgfsetstrokecolor{LightBlue!93.44!black}%
-\draw[fill] (2.9246,1.6412) -- (3.2179,1.5258) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!59.61!black}%
 \pgfsetstrokecolor{LightBlue!59.61!black}%
 \draw[fill] (7.8,1.4949) -- (7.7614,1.6086) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!98.11!black}%
+\pgfsetstrokecolor{LightBlue!50!white!98.11!black}%
+\draw[fill] (4.1982,7.5533) -- (4.8892,7.4271) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!91.24!black}%
 \pgfsetstrokecolor{LightBlue!50!white!91.24!black}%
 \draw[fill] (1.8597,7.4475) -- (2.0102,7.5135) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!97.8!black}%
-\pgfsetstrokecolor{LightBlue!50!white!97.8!black}%
-\draw[fill] (4.5427,7.4964) -- (4.8892,7.4271) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!94.53!black}%
-\pgfsetstrokecolor{LightBlue!94.53!black}%
-\draw[fill] (3.2179,1.5258) -- (3.5301,1.4171) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!87.14!black}%
 \pgfsetstrokecolor{LightBlue!50!white!87.14!black}%
 \draw[fill] (1.7451,7.3698) -- (1.8597,7.4475) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!97.12!black}%
-\pgfsetstrokecolor{LightBlue!50!white!97.12!black}%
-\draw[fill] (4.8892,7.4271) -- (5.2336,7.3462) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!68.24!black}%
 \pgfsetstrokecolor{LightBlue!68.24!black}%
 \draw[fill] (7.7998,1.3883) -- (7.8,1.4949) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!95.02!black}%
+\pgfsetstrokecolor{LightBlue!95.02!black}%
+\draw[fill] (3.2179,1.5258) -- (3.8571,1.3165) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!96.75!black}%
+\pgfsetstrokecolor{LightBlue!50!white!96.75!black}%
+\draw[fill] (4.8892,7.4271) -- (5.5714,7.2549) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!81.95!black}%
 \pgfsetstrokecolor{LightBlue!50!white!81.95!black}%
 \draw[fill] (1.6678,7.2813) -- (1.7451,7.3698) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!95.49!black}%
-\pgfsetstrokecolor{LightBlue!95.49!black}%
-\draw[fill] (3.5301,1.4171) -- (3.8571,1.3165) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!96.35!black}%
-\pgfsetstrokecolor{LightBlue!50!white!96.35!black}%
-\draw[fill] (5.2336,7.3462) -- (5.5714,7.2549) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!75.65!black}%
 \pgfsetstrokecolor{LightBlue!75.65!black}%
 \draw[fill] (7.7608,1.2902) -- (7.7998,1.3883) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!75.65!black}%
 \pgfsetstrokecolor{LightBlue!50!white!75.65!black}%
 \draw[fill] (1.6288,7.1831) -- (1.6678,7.2813) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!96.35!black}%
-\pgfsetstrokecolor{LightBlue!96.35!black}%
-\draw[fill] (3.8571,1.3165) -- (4.195,1.2252) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!95.49!black}%
-\pgfsetstrokecolor{LightBlue!50!white!95.49!black}%
-\draw[fill] (5.5714,7.2549) -- (5.8985,7.1543) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!81.95!black}%
 \pgfsetstrokecolor{LightBlue!81.95!black}%
 \draw[fill] (7.6835,1.2016) -- (7.7608,1.2902) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!96.75!black}%
+\pgfsetstrokecolor{LightBlue!96.75!black}%
+\draw[fill] (3.8571,1.3165) -- (4.5393,1.1444) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!95.02!black}%
+\pgfsetstrokecolor{LightBlue!50!white!95.02!black}%
+\draw[fill] (5.5714,7.2549) -- (6.2107,7.0456) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!68.24!black}%
 \pgfsetstrokecolor{LightBlue!50!white!68.24!black}%
 \draw[fill] (1.6286,7.0765) -- (1.6288,7.1831) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!97.12!black}%
-\pgfsetstrokecolor{LightBlue!97.12!black}%
-\draw[fill] (4.195,1.2252) -- (4.5393,1.1444) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!87.14!black}%
 \pgfsetstrokecolor{LightBlue!87.14!black}%
 \draw[fill] (7.5689,1.1239) -- (7.6835,1.2016) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!94.53!black}%
-\pgfsetstrokecolor{LightBlue!50!white!94.53!black}%
-\draw[fill] (5.8985,7.1543) -- (6.2107,7.0456) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!97.8!black}%
-\pgfsetstrokecolor{LightBlue!97.8!black}%
-\draw[fill] (4.5393,1.1444) -- (4.8859,1.075) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!91.24!black}%
 \pgfsetstrokecolor{LightBlue!91.24!black}%
 \draw[fill] (7.4183,1.058) -- (7.5689,1.1239) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!98.11!black}%
+\pgfsetstrokecolor{LightBlue!98.11!black}%
+\draw[fill] (4.5393,1.1444) -- (5.2303,1.0181) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!59.61!black}%
 \pgfsetstrokecolor{LightBlue!50!white!59.61!black}%
 \draw[fill] (1.6672,6.9628) -- (1.6286,7.0765) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!93.44!black}%
-\pgfsetstrokecolor{LightBlue!50!white!93.44!black}%
-\draw[fill] (6.2107,7.0456) -- (6.504,6.9302) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!98.38!black}%
-\pgfsetstrokecolor{LightBlue!98.38!black}%
-\draw[fill] (4.8859,1.075) -- (5.2303,1.0181) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!94.32!black}%
 \pgfsetstrokecolor{LightBlue!94.32!black}%
 \draw[fill] (7.2338,1.0046) -- (7.4183,1.058) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!98.86!black}%
 \pgfsetstrokecolor{LightBlue!98.86!black}%
 \draw[fill] (5.2303,1.0181) -- (5.5682,0.9742) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!50!white!92.85!black}%
+\pgfsetstrokecolor{LightBlue!50!white!92.85!black}%
+\draw[fill] (6.2107,7.0456) -- (6.7748,6.8095) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!96.51!black}%
 \pgfsetstrokecolor{LightBlue!96.51!black}%
 \draw[fill] (7.0176,0.9645) -- (7.2338,1.0046) -- (4.7143,4.2857)--cycle;%
@@ -314,9 +280,6 @@
 \pgfsetfillcolor{LightBlue!98.82!black}%
 \pgfsetstrokecolor{LightBlue!98.82!black}%
 \draw[fill] (6.5013,0.9258) -- (6.7724,0.9381) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!50!white!92.21!black}%
-\pgfsetstrokecolor{LightBlue!50!white!92.21!black}%
-\draw[fill] (6.504,6.9302) -- (6.7748,6.8095) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!99.25!black}%
 \pgfsetstrokecolor{LightBlue!99.25!black}%
 \draw[fill] (6.2078,0.9278) -- (6.5013,0.9258) -- (4.7143,4.2857)--cycle;%
@@ -350,51 +313,39 @@
 \pgfsetfillcolor{LightBlue!50!white!81.92!black}%
 \pgfsetstrokecolor{LightBlue!50!white!81.92!black}%
 \draw[fill] (7.5701,6.3053) -- (7.6844,6.1818) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!56.52!black}%
-\pgfsetstrokecolor{LightBlue!56.52!black}%
-\draw[fill] (2.9246,6.0951) -- (2.6537,6.2157) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!78.33!black}%
 \pgfsetstrokecolor{LightBlue!50!white!78.33!black}%
 \draw[fill] (7.6844,6.1818) -- (7.7614,6.0625) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!59.98!black}%
-\pgfsetstrokecolor{LightBlue!59.98!black}%
-\draw[fill] (3.2179,5.9797) -- (2.9246,6.0951) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!58.52!black}%
+\pgfsetstrokecolor{LightBlue!58.52!black}%
+\draw[fill] (3.2179,5.9797) -- (2.6537,6.2157) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!73.84!black}%
 \pgfsetstrokecolor{LightBlue!50!white!73.84!black}%
 \draw[fill] (7.7614,6.0625) -- (7.8,5.9488) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!62.64!black}%
-\pgfsetstrokecolor{LightBlue!62.64!black}%
-\draw[fill] (3.5301,5.871) -- (3.2179,5.9797) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!68.17!black}%
 \pgfsetstrokecolor{LightBlue!50!white!68.17!black}%
 \draw[fill] (7.8,5.9488) -- (7.7998,5.8422) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!64.68!black}%
-\pgfsetstrokecolor{LightBlue!64.68!black}%
-\draw[fill] (3.8571,5.7703) -- (3.5301,5.871) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!63.87!black}%
+\pgfsetstrokecolor{LightBlue!63.87!black}%
+\draw[fill] (3.8571,5.7703) -- (3.2179,5.9797) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!60.94!black}%
 \pgfsetstrokecolor{LightBlue!50!white!60.94!black}%
 \draw[fill] (7.7998,5.8422) -- (7.7608,5.744) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!66.21!black}%
-\pgfsetstrokecolor{LightBlue!66.21!black}%
-\draw[fill] (4.195,5.679) -- (3.8571,5.7703) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!51.5!black}%
 \pgfsetstrokecolor{LightBlue!50!white!51.5!black}%
 \draw[fill] (7.7608,5.744) -- (7.6835,5.6555) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!67.29!black}%
-\pgfsetstrokecolor{LightBlue!67.29!black}%
-\draw[fill] (4.5393,5.5982) -- (4.195,5.679) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!66.94!black}%
+\pgfsetstrokecolor{LightBlue!66.94!black}%
+\draw[fill] (4.5393,5.5982) -- (3.8571,5.7703) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!50!white!38.07!black}%
 \pgfsetstrokecolor{LightBlue!50!white!38.07!black}%
 \draw[fill] (7.6835,5.6555) -- (7.5689,5.5778) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!67.94!black}%
-\pgfsetstrokecolor{LightBlue!67.94!black}%
-\draw[fill] (4.8859,5.5289) -- (4.5393,5.5982) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!14.06!black}%
 \pgfsetstrokecolor{LightBlue!14.06!black}%
 \draw[fill] (7.5689,5.5778) -- (7.4183,5.5118) -- (4.7143,4.2857)--cycle;%
-\pgfsetfillcolor{LightBlue!68.17!black}%
-\pgfsetstrokecolor{LightBlue!68.17!black}%
-\draw[fill] (5.2303,5.4719) -- (4.8859,5.5289) -- (4.7143,4.2857)--cycle;%
+\pgfsetfillcolor{LightBlue!68.24!black}%
+\pgfsetstrokecolor{LightBlue!68.24!black}%
+\draw[fill] (5.2303,5.4719) -- (4.5393,5.5982) -- (4.7143,4.2857)--cycle;%
 \pgfsetfillcolor{LightBlue!39.11!black}%
 \pgfsetstrokecolor{LightBlue!39.11!black}%
 \draw[fill] (7.4183,5.5118) -- (7.2338,5.4584) -- (4.7143,4.2857)--cycle;%
@@ -422,7 +373,6 @@
 \pgfsetfillcolor{black}%
 \pgfsetstrokecolor{black}%
 \pgfsetlinewidth{0.4pt}%
-\draw[red,line width=0.8pt] (3.8571,5.7703) -- (4.195,5.679) -- (4.5393,5.5982) -- (4.8859,5.5289) -- (5.2303,5.4719) -- (5.5682,5.4281) -- (5.8954,5.3979) -- (6.2078,5.3817) -- (6.5013,5.3797) -- (6.7724,5.3919) -- (7.0176,5.4183) -- (7.2338,5.4584) -- (7.4183,5.5118) -- (7.5689,5.5778) -- (7.6835,5.6555) -- (7.7608,5.744) -- (7.7998,5.8422) -- (7.8,5.9488) -- (7.7614,6.0625) -- (7.6844,6.1818) -- (7.5701,6.3053) -- (7.4199,6.4314) -- (7.2357,6.5586) -- (7.0198,6.6851) -- (6.7748,6.8095) -- (6.504,6.9302) -- (6.2107,7.0456) -- (5.8985,7.1543) -- (5.5714,7.2549) -- (5.2336,7.3462) -- (4.8892,7.4271) -- (4.5427,7.4964) -- (4.1982,7.5533) -- (3.8603,7.5972) -- (3.5331,7.6274) -- (3.2208,7.6436) -- (2.9273,7.6456) -- (2.6562,7.6333) -- (2.411,7.607) -- (2.1948,7.5668) -- (2.0102,7.5135) -- (1.8597,7.4475) -- (1.7451,7.3698) -- (1.6678,7.2813) -- (1.6288,7.1831) -- (1.6286,7.0765) -- (1.6672,6.9628) -- (1.7441,6.8435) -- (1.8584,6.72) -- (2.0086,6.5938) -- (2.1929,6.4667) -- (2.4088,6.3401) -- (2.6537,6.2157) -- (2.9246,6.0951) -- (3.2179,5.9797) -- (3.5301,5.871) -- (3.8571,5.7703);%
-\pgfsetmiterjoin%
+\draw[red,line width=0.8pt] (3.8571,5.7703) -- (4.5393,5.5982) -- (5.2303,5.4719) -- (5.5682,5.4281) -- (5.8954,5.3979) -- (6.2078,5.3817) -- (6.5013,5.3797) -- (6.7724,5.3919) -- (7.0176,5.4183) -- (7.2338,5.4584) -- (7.4183,5.5118) -- (7.5689,5.5778) -- (7.6835,5.6555) -- (7.7608,5.744) -- (7.7998,5.8422) -- (7.8,5.9488) -- (7.7614,6.0625) -- (7.6844,6.1818) -- (7.5701,6.3053) -- (7.4199,6.4314) -- (7.2357,6.5586) -- (7.0198,6.6851) -- (6.7748,6.8095) -- (6.2107,7.0456) -- (5.5714,7.2549) -- (4.8892,7.4271) -- (4.1982,7.5533) -- (3.8603,7.5972) -- (3.5331,7.6274) -- (3.2208,7.6436) -- (2.9273,7.6456) -- (2.6562,7.6333) -- (2.411,7.607) -- (2.1948,7.5668) -- (2.0102,7.5135) -- (1.8597,7.4475) -- (1.7451,7.3698) -- (1.6678,7.2813) -- (1.6288,7.1831) -- (1.6286,7.0765) -- (1.6672,6.9628) -- (1.7441,6.8435) -- (1.8584,6.72) -- (2.0086,6.5938) -- (2.1929,6.4667) -- (2.4088,6.3401) -- (2.6537,6.2157) -- (3.2179,5.9797) -- (3.8571,5.7703);%
 \end{scope}%
 \end{tikzpicture}%

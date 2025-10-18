@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,9.5);%
-\pgfsetroundjoin%
 \pgfsetfillcolor{Beige!30.62!black}%
 \pgfsetstrokecolor{Beige!30.62!black}%
 \pgfsetlinewidth{0.1pt}%
@@ -130,6 +129,5 @@
 \draw[fill] (6.2155,4.5143) .. controls (6.1419,4.3232) and (6.1419,4.1188) .. (6.2155,4.0551) .. controls (6.2891,3.9913) and (6.4071,4.0935) .. (6.4807,4.2847) .. controls (6.5542,4.4759) and (6.5542,4.6803) .. (6.4807,4.744) .. controls (6.4071,4.8077) and (6.2891,4.7055) .. (6.2155,4.5143);%
 \draw[fill] (6.9655,3.8648) .. controls (6.8919,3.6736) and (6.8919,3.4693) .. (6.9655,3.4055) .. controls (7.0391,3.3418) and (7.1571,3.444) .. (7.2307,3.6352) .. controls (7.3042,3.8264) and (7.3042,4.0307) .. (7.2307,4.0945) .. controls (7.1571,4.1582) and (7.0391,4.056) .. (6.9655,3.8648);%
 \draw[fill] (7.7155,3.2153) .. controls (7.6419,3.0241) and (7.6419,2.8197) .. (7.7155,2.756) .. controls (7.7891,2.6923) and (7.9071,2.7945) .. (7.9807,2.9857) .. controls (8.0542,3.1768) and (8.0542,3.3812) .. (7.9807,3.4449) .. controls (7.9071,3.5087) and (7.7891,3.4065) .. (7.7155,3.2153);%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

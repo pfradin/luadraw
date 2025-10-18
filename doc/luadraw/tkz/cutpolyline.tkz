@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (0,0) rectangle (10.0,10.0);%
-\pgfsetroundjoin%
 \pgfsetlinewidth{0.6pt}%
 \begin{scope}%
 \pgfsetstrokecolor{LightGray}%
@@ -30,6 +29,5 @@
 \draw[green] (10,3.25) -- (0,0.75);%
 \draw[-] (2,2) node[above=0.1cm,fill=white,fill opacity=0.8,cm={0.7071,0.7071,-0.7071,0.7071,(0,0)}] {$x-y\leqslant 0$} (7.5,6) node[above=0.1cm,fill=white,fill opacity=0.8,cm={0,-1,1,0,(0,0)}] {$x-2.5\geqslant0$} (2,1.25) node[below=0.1cm,fill=white,fill opacity=0.8,cm={0.9701,0.2425,-0.2425,0.9701,(0,0)}] {$-\frac{x}{4}+y+3\leqslant0$};%
 \pgfsetlinewidth{0.4pt}%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -57,7 +57,7 @@ end
 function classify3d(L, n)
 -- classe les points 3d de la liste L (supposés coplanaires) pour former une facette orientée par n
 -- cette facette est supposée CONVEXE
-    if #L == 0 then return end
+    if (L == nil) or (type(L) ~= "table")  or (#L == 0) then return end
     local G = isobar3d(L)
     local u1 = L[1]
     u1 = pt3d.normalize(u1-G)
@@ -237,6 +237,30 @@ function splitfacet(F,plane)
     return dev, der --sec -- on renvoie le devant et le derrière
 end
 
+function clipplane(plane,P)
+--cette fonction clippe le plan avec le polyèdre P et renvoie la facette obtenue
+    local S,n = table.unpack(plane)
+    if (S == nil) or (n == nil) then return end
+    local coupe = {} 
+    for _,F in ipairs(P.facets) do
+        local nb = #F
+        local A1, B1 = nil, P.vertices[F[1]]
+        local p1, p2, I = nil, pt3d.dot(B1-S,n)
+        if math.abs(p2)<1e-8 then p2 = 0 end
+        for k = 2, nb+1 do
+            if k == nb+1 then k = 1 end -- on ferme la facette
+            A1 = B1; p1 = p2; B1 = P.vertices[F[k]]; p2 = pt3d.dot(B1-S,n)
+            if math.abs(p2) < 1e-8 then p2 = 0 end
+            if (p1*p2 < 0) or (p2 == 0) then
+                if p2 == 0 then I = B1 else I = proj3dO(A1,plane,B1-A1) end
+                if I ~= nil then 
+                    insert3d(coupe,I,1e-10)
+                end
+            end
+        end
+    end
+    return classify3d(coupe,n) -- on renvoie la section (facette orientée par n) 
+end
 
 function cutpoly(P,plane,close)
 -- cette fonction coupe le polyèdre P = { vertices={sommets}, facets = {facettes avec n° de sommets} }
@@ -355,6 +379,7 @@ end
 function clip3d(S, poly, exterior)
 -- clippe la liste de facettes S avec le polyèdre convexe poly (polyèdre)
 -- exterior (true/false) indique si on conserve l'extérieur ou pas
+-- renvoie une liste de facettes
     if S.vertices ~= nil then --S est sous forme de polyèdre
         S = poly2facet(S)
     end
@@ -743,7 +768,7 @@ function surface(f,u1,u2,v1,v2,grid)
 -- u1 et u2 sont les bornes pour u, et v1, v2 pour v
 -- grid={nbu,nbv} donne le nombre de points suivant u et suivant v
     local F = function(u,v)
-        local R = f(u,v)
+        local R = evalf(f,u,v) -- protected evaluation
         if (R == nil) then return cpx.Jump
         else return R
         end
@@ -784,6 +809,69 @@ function surface(f,u1,u2,v1,v2,grid)
     end
     return rep
 end
+
+function cartesian3d(f,x1,x2,y1,y2,grid,addWall)
+-- cartesian surface z=f(x,y) with (x,y) in [x1,x2]x[y1,y2]
+-- default grid = {25,25} 
+-- addWall = 0 (none), "x", "y", "xy" (partition walls for Dscene3d)
+    grid = grid or {25,25}
+    addWall = addWall or 0
+    local F = function(u,v)
+        return M(u,v,f(u,v))
+    end
+    local rep = surface(F,x1,x2,y1,y2,grid)
+    local u1,u2,v1,v2,w1,w2, cube 
+    if addWall ~= 0 then
+        u1,u2,v1,v2,w1,w2 = getbounds3d(rep)
+        cube = parallelep(M(u1,v1,w1),(u2-u1)*vecI,(v2-v1)*vecJ,(w2-w1)*vecK)
+    end
+    local wall = {}
+    if string.find(addWall,"x") ~= nil then
+        local x, xpas = x1, (x2-x1)/(grid[1]-1)
+        for k = 1, grid[1] do
+            table.insert(wall, clipplane({x*vecI,vecI},cube)); x = x+xpas
+        end
+    end
+    if string.find(addWall,"y") ~= nil then
+        local y, ypas = y1, (y2-y1)/(grid[2]-1)
+        for k = 1, grid[2] do
+            table.insert(wall, clipplane({y*vecJ,vecJ},cube)); y = y+ypas
+        end
+    end
+    return rep, wall
+end
+
+function cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
+-- functions r:(u,v) -> r(u,v) and z:(u,v) -> z(u,v)
+-- cylindrical surface parametrized by Mc(r(u,v),v,z(u,v)) with (u,v) in [u1,u2]x[v1,v2]
+-- default grid = {25,25} 
+-- addWall = 0 (none), "v" (planes containing vecK and cos(v)*vecI+sin(v)*vecJ, partition walls for Dscene3d), or "z" (planes z=cte, useful when z does not depend on v), or "vz"
+    grid = grid or {25,25}
+    addWall = addWall or 0
+    local F = function(u,v)
+        return Mc(r(u,v),v,z(u,v))
+    end
+    local rep = surface(F,u1,u2,v1,v2,grid)
+    local wall = {}
+    if addWall ~= 0 then
+        local x1,x2,y1,y2,z1,z2 = getbounds3d(rep)
+        local cube = parallelep(M(x1,y1,z1),(x2-x1)*vecI,(y2-y1)*vecJ,(z2-z1)*vecK)
+        if string.find(addWall,"z") ~= nil then
+            local u, upas = u1, (u2-u1)/(grid[1]-1)
+            for k = 1, grid[1] do
+                table.insert(wall, clipplane({z(u,v1)*vecK,vecK},cube)); u = u+upas
+            end
+        end        
+        if string.find(addWall,"v") ~= nil then
+            local v, vpas = v1, (v2-v1)/(grid[2]-1)
+            for k = 1, grid[2] do
+                table.insert(wall, clipplane({Origin,-math.sin(v)*vecI+math.cos(v)*vecJ},cube)); v = v+vpas
+            end
+        end
+    end
+    return rep, wall
+end
+
 
 function curve2cone(f,t1,t2,S,args)
 -- construit un cône de sommet S sur une courbe paramétrée par f sur l'intervalle [t1,t2]

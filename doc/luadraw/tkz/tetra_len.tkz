@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (0,0) rectangle (10.0,10.0);%
-\pgfsetroundjoin%
 \pgfsetstrokecolor{LightGray}%
 \begin{scope}%
 \clip (0,0) rectangle (10,10);%
@@ -19,14 +18,6 @@
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
-\draw[] (5.2516,7.4846) -- (7.8679,3.2691);%
-\pgfsetbuttcap%
-\pgfsetdash{{2.5pt}{2pt}}{0pt}%
-\pgfsetroundcap%
-\draw[] (2.8869,3.0849) -- (7.8679,3.2691);%
-\pgfsetbuttcap%
-\pgfsetdash{{2.5pt}{2pt}}{0pt}%
-\pgfsetroundcap%
 \draw[] (7.8679,3.2691) -- (5,5);%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
@@ -35,11 +26,19 @@
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
-\draw[] (5,5) -- (5.2516,7.4846);%
+\draw[] (5.2516,7.4846) -- (7.8679,3.2691);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (2.8869,3.0849) -- (7.8679,3.2691);%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
 \draw[] (5.2516,7.4846) -- (2.8869,3.0849);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (5,5) -- (5.2516,7.4846);%
 \pgfsetstrokecolor{Blue}%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
@@ -53,6 +52,5 @@
 \pgfsetdash{}{0pt}%
 \draw[mark=*,mark size=1.4pt] plot coordinates {(5,5)} plot coordinates {(2.8869,3.0849)} plot coordinates {(7.8679,3.2691)} plot coordinates {(5.2516,7.4846)};%
 \draw[-] (5,5) node[below] {$A$} (2.8869,3.0849) node[below left] {$B$} (7.8679,3.2691) node[below left] {$C$} (5.2516,7.4846) node[above] {$D$};%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

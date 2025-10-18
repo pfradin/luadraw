@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -114,7 +114,7 @@ function complex.arg(u)
     u = toComplex(u)
     if (u == nil) then return end    
     local x, y = u.re, u.im
-    if (x == 0) and (y == 0) then return end
+    if (x == 0) and (y == 0) then return 0 end -- argument indéfini, 0 par convention
     if (x == 0) then
         if (y > 0) then return math.pi/2 else return -math.pi/2 end
     else
@@ -286,6 +286,25 @@ function reverse(list)
         table.insert(rep,1,x)
     end
     return rep
+end
+
+function isobar(L)
+-- renvoie le centre de gravité de la liste L de complexes
+    local x, y, n = 0, 0, 0
+    for _,z in ipairs(L) do
+        local z1 = toComplex(z)
+        if z1 ~= nil then
+            x = x+z1.re; y = y+z1.im; n = n+1
+        end
+    end
+    return complex:new(x/n,y/n)
+end
+
+
+function evalf(f,...)
+-- cette fonction évalue f(...) et renvoie le résultat si pas d'erreur d'exécution, nil sinon.
+    local success, result = pcall(f,...)
+    if success then return result end
 end
 
 return complex

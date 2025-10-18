@@ -1,47 +1,11 @@
 -- luadraw_spherical.lua 
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   http://www.latex-project.org/lppl.txt.
-
-
--- to draw circle on a sphere, big circle, arc, facet, segment, polyline, label and spherical curve
--- provides:
-    -- Define_sphere( args ), args = list of fields (with default values)
-        -- args={center= (Origin), radius= (3),color= (orange),opacity= (1) (1),mode= (2),edgecolor= (gray),edgestyle= (solid),edgewidth= (4),hinddencolor= (gray),hiddentstyle=Hiddenlinestyle,show= (true)}
-    -- sM(x,y,z) : returns point on sphere
-    -- sM(theta,phi) : returns point on sphere
-    -- toSphere(A): returns projection of A on sphere
-    
--- drawing methods:
-    -- g:DScircle(P, options) : P={A,n} is a plane, options = {style=, color=, width=, opacity=, out = varaible}
-    
-    -- g:DSbigcircle(AB,options) -- AB = {A,B} (two points of sphere)
-    
-    -- g:DSseg(seg,options) -- seg={A,B} (segment), options = {style=, color=, width=, opacity=, arrows=}
-    
-    -- g:DSline(line,options) -- seg={A,B} (segment), options = {style=, color=, width=, opacity=, arrows=, scale=}
-    
-    -- g:DSpolyline(L,options) -- L = 3d polyline, options = {style=, color=, width=, opacity=, arrows=}
-    
-    -- g:DSarc(AB,sens,options)  -- arc of big circle from A to B on sphere, options = {style=, color=, width=, opacity=, arrows=, normal=}
-    
-    -- gr:DSfacet(facet, options) facet = list of points on sphere, options = {style=, color=, width=, opacity=, fill=, fillopacity=}
-    
-    -- g:DSangle(B,A,C,r,sens,options) -- A, B, C three points on sphere, r=radius, options = {style=, color=, width=, opacity=, arrows=} (calls DSarc)
-    
-    -- g:DSlabel(text,anchor,options, text, anchor, options,...) (the color of label inside sphere is Insidelabelcolor (DarkGray by default))
-    
-    --g:DScurve(L,options) L is a 3d polyline representing a curve on sphere, options = {style=, color=, width=, opacity=}
-    
-    -- Dsplane(P,options) draw a plane around the sphere, P={A,n} is a plane, options = {style=, color=, width=, opacity=, scale= (1), angle= (0), trace= (true)}
-
---last instruction for showing the scene:
-    -- g:DSspherical() with no argument.
-    
 
 Insidelabelcolor = "DarkGray"
 arrowBstyle = "->"
@@ -117,12 +81,23 @@ function toSphere(A)
 end
 
 function graph3d:Dspherical()
+    local oldlinestyle = self.param.linestyle
+    local oldlinecolor = self.param.linecolor
+    local oldlinewidth = self.param.linewidth
+    local oldlineopacity = self.param.lineopacity
+    local oldfillstyle = self.param.fillstyle
+    local oldfillcolor = self.param.fillcolor
+    local oldfillopacity = self.param.fillopacity
 
     local display_elt = function(elt) 
     -- elt={path,style,color,width,opacity,arrows} ou
     -- elt={text,anchor,options} (labels)
-        if type(elt[1]) == "string" then -- label
+        if type(elt[1]) == "string" then -- a label
             self:Dlabel3d(elt[1],elt[2],elt[3])
+        elseif isPoint3d(elt[1]) then -- a dot
+            self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
+            self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
+            self:Ddots3d(elt[1],elt[2])
         else
             self:Lineoptions(elt[2],elt[3],elt[4]); self:Lineopacity(elt[5])
             local arrowstyle, arrows = "", elt[6]
@@ -144,13 +119,7 @@ function graph3d:Dspherical()
             end
         end
     end
-    local oldlinestyle = self.param.linestyle
-    local oldlinecolor = self.param.linecolor
-    local oldlinewidth = self.param.linewidth
-    local oldlineopacity = self.param.lineopacity
-    local oldfillstyle = self.param.fillstyle
-    local oldfillcolor = self.param.fillcolor
-    local oldfillopacity = self.param.fillopacity
+
     for _, elt in ipairs(before_sphere) do
         display_elt(elt)
     end
@@ -178,6 +147,8 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
     local color = options.color or self.param.linecolor
     local width = options.width or self.param.linewidth
     local opacity = options.opacity or self.param.lineopacity
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
     local out = options.out -- returns end points of hidden part if it exists
     
     local C, R = sphere.C, sphere.R
@@ -189,7 +160,7 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
         local J = I+r*pt3d.normalize(w) -- a point of the circle
         if (angle == 0) or (pt3d.dot(v,N) > 0) then -- visible
             table.insert(after_sphere, {{J,I,u,"c"},style,color,width,opacity})
-        elseif Hiddenlines and (style ~= "noline") then
+        elseif hidden and (style ~= "noline") then
             table.insert(hidden_part, {{J,I,u,"c"},Hiddenlinestyle,color,width,opacity})
         else 
             --self:Beginadvanced()
@@ -238,7 +209,7 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
                     sens = -1
                 end
                 table.insert(after_sphere, {{A,I,B,r,sens,u,"ca"},style,color,width,opacity})
-                if Hiddenlines  and (style ~= "noline") then 
+                if hidden  and (style ~= "noline") then 
                     table.insert(hidden_part, {{A,I,B,r,-sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
                 else
                     --self:Beginadvanced()
@@ -270,6 +241,8 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
     local color = options.color or self.param.linecolor
     local width = options.width or self.param.linewidth
     local opacity = options.opacity or self.param.lineopacity
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
     local arrows = options.arrows or 0 --0/1/2
     local out = options.out -- intersections points between seg and sphere
     local arrowA, arrowB = 0, 0
@@ -283,7 +256,6 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
             table.insert(der,"l"); 
             --self:Beginadvanced()
             table.insert(before_sphere, {der,style,color,width,opacity,arrow} )
-            --print(style)
             --self:Endadvanced()
         end
         if #dev ~= 0 then 
@@ -292,7 +264,7 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
         end
     end
 
-    if Hiddenlines  and (style ~= "noline") then 
+    if hidden  and (style ~= "noline") then 
         table.insert(hidden_part, {{A,B,"l"},Hiddenlinestyle,color,width,opacity,arrows})  -- whole seg
     else -- pas de lignes cachées
         --self:Beginadvanced()
@@ -343,6 +315,8 @@ function graph3d:DSpolyline(L,options) -- L = 3d polyline
     options.color = options.color or self.param.linecolor
     options.width = options.width or self.param.linewidth
     options.opacity = options.opacity or self.param.lineopacity    
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
     options.arrows = options.arrows or 0 --0/1/2
     local arrows = options.arrows
     local close = options.close or false
@@ -351,13 +325,15 @@ function graph3d:DSpolyline(L,options) -- L = 3d polyline
     Hiddenlinestyle = "noline"
     for _, cp in ipairs(L) do
         local B, A = cp[1] 
-        if close then table.insert(cp,B) end
-        if Hiddenlines  and (options.style ~= "noline") then 
-            table.insert(hidden_part, {concat(cp,{"l"}),oldstyle,options.color,options.width,options.opacity,options.arrows})  -- whole polyline
+        if hidden  and (options.style ~= "noline") then 
+            local ends = {"l"}
+            if close then table.insert(ends,"cl") end
+            table.insert(hidden_part, {concat(cp,ends),oldstyle,options.color,options.width,options.opacity,options.arrows})  -- whole polyline
         end
-        local n = #cp
-        for k = 2, n do
-            A = B; B = cp[k]
+        local n, p = #cp
+        if close then p = n+1 else p = n end
+        for k = 2, p do
+            A = B; B = cp[(k-1)%n+1]
             options.arrows = 0
             if (arrows == 2) then
                 if (k == 2) and (k == n) then options.arrows = 2
@@ -367,7 +343,9 @@ function graph3d:DSpolyline(L,options) -- L = 3d polyline
             elseif (arrows == 1) then
                 if (k == n) then options.arrows = 1 end
             end
-            self:DSseg({A,B},options)
+            if pt3d.abs(B-A) > 1e-10 then
+                self:DSseg({A,B},options)
+            end
         end
     end
     Hiddenlinestyle = oldstyle
@@ -382,6 +360,8 @@ function graph3d:DSarc(AB,sens,options)
     local color = options.color or self.param.linecolor
     local width = options.width or self.param.linewidth
     local opacity = options.opacity or self.param.lineopacity
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
     local arrows = options.arrows or 0 --0/1/2
     local normal = options.normal or vecK
     local arrowA, arrowB = 0, 0
@@ -413,7 +393,7 @@ function graph3d:DSarc(AB,sens,options)
             else
                 table.insert(after_sphere, {{A,C,M1,R,sens,u,"ca"},style,color,width,opacity,-arrowA})
                 table.insert(after_sphere, {{M2,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB})
-                if Hiddenlines  and (style ~= "noline") then
+                if hidden  and (style ~= "noline") then
                     table.insert(hidden_part, {{M1,C,M2,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,0})
                 else
                     --self:Beginadvanced()
@@ -423,7 +403,7 @@ function graph3d:DSarc(AB,sens,options)
             end
         elseif (pt3d.dot(A-C,N) < 0) and (pt3d.dot(B-C,N) < 0) then -- A et B sont cachés
             if sens == 1 then
-                if Hiddenlines  and (style ~= "noline") then
+                if hidden  and (style ~= "noline") then
                     table.insert(hidden_part, {{A,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
                 else
                     --self:Beginadvanced()
@@ -432,7 +412,7 @@ function graph3d:DSarc(AB,sens,options)
                 end
             else
                 table.insert(after_sphere, {{M2,C,M1,R,sens,u,"ca"},style,color,width,opacity,0})
-                if Hiddenlines  and (style ~= "noline") then
+                if hidden  and (style ~= "noline") then
                     table.insert(hidden_part, {{A,C,M2,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
                     table.insert(hidden_part, {{M1,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,arrowB})
                 else
@@ -447,7 +427,7 @@ function graph3d:DSarc(AB,sens,options)
             if pt3d.dot(B-C,N) <= 0 then -- A est visible, B non
                 if sens == 1 then
                    table.insert(after_sphere, {{A,C,M2,R,sens,u,"ca"},style,color,width,opacity,-arrowA}) 
-                   if Hiddenlines  and (style ~= "noline") then 
+                   if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{M2,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,arrowB})
                     else
                         --self:Beginadvanced()
@@ -456,7 +436,7 @@ function graph3d:DSarc(AB,sens,options)
                     end
                 else
                     table.insert(after_sphere, {{A,C,M1,R,sens,u,"ca"},style,color,width,opacity,-arrowA}) 
-                    if Hiddenlines  and (style ~= "noline") then 
+                    if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{M1,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,arrowB})
                     else
                         --self:Beginadvanced()
@@ -467,7 +447,7 @@ function graph3d:DSarc(AB,sens,options)
             else -- B est visible, A non
                 if sens == 1 then
                    table.insert(after_sphere, {{M1,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB}) 
-                   if Hiddenlines  and (style ~= "noline") then 
+                   if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{A,C,M1,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
                     else
                         --self:Beginadvanced()
@@ -476,7 +456,7 @@ function graph3d:DSarc(AB,sens,options)
                     end
                 else
                     table.insert(after_sphere, {{M2,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB}) 
-                    if Hiddenlines  and (style ~= "noline") then 
+                    if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{A,C,M2,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
                     else
                         --self:Beginadvanced()
@@ -489,6 +469,61 @@ function graph3d:DSarc(AB,sens,options)
     end
 end
 
+-- points sur la sphère en forme d'étoiles
+function graph3d:DSstars(dots,options)
+-- dots = liste de points sur la sphere
+    options = options or {}
+    local Ct, R = sphere.C, sphere.R
+    local color = options.color or self.param.linecolor
+    local scale = options.scale or 1
+    local circled = options.circled or false
+    local fill = options.fill or ""
+    local width = options.width or self.param.linewidth
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
+    local long = 0.1*scale
+    local dphi = long/R*rad
+    if isPoint3d(dots) then dots = {dots} end
+    dots = map(toSphere,dots)
+    
+    local drawAcross = function(A)
+        local n1 = pt3d.prod(A-Ct,vecK)
+        if pt3d.N1(n1) < 1e-10 then n1 = pt3d.prod(A-Ct,vecI) end
+        n1 = pt3d.normalize(n1)
+        local B1, C1 = rotate3d(A,dphi,{Ct,n1}), rotate3d(A,-dphi,{Ct,n1})
+        local B2, C2 = rotate3d(B1,60,{Ct,A-Ct}), rotate3d(C1,60,{Ct,A-Ct})
+        local B3, C3 = rotate3d(B1,120,{Ct,A-Ct}), rotate3d(C1,120,{Ct,A-Ct})
+        if pt3d.dot(A-Ct,self.Normal) >= 0 then --visible
+            if fill ~= "" then
+                self:DSfacet({B1,B2,B3,C1,C2,C3},{style="noline",fill=fill, width=1, fillopacity=0.5, hidden=hidden})
+                self:DScircle(plane(B1,C1,B2),{color=color, width=1, hidden=hidden}) 
+            else
+                self:DSarc({B1,C1},1,{color=color, width=width, hidden=hidden})
+                self:DSarc({B2,C2},1,{color=color, width=width, hidden=hidden})
+                self:DSarc({B3,C3},1,{color=color, width=width, hidden=hidden})
+                if circled then self:DScircle(plane(B1,C1,B2),{color=color, width=1, hidden=hidden}) end
+            end
+        else
+            local old_hiddenlinestyle = Hiddenlinestyle
+            Hiddenlinestyle = "solid"
+            if fill ~= "" then
+                --self:DSfacet({B1,B2,B3,C1,C2,C3},{style="noline",fill=Insidelabelcolor, width=1, fillopacity=0.5, hidden=hidden})
+                self:DScircle(plane(B1,C1,B2),{color=Insidelabelcolor, width=width, hidden=hidden})
+            else
+                self:DSarc({B1,C1},1,{color=Insidelabelcolor, width=width, hidden=hidden})
+                self:DSarc({B2,C2},1,{color=Insidelabelcolor, width=width, hidden=hidden})
+                self:DSarc({B3,C3},1,{color=Insidelabelcolor, width=width, hidden=hidden})
+                if circled then self:DScircle(plane(B1,C1,B2),{color=Insidelabelcolor, width=1, hidden=hidden}) end
+            end
+            Hiddenlinestyle = old_hiddenlinestyle
+        end
+    end
+    for _, A in ipairs(dots) do
+        drawAcross(A)
+    end
+end
+
+
 -- facette sphérique (dessinée sur la sphère)
 function graph3d:DSfacet(facet, options)
     facet = map(toSphere, facet)
@@ -497,6 +532,8 @@ function graph3d:DSfacet(facet, options)
     local color = options.color or self.param.linecolor
     local width = options.width or self.param.linewidth
     local opacity = options.opacity or self.param.lineopacity    
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
     local fillopacity = options.fillopacity or 0.3
     local fill = options.fill or ""
     local Ct, R = sphere.C, sphere.R
@@ -518,7 +555,7 @@ function graph3d:DSfacet(facet, options)
             U = V; V = der[k]
             insert(chem,{Ct,V,R,1,"ca"})
         end
-        if Hiddenlines  and (style ~= "noline") then
+        if hidden  and (style ~= "noline") then
             table.insert(hidden_part, {chem,Hiddenlinestyle,color,width,opacity})
         else
             --self:Beginadvanced()
@@ -540,15 +577,28 @@ end
 
 -- labels
 function graph3d:DSlabel(...)
+-- options :
+-- pos est "center" ou "N", "NE", "NE", "SE", "S", "SW", "W" ou "NW"
+-- dist est la distance en cm du texte par rapport au node, si dist = nil c'est 0 par défaut
+-- dir={dirX,dirY,dep} est la direction de l'écriture (nil pour le sens par défaut)
+-- node_options est une chaîne passée directement à tikz, ex: "rotate=45, draw, fill=red" (options locales)
     local C, R = sphere.C, sphere.R
     local N = self.Normal
-    local text, anchor, options = "", Origin, {}
-        
+    local text, anchor = "", Origin
+    local pos,dir,dist,node_options = self.param.labelstyle, nil, 0, ""
+    
     local add_alabel = function()
         local u = anchor-C
+        local options = {}
+        options.pos = pos; options.dir = dir; options.dist = dist; options.node_options = node_options
         if pt3d.abs(u) < R then --anchor est dans la sphère
             if Hiddenlines then
-                options.node_options=Insidelabelcolor; table.insert(hidden_part, {text,anchor,options})
+                local oldoptions = options.node_options
+                local sep = ""
+                if oldoptions ~= "" then sep = "," end
+                options.node_options = oldoptions..sep..Insidelabelcolor
+                table.insert(hidden_part, {text,anchor,table.copy(options)})
+                options.node_options = oldoptions
             else
                 --self:Beginadvanced()
                 table.insert(before_sphere, {text,anchor,options})
@@ -567,51 +617,73 @@ function graph3d:DSlabel(...)
     for k, x in ipairs{...} do
         if k%3 == 1 then text = x
         elseif k%3 == 2 then anchor = x
-        else 
-            options = x
+        else -- options
+            pos = x.pos or pos
+            dir = x.dir or dir
+            dist = x.dist or dist
+            node_options = x.node_options or node_options
             add_alabel()
         end
+    end
+end
+
+-- points dans la scène
+function graph3d:DSdots(dots,options)
+    options = options or {}
+    local C, R = sphere.C, sphere.R
+    local N = self.Normal
+    local sep
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
+    local mark_options = options.mark_options or ""
+    if mark_options == "" then sep = "" else sep = "," end
+    local add_adot = function(A)
+        local u = A-C
+        local d = pt3d.abs(u)
+        local pscal = pt3d.dot(N,u)
+        if (d < R) or ((math.abs(d-R)<1e-8) and (pscal<=0)) then --A est dans la sphère ou caché sur la sphère
+            if hidden then
+                table.insert(hidden_part, {A,mark_options..sep..Insidelabelcolor})
+            else
+                --self:Beginadvanced()
+                table.insert(before_sphere, {A,mark_options})
+                --self:Endadvanced()
+            end
+        else -- A est à l'extérieur de la sphère ou dessus mais visible
+            if pscal >= 0 then -- A est visible
+                table.insert(after_sphere, {A,mark_options})
+            else
+                --self:Beginadvanced()
+                table.insert(before_sphere, {A,mark_options})
+                --self:Endadvanced()
+            end
+        end
+    end
+    for _, A in ipairs(dots) do
+            add_adot(A)
     end
 end
 
 -- courbe spherique
 function graph3d:DScurve(L,options)
 -- L est une ligne polygonale 3d représentant une courbe tracée sur la sphère courante
+    if (L == nil) or (type(L) ~= "table") then return end
     options = options or {}
     local style = options.style or self.param.linestyle
     local color = options.color or self.param.linecolor
     local width = options.width or self.param.linewidth
     local opacity = options.opacity or self.param.lineopacity
+    local hidden = options.hidden
+    if hidden == nil then hidden = Hiddenlines end
     local out = options.out -- ends of hidden parts
     local C, R = sphere.C, sphere.R
     local N = self.Normal
     local Visible, Hidden = {},{}
     local visible, hidden, etat, Avisible = {}, {}
-    if L == nil then return end
-    if isPoint3d(L[1]) then L = {L} end
-    for _, cp in ipairs(L) do
-        visible, hidden = {}, {}
-        etat = 0
-        for _, A in ipairs(cp) do
-            Avisible = (pt3d.dot(A-C,N) >= 0)
-            if Avisible then -- A is visible
-                table.insert(visible,A)
-                if etat == 2 then-- previous dot was not visible
-                    table.insert(Hidden, hidden); hidden = {}
-                end
-                etat = 1
-            else -- A not visible
-                table.insert(hidden,A)
-                if etat == 1 then -- previous dot was visible
-                    table.insert(Visible, visible); visible = {}
-                end
-                etat = 2
-            end
-        end
-        if #visible > 1 then table.insert(Visible, visible) end
-        if #hidden > 1 then  table.insert(Hidden, hidden) end
+    local visible_function = function(A)
+        return (pt3d.dot(A-C,N) >= 0)
     end
-    Visible = merge3d(Visible); Hidden = merge3d(Hidden)
+    Visible, Hidden =  split_points_by_visibility(L,visible_function)
     if out ~= nil then
         for _,F in ipairs(Hidden) do
             table.insert(out,F[1])
@@ -633,7 +705,7 @@ function graph3d:DScurve(L,options)
             insert(rep,hidden)
         end
     end
-    if Hiddenlines  and (style ~= "noline") then
+    if hidden  and (style ~= "noline") then
         table.insert(hidden_part, {rep,Hiddenlinestyle,color,width,opacity})
     else
        table.insert(before_sphere, {rep,style,color,width,opacity})
@@ -658,4 +730,29 @@ function graph3d:DSplane(P,args) -- draw a plane around the sphere
     args.close = true
     self:DSpolyline(F,args)
     if trace then self:DScircle(P,args) end
+end
+
+
+function graph3d:DSinvstereo_curve(L,options)
+-- L est une ligne polygonale 3d représentant une courbe tracée sur plan d'équation z = cte
+-- cette courbe est dessinée sur la sphère par stéréographie inverse
+    if (L == nil) or (type(L) ~= "table") then return end
+    local C, R = sphere.C, sphere.R
+    local N = C+R*vecK
+    self:DScurve(inv_projstereo(L,{C,R},N), options)
+end
+
+function graph3d:DSinvstereo_polyline(L,options)
+-- L est une ligne polygonale 3d tracée sur un plan d'équation z = cte
+-- cette ligne est dessinée sur la sphère par stéréographie inversée (chaque segment devient un arc de cercle sur la sphère)
+    if (L == nil) or (type(L) ~= "table") then return end
+    options = options or {}
+    local close = options.close or false   
+    if isPoint3d(L[1]) then L = {L} end
+    for _,cp in ipairs(L) do
+        local f,len = curvilinear_param3d(cp,close)
+        local n = math.max(math.floor(5*len),25)
+        local L1 = parametric3d(f,0,1,n,false,1)[1]
+        self:DSinvstereo_curve(L1,options)
+    end
 end

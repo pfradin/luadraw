@@ -1,6 +1,6 @@
 --- luadraw_scene3d.lua
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -17,7 +17,7 @@ nbsplit = 0
 function Tscene3d:new()
     local scene3d = {}
     setmetatable(scene3d, self)  -- obligatoire, permet d'utiliser self
-    scene3d.type = "facet" -- "facet" ou "seg" ou "wall" ou "dot ou "text"    
+    scene3d.type = "facet" -- "facet" ou "seg" ou "wall" ou "dot ou "text"
     scene3d.data = nil --sommets de la facette ou du segment 
     scene3d.plane = nil -- plan de la facette
     scene3d.color = "white" -- couleur de la facette ou de la ligne

@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (0,0) rectangle (10.0,9.7548094716167);%
-\pgfsetroundjoin%
 \pgfsetfillcolor{LightGray}%
 \fill[] (6.6188,1.5484) -- (1.5873,3.0009) -- (4.4923,5.5166) -- (9.5238,4.0642)--cycle;%
 \fill[] (9.5238,7.8378) -- (4.4923,9.2903) -- (4.4923,5.5166) -- (9.5238,4.0642)--cycle;%
@@ -1837,6 +1836,5 @@
 \pgfsetstrokecolor{black}%
 \pgfsetlinewidth{0.4pt}%
 \draw[-] (9.6324,3.6135) node[] {$x_1$} (7.4537,1.7267) node[] {$x_2$} (1.9439,2.5835) node[] {$y_1$} (5.7176,1.4941) node[] {$y_2$} (1.1156,3.137) node[] {$0$};%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

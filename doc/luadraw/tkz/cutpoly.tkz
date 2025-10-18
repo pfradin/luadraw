@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,7.25);%
-\pgfsetroundjoin%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetfillcolor{Crimson!50!white!89.13!black}%
@@ -18,8 +17,8 @@
 \draw[fill] (1.0147,3.7316) -- (1.0147,2.7573) -- (2.9632,2.1948) -- (2.9632,3.1691)--cycle;%
 \pgfsetfillcolor{black}%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
-\draw[] (4.0882,3.1691) -- (2.1397,3.7316) -- (2.1397,5.6802);%
 \draw[] (1.5772,5.193) -- (1.0147,3.7316);%
+\draw[] (4.0882,3.1691) -- (2.1397,3.7316) -- (2.1397,5.6802);%
 \draw[] (1.0147,2.7573) -- (2.1397,3.7316);%
 \pgfsetdash{}{0pt}%
 \pgfsetfillcolor{Crimson!50!white!89.13!black}%
@@ -44,6 +43,5 @@
 \draw[-] (1.4264,1.9889) node[cm={0.9608,-0.2774,0,1,(0,0)}] {close=false} (5.3236,0.8639) node[cm={0.9608,-0.2774,0,1,(0,0)}] {close=true};%
 \pgfsetstrokecolor{black}%
 \pgfsetlinewidth{0.4pt}%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

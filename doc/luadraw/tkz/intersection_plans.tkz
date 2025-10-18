@@ -1,7 +1,6 @@
 \begin{tikzpicture}[background rectangle/.style={,fill=gray},show background rectangle]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.0909090909091,9.5);%
-\pgfsetroundjoin%
 \begin{scope}%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
@@ -28,12 +27,13 @@
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillcolor{ForestGreen!73.29!black}%
 \draw[fill] (5.8747,8.2521) -- (0.5366,3.0873) -- (1.6021,0.0657) -- (3.9187,2.3071)--cycle;%
-\pgfsetstrokecolor{Gold}%
+\pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
+\draw[] (0.5366,3.0873) -- (1.6021,0.0657);%
+\pgfsetstrokecolor{Gold}%
 \draw[] (3.3805,6.5144) -- (3.5581,6.0108);%
 \pgfsetstrokecolor{Pink}%
 \draw[] (5.8747,8.2521) -- (0.5366,3.0873);%
-\draw[] (0.5366,3.0873) -- (1.6021,0.0657);%
 \pgfsetstrokecolor{Gold}%
 \draw[] (3.5581,6.0108) -- (4.3751,3.6942);%
 \draw[] (0.0622,4.1448) -- (4.0909,4.5);%
@@ -49,9 +49,9 @@
 \draw[fill] (7.9123,4.8031) -- (7.9241,4.7695) -- (7.9301,4.8039) -- (7.9241,4.8718) -- (7.9123,4.9054) -- (7.9064,4.871)--cycle;%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (5.9903,0.5014) -- (7.4836,1.5677);%
-\draw[] (6.7377,7.4028) -- (5.8312,8.12);%
 \draw[] (7.4836,1.5677) -- (6.7377,7.4028);%
+\draw[] (6.7377,7.4028) -- (5.8312,8.12);%
+\draw[] (5.9903,0.5014) -- (7.4836,1.5677);%
 \pgfsetstrokecolor{Gold}%
 \draw[] (5.7024,4.6421) -- (7.9182,4.8374);%
 \pgfsetstrokecolor{Pink}%
@@ -59,22 +59,22 @@
 \pgfsetstrokecolor{ForestGreen!73.29!black}%
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillcolor{ForestGreen!73.29!black}%
-\draw[fill] (6.5797,8.9343) -- (5.8747,8.2521) -- (3.9187,2.3071) -- (7.6453,5.9127)--cycle;%
+\draw[fill] (5.8747,8.2521) -- (3.9187,2.3071) -- (7.6453,5.9127) -- (6.5797,8.9343)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (5.8747,8.2521) -- (6.1207,9);%
+\draw[] (6.1207,9) -- (5.8747,8.2521);%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (6.0213,8.3941) -- (5.8747,8.2521);%
+\draw[] (6.1351,8.5041) -- (5.8747,8.2521);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (5.8312,8.12) -- (5.8747,8.2521);%
+\draw[] (5.8747,8.2521) -- (5.8312,8.12);%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
 \draw[] (5.8312,8.12) -- (4.9247,8.8373);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.9187,2.3071) -- (5.8312,8.12);%
+\draw[] (5.8312,8.12) -- (3.9187,2.3071);%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
 \draw[] (4.3751,3.6942) -- (4.5916,3.0803);%
@@ -83,11 +83,12 @@
 \draw[] (3.9187,2.3071) -- (4.1791,2.5591);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.8752,2.1749) -- (3.9187,2.3071);%
+\draw[] (3.9187,2.3071) -- (3.8752,2.1749);%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
+\draw[] (1.4404,6.3492) -- (1.7601,3.8485);%
 \draw[] (4.9247,8.8373) -- (1.4404,6.3492);%
-\draw[] (6.5797,8.9343) -- (6.0213,8.3941);%
+\draw[] (6.5797,8.9343) -- (6.1351,8.5041);%
 \pgfsetstrokecolor{Gold}%
 \draw[] (4.0909,6.3212) -- (4.0909,6.3579);%
 \pgfsetstrokecolor{Pink}%
@@ -95,20 +96,18 @@
 \pgfsetstrokecolor{Gold}%
 \draw[] (4.0909,6.3579) -- (4.0909,7.8657);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (1.4404,6.3492) -- (1.7601,3.8485);%
 \draw[] (1.7601,3.8485) -- (3.8752,2.1749);%
 \pgfsetstrokecolor{Gold}%
 \draw[] (4.5916,3.0803) -- (4.6237,2.9892);%
 \pgfsetstrokecolor{Pink}%
+\draw[] (7.6453,5.9127) -- (7.3947,6.6232);%
 \draw[] (4.1791,2.5591) -- (7.6453,5.9127);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.6579,1.5144) -- (3.8752,2.1749);%
+\draw[] (3.8752,2.1749) -- (3.6579,1.5144);%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
 \draw[] (4.6237,2.9892) -- (4.7658,2.5863);%
-\pgfsetstrokecolor{Pink}%
-\draw[] (7.6453,5.9127) -- (7.3947,6.6232);%
 \pgfsetstrokecolor{white}%
 \pgfsetlinewidth{0.4pt}%
 \pgfsetfillcolor{white}%
@@ -148,7 +147,7 @@
 \draw[fill] (4.7322,2.6345) -- (4.6986,2.5804) -- (4.8013,2.4856)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.5927,1.3162) -- (3.6579,1.5144);%
+\draw[] (3.6579,1.5144) -- (3.5927,1.3162);%
 \pgfsetfillcolor{Navy}%
 \draw[-,color=Navy] (3.4101,0.7613) node[] {$D=P_1\cap P_2$};%
 \pgfsetstrokecolor{Gold}%
@@ -157,25 +156,24 @@
 \pgfsetstrokecolor{Pink}%
 \pgfsetdash{{0pt}{3pt}}{0pt}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (5.9903,0.5014) -- (7.4836,1.5677);%
 \draw[] (1.7601,3.8485) -- (5.9903,0.5014);%
-\draw[] (1.4404,6.3492) -- (1.7601,3.8485);%
-\draw[] (4.9247,8.8373) -- (1.4404,6.3492);%
-\draw[] (6.7377,7.4028) -- (4.9247,8.8373);%
 \draw[] (7.4836,1.5677) -- (6.7377,7.4028);%
-\draw[] (6.5797,8.9343) -- (0.5366,3.0873);%
-\draw[] (7.6453,5.9127) -- (6.5797,8.9343);%
-\draw[] (0.5366,3.0873) -- (1.6021,0.0657);%
+\draw[] (6.7377,7.4028) -- (4.9247,8.8373);%
+\draw[] (4.9247,8.8373) -- (1.4404,6.3492);%
+\draw[] (5.9903,0.5014) -- (7.4836,1.5677);%
+\draw[] (1.4404,6.3492) -- (1.7601,3.8485);%
 \draw[] (1.6021,0.0657) -- (7.6453,5.9127);%
+\draw[] (0.5366,3.0873) -- (1.6021,0.0657);%
+\draw[] (7.6453,5.9127) -- (6.5797,8.9343);%
+\draw[] (6.5797,8.9343) -- (0.5366,3.0873);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.5927,1.3162) -- (6.1207,9);%
+\draw[] (6.1207,9) -- (3.5927,1.3162);%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
 \draw[] (3.3805,6.5144) -- (4.8013,2.4856);%
 \draw[] (0.0622,4.1448) -- (8.1197,4.8552);%
 \draw[] (4.0909,0.9572) -- (4.0909,8.0428);%
 \end{scope}%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

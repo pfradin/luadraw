@@ -1,0 +1,30 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\pgfsetfillcolor{cyan!50!white!89.13!black}%
+\draw[fill] (2.5714,7.7143) -- (7.0253,6.4286) -- (7.0253,3.0882) -- (2.5714,4.3739)--cycle;%
+\pgfsetfillcolor{cyan!50!white!71.55!black}%
+\draw[fill] (2.5714,4.3739) -- (0,2.147) -- (0,5.4874) -- (2.5714,7.7143)--cycle;%
+\pgfsetfillcolor{cyan!50!white!75.79!black}%
+\draw[fill] (7.0253,3.0882) -- (4.4538,0.8613) -- (0,2.147) -- (2.5714,4.3739)--cycle;%
+\pgfsetfillcolor{cyan!50!white!48.49!black}%
+\draw[fill] (0,5.4874) -- (2.3992,8.5063) -- (2.5714,7.7143)--cycle;%
+\pgfsetfillcolor{cyan!50!white!50!black}%
+\draw[fill] (2.3992,8.5063) -- (4.6261,7.8635) -- (7.0253,6.4286) -- (2.5714,7.7143)--cycle;%
+\pgfsetfillcolor{cyan!71.55!black}%
+\draw[fill] (4.4538,0.8613) -- (7.0253,3.0882) -- (7.0253,6.4286) -- (4.4538,4.2016)--cycle;%
+\pgfsetfillcolor{cyan!89.13!black}%
+\draw[fill] (0,2.147) -- (4.4538,0.8613) -- (4.4538,4.2016) -- (0,5.4874)--cycle;%
+\pgfsetfillcolor{cyan!82.11!black}%
+\draw[fill] (7.0253,6.4286) -- (4.6261,7.8635) -- (4.4538,4.2016)--cycle;%
+\pgfsetfillcolor{cyan!95.18!black}%
+\draw[fill] (0,5.4874) -- (4.4538,4.2016) -- (4.6261,7.8635) -- (2.3992,8.5063)--cycle;%
+\pgfsetfillcolor{black}%
+\pgfsetroundcap%
+\pgfsetdash{{0pt}{3pt}}{0pt}%
+\draw[] (0,5.4874) -- (2.5714,7.7143) -- (2.5714,4.3739) -- (0,2.147);%
+\draw[] (2.3992,8.5063) -- (2.5714,7.7143) -- (7.0253,6.4286);%
+\draw[] (7.0253,3.0882) -- (2.5714,4.3739);%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\end{scope}%
+\end{tikzpicture}%

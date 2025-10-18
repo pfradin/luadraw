@@ -1,6 +1,5 @@
 \begin{tikzpicture}[background rectangle/.style={,fill=gray!30},show background rectangle]%
 \begin{scope}%
-\pgfsetroundjoin%
 \pgfsetstrokecolor{white}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetfillopacity{0.8}%
@@ -35,7 +34,6 @@
 \fill[opacity=1,ball color=black] (3.8749,1.1685) circle [radius=0.075cm];%
 \fill[opacity=1,ball color=black] (8.3579,3.5149) circle [radius=0.075cm];%
 \fill[opacity=1,ball color=black] (4.5,7.6177) circle [radius=0.075cm];%
-\pgfsetmiterjoin%
 \pgfsetfillcolor{black}%
 \end{scope}%
 \end{tikzpicture}%

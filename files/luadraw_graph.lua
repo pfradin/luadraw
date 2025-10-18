@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -611,9 +611,9 @@ function luadraw_graph:Dcartesian(f,args)
 -- args est une table à 5 entrées args = { x = {x1,x2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "",clip={x1,x2,y1,y2} }
     args = args or {}
     local x = args.x or {self:Xinf(), self:Xsup()}
-    local nbdots = args.nbdots or 50
+    local nbdots = args.nbdots or 40
     local discont = args.discont or false
-    local nbdiv = args.nbdiv or 5
+    local nbdiv = args.nbdiv or 4
     local draw_options = args.draw_options or ""
     local x1, x2 = table.unpack(x)
     if x1 > x2 then x1, x2 = x2, x1 end
@@ -624,12 +624,12 @@ end
 -- courbe paramétrée
 function luadraw_graph:Dparametric(p,args)
 -- dessin d'une courbe paramétrée par la fonction p:t -> p(t) sur l'intervalle [t1;t2] (à valeurs complexes)
--- args est une table à 5 entrées args = { t = {t1,t2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "", clip={x1,x2,y1,y2} }
+-- args est une table à 5 entrées args = { t = {t1,t2}, nbdots = 40, discont =false, nbdiv = 4, draw_options = "", clip={x1,x2,y1,y2} }
     args = args or {}
     local t = args.t or {self:Xinf(), self:Xsup()}
-    local nbdots = args.nbdots or 50
+    local nbdots = args.nbdots or 40
     local discont = args.discont or false
-    local nbdiv = args.nbdiv or 5
+    local nbdiv = args.nbdiv or 4
     local draw_options = args.draw_options or ""
     if draw_options == "" then draw_options = "line join=round"
     else draw_options = "line join=round,"..draw_options end -- jointure arrondie
@@ -642,12 +642,12 @@ end
 -- courbe polaire
 function luadraw_graph:Dpolar(rho,args)
 -- dessin d'une courbe polaire parmétrée par la fonction rho:t -> rho(t) sur l'intervalle [t1;t2] (à valeurs réelles)
--- args est une table à 6 entrées args = { t = {t1,t2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "", clip={x1,x2,y1,y2} } }
+-- args est une table à 6 entrées args = { t = {t1,t2}, nbdots = 40, discont =false, nbdiv = 4, draw_options = "", clip={x1,x2,y1,y2} } }
     args = args or {}
     local t = args.t or {-math.pi, math.pi}
-    local nbdots = args.nbdots or 50
+    local nbdots = args.nbdots or 40
     local discont = args.discont or false
-    local nbdiv = args.nbdiv or 5
+    local nbdiv = args.nbdiv or 4
     local draw_options = args.draw_options or ""
     local t1, t2 = table.unpack(t)
     if t1 > t2 then t1, t2 = t2, t1 end
@@ -659,13 +659,13 @@ end
 function luadraw_graph:Dperiodic(f,period,args)
 -- f est une fonction x -> f(x) réelle
 -- period est une liste {a,b} avec a < b représentant une période
--- args est une table à 5 entrées args = { x = {x1,x2}, nbdots = 50, discont =false, nbdiv = 5, draw_options = "",clip={x1,x2,y1,y2} }
+-- args est une table à 5 entrées args = { x = {x1,x2}, nbdots = 40, discont =false, nbdiv = 4, draw_options = "",clip={x1,x2,y1,y2} }
     if (period == nil) or (type(period) ~= "table") or (#period ~= 2) then return end
     args = args or {}
     local x = args.x or {self:Xinf(), self:Xsup()}
-    local nbdots = args.nbdots or 50
+    local nbdots = args.nbdots or 40
     local discont = args.discont
-    local nbdiv = args.nbdiv or 5
+    local nbdiv = args.nbdiv or 4
     local draw_options = args.draw_options or ""
     local x1, x2 = table.unpack(x)
     if x1 > x2 then x1, x2 = x2, x1 end
@@ -794,12 +794,12 @@ end
 function luadraw_graph:Ddomain1(f,args)
 -- dessine le contour de la partie du plan comprise entre la courbe de f, l'axe Ox, et les droites x=a, x=b 
 -- avec f une fonction x-> f(x) réelle
--- args est une table à 5 entrées { x= {a,b}, nbdots=50, discont=true/false, nbdiv=5, draw_options="" }
+-- args est une table à 5 entrées { x= {a,b}, nbdots=40, discont=true/false, nbdiv=4, draw_options="" }
    args = (args or {})
     local x = args.x or {self:Xinf(),self:Xsup()}
-    local nbdots = (args.nbdots or 50)
+    local nbdots = (args.nbdots or 40)
     local discont = (args.discont or false)
-    local nbdiv = (args.nbdiv or 5)
+    local nbdiv = (args.nbdiv or 4)
     local draw_options = args.draw_options or ""
     local a, b = table.unpack(x)
     local C = domain1(f,a,b,nbdots,discont,nbdiv)
@@ -811,12 +811,12 @@ end
 function luadraw_graph:Ddomain2(f,g,args)
 -- dessine le contour de la partie du plan comprise entre la courbe de f, la courbe de g, et les droites x=a, x=b 
 -- avec f une fonction x-> f(x) réelle ainsi que g
--- args est une table à 5 entrées { x= {a,b}, nbdots=50, discont=true/false, nbdiv=5, draw_options="" }
+-- args est une table à 5 entrées { x= {a,b}, nbdots=40, discont=true/false, nbdiv=4, draw_options="" }
     args = (args or {})
     local x = args.x or {self:Xinf(),self:Xsup()}
-    local nbdots = (args.nbdots or 50)
+    local nbdots = (args.nbdots or 40)
     local discont = (args.discont or false)
-    local nbdiv = (args.nbdiv or 5)
+    local nbdiv = (args.nbdiv or 4)
     local draw_options = args.draw_options or ""
     local a, b = table.unpack(x)
     local C = domain2(f,g,a,b,nbdots,discont,nbdiv)
@@ -828,12 +828,12 @@ end
 function luadraw_graph:Ddomain3(f,g,args)
 -- dessine le contour de la partie du plan comprise entre la courbe de f, la courbe de g, tout en se limitant dans l'intervalle [a;b]
 -- avec f une fonction x-> f(x) réelle ainsi que g, supposées définies continues sur [a;b]
--- args est une table à 5 entrées { x= {a,b}, nbdots=50, discont=true/false, nbdiv=5, draw_options="" }
+-- args est une table à 5 entrées { x= {a,b}, nbdots=40, discont=true/false, nbdiv=4, draw_options="" }
     args = (args or {})
     local x = args.x or {self:Xinf(),self:Xsup()}
-    local nbdots = (args.nbdots or 50)
+    local nbdots = (args.nbdots or 40)
     local discont = (args.discont or false)
-    local nbdiv = (args.nbdiv or 5)
+    local nbdiv = (args.nbdiv or 4)
     local draw_options = args.draw_options or ""
     local a, b = table.unpack(x)
     local C = domain3(f,g,a,b,nbdots,discont,nbdiv)
@@ -1168,6 +1168,39 @@ function luadraw_graph:DtangentI(f,x0,y0,long,draw_options)
     end
 end
 
+function luadraw_graph:Dnormal(p,t0,long,draw_options)
+-- dessin de la normale à la courbe paramétrée par t->p(t) (à valeurs complexes)
+-- au point de paramètre t0. 
+-- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
+    if type(long) == "string" then draw_options = long; long = nil end
+    local S = normal(p,t0,long)
+    if long == nil then self:Dline(S,draw_options)
+    else self:Dseg(S,1,draw_options)
+    end
+end
+
+function luadraw_graph:DnormalC(f,x0,long,draw_options)
+-- dessin de la normale à la courbe cartésienne d'équation y=f(x)
+-- au point d'abscisse x0
+-- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
+    if type(long) == "string" then draw_options = long; long = nil end
+    local S = normalC(f,x0,long)
+    if long == nil then self:Dline(S,draw_options)
+    else self:Dseg(S,1,draw_options)
+    end
+end
+
+function luadraw_graph:DnormalI(f,x0,y0,long,draw_options)
+-- dessin de la normale à la courbe implicite d'équation f(x,y)=0
+-- au point (x0,y0) supposé sur la courbe
+-- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
+    if type(long) == "string" then draw_options = long; long = nil end
+    local S = normalI(f,x0,y0,long)
+    if long == nil then self:Dline(S,draw_options)
+    else self:Dseg(S,1,draw_options)
+    end
+end
+
 ----- Labels -----------------------------------------------------
 function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,options, ... )
 -- dessiner un label, anchor est un complexe (point), 
@@ -1311,14 +1344,18 @@ end
 --------- Dessin de chemins --------------------------------------------
 
 -- path
-function luadraw_graph:Dpath(L,draw_options) 
+function luadraw_graph:Dpath(L,draw_options,clip) 
 -- dessine le chemin contenu dans L, L est une table de complexes et d'instructions
 -- ex: Dpath( {-1,2+i,3,"l", 4, "m", -2*i,-3-3*i,"l","cl",...} )
 -- "m" pour moveto, "l" pour lineto, "b" pour bézier, "c" pour cercle, "ca" pour arc de cercle, "ea" arc d'ellipse, "e" pour ellipse, "s" pour spline naturelle, "cl" pour close
 -- "la" pour line arc (ligne aux coins arrondis), "cla" ligne fermée aux coins arrondis
+    clip = clip or false
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
     draw_options = draw_options or ""
-    local commande = self:drawcmd(draw_options)
+    local commande
+    if clip then commande = "\\clip "
+    else commande = self:drawcmd(draw_options,clip)
+    end
     if commande == nil then return end
     local debut = true
     local res = {} -- résultat
@@ -1500,7 +1537,7 @@ function luadraw_graph:Dpath(L,draw_options)
     local aux2 = path(L)
     if not isID(self.matrix) then aux2 = self:Mtransform(aux2) end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-    clippee = needclip(aux2,X1,X2,Y1,Y2)
+    clippee = (not clip) and needclip(aux2,X1,X2,Y1,Y2)
     if clippee and self.bbox then
         self:Writeln("\\begin{scope}")
         self:Writeln("\\clip "..self:strCoord(X1,Y1).." rectangle "..self:strCoord(X2,Y2)..";")
@@ -1514,6 +1551,23 @@ function luadraw_graph:Dpath(L,draw_options)
     end
     if not debut then self:Writeln(";") end
     if clippee and self.bbox then self:Writeln("\\end{scope}") end
+end
+
+-- clipping avec un chemin
+function luadraw_graph:Beginclip(path,inverse)
+    inverse = inverse or false
+    self:Writeln("\\begin{scope}")
+    if inverse then
+        local chem = reverse(self:Box2d())
+        insert(chem,{"l","cl"})
+        table.insert(path,2,"m")
+        self:Dpath( concat(chem,path),"",true) -- path doit être dans le sens trigonométrique
+    else self:Dpath(path,"",true)
+    end
+end
+
+function luadraw_graph:Endclip()
+    self:Writeln("\\end{scope}")
 end
 
 -- arc de cercle
@@ -1541,9 +1595,14 @@ function luadraw_graph:Dwedge(B,A,C,r,sens,draw_options)
 end
 
 --cercle
-function luadraw_graph:Dcircle(c,r,d,draw_options)
+function luadraw_graph:Dcircle(c,r,d,draw_options) -- ou Dcircle({c,r,d},draw_options)
 -- dessine le cercle de centre c et de rayon r (si d=nil) ou bien passant par les points c, r et d
-    if type(d) == "string" then draw_options = d; d = nil end
+    if (type(c) == "table") and (not isComplex(c)) then
+        if type(r) == "string" then draw_options = r end
+        c,r,d = table.unpack(c)
+    else
+        if type(d) == "string" then draw_options = d; d = nil end
+    end
     local S = circleb(c,r,d)
     self:Dpath(S,draw_options) -- cercle en courbes de Bézier
 end

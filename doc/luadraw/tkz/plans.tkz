@@ -1,7 +1,6 @@
 \begin{tikzpicture}[background rectangle/.style={,fill=LightGray},show background rectangle]%
 \begin{scope}%
 \clip (0,0) rectangle (9.2307692307692,10.0);%
-\pgfsetroundjoin%
 \pgfseteorule%
 \pgfsetfillcolor{Crimson}%
 \pgfsetstrokecolor{Gold}%
@@ -14,7 +13,6 @@
 \draw[fill,fill=Crimson] (0.6717,6.7452) -- (0.6717,1.4158) -- (6.4544,0.3634) -- (6.4544,5.6928) (2.311,4.4483) -- (2.311,3.116) -- (3.563,2.222) -- (4.815,2.6603) -- (4.815,3.9926) -- (3.563,4.8867)--cycle;%
 \pgfsetstrokecolor{black}%
 \pgfsetlinewidth{0.4pt}%
-\pgfsetmiterjoin%
 \pgfsetnonzerorule%
 \pgfsetfillcolor{black}%
 \end{scope}%

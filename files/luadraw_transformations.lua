@@ -1,6 +1,6 @@
 -- luadraw_transformations.lua (chargé par luadraw_calc.lua)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -19,7 +19,7 @@ function ftransform(L,f)
     if (type(L) ~= "table") or (#L == 0) then return end
     if (type(L[1]) == "number") or isComplex(L[1]) then -- liste de réels/complexes
         for _,z in ipairs(L) do
-            if z == cpx.Jump then u = cpx.Jump else u = f(z)end
+            if z == cpx.Jump then u = cpx.Jump else u = f(z) end
             if u ~= nil then table.insert(res,u) end
         end
         if #res > 0 then return res end
@@ -27,7 +27,7 @@ function ftransform(L,f)
         for _, cp in ipairs(L) do
             local aux = {}
             for _, z in ipairs(cp) do
-                if z == cpx.Jump then u = cpx.Jump else u = f(z)end
+                if z == cpx.Jump then u = cpx.Jump else u = f(z) end
                 if u ~= nil then table.insert(aux,u) end
             end
             if #aux > 0 then table.insert(res, aux) end
@@ -221,11 +221,12 @@ function affin(L,d,v,k)
     return ftransform(L,affin1)
 end
 
-function inv(L, centre, rayon)
+function inv(L, rayon, centre)
 -- image de  L par l'inversion
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
+    centre = centre or 0
     centre = toComplex(centre)
-    if (centre == nil) or (rayon == nil) or (type(rayon) ~= "number") or (rayon <= 0) then return end
+    if (rayon == nil) or (type(rayon) ~= "number") or (rayon <= 0) then return end
         
     local inv1 = function(A)
         A = toComplex(A)

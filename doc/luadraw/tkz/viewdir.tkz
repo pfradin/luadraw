@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (7.5,7.5);%
-\pgfsetroundjoin%
 \draw[->] (3.5,3.5) -- (4.5249,4.0124);%
 \draw[->] (5.25,5.0155) -- (1.75,1.9845);%
 \draw[->] (0.4689,4.375) -- (6.5311,2.625);%
@@ -15,6 +14,5 @@
 \fill[opacity=1,ball color=black] (3.5,3.5) circle [radius=0.075cm];%
 \draw[-] (1.6625,1.9087) node[] {\footnotesize $x$} (6.6826,2.5812) node[] {\footnotesize $y$} (3.5,6.6826) node[] {\footnotesize $z$} (4.5249,4.0124) node[right] {\footnotesize vers observateur} (3.5,3.5) node[above left] {\footnotesize $O$} (3.3124,1.9376) node[above=0.15cm] {\footnotesize $\theta$} (4.0124,4.9687) node[below=0.25cm] {\footnotesize $\varphi$};%
 \draw[-] (3.5,0) node[above] {\footnotesize viewdir=\{$\theta,\varphi$\} (en degrés)};%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

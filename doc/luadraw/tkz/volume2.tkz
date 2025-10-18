@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (0,0) rectangle (7.5705369360207,10.0);%
-\pgfsetroundjoin%
 \pgfsetfillcolor{LightGray}%
 \fill[] (1.2017,5.5001) -- (6.3094,6.19) -- (7.21,2.2772) -- (2.1023,1.5873)--cycle;%
 \fill[] (1.2017,8.8339) -- (6.3094,9.5238) -- (6.3094,6.19) -- (1.2017,5.5001)--cycle;%
@@ -65,215 +64,241 @@
 \draw[-] (1.0671,7.7517) node[left] {\scriptsize $z$} (1.1792,5.5975) node[left] {\scriptsize $0$} (1.1792,6.431) node[left] {\scriptsize $0.25$} (1.1792,7.2644) node[left] {\scriptsize $0.5$} (1.1792,8.0979) node[left] {\scriptsize $0.75$} (1.1792,8.9313) node[left] {\scriptsize $1$};%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\draw[fill=Crimson, fill opacity=0.6] (1.2017,5.5001) -- (1.2017,8.8339) -- (1.3841,8.6246) -- (1.5665,8.4239) -- (1.7489,8.2317) -- (1.9313,8.048) -- (2.1138,7.8727) -- (2.2962,7.706) -- (2.4786,7.5478) -- (2.661,7.3981) -- (2.8434,7.2569) -- (3.0259,7.1242) -- (3.2083,7) -- (3.3907,6.8843) -- (3.5731,6.7771) -- (3.7555,6.6785) -- (4.1204,6.5066) -- (4.4852,6.3688) -- (4.8501,6.265) -- (5.2149,6.1952) -- (5.5797,6.1595) -- (5.9446,6.1577) -- (6.3094,6.19);%
+\draw[fill=Crimson, fill opacity=0.6] (1.2017,5.5001) -- (1.2017,8.8339) -- (1.4145,8.5906) -- (1.6273,8.3589) -- (1.8401,8.1388) -- (2.053,7.9302) -- (2.2658,7.7332) -- (2.4786,7.5478) -- (2.6914,7.374) -- (2.9042,7.2117) -- (3.1171,7.0611) -- (3.3299,6.9219) -- (3.5427,6.7944) -- (3.7555,6.6785) -- (3.9684,6.5741) -- (4.1812,6.4813) -- (4.394,6.4001) -- (4.6068,6.3304) -- (4.8196,6.2724) -- (5.0325,6.2259) -- (5.2453,6.1909) -- (5.4581,6.1676) -- (5.6709,6.1558) -- (5.8838,6.1556) -- (6.0966,6.167) -- (6.3094,6.19);%
 \pgfsetfillpattern{north west lines}{black}%
-\draw[fill] (6.3094,6.19) -- (7.21,2.2772) -- (7.1196,2.5532) -- (6.9771,2.8221) -- (6.7825,3.084) -- (6.5358,3.3388) -- (6.2369,3.5866) -- (5.8859,3.8274) -- (5.4828,4.0611) -- (5.2617,4.1753) -- (5.0276,4.2878) -- (4.7804,4.3985) -- (4.5202,4.5074) -- (4.247,4.6146) -- (3.9607,4.72) -- (3.6615,4.8237) -- (3.3492,4.9256) -- (3.0238,5.0257) -- (2.6854,5.1241) -- (2.334,5.2207) -- (1.9696,5.3156) -- (1.5922,5.4087) -- (1.2017,5.5001);%
-\pgfsetfillcolor{cyan!86.62!black}%
-\pgfsetstrokecolor{cyan!86.62!black}%
+\draw[fill] (6.3094,6.19) -- (7.21,2.2772) -- (7.1636,2.4391) -- (7.0995,2.5985) -- (7.0176,2.7555) -- (6.918,2.9102) -- (6.8007,3.0624) -- (6.6656,3.2123) -- (6.5128,3.3598) -- (6.3423,3.5048) -- (6.154,3.6475) -- (5.948,3.7878) -- (5.7243,3.9256) -- (5.4828,4.0611) -- (5.2236,4.1942) -- (4.9466,4.3249) -- (4.6519,4.4532) -- (4.3395,4.5791) -- (4.0094,4.7026) -- (3.6615,4.8237) -- (3.2958,4.9424) -- (2.9125,5.0587) -- (2.5114,5.1727) -- (2.0925,5.2842) -- (1.656,5.3933) -- (1.2017,5.5001);%
+\pgfsetfillcolor{cyan!86.57!black}%
+\pgfsetstrokecolor{cyan!86.57!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (5.8859,3.9399) -- (6.2369,3.6409) -- (5.6579,6.1562) -- (5.3712,6.1757)--cycle;%
+\draw[fill] (5.948,3.8882) -- (6.154,3.7134) -- (5.5911,6.1589) -- (5.4226,6.1707)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!84.6!black}%
-\pgfsetstrokecolor{cyan!84.6!black}%
+\pgfsetfillcolor{cyan!85.46!black}%
+\pgfsetstrokecolor{cyan!85.46!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (5.4828,4.2695) -- (5.8859,3.9399) -- (5.3712,6.1757) -- (5.0325,6.2259)--cycle;%
+\draw[fill] (5.7243,4.0728) -- (5.948,3.8882) -- (5.4226,6.1707) -- (5.2364,6.1922)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!88.02!black}%
-\pgfsetstrokecolor{cyan!88.02!black}%
+\pgfsetfillcolor{cyan!87.47!black}%
+\pgfsetstrokecolor{cyan!87.47!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (6.2369,3.6409) -- (6.5358,3.361) -- (5.8924,6.1559) -- (5.6579,6.1562)--cycle;%
+\draw[fill] (6.154,3.7134) -- (6.3423,3.546) -- (5.7419,6.1545) -- (5.5911,6.1589)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!82.71!black}%
-\pgfsetstrokecolor{cyan!82.71!black}%
+\pgfsetfillcolor{cyan!84.13!black}%
+\pgfsetstrokecolor{cyan!84.13!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (5.2617,4.4499) -- (5.4828,4.2695) -- (5.0325,6.2259) -- (4.8435,6.2666)--cycle;%
+\draw[fill] (5.4828,4.2695) -- (5.7243,4.0728) -- (5.2364,6.1922) -- (5.0325,6.2259)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!88.93!black}%
-\pgfsetstrokecolor{cyan!88.93!black}%
+\pgfsetfillcolor{cyan!88.18!black}%
+\pgfsetstrokecolor{cyan!88.18!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (6.5358,3.361) -- (6.7825,3.091) -- (6.0749,6.1653) -- (5.8924,6.1559)--cycle;%
+\draw[fill] (6.3423,3.546) -- (6.5128,3.3839) -- (5.8749,6.1554) -- (5.7419,6.1545)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!81.22!black}%
-\pgfsetstrokecolor{cyan!81.22!black}%
+\pgfsetfillcolor{cyan!82.58!black}%
+\pgfsetstrokecolor{cyan!82.58!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (5.0276,4.6433) -- (5.2617,4.4499) -- (4.8435,6.2666) -- (4.6416,6.3202)--cycle;%
+\draw[fill] (5.2236,4.4812) -- (5.4828,4.2695) -- (5.0325,6.2259) -- (4.8108,6.2745)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!79.6!black}%
-\pgfsetstrokecolor{cyan!79.6!black}%
+\pgfsetfillcolor{cyan!88.73!black}%
+\pgfsetstrokecolor{cyan!88.73!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (4.7804,4.8515) -- (5.0276,4.6433) -- (4.6416,6.3202) -- (4.4266,6.3887)--cycle;%
+\draw[fill] (6.5128,3.3839) -- (6.6656,3.2253) -- (5.9902,6.1599) -- (5.8749,6.1554)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!89.46!black}%
-\pgfsetstrokecolor{cyan!89.46!black}%
+\pgfsetfillcolor{cyan!80.83!black}%
+\pgfsetstrokecolor{cyan!80.83!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (6.7825,3.091) -- (6.9771,2.8235) -- (6.2052,6.1773) -- (6.0749,6.1653)--cycle;%
+\draw[fill] (4.9466,4.7109) -- (5.2236,4.4812) -- (4.8108,6.2745) -- (4.5714,6.3412)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!77.85!black}%
-\pgfsetstrokecolor{cyan!77.85!black}%
+\pgfsetfillcolor{cyan!89.13!black}%
+\pgfsetstrokecolor{cyan!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (4.5202,5.0768) -- (4.7804,4.8515) -- (4.4266,6.3887) -- (4.1986,6.4742)--cycle;%
+\draw[fill] (6.6656,3.2253) -- (6.8007,3.0687) -- (6.0877,6.1663) -- (5.9902,6.1599)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!89.74!black}%
-\pgfsetstrokecolor{cyan!89.74!black}%
+\pgfsetfillcolor{cyan!89.42!black}%
+\pgfsetstrokecolor{cyan!89.42!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (6.9771,2.8235) -- (7.1196,2.5533) -- (6.2833,6.1865) -- (6.2052,6.1773)--cycle;%
+\draw[fill] (6.8007,3.0687) -- (6.918,2.9128) -- (6.1675,6.1734) -- (6.0877,6.1663)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!75.99!black}%
-\pgfsetstrokecolor{cyan!75.99!black}%
+\pgfsetfillcolor{cyan!78.88!black}%
+\pgfsetstrokecolor{cyan!78.88!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (4.247,5.3215) -- (4.5202,5.0768) -- (4.1986,6.4742) -- (3.9575,6.5791)--cycle;%
+\draw[fill] (4.6519,4.9619) -- (4.9466,4.7109) -- (4.5714,6.3412) -- (4.3142,6.4292)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!89.86!black}%
-\pgfsetstrokecolor{cyan!89.86!black}%
+\pgfsetfillcolor{cyan!89.63!black}%
+\pgfsetstrokecolor{cyan!89.63!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (7.1196,2.5533) -- (7.21,2.2772) -- (6.3094,6.19) -- (6.2833,6.1865)--cycle;%
+\draw[fill] (6.918,2.9128) -- (7.0176,2.7564) -- (6.2296,6.18) -- (6.1675,6.1734)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!74.05!black}%
-\pgfsetstrokecolor{cyan!74.05!black}%
+\pgfsetfillcolor{cyan!89.76!black}%
+\pgfsetstrokecolor{cyan!89.76!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (3.9607,5.5879) -- (4.247,5.3215) -- (3.9575,6.5791) -- (3.7034,6.7058)--cycle;%
+\draw[fill] (7.0176,2.7564) -- (7.0995,2.5987) -- (6.2739,6.1853) -- (6.2296,6.18)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillopacity{0.7}%
-\pgfsetfillcolor{Crimson!80.38!black}%
-\fill[] (3.9607,4.72) -- (4.247,4.6146) -- (4.247,5.3215) -- (3.9607,5.5879)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!79.98!black}%
-\fill[] (4.247,4.6146) -- (4.5202,4.5074) -- (4.5202,5.0768) -- (4.247,5.3215)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!79.53!black}%
-\fill[] (4.5202,4.5074) -- (4.7804,4.3985) -- (4.7804,4.8515) -- (4.5202,5.0768)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!80.74!black}%
-\fill[] (3.6615,4.8237) -- (3.9607,4.72) -- (3.9607,5.5879) -- (3.6615,5.8786)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!79.01!black}%
-\fill[] (4.7804,4.3985) -- (5.0276,4.2878) -- (5.0276,4.6433) -- (4.7804,4.8515)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!81.05!black}%
-\fill[] (3.3492,4.9256) -- (3.6615,4.8237) -- (3.6615,5.8786) -- (3.3492,6.1962)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!78.42!black}%
-\fill[] (5.0276,4.2878) -- (5.2617,4.1753) -- (5.2617,4.4499) -- (5.0276,4.6433)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!81.33!black}%
-\fill[] (3.0238,5.0257) -- (3.3492,4.9256) -- (3.3492,6.1962) -- (3.0238,6.5436)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!77.74!black}%
-\fill[] (5.2617,4.1753) -- (5.4828,4.0611) -- (5.4828,4.2695) -- (5.2617,4.4499)--cycle;%
-\pgfsetdash{}{0pt}%
-\pgfsetfillopacity{1}%
-\pgfsetfillcolor{cyan!72.05!black}%
-\pgfsetstrokecolor{cyan!72.05!black}%
+\pgfsetfillcolor{cyan!76.77!black}%
+\pgfsetstrokecolor{cyan!76.77!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (3.6615,5.8786) -- (3.9607,5.5879) -- (3.7034,6.7058) -- (3.4363,6.8567)--cycle;%
+\draw[fill] (4.3395,5.2376) -- (4.6519,4.9619) -- (4.3142,6.4292) -- (4.0393,6.5419)--cycle;%
+\pgfsetstrokecolor{Navy}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillcolor{cyan!89.84!black}%
+\pgfsetstrokecolor{cyan!89.84!black}%
+\pgfsetlinewidth{0.1pt}%
+\draw[fill] (7.0995,2.5987) -- (7.1636,2.4391) -- (6.3005,6.1888) -- (6.2739,6.1853)--cycle;%
+\pgfsetstrokecolor{Navy}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillcolor{cyan!89.88!black}%
+\pgfsetstrokecolor{cyan!89.88!black}%
+\pgfsetlinewidth{0.1pt}%
+\draw[fill] (7.1636,2.4391) -- (7.21,2.2772) -- (6.3094,6.19) -- (6.3005,6.1888)--cycle;%
+\pgfsetstrokecolor{Navy}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillcolor{cyan!74.54!black}%
+\pgfsetstrokecolor{cyan!74.54!black}%
+\pgfsetlinewidth{0.1pt}%
+\draw[fill] (4.0094,5.5419) -- (4.3395,5.2376) -- (4.0393,6.5419) -- (3.7467,6.6831)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetfillopacity{0.7}%
-\pgfsetfillcolor{Crimson!81.57!black}%
-\fill[] (2.6854,5.1241) -- (3.0238,5.0257) -- (3.0238,6.5436) -- (2.6854,6.9236)--cycle;%
+\pgfsetfillcolor{Crimson!80.29!black}%
+\fill[] (4.0094,4.7026) -- (4.3395,4.5791) -- (4.3395,5.2376) -- (4.0094,5.5419)--cycle;%
 \pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!76.54!black}%
-\fill[] (5.4828,4.0611) -- (5.8859,3.8274) -- (5.8859,3.9399) -- (5.4828,4.2695)--cycle;%
+\pgfsetfillcolor{Crimson!79.8!black}%
+\fill[] (4.3395,4.5791) -- (4.6519,4.4532) -- (4.6519,4.9619) -- (4.3395,5.2376)--cycle;%
 \pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!81.79!black}%
-\fill[] (2.334,5.2207) -- (2.6854,5.1241) -- (2.6854,6.9236) -- (2.334,7.3395)--cycle;%
+\pgfsetfillcolor{Crimson!80.71!black}%
+\fill[] (3.6615,4.8237) -- (4.0094,4.7026) -- (4.0094,5.5419) -- (3.6615,5.8786)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!79.23!black}%
+\fill[] (4.6519,4.4532) -- (4.9466,4.3249) -- (4.9466,4.7109) -- (4.6519,4.9619)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!81.07!black}%
+\fill[] (3.2958,4.9424) -- (3.6615,4.8237) -- (3.6615,5.8786) -- (3.2958,6.2519)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!78.58!black}%
+\fill[] (4.9466,4.3249) -- (5.2236,4.1942) -- (5.2236,4.4812) -- (4.9466,4.7109)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!81.39!black}%
+\fill[] (2.9125,5.0587) -- (3.2958,4.9424) -- (3.2958,6.2519) -- (2.9125,6.6665)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!77.8!black}%
+\fill[] (5.2236,4.1942) -- (5.4828,4.0611) -- (5.4828,4.2695) -- (5.2236,4.4812)--cycle;%
 \pgfsetdash{}{0pt}%
 \pgfsetfillopacity{1}%
-\pgfsetfillcolor{cyan!70.01!black}%
-\pgfsetstrokecolor{cyan!70.01!black}%
+\pgfsetfillcolor{cyan!72.22!black}%
+\pgfsetstrokecolor{cyan!72.22!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (3.3492,6.1962) -- (3.6615,5.8786) -- (3.4363,6.8567) -- (3.1562,7.0346)--cycle;%
+\draw[fill] (3.6615,5.8786) -- (4.0094,5.5419) -- (3.7467,6.6831) -- (3.4363,6.8567)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetfillopacity{0.7}%
-\pgfsetfillcolor{Crimson!74.49!black}%
-\fill[] (5.8859,3.8274) -- (6.2369,3.5866) -- (6.2369,3.6409) -- (5.8859,3.9399)--cycle;%
+\pgfsetfillcolor{Crimson!76.9!black}%
+\fill[] (5.4828,4.0611) -- (5.7243,3.9256) -- (5.7243,4.0728) -- (5.4828,4.2695)--cycle;%
 \pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!81.99!black}%
-\fill[] (1.9696,5.3156) -- (2.334,5.2207) -- (2.334,7.3395) -- (1.9696,7.7942)--cycle;%
+\pgfsetfillcolor{Crimson!81.67!black}%
+\fill[] (2.5114,5.1727) -- (2.9125,5.0587) -- (2.9125,6.6665) -- (2.5114,7.1269)--cycle;%
 \pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!82.16!black}%
-\fill[] (1.5922,5.4087) -- (1.9696,5.3156) -- (1.9696,7.7942) -- (1.5922,8.2912)--cycle;%
+\pgfsetfillcolor{Crimson!75.84!black}%
+\fill[] (5.7243,3.9256) -- (5.948,3.7878) -- (5.948,3.8882) -- (5.7243,4.0728)--cycle;%
 \pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!71.76!black}%
-\fill[] (6.2369,3.5866) -- (6.5358,3.3388) -- (6.5358,3.361) -- (6.2369,3.6409)--cycle;%
+\pgfsetfillcolor{Crimson!81.91!black}%
+\fill[] (2.0925,5.2842) -- (2.5114,5.1727) -- (2.5114,7.1269) -- (2.0925,7.6381)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!74.59!black}%
+\fill[] (5.948,3.7878) -- (6.154,3.6475) -- (6.154,3.7134) -- (5.948,3.8882)--cycle;%
 \pgfsetdash{}{0pt}%
 \pgfsetfillopacity{1}%
-\pgfsetfillcolor{cyan!67.95!black}%
-\pgfsetstrokecolor{cyan!67.95!black}%
+\pgfsetfillcolor{cyan!69.84!black}%
+\pgfsetstrokecolor{cyan!69.84!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (3.0238,6.5436) -- (3.3492,6.1962) -- (3.1562,7.0346) -- (2.863,7.2423)--cycle;%
+\draw[fill] (3.2958,6.2519) -- (3.6615,5.8786) -- (3.4363,6.8567) -- (3.1082,7.0671)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetfillopacity{0.7}%
-\pgfsetfillcolor{Crimson!82.32!black}%
-\fill[] (1.2017,5.5001) -- (1.5922,5.4087) -- (1.5922,8.2912) -- (1.2017,8.8339)--cycle;%
+\pgfsetfillcolor{Crimson!73.11!black}%
+\fill[] (6.154,3.6475) -- (6.3423,3.5048) -- (6.3423,3.546) -- (6.154,3.7134)--cycle;%
 \pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!68.12!black}%
-\fill[] (6.5358,3.3388) -- (6.7825,3.084) -- (6.7825,3.091) -- (6.5358,3.361)--cycle;%
+\pgfsetfillcolor{Crimson!82.12!black}%
+\fill[] (1.656,5.3933) -- (2.0925,5.2842) -- (2.0925,7.6381) -- (1.656,8.2053)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!71.36!black}%
+\fill[] (6.3423,3.5048) -- (6.5128,3.3598) -- (6.5128,3.3839) -- (6.3423,3.546)--cycle;%
 \pgfsetdash{}{0pt}%
 \pgfsetfillopacity{1}%
-\pgfsetfillcolor{cyan!65.88!black}%
-\pgfsetstrokecolor{cyan!65.88!black}%
+\pgfsetfillcolor{cyan!67.43!black}%
+\pgfsetstrokecolor{cyan!67.43!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (2.6854,6.9236) -- (3.0238,6.5436) -- (2.863,7.2423) -- (2.5568,7.4826)--cycle;%
+\draw[fill] (2.9125,6.6665) -- (3.2958,6.2519) -- (3.1082,7.0671) -- (2.7624,7.3186)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetfillopacity{0.7}%
-\pgfsetfillcolor{Crimson!63.24!black}%
-\fill[] (6.7825,3.084) -- (6.9771,2.8221) -- (6.9771,2.8235) -- (6.7825,3.091)--cycle;%
+\pgfsetfillcolor{Crimson!69.29!black}%
+\fill[] (6.5128,3.3598) -- (6.6656,3.2123) -- (6.6656,3.2253) -- (6.5128,3.3839)--cycle;%
 \pgfsetdash{}{0pt}%
-\pgfsetfillcolor{Crimson!56.67!black}%
-\fill[] (6.9771,2.8221) -- (7.1196,2.5532) -- (7.1196,2.5533) -- (6.9771,2.8235)--cycle;%
+\pgfsetfillcolor{Crimson!82.3!black}%
+\fill[] (1.2017,5.5001) -- (1.656,5.3933) -- (1.656,8.2053) -- (1.2017,8.8339)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!66.84!black}%
+\fill[] (6.6656,3.2123) -- (6.8007,3.0624) -- (6.8007,3.0687) -- (6.6656,3.2253)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!63.93!black}%
+\fill[] (6.8007,3.0624) -- (6.918,2.9102) -- (6.918,2.9128) -- (6.8007,3.0687)--cycle;%
 \pgfsetdash{}{0pt}%
 \pgfsetfillopacity{1}%
-\pgfsetfillcolor{cyan!63.81!black}%
-\pgfsetstrokecolor{cyan!63.81!black}%
+\pgfsetfillcolor{cyan!65.01!black}%
+\pgfsetstrokecolor{cyan!65.01!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (2.334,7.3395) -- (2.6854,6.9236) -- (2.5568,7.4826) -- (2.2376,7.7587)--cycle;%
+\draw[fill] (2.5114,7.1269) -- (2.9125,6.6665) -- (2.7624,7.3186) -- (2.3988,7.616)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetfillopacity{0.7}%
-\pgfsetfillcolor{Crimson!47.61!black}%
-\fill[] (7.1196,2.5532) -- (7.21,2.2772) -- (7.1196,2.5533)--cycle;%
+\pgfsetfillcolor{Crimson!60.47!black}%
+\fill[] (6.918,2.9102) -- (7.0176,2.7555) -- (7.0176,2.7564) -- (6.918,2.9128)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!56.35!black}%
+\fill[] (7.0176,2.7555) -- (7.0995,2.5985) -- (7.0995,2.5987) -- (7.0176,2.7564)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillcolor{Crimson!51.38!black}%
+\fill[] (7.0995,2.5985) -- (7.1636,2.4391) -- (7.1636,2.4391) -- (7.0995,2.5987)--cycle;%
 \pgfsetdash{}{0pt}%
 \pgfsetfillopacity{1}%
-\pgfsetfillcolor{cyan!61.76!black}%
-\pgfsetstrokecolor{cyan!61.76!black}%
+\pgfsetfillcolor{cyan!62.61!black}%
+\pgfsetstrokecolor{cyan!62.61!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (1.9696,7.7942) -- (2.334,7.3395) -- (2.2376,7.7587) -- (1.9053,8.0737)--cycle;%
+\draw[fill] (2.0925,7.6381) -- (2.5114,7.1269) -- (2.3988,7.616) -- (2.0175,7.9642)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!59.74!black}%
-\pgfsetstrokecolor{cyan!59.74!black}%
+\pgfsetfillopacity{0.7}%
+\pgfsetfillcolor{Crimson!45.27!black}%
+\fill[] (7.1636,2.4391) -- (7.21,2.2772) -- (7.1636,2.4391)--cycle;%
+\pgfsetdash{}{0pt}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{cyan!60.24!black}%
+\pgfsetstrokecolor{cyan!60.24!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (1.5922,8.2912) -- (1.9696,7.7942) -- (1.9053,8.0737) -- (1.56,8.4309)--cycle;%
+\draw[fill] (1.656,8.2053) -- (2.0925,7.6381) -- (2.0175,7.9642) -- (1.6184,8.3683)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\pgfsetfillcolor{cyan!57.74!black}%
-\pgfsetstrokecolor{cyan!57.74!black}%
+\pgfsetfillcolor{cyan!57.9!black}%
+\pgfsetstrokecolor{cyan!57.9!black}%
 \pgfsetlinewidth{0.1pt}%
-\draw[fill] (1.2017,8.8339) -- (1.5922,8.2912) -- (1.56,8.4309) -- (1.2017,8.8339)--cycle;%
+\draw[fill] (1.2017,8.8339) -- (1.656,8.2053) -- (1.6184,8.3683) -- (1.2017,8.8339)--cycle;%
 \pgfsetfillpattern{north west lines}{black}%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (6.7825,3.091) -- (6.5358,3.361) -- (6.2369,3.6409) -- (5.8859,3.9399) -- (5.4828,4.2695) -- (5.2617,4.4499) -- (5.0276,4.6433) -- (4.7804,4.8515) -- (4.5202,5.0768) -- (4.247,5.3215) -- (3.9607,5.5879) -- (3.6615,5.8786) -- (3.3492,6.1962) -- (3.0238,6.5436) -- (2.6854,6.9236) -- (2.334,7.3395) -- (1.9696,7.7942) -- (1.5922,8.2912) -- (1.2017,8.8339) -- (1.2017,5.5001) -- (1.5922,5.4087) -- (1.9696,5.3156) -- (2.334,5.2207) -- (2.6854,5.1241) -- (3.0238,5.0257) -- (3.3492,4.9256) -- (3.6615,4.8237) -- (3.9607,4.72) -- (4.247,4.6146) -- (4.5202,4.5074) -- (4.7804,4.3985) -- (5.0276,4.2878) -- (5.2617,4.1753) -- (5.4828,4.0611) -- (5.8859,3.8274) -- (6.2369,3.5866) -- (6.5358,3.3388) -- (6.7825,3.084) -- (6.9771,2.8221) -- (7.1196,2.5532) -- (7.21,2.2772) -- (7.1196,2.5533) -- (6.9771,2.8235) -- (6.7825,3.091);%
-\draw[] (4.6416,6.3202) -- (4.8435,6.2666) -- (5.0325,6.2259) -- (5.3712,6.1757) -- (5.6579,6.1562) -- (5.8924,6.1559) -- (6.0749,6.1653) -- (6.2052,6.1773) -- (6.2833,6.1865) -- (6.3094,6.19) -- (7.21,2.2772) -- (7.1196,2.5533) -- (6.9771,2.8235) -- (6.7825,3.091) -- (6.5358,3.361) -- (6.2369,3.6409) -- (5.8859,3.9399) -- (5.4828,4.2695) -- (5.2617,4.4499) -- (5.0276,4.6433) -- (4.7804,4.8515) -- (4.5202,5.0768) -- (4.247,5.3215) -- (3.9607,5.5879) -- (3.6615,5.8786) -- (3.3492,6.1962) -- (3.0238,6.5436) -- (2.6854,6.9236) -- (2.334,7.3395) -- (1.9696,7.7942) -- (1.5922,8.2912) -- (1.2017,8.8339) -- (1.56,8.4309) -- (1.9053,8.0737) -- (2.2376,7.7587) -- (2.5568,7.4826) -- (2.863,7.2423) -- (3.1562,7.0346) -- (3.4363,6.8567) -- (3.7034,6.7058) -- (3.9575,6.5791) -- (4.1986,6.4742) -- (4.4266,6.3887) -- (4.6416,6.3202);%
+\draw[] (6.3423,3.5048) -- (6.5128,3.3598) -- (6.6656,3.2123) -- (6.8007,3.0624) -- (6.918,2.9102) -- (7.0176,2.7555) -- (7.0995,2.5985) -- (7.1636,2.4391) -- (7.21,2.2772) -- (7.1636,2.4391) -- (7.0995,2.5987) -- (7.0176,2.7564) -- (6.918,2.9128) -- (6.8007,3.0687) -- (6.6656,3.2253) -- (6.5128,3.3839) -- (6.3423,3.546) -- (6.154,3.7134) -- (5.948,3.8882) -- (5.7243,4.0728) -- (5.4828,4.2695) -- (5.2236,4.4812) -- (4.9466,4.7109) -- (4.6519,4.9619) -- (4.3395,5.2376) -- (4.0094,5.5419) -- (3.6615,5.8786) -- (3.2958,6.2519) -- (2.9125,6.6665) -- (2.5114,7.1269) -- (2.0925,7.6381) -- (1.656,8.2053) -- (1.2017,8.8339) -- (1.2017,5.5001) -- (1.656,5.3933) -- (2.0925,5.2842) -- (2.5114,5.1727) -- (2.9125,5.0587) -- (3.2958,4.9424) -- (3.6615,4.8237) -- (4.0094,4.7026) -- (4.3395,4.5791) -- (4.6519,4.4532) -- (4.9466,4.3249) -- (5.2236,4.1942) -- (5.4828,4.0611) -- (5.7243,3.9256) -- (5.948,3.7878) -- (6.154,3.6475) -- (6.3423,3.5048);%
+\draw[] (4.5714,6.3412) -- (4.3142,6.4292) -- (4.0393,6.5419) -- (3.7467,6.6831) -- (3.4363,6.8567) -- (3.1082,7.0671) -- (2.7624,7.3186) -- (2.3988,7.616) -- (2.0175,7.9642) -- (1.6184,8.3683) -- (1.2017,8.8339) -- (1.656,8.2053) -- (2.0925,7.6381) -- (2.5114,7.1269) -- (2.9125,6.6665) -- (3.2958,6.2519) -- (3.6615,5.8786) -- (4.0094,5.5419) -- (4.3395,5.2376) -- (4.6519,4.9619) -- (4.9466,4.7109) -- (5.2236,4.4812) -- (5.4828,4.2695) -- (5.7243,4.0728) -- (5.948,3.8882) -- (6.154,3.7134) -- (6.3423,3.546) -- (6.5128,3.3839) -- (6.6656,3.2253) -- (6.8007,3.0687) -- (6.918,2.9128) -- (7.0176,2.7564) -- (7.0995,2.5987) -- (7.1636,2.4391) -- (7.21,2.2772) -- (6.3094,6.19) -- (6.3005,6.1888) -- (6.2739,6.1853) -- (6.2296,6.18) -- (6.1675,6.1734) -- (6.0877,6.1663) -- (5.9902,6.1599) -- (5.8749,6.1554) -- (5.7419,6.1545) -- (5.5911,6.1589) -- (5.4226,6.1707) -- (5.2364,6.1922) -- (5.0325,6.2259) -- (4.8108,6.2745) -- (4.5714,6.3412);%
 \pgfsetstrokecolor{black}%
 \pgfsetlinewidth{0.4pt}%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

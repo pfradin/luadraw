@@ -1,13 +1,95 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   http://www.latex-project.org/lppl.txt.
 
-function parametric(p,t1,t2,nbdots,discont,nbdiv) 
+function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
+-- le paramétrage p est une fonction : t (réel) -> p(t) (cpx)
+    local saut = (discont or false)
+    local niveau = (nbdiv or 5)
+    local curve = {}
+    local lastJump = true
+    local dep = t1
+    local fin = t2
+    local nb = (nbdots or 40)
+    local pas = (fin - dep) / (nb-1)
+    local cp = {} -- composante connexe courante
+    local t = dep
+    local count = 0
+    local seuil = math.abs(pas)*5 --empirique
+
+    local closeCp = function ()
+            if count > 1 then
+                table.insert(curve, cp)
+            end
+            lastJump = true
+            count = 0
+            cp ={}
+        end
+    
+    local addCp = function (z)
+            lastJump = false
+            table.insert(cp, z)
+            count = count + 1
+        end
+    local middle
+    middle = function(t1,t2,f1,f2,n,d12) -- nouvelle fonction récursive middle, expérimentale
+        if (n > niveau) then 
+            if saut then closeCp() end -- fermer la composante connexe
+        else
+            local tm = (t1 + t2) / 2  -- dichotomie
+            local fm = p(tm)
+            if (fm ~= nil) then
+                if (f1 ~= nil) and (f2 ~= nil) then
+                    if d12 == nil then d12 = cpx.abs(f2-f1) end
+                    local d1m, dm2 = cpx.abs(f1-fm), cpx.abs(f2-fm)
+                    if (d12>seuil) or (d1m+dm2>1.0005*d12) -- d(f1,f2)>seuil ou d(f1,fm)+d(fm,2)>1.0005*d(f1,f2)
+                    then
+                        middle(t1,tm,f1,fm,n+1,d1m)
+                        addCp(fm)
+                        middle(tm,t2,fm,f2,n+1,dm2)
+                    end
+                else
+                    middle(t1,tm,f1,fm,n+1,nil)
+                    addCp(fm)
+                    middle(tm,t2,fm,f2,n+1,nil)
+                end
+            else -- fm = nil
+                if (f1 ~= nil) then middle(t1,tm,f1,fm,n+1,nil) else closeCp() end
+                if (f2 ~= nil) then middle(tm,t2,fm,f2,n+1,nil) else closeCp() end
+            end
+        end        
+    end
+    --corps de la fonction parametric
+    local prec = nil -- point précédent le point courant
+    local tPrec = nil -- valeur de t précédente
+    local z = nil -- point courant
+    for _ = 1, nb do
+        z = evalf(p,t)
+        if (z == nil) or notDef(z.re) or notDef(z.im) then z = nil end
+        if (z ~= nil) then
+            if (prec ~= nil) or ( (prec == nil) and (t > dep) ) then -- and test(tPrec,t,prec,z)
+                middle(tPrec,t,prec,z,1,nil)
+            end
+            addCp(z)
+        else -- z = nil
+            if (prec ~= nil) then middle(tPrec,t,prec,z,1,nil) 
+            else closeCp()
+            end
+        end
+        tPrec = t
+        prec = z
+        t = t + pas
+    end
+    if (not lastJump) and (count > 1) then table.insert(curve, cp) end -- dernière composante
+    if #curve > 0 then return curve end
+end
+
+function OLDparametric(p,t1,t2,nbdots,discont,nbdiv) 
 -- le paramétrage p est une fonction : t (réel) -> p(t) (cpx)
     local saut = (discont or false)
     local niveau = (nbdiv or 5)
@@ -43,7 +125,7 @@ function parametric(p,t1,t2,nbdots,discont,nbdiv)
             if saut then closeCp() end -- fermer la composante connexe
         else
            local tm = (t1 + t2) / 2  -- dichotomie
-           local fm = p(tm)
+           local fm = evalf(p,tm)
            if (fm ~= nil) then
                 if (f1 == nil) or (cpx.N1(f1-fm) > seuil) then
                     middle(t1,tm,f1,fm,n+1)
@@ -63,7 +145,7 @@ function parametric(p,t1,t2,nbdots,discont,nbdiv)
     local tPrec = nil -- valeur de t précédente
     local z = nil -- point courant
     for _ = 1, nb do
-        z = p(t)
+        z = evalf(p,t)
         if (z == nil) or notDef(z.re) or notDef(z.im) then z = nil end
         if (z ~= nil) then
             if ( (prec ~= nil) and (cpx.N1(prec-z) > seuil) ) or ( (prec == nil) and (t > dep) ) then
@@ -331,12 +413,12 @@ function odeRK4(f,t0,Y0,tmin,tmax,nbdots)
         table.insert(rep,{Y0[k]})
     end
     while not stop do
-        local k1 = f(t, Y)
+        local k1 = ode_f(t, Y)
         t = t + h/2 
-        local k2 = f(t, add(Y, mul(h/2,k1)) )
-        local k3 = f(t, add(Y, mul(h/2,k2)) ) 
+        local k2 = ode_f(t, add(Y, mul(h/2,k1)) )
+        local k3 = ode_f(t, add(Y, mul(h/2,k2)) ) 
         t = t + h/2
-        local k4 = f(t, add(Y, mul(h,k3)) ) 
+        local k4 = ode_f(t, add(Y, mul(h,k3)) ) 
         Y = add(Y, mul(h/6, add(k1, add( mul(2,k2), add( mul(2,k3),k4) ) ) ) )
         if not calcError then 
             table.insert( rep[1], t)
@@ -350,12 +432,12 @@ function odeRK4(f,t0,Y0,tmin,tmax,nbdots)
     calcError = false
     t = t0; Y = Y0;  h = (tmin-tmax)/(nbdots-1); stop = (t0 <= tmin) 
     while not stop do
-        local k1 = f(t, Y)
+        local k1 = ode_f(t, Y)
         t = t + h/2 
-        local k2 = f(t, add(Y, mul(h/2,k1)) )
-        local k3 = f(t, add(Y, mul(h/2,k2)) ) 
+        local k2 = ode_f(t, add(Y, mul(h/2,k1)) )
+        local k3 = ode_f(t, add(Y, mul(h/2,k2)) ) 
         t = t + h/2
-        local k4 = f(t, add(Y, mul(h,k3)) ) 
+        local k4 = ode_f(t, add(Y, mul(h,k3)) ) 
         Y = add(Y, mul(h/6, add(k1, add( mul(2,k2), add( mul(2,k3),k4) ) ) ) ) 
         if not calcError then 
             table.insert(rep[1],1,t)
@@ -623,4 +705,35 @@ function tcurve(L)
         insert(res,{a+var/3,b-vbl/3,b,"b"}) -- courbe de Bézier de a à b respectant les contraintes
     end
     return res
+end
+
+function curvilinear_param(L,close) -- curvilinear parametrization
+-- L is a list of complex numbers
+-- close=true/false, true if L must be closed
+-- returns a function f:t -> f(t) with t in [0;1] and f(t) is a point on L, f(0) is the first point, f(1) the last point.
+    if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
+    if not isComplex(L[1])  then L = L[1] end -- liste de liste de complexes, on prend la première composante
+    close = close or false
+    local a, b, n, p = nil, toComplex(L[1]), #L
+    local L2, L1, s = {b}, {0}, 0 -- L2=points, L1 = length    
+    if close then p = n+1 else p = n end
+    for k = 2, p do
+        a = b; b = toComplex(L[(k-1)%n+1])
+        s = s + cpx.abs(b-a) -- curve length from beginning to b
+        table.insert(L2,b); table.insert(L1,s)
+    end
+    local total_len = s
+    local l = function(t) -- returns L(t) using linear interpolation with t in [0,1]
+        local k = 1
+        local n = math.min(#L1,#L2)
+        if t == 0 then return L2[1] end -- first point of L
+        if t == 1 then return L2[#L2] end -- last point
+        t = t*total_len
+        while (k<=n) and (L1[k] < t) do k = k+1 end
+        if k <=n then
+            local u = (t-L1[k-1])/(L1[k]-L1[k-1])
+            return L2[k-1]+u*(L2[k]-L2[k-1])
+        end
+    end
+    return l,total_len
 end

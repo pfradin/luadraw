@@ -1,6 +1,6 @@
 -- luadraw_colors.lua (chargé par luadraw_graph)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -195,7 +195,7 @@ function hsb(h,s,b,table)
 end
 
 function mixcolor(...) 
---mixcolor( color1, proportion1, color2, proportion1, ..., colorN, proportionN): mélange les couleurs suivants les proportions
+--mixcolor( color1, proportion1, color2, proportion2, ..., colorN, proportionN): mélange les couleurs suivants les proportions
 -- chaque couleur est une table {r,g,b}
 -- renvoie une chaîne rgb pour tikz et une table
     local S, r, g, b, a1, a2, a3 = 0, 0, 0, 0
@@ -243,3 +243,48 @@ function getpalette(colors,nb,tbl)
     end
     return res
 end
+
+-- Quelques palettes
+rainbow = {Purple,Indigo,Blue,Green,Yellow,Orange,Red}
+
+palGasFlame = {
+    {0.8784, 1, 1},
+    {0.5294, 0.8078, 0.9804},
+    {0.8667, 0.6275, 0.8667},
+    {0.9412, 0.502, 0.502},
+    {1, 0.6275, 0.4784},
+    {0.9412, 0.902, 0.549}
+}
+
+palRainbow = {
+    {0.5, 0.0, 1.0},
+    {0.21764, 0.42912, 0.97551},
+    {0.07254, 0.78292, 0.90058},
+    {0.3549, 0.97413, 0.78292},
+    {0.64509, 0.97413, 0.62211},
+    {0.92745, 0.78292, 0.43467},
+    {1.0, 0.42912, 0.21994},
+    {1.0, 0.0, 0.0}
+}
+
+palAutumn = {
+    {1.0, 0.0, 0.0},
+    {1.0, 0.14117, 0.0},
+    {1.0, 0.28627, 0.0},
+    {1.0, 0.42745, 0.0},
+    {1.0, 0.57254, 0.0},
+    {1.0, 0.71372, 0.0},
+    {1.0, 0.85882, 0.0},
+    {1.0, 1.0, 0.0}
+}
+
+palGistGray = {
+    {0.0, 0.0, 0.0},
+    {0.14117, 0.14117, 0.14117},
+    {0.28627, 0.28627, 0.28627},
+    {0.42745, 0.42745, 0.42745},
+    {0.57254, 0.57254, 0.57254},
+    {0.71372, 0.71372, 0.71372},
+    {0.85882, 0.85882, 0.85882},
+    {1.0, 1.0, 1.0}
+}

@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -77,7 +77,7 @@ function point3d.__unm(u)
     return point3d:new(-u.x, -u.y, -u.z)
 end
 
----------------- fonctions mathématiques pour nombres complexes 
+---------------- fonctions mathématiques pour points 3d
 --  norme au carré
 function point3d.abs2(u)
     if (u == nil) then return end

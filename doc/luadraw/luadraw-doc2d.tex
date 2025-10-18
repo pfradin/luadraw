@@ -8,6 +8,7 @@
 
 \section{Introduction}
 
+
 \subsection{Prérequis}
 
 \begin{itemize}
@@ -52,7 +53,7 @@ g:Save()
 \end{luadraw}
 \end{TeXcode}
 
-\paragraph{Sauvegarde du fichier \emph{.tkz}} : le graphique est exporté au format tikz dans un fichier (avec l'extension \emph{tkz}), par défaut celui-ci est sauvegardé dans le dossier courant. Mais il est possible d'imposer un chemin spécifique en définissant dans le document, la commande \verb|\luadrawTkzDir|, par exemple : \verb|\def\luadrawTkzDir{tikz/}|, ce qui permettra d'enregistrer les fichiers \emph{*.tkz} dans le sous-dossier \emph{tikz} du dossier courant, à condition toutefois que ce sous-dossier existe !
+\paragraph{Sauvegarde du fichier \emph{.tkz}} : le graphique est exporté au format tikz dans un fichier (avec l'extension \emph{tkz}), par défaut celui-ci est sauvegardé dans le dossier \emph{\_luadraw} qui est un sous-dossier du dossier courant (contenant le document maître), mais il est possible d'imposer un chemin vers un autre sous-dossier avec l'option globale \emph{cachedir=}.
 
 \subsection{Options de l'environnement}
 
@@ -135,7 +136,9 @@ La classe \emph{graph} est définie dans le paquet \emph{luadraw}. On instancie 
 \paragraph{Construction du graphique.}
 
 \begin{itemize}
-    \item L'objet instancié (\emph{g} ici dans l'exemple) possède un certain nombre de méthodes permettant de faire du dessin (segments, droites, courbes,...). Les instructions de dessins ne sont pas directement envoyées à \TeX, elles sont enregistrées sous forme de chaînes dans une table qui est une propriété de l'objet \emph{g}. C'est la méthode \textbf{g:Show()} qui va envoyer ces instructions à \TeX\ tout en les sauvegardant dans un fichier texte\footnote{Ce fichier contiendra un environnement \emph{tikzpicture}.}. La méthode \textbf{g:Save()} enregistre le graphique dans un fichier mais sans envoyer les instructions à \TeX.
+    \item L'objet instancié (\emph{g} ici dans l'exemple) possède un certain nombre de méthodes permettant de faire du dessin (segments, droites, courbes,...). Les instructions de dessins ne sont pas directement envoyées à \TeX, elles sont enregistrées sous forme de chaînes dans une table qui est une propriété de l'objet \emph{g}. C'est la méthode \textbf{g:Show()} qui va envoyer ces instructions à \TeX\ tout en les sauvegardant dans un fichier texte\footnote{Ce fichier contiendra un environnement \emph{tikzpicture}.}. La méthode \textbf{g:Save()} enregistre le graphique dans le fichier désigné par l'option (de l'environnement) \emph{name} mais sans envoyer les instructions à \TeX.
+    \item On peut faire une sauvegarde du graphique en cours dans un autre fichier avec la méthode \textbf{g:Savetofile(<nom de fichier avec extension>)}.
+    \item On peut réinitialiser un graphique en cours, c'est à dire supprimer tous les éléments déjà créés, avec la méthode \textbf{g:Cleargraph()}.
     \item Le paquet \emph{luadraw} fournit aussi un certain nombre de fonctions mathématiques, ainsi que des fonctions permettant des calculs sur les listes (tables) de complexes, des transformations géométriques, ...etc.
 \end{itemize}
 
@@ -377,6 +380,24 @@ La méthode \textbf{g:Dseg(seg,scale,draw\_options)} dessine le segment défini 
     \item La méthode \textbf{g:DtangentI(f,x0,y0,long,draw\_options)} dessine la tangente à la courbe implicite d'équation \(f(x,y)=0\), au point \emph{(x0,y0)} supposé sur la courbe. Si l'argument \emph{long} vaut \emph{nil} (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \emph{long}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
     \item La fonction \textbf{tangentI(f,x0,y0,long)} renvoie soit la droite, soit un segment (suivant que \emph{long} vaut \emph{nil} ou pas).
 \end{itemize}
+
+\subsubsection{Dnormal}
+\begin{itemize}
+    \item La méthode \textbf{g:Dnormal(p,t0,long,draw\_options)} dessine la normale à la courbe paramétrée par \(p: t \mapsto p(t)\) (à valeurs complexes), au point de paramètre \(t0\). Si l'argument \emph{long} vaut \emph{nil} (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \emph{long}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    \item La fonction \textbf{normal(p,t0,long)} renvoie soit la droite, soit un segment (suivant que \emph{long} vaut \emph{nil} ou pas).
+\end{itemize}
+
+\subsubsection{ DnormalC}
+\begin{itemize}
+    \item La méthode \textbf{g:DnormalC(f,x0,long,draw\_options)} dessine la normale à la courbe cartésienne d'équation \(y=f(x)\), au point d'abscisse \emph{x0}. Si l'argument \emph{long} vaut \emph{nil} (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \emph{long}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    \item La fonction \textbf{normalC(f,x0,long)} renvoie soit la droite, soit un segment (suivant que \emph{long} vaut \emph{nil} ou pas).
+\end{itemize}
+
+\subsubsection{DnormalI}
+\begin{itemize}
+    \item La méthode \textbf{g:DnormalI(f,x0,y0,long,draw\_options)} dessine la normale à la courbe implicite d'équation \(f(x,y)=0\), au point \emph{(x0,y0)} supposé sur la courbe. Si l'argument \emph{long} vaut \emph{nil} (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \emph{long}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    \item La fonction \textbf{normalI(f,x0,y0,long)} renvoie soit la droite, soit un segment (suivant que \emph{long} vaut \emph{nil} ou pas).
+\end{itemize}
   
 
 \begin{demo}{Symétrique de l'orthocentre}
@@ -420,7 +441,7 @@ g:Show(true)
 
 \subsubsection{Dcircle}
 \begin{itemize}
-    \item La méthode \textbf{g:Dcircle(c,r,d,draw\_options)} trace un cercle. Lorsque l'argument \emph{d} est nil, c'est le cercle de centre \emph{c} (complexe) et de rayon \emph{r}, lorsque \emph{d} est précisé (complexe) alors c'est le cercle passant par les points d'affixe \emph{c},\emph{r} et \emph{d}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    \item La méthode \textbf{g:Dcircle(c,r,d,draw\_options)} trace un cercle. Lorsque l'argument \emph{d} est nil, c'est le cercle de centre \emph{c} (complexe) et de rayon \emph{r}, lorsque \emph{d} est précisé (complexe) alors c'est le cercle passant par les points d'affixe \emph{c},\emph{r} et \emph{d}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. Autre syntaxe possible :  \textbf{g:Dcircle(C,draw\_options)} où \emph{C=\{c,r,d\}}.
   \item La fonction \textbf{circle(c,r,d)} renvoie la liste des points de ce cercle (ligne polygonale). 
   \item La fonction \textbf{circleb(c,r,d)} renvoie ce cercle sous forme d'un chemin (voir Dpath) utilisant des courbes de Bézier.
 \end{itemize}
@@ -510,7 +531,7 @@ La méthode \textbf{g:Dwedge(B,A,C,r,sens,draw\_options)} dessine un secteur ang
     \item L'argument \emph{p} est le paramétrage, ce doit être une fonction d'une variable réelle \emph{t} et à valeurs complexes, par exemple :
     \mintinline{Lua}{local p = function(t) return cpx.exp(t*cpx.I) end}
     \item  Les arguments \emph{t1} et \emph{t2} sont obligatoires avec \(t1 < t2\), ils forment les bornes de l'intervalle pour le paramètre.
-    \item L'argument \emph{nbdots} est facultatif, c'est le nombre de points (minimal) à calculer, il vaut 50 par défaut.
+    \item L'argument \emph{nbdots} est facultatif, c'est le nombre de points (minimal) à calculer, il vaut 40 par défaut.
     \item L'argument \emph{discont} est un booléen facultatif qui indique s'il y a des discontinuités ou non, c'est \emph{false} par défaut.
     \item L'argument \emph{nbdiv} est un entier positif qui vaut 5 par défaut et indique le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés.
   \end{itemize}
@@ -518,12 +539,12 @@ La méthode \textbf{g:Dwedge(B,A,C,r,sens,draw\_options)} dessine un secteur ang
 \item La méthode \textbf{g:Dparametric(p,args)} fait le calcul des points et le dessin de la courbe paramétrée par \emph{p}. Le paramètre \emph{args} est une table à 6 champs :
 
 \begin{TeXcode}
- { t={t1,t2}, nbdots=50, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
+ { t={t1,t2}, nbdots=40, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
 \end{TeXcode}
 
   \begin{itemize}
       \item Par défaut, le champ \emph{t} est égal à \emph{\{g:Xinf(),g:Xsup()\}},
-      \item le champ \emph{nbdots} vaut 50, 
+      \item le champ \emph{nbdots} vaut 40, 
       \item le champ \emph{discont} vaut \emph{false},
       \item le champ \emph{nbdiv} vaut 5,
       \item le champ \emph{draw\_options} est une chaîne vide (celle-ci sera transmise telle quelle à l'instruction \emph{\textbackslash draw}),
@@ -543,12 +564,12 @@ La méthode \textbf{g:Dwedge(B,A,C,r,sens,draw\_options)} dessine un secteur ang
 \item La méthode \textbf{g:Dpolar(rho,args)} fait le calcul des points et le  dessin de la courbe polaire paramétrée par \emph{rho}.  Le paramètre \emph{args} est une table à 6 champs :
 
 \begin{TeXcode}
-  { t={t1,t2}, nbdots=50, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
+  { t={t1,t2}, nbdots=40, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
 \end{TeXcode}
 
   \begin{itemize}
       \item Par défaut, le champ \emph{t} est égal à $\{-\pi,\pi\}$,
-      \item le champ \emph{nbdots} vaut 50,
+      \item le champ \emph{nbdots} vaut 40,
       \item le champ \emph{discont} vaut \emph{false}, 
       \item le champ \emph{nbdiv} vaut 5, 
       \item le champ \emph{draw\_options} est une chaîne vide (celle-ci sera transmise telle quelle à l'instruction \emph{\textbackslash draw}),
@@ -568,12 +589,12 @@ La méthode \textbf{g:Dwedge(B,A,C,r,sens,draw\_options)} dessine un secteur ang
 \item La méthode \textbf{g:Dcartesian(f,args)} fait le calcul des points et le dessin de la courbe de \emph{f}. Le paramètre \emph{args} est une table à 6 champs :
 
 \begin{TeXcode}
-  { x={x1,x2}, nbdots=50, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
+  { x={x1,x2}, nbdots=40, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
 \end{TeXcode}
   
   \begin{itemize}
       \item   Par défaut, le champ \emph{x} est égal à \emph{\{g:Xinf(),g:Xsup()\}}, 
-      \item le champ \emph{nbdots} vaut 50, 
+      \item le champ \emph{nbdots} vaut 40, 
       \item le champ \emph{discont} vaut \emph{false}, 
       \item le champ \emph{nbdiv} vaut 5, 
       \item le champ \emph{draw\_options} est une chaîne vide (celle-ci sera transmise telle quelle à l'instruction \emph{\textbackslash draw}),
@@ -595,12 +616,12 @@ La méthode \textbf{g:Dwedge(B,A,C,r,sens,draw\_options)} dessine un secteur ang
 \item La méthode \textbf{g:Dperiodic(f,period,args)} fait le calcul des points et le dessin de la courbe de \emph{f}. Le paramètre \emph{args} est une table à 6 champs :
 
 \begin{TeXcode}
-  { x={x1,x2}, nbdots=50, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
+  { x={x1,x2}, nbdots=40, discont=true/false, nbdiv=5, draw_options="", clip={x1,x2,y1,y2} }
 \end{TeXcode}
 
   \begin{itemize}
       \item Par défaut, le champ \emph{x} est égal à \emph{\{g:Xinf(),g:Xsup()\}},
-      \item le champ \emph{nbdots} vaut 50, 
+      \item le champ \emph{nbdots} vaut 40, 
       \item le champ \emph{discont} vaut \emph{false}, 
       \item le champ \emph{nbdiv} vaut 5, 
       \item le champ \emph{draw\_options} est une chaîne vide (celle-ci sera transmise telle quelle à l'instruction \emph{\textbackslash draw}),
@@ -802,9 +823,8 @@ La méthode \textbf{g:Dcontour(f,z,args)} fait le dessin de \textbf{lignes de ni
 local g = graph:new{window={-1,6.5,-1.5,11},size={10,10,0}}
 local i, sin, cos = cpx.I, math.sin, math.cos
 local f = function(x,y) return (x+y)/(2+cos(x)*sin(y)) end
-local rainbow = {Purple,Indigo,Blue,Green,Yellow,Orange,Red}
 local Lz = range(1,10) -- niveaux à tracer
-local Colors = getpalette(rainbow,10)
+local Colors = getpalette(palRainbow,10)
 g:Dgradbox({0,5+10*i,1,1},{legend={"$x$","$y$"}, grid=true, title="$z=\\frac{x+y}{2+\\cos(x)\\sin(y)}$"})
 g:Linewidth(12); g:Dcontour(f,Lz,{view={0,5,0,10}, colors=Colors})
 for k = 1, 10 do
@@ -816,6 +836,35 @@ end
 g:Show()
 \end{luadraw}
 \end{demo}
+
+\subsubsection{Paramétrisation d'une ligne polygonale : \emph{curvilinear\_param}}
+Soit $L$ une liste de complexe représentant une ligne \og continue \fg, il est possible d'obtenir une paramétrisation de cette ligne en fonction d'un paramètre $t$ entre $0$ et $1$ ($t$ est l'abscisse curviligne divisée par la longueur totale de $L$).
+
+La fonction \textbf{curvilinear\_param(L,close)} renvoie une fonction d'une variable $t\in[0;1]$ et à valeurs sur la ligne  $L$ (nombres complexes), la valeur en $t=0$ est le premier point de $L$, et la valeur en $t=1$ est le dernier point; cette fonction est suivie d'un nombre qui représente la longueur total de L. L'argument optionnel \emph{close} indique si la ligne $L$  doit être refermée (\emph{false} par défaut).
+
+\begin{demo}{Points répartis sur une ligne polygonale}
+\begin{luadraw}{name=curvilinear_param}
+local g = graph:new{bbox=false,size={10,10}}
+local i = cpx.I; g:Linewidth(8)
+local L = cartesian(math.sin,-5,5)[1]
+insert(L, {5-2*i, -5-2*i})
+local f = curvilinear_param(L, true)
+local I = map(f,linspace(0,1,20)) -- 20 points répartis sur L
+g:Shift(4*i)
+g:Lineoptions(nil,"ForestGreen",6); g:Dpolyline(L,true)
+g:Filloptions("full","white"); g:Ddots(I) -- le premier et le dernier point sont confondus car L est fermée
+
+-- autre exemple d'utilisation:
+local nb = 16 --nb arrows
+local t = linspace(0,1,3*nb+1)
+g:Shift(-4*i)
+for k = 0,nb-1 do
+    g:Dparametric(f,{t={t[3*k+1],t[3*k+3]},nbdots=10,nbdiv=2,draw_options="-stealth"})
+end
+g:Show() 
+\end{luadraw}
+\end{demo}
+
 
 \subsection{Domaines liés à des courbes cartésiennes}
 
@@ -1047,6 +1096,34 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
+\subsection{Chemins et clipping : Beginclip() et Endclip()}
+
+Un chemin peut être utilisé pour faire du clipping grâce à deux fonctions : \textbf{g:Beginclip(chemin,inverse)} et \textbf{g:Endclip()}. La première ouvre un groupe \emph{scope} et passe le \emph{chemin} comme argument à la fonction \emph{\textbackslash clip} de tikz. La seconde referme le groupe \emph{scope}, elle est indispensable (sinon il y aura une erreur de compilation).
+L'argument \emph{inverse} est un booléen qui vaut \emph{false} par défaut, lorsqu'il a la valeur \emph{true} le clipping est inversé, c'est à dire que seul ce qui est à l'extérieur du \emph{chemin} sera dessiné, mais il faut pour cela que celui-ci soit dans le sens trigonométrique.
+
+\begin{demo}{Exemple de clipping}
+\begin{luadraw}{name=polygon_with_different_line_color_and_rounded_corners}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+local i = cpx.I
+local Dcolored_polyreg = function(c,a,nb,r,wd,colors) 
+-- c=center, a=vertice, nb=number of sides, r=radius, wd=width in point, colors=list of colors
+    local L = polyreg(c,a,nb)
+    insert(L,{r,"cla"}) --polygon width rounded corners (radius=r)
+    local angle = 360/nb
+    local b = a
+    for k = 1, nb do
+        a = b; b = rotate(a,angle,c)
+        g:Beginclip({2*a-c,c,2*b-c,"l"})  -- définition d'un secteur angulaire pour clipper
+        g:Dpath(L,"line width="..wd.."pt,color="..colors[k])
+        g:Endclip()
+    end
+end
+Dcolored_polyreg(3+2*i,5+2*i,5,0.8,12,{"red","blue","orange","green","yellow"}) -- pentagon
+Dcolored_polyreg(-2.5-2*i,-5-2*i,7,1,24,getpalette(palGasFlame,7))  -- heptagon
+g:Show()
+\end{luadraw}
+\end{demo}
+
 
 \subsection{Axes et grilles}
 
@@ -1215,7 +1292,7 @@ Les méthodes de tracé des axes s'appuient sur la méthode \textbf{g:Dgradline(
 \begin{demo}{Exemples de droites graduées}
 \begin{luadraw}{name=gradline}
 local g = graph:new{window={-5,5,-5,5},size={10,10}}
-g:Linejoin("round"); g:Labelsize("footnotesize")
+g:Labelsize("footnotesize")
 local i = cpx.I
 g:Dgradline({3.25*i,1+i/2}, {limits={-4,4}, legend="Axe", legendpos=0.5, arrows="-stealth"})
 g:Dgradline({-3,1}, {legend="demo", labeltext="\\pi", labelden=3, unit=2, nbsubdiv=1, arrows="-latex"})
@@ -1296,7 +1373,6 @@ La fonction \textbf{set(center,angle,scale)} renvoie un chemin représentant un 
 \begin{demo}{Dessiner un ensemble}
 \begin{luadraw}{name=set}
 local g = graph:new{window={-5.25,5.25,-5,5},size={10,10}}
-g:Linejoin("round")
 local i = cpx.I
 local A, B, C = set(i,0), set(-2-i,25), set(2-i,-25)
 g:Fillopacity(0.3)
@@ -1322,7 +1398,6 @@ Le résultat de ces opérations, étant une liste de complexes, peut être dessi
 \begin{demo}{Opérations sur les ensembles}
 \begin{luadraw}{name=cap_and_cup}
 local g = graph:new{window={-5.5,5.5,-5,5},size={10,10}}
-g:Linejoin("round")
 local i = cpx.I
 local A, B, C = set(i,0), set(-2-i,25), set(2-i,-25)
 g:Fillopacity(0.3)
@@ -1378,19 +1453,27 @@ Pour utiliser celles-ci dans l'environnement \emph{luadraw}, on peut :
 \end{itemize}
 On peut également utiliser toutes les possibilités habituelles de tikz pour la gestion des couleurs.
 
-\begin{demo}{Utilisation de la fonction palette()}
-\begin{luadraw}{name=palette}
-local g = graph:new{window={-5,5,-1,1},size={10,10},
-      margin={0.1,0.1,0.1,0.1},border=true}
-local i = cpx.I
-local colors = {Purple,Indigo,Blue,Green,Yellow,Orange,Red}
-local N = 200
-g:Linewidth(18)
-for k = 1, N do
-    local pos = (k-1)/(N-1)
-    local x = -5+10*pos
-    g:Dpolyline({x-i,x+i},"color="..palette(colors,pos))
+Par défaut, il y a cinq palettes de couleurs\footnote{Une palette est une table de couleurs, celles-ci sont elle-mêmes des tables de nombres entre $0$ et $1$ représentant les composantes rouge, vert, bleu.}.
+
+\begin{demo}{Les cinq palettes par défaut}
+\begin{luadraw}{name=palettes}
+local g = graph:new{window={-5,5,-5,5},bbox=false, border=true}
+g:Linewidth(1)
+local Dpalette = function(pal,A,h,L,N,name)
+    local dl = L/N
+    for k = 1, N do
+        local color = palette(pal,(k-1)/(N-1))
+        g:Drectangle(A,A+h,A+h+dl,"color="..color..",fill="..color)
+        A = A+dl
+    end
+    g:Drectangle(A,A+h,A+h-L); g:Dlabel(name,A+h/2,{pos="E"})
 end
+local A, h, dh, L, N = Z(-5,4), Z(0,-1), Z(0,-1.1), 5, 100
+Dpalette(rainbow,A,h,L,N,"rainbow"); A = A+dh
+Dpalette(palAutumn,A,h,L,N,"palAutumn"); A = A+dh
+Dpalette(palGistGray,A,h,L,N,"palGistGray"); A = A+dh
+Dpalette(palGasFlame,A,h,L,N,"palGasFlame"); A = A+dh
+Dpalette(palRainbow,A,h,L,N,"palRainbow")
 g:Show()
 \end{luadraw}
 \end{demo}
@@ -1398,6 +1481,10 @@ g:Show()
 \section{Constructions géométriques}
 
 Dans cette section sont regroupées les fonctions construisant des figures géométriques sans méthode graphique dédiée correspondante.
+
+\subsection{cvx\_hull2d}
+
+La fonction \textbf{cvx\_hull2d(L)} où $L$ est une liste de complexes, calcule et renvoie une liste de complexes représentant l'enveloppe convexe de $L$.
 
 \subsection{sss\_triangle}
 
@@ -1415,7 +1502,7 @@ La fonction \textbf{asa\_triangle(alpha,ab,beta)} où \emph{ab} est une longueur
 \begin{demo}{sss\_triangle, sas\_triangle et asa\_triangle}
 \begin{luadraw}{name=sss_triangles_and_co}
 local g = graph:new{window={-5,5,-3,5},size={10,10}}
-g:Linejoin("round"); g:Labelsize("footnotesize"); g:Linewidth(8)
+g:Labelsize("footnotesize"); g:Linewidth(8)
 local i = cpx.I
 local T1 = shift( sss_triangle(4,5,3), 2*i-2)
 local T2 = shift( sas_triangle(4,60,2), -4-2*i)
@@ -1462,7 +1549,7 @@ La fonction \textbf{cutpolyline(L,D,close)} permet de couper la ligne polygonale
 \begin{demo}{Illustrer un exercice de programmation linéaire}
 \begin{luadraw}{name=cutpolyline}
 local g = graph:new{window={-5,5,-5,5}, size={10,10},margin={0,0,0,0}}
-g:Linejoin("round"); g:Linewidth(6)
+g:Linewidth(6)
 local i = cpx.I
 local P = g:Box2d() -- polygon representing the 2d window
 local D1, D2, D3 = {0,1+i}, {2.5,-i}, {-3*i,-1-i/4}  -- three lines
@@ -1504,8 +1591,49 @@ La fonction \textbf{insert(table1, table2, pos)} insère les éléments de \emph
     \item Exemple : si une variable \emph{L} vaut \emph{\{1,2,6\}}, alors après l'instruction \mintinline{Lua}{insert(L, {3,4,5},3)}, la variable \emph{L} sera égale à \emph{\{1,2,3,4,5,6\}}.
 \end{itemize}
 
+\subsection{interCC}
+La fonction \textbf{interCC(C1,C2)} renvoie l'intersection cercle \emph{C1} avec le cercle \emph{C2}, où \emph{C1=\{O1,r1\}} (cercle de centre $O$1 et de rayon $r$1), et \emph{C2=\{O2,r2\}} (cercle de centre $O2$ et de rayon $r2$). La fonction renvoie une liste contenant $1$ ou $2$ points ou le cercle en entier,  si l'intersection n'est pas vide, elle renvoie \emph{nil} sinon.
+
+\begin{demo}{Tangentes à un cercle \{O,2\} et à une ellipse \{O,3,2\} issues d'un point}
+\begin{luadraw}{name=interCC}
+local g = graph:new{window={-10,10,-5,5}, margin={0,0,0,0},size={16,8}}
+local i = cpx.I
+-- pour le cercle {O,2}
+g:Saveattr(); g:Viewport(-10,0,-5,5); g:Coordsystem(-4,6,-5,5)
+local O = -1 
+local C1, I = {O, 2}, 4-i
+local C2 = {(O+I)/2,cpx.abs(I-O)/2}
+local rep = interCC(C1,C2) -- points de tangence
+g:Dcircle(C1,"blue"); g:Dcircle(C2,"dashed")
+g:Dhline(I,rep[1],"red"); g:Dhline(I,rep[2],"red")  --demi- tangentes
+g:Ddots(rep); g:Ddots({O,I}); g:Dlabel("$I$",I,{pos="SE"},"$O$",O,{pos="W"},
+    "tangentes au cercle issues de $I$",1-5*i,{pos="N"})
+g:Restoreattr()
+
+-- pour l'ellipse (E) : {O,3,2}
+g:Saveattr(); g:Viewport(0,10,-5,5); g:Coordsystem(-4,6,-5,5)
+local mat = {0,1.5,i} -- cette matrice transforme un cercle {01,2} en l'ellipse (E)
+local inv_mat = invmatrix(mat) -- matrice inverse
+local O1, I1 = table.unpack( mtransform({O,I},inv_mat) ) -- antécédents de O et de I
+C1 = {O1, 2}
+C2 = {(O1+I1)/2,cpx.abs(I1-O1)/2}
+rep = interCC(C1,C2) -- points de tangence (tangentes issues de I1)
+g:Composematrix(mat) -- on applique la matrice pour retrouver l'ellipse, la tangence est conservée
+g:Dcircle(C1,"blue"); g:Dcircle(C2,"dashed")
+g:Dhline(I1,rep[1],'red'); g:Dhline(I1,rep[2],"red")
+g:Ddots(rep); g:Ddots({O1,I1}); g:Dlabel("$I$",I1,{pos="SE"},"$O$",O1,{pos="W"},
+    "tangentes à l'ellipse issues de $I$",1-5*i,{pos="N"})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
 \subsection{interD}
 La fonction \textbf{interD(d1,d2)} renvoie le point d'intersection des droites \emph{d1} et \emph{d2}, une droite est une liste de deux complexes : un point de la droite et un vecteur directeur.
+
+\subsection{interDC}
+La fonction \textbf{interDC(d,C)} renvoie l'intersection de la droite \emph{d} avec le cercle \emph{C}, où \emph{d=\{A,u\}} (droite passant par $A$ et dirigée par $u$), et \emph{C=\{O,r\}} (cercle de centre $O$ et de rayon $r$). La fonction renvoie une liste contenant $1$ ou $2$ points  si l'intersection n'est pas vide, elle renvoie \emph{nil} sinon.
+
 
 \subsection{interDL}
 La fonction \textbf{interDL(d,L)} renvoie la liste des points d'intersection entre la droite \emph{d} et la ligne polygonale \emph{L}.
@@ -1515,6 +1643,9 @@ La fonction \textbf{interL(L1,L2)} renvoie la liste des points d'intersection de
 
 \subsection{interP}
 La fonction \textbf{interP(P1,P2)} renvoie la liste des points d'intersection des chemins définis par \emph{P1} et \emph{P2}, ces deux arguments sont deux listes de complexes et d'instructions (voir \emph{Dpath}).
+
+\subsection{isobar}
+La fonction \textbf{isobar(L)} où \emph{L} est une liste de complexes, renvoie l'isobarycentre de ces nombres. Si \emph{L} contient des éléments qui ne sont pas des nombres rées ou complexes, ceux-ci sont ignorés.
 
 \subsection{linspace}
 La fonction \textbf{linspace(a,b,nbdots)} renvoie une liste de \emph{nbdots} nombres équirépartis de \emph{a} jusqu'à \emph{b}. Par défaut \emph{nbdots} vaut 50.
@@ -1539,6 +1670,23 @@ La fonction \textbf{range(a,b,step)} renvoie la liste des nombres de \emph{a} ju
 
 \subsection{Ajout de fonctions mathématiques}
 Outre les fonctions associées aux méthodes graphiques qui font des calculs et renvoient une ligne polygonale (comme \emph{cartesian}, \emph{periodic}, \emph{implicit}, \emph{odesolve}, etc), le paquet \emph{luadraw} ajoute quelques fonctions mathématiques qui ne sont pas proposées nativement dans le module \emph{math}.
+
+\subsubsection{Évaluation protégée : evalf}
+La fonction \textbf{evalf(f,...)} permet d'évaluer \emph{f(...)} et de renvoyer le résultat s'il n'y a pas d'erreur d'exécution par Lua, dans le cas contraire, la fonction renvoie \emph{nil}. Exemple, l'exécution de :
+\begin{Luacode}
+local f = function(a,b)
+    return 2*Z(a,1/b)
+end
+print(f(1,0))
+\end{Luacode}
+provoque l'erreur d'exécution \verb|attempt to perform arithmetic on a nil value| (dans la console), car ici \emph{Z(1,1/0)} renvoie \emph{nil}, et Lua n'accepte pas un argument égal à \emph{nil} dans un calcul. Par contre, l'exécution de :
+\begin{Luacode}
+local f = function(a,b)
+    return 2*Z(a,1/b)
+end
+print(evalf(f,1,0))
+\end{Luacode}
+ne provoque pas d'erreur de la part de Lua, et il n'y a pas d'affichage non plus dans la console puisque la valeur à afficher est \emph{nil}.
 
 \subsubsection{int}
 La fonction \textbf{int(f,a,b)} renvoie une valeur approchée de l'intégrale de la fonction \emph{f} sur l'intervalle $[a;b]$. La fonction \emph{f} est à variable réelle et à valeurs réelles ou complexes. La méthode utilisée est la méthode de Simpson accélérée deux fois avec la méthode Romberg.
@@ -1652,7 +1800,7 @@ La fonction \textbf{ftransform(L,f)} renvoie l'image de \emph{L} par la fonction
 La fonction \textbf{hom(L,factor,center)} renvoie l'image de \emph{L} par l'homothétie de centre \emph{center} et de rapport \emph{factor}. Par défaut, l'argument \emph{center} vaut 0.
 
 \subsection{inv}
-La fonction \textbf{inv(L, center, r)} renvoie l'image de \emph{L} par l'inversion par rapport au cercle de centre \emph{center} et de rayon \emph{r}.
+La fonction \textbf{inv(L, radius, center)} renvoie l'image de \emph{L} par l'inversion par rapport au cercle de centre \emph{center} et de rayon \emph{radius}. Par défaut, l'argument \emph{center} vaut 0.
 
 \subsection{proj}
 La fonction \textbf{proj(L,d)} renvoie l'image de \emph{L} par la projection orthogonale sur la droite \emph{d}.

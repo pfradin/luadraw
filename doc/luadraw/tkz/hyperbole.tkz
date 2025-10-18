@@ -1,10 +1,9 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (8.2142857142857,9.5);%
-\pgfsetroundjoin%
-\draw[fill,left color=white,right color = orange, shading angle=90] (3.8571,5.1429) -- (5.5955,6.9522) -- (5.5955,6.9522) .. controls (6.059,7.4346) and (5.657,8.0072) .. (4.6922,8.239) .. controls (3.7274,8.4707) and (2.5822,8.2697) .. (2.1188,7.7873) .. controls (1.8639,7.5221) and (1.8639,7.2175) .. (2.1188,6.9522)--cycle;%
-\draw[] (5.5955,6.9522) .. controls (5.1321,6.4698) and (3.9869,6.2688) .. (3.022,6.5006) .. controls (2.6251,6.5959) and (2.3094,6.7538) .. (2.1188,6.9522);%
-\draw[fill,left color=white,right color = orange, shading angle=90] (3.8571,5.1429) -- (5.5955,3.3335) -- (5.5955,3.3335) .. controls (6.059,2.8511) and (5.657,2.2785) .. (4.6922,2.0467) .. controls (3.7274,1.815) and (2.5822,2.016) .. (2.1188,2.4984) .. controls (1.8639,2.7636) and (1.8639,3.0682) .. (2.1188,3.3335)--cycle;%
+\draw[fill,left color=orange!50,right color = orange,middle color=orange!10, shading angle=90] (3.8571,5.1429) -- (5.5955,6.9522) -- (5.5955,6.9522) .. controls (5.1321,6.4698) and (3.9869,6.2688) .. (3.022,6.5006) .. controls (2.6251,6.5959) and (2.3094,6.7538) .. (2.1188,6.9522)--cycle;%
+\draw[fill,left color=orange!25,right color = orange!50,middle color=orange!18, shading angle=90] (3.8571,6.4055) .. controls (2.7868,6.4055) and (1.9286,6.8346) .. (1.9286,7.3698) .. controls (1.9286,7.905) and (2.7868,8.3341) .. (3.8571,8.3341) .. controls (4.9275,8.3341) and (5.7857,7.905) .. (5.7857,7.3698) .. controls (5.7857,6.8346) and (4.9275,6.4055) .. (3.8571,6.4055);%
+\draw[fill,left color=orange!50,right color = orange,middle color=orange!10, shading angle=90] (3.8571,5.1429) -- (5.5955,3.3335) -- (5.5955,3.3335) .. controls (6.059,2.8511) and (5.657,2.2785) .. (4.6922,2.0467) .. controls (3.7274,1.815) and (2.5822,2.016) .. (2.1188,2.4984) .. controls (1.8639,2.7636) and (1.8639,3.0682) .. (2.1188,3.3335)--cycle;%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \draw[] (5.5955,3.3335) .. controls (5.1321,3.8159) and (3.9869,4.0169) .. (3.022,3.7851) .. controls (2.6251,3.6898) and (2.3094,3.532) .. (2.1188,3.3335);%
 \pgfsetdash{}{0pt}%
@@ -20,6 +19,5 @@
 \draw[] (5.2208,6.7901) -- (1.5843,8.6084) -- (1.5843,1.9276) -- (5.2208,0.1093)--cycle;%
 \pgfsetstrokecolor{black}%
 \pgfsetlinewidth{0.4pt}%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

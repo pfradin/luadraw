@@ -1,6 +1,5 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
-\pgfsetroundjoin%
 \pgfsetstrokecolor{blue}%
 \draw[] (3.5839,2.2456) -- (3.4161,2.3295);%
 \draw[] (3.4161,2.2456) -- (3.5839,2.3295);%
@@ -40,6 +39,5 @@
 \fill[opacity=1,ball color=orange] (6.2046,2.6499) circle [radius=0.075cm];%
 \fill[opacity=1,ball color=orange] (1.5201,3.2775) circle [radius=0.075cm];%
 \fill[opacity=1,ball color=orange] (3.5,5.9249) circle [radius=0.075cm];%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

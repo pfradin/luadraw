@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -462,6 +462,62 @@ function tangentI(f,x0,y0,long)
         return {A-u,A+u} -- on renvoie un segment
     end
 end
+
+-- normales
+
+function normal(p,t0,long)
+-- normale à la courbe paramétrée par t -> p(t) (à valeurs complexes)
+-- au point de paramètre t0
+-- si long vaut nil on renvoie une droite, sinon un segment
+    if (p == nil) or (t0 == nil) then return end
+    local A = p(t0)
+    if (A == nil) then print("erruer!!!");  return end
+    local v = (p(t0+1E-6)-p(t0))*1E6 -- vecteur tangent
+    if (v == nil) or cpx.isNul(v) then return end
+    v = cpx.I*v
+    if long == nil then return {A,v} -- on renvoie une droite
+    else 
+        local u = long*v/cpx.abs(v)/2
+        return {A-u,A+u} -- on renvoie un segment
+    end
+end
+
+function normalC(f,x0,long)
+-- normale à la courbe cartésienne d'équation y=f(x)
+-- au point d'abscisse x0
+-- si long vaut nil on renvoie une droite, sinon un segment
+    if (f == nil) or (x0 == nil) then return end
+    local y0 = f(x0)
+    local A = Z(x0,y0)
+    if (A == nil) then return end
+    local v = Z(1, (f(x0+1E-6)-y0)*1E6) -- vecteur tangent
+    if (v == nil) or cpx.isNul(v) then return end
+    v = cpx.I*v
+    if long == nil then return {A,v} -- on renvoie une droite
+    else 
+        local u = long*v/cpx.abs(v)/2
+        return {A-u,A+u} -- on renvoie un segment
+    end
+end
+
+function normalI(f,x0,y0,long)
+-- normale à la courbe implicite d'équation f(x,y)=0
+-- si long vaut nil on renvoie une droite, sinon un segment
+-- on suppose que f(x0,y0)=0, donc on a bien un point de la courbe
+    if (f == nil) or (x0 == nil) or (y0 == nil) then return end
+    local h = 1e-6
+    local A = Z(x0,y0)
+    local a,b = (f(x0+h,y0)-f(x0-h,y0))/(2*h), (f(x0,y0+h)-f(x0,y0-h))/(2*h)
+    local v = Z(-b,a)
+    if (v == nil) or cpx.isNul(v) then return end
+    v = cpx.I*v
+    if long == nil then return {A,v} -- on renvoie une droite
+    else 
+        local u = long*v/cpx.abs(v)/2
+        return {A-u,A+u} -- on renvoie un segment
+    end
+end
+
     
 --  intersection entre 2 lignes polygonales (liste de composantes connexes)
 function interL(L1, L2)
@@ -568,6 +624,43 @@ function interDL(d,L)
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
     local xmin, xmax, ymin, ymax = getbounds(L)
     return interL( clipline(d,xmin,xmax,ymin,ymax), L)
+end
+
+-- intersection droite - cercle
+function interDC(d,C)
+-- d = {A,u} droite; C = {O,r} cercle
+    local rep 
+    local A,u = table.unpack(d)
+    local O,r = table.unpack(C)
+    local I = proj(O,d)
+    local d = cpx.abs(I-O)
+    if d == r  then rep = {I}
+    elseif d < r then -- deux points d'intersection
+        u =  u/cpx.abs(u)
+        local b = cpx.dot(u,I-O)
+        local delta = math.sqrt(b^2-d^2+r^2)
+        local t1, t2 = b-delta, b+delta
+        rep = {I+t1*u,I+t2*u}
+    end
+    return rep
+end
+
+-- intersection cercle - cercle
+function interCC(C1,C2)
+-- C1 = {O1,r1} cercle; C2 = {O2,r2} cercle
+    local rep 
+    local O1,r1 = table.unpack(C1)
+    local O2,r2 = table.unpack(C2)
+    if O1 == O2 then
+        if r1 == r2 then rep = circle(O1,r1)[1] -- points du cercle
+        end
+    else
+        O1, O2 = toComplex(O1), toComplex(O2)
+        local x1,x2,y1,y2 = O1.re,O2.re,O1.im,O2.im
+        local d = lineEq(2*(x2-x1),2*(y2-y1),r2^2-r1^2+x1^2-x2^2+y1^2-y2^2)
+        rep = interDC(d,C1)
+    end
+    return rep
 end
 
 
@@ -1432,4 +1525,64 @@ function setminus(C1, C2)
     end
     table.insert(rep,C2[1])
     return rep
+end
+
+-- enveloppe convexe 2d
+
+function cvx_hull2d(L)
+-- L is a list of complex numbers
+-- returns a list of complexe numbers which is the convex hull of L (Ronald Graham algorithm)
+    if (L == nil) or (type(L) ~= "table") then return end
+    L = map(toComplex,L)
+    -- on élimine les doublons
+    table.sort(L, function(e1,e2) return (e1.re < e2.re) or ((e1.re == e2.re) and (e1.im < e2.im)) end)
+    local old, S = nil,{}
+    for _,z in ipairs(L) do
+        if z ~= old then table.insert(S,z); old = z end
+    end
+    local Min = S[1]
+    local N  = #S 
+    if N < 3 then  return S
+    elseif N == 3 then 
+        if cpx.det(S[2]-Min,S[3]-Min) < 0 then return reverse(S) else return S end
+    else
+        -- recherche de l'élément le plus bas, le plus à gauche s'il y en a plusieurs
+        local ymin = Min.im
+        for _,z in ipairs(S) do
+            local y = z.im 
+            if y < ymin then Min = z; ymin = y
+            elseif y == ymin then
+                  if z.re < Min.re then Min = z end
+            end
+        end  -- Min est le point le plus bas, le plus à gauche s'il y en a plusieurs 
+        -- pour chaque z autre que Min on calcule l'angle theta = (Ox, z-Min) pour faire un tri
+        local aux = {}
+        for k = 1, #S do
+            local z = S[k]
+            local theta = cpx.arg(z-Min)
+            if z ~= Min then table.insert(aux, {theta,k}) end -- angle et index dans la liste S, saud Min
+        end 
+        table.sort(aux,function(e1,e2) return (e1[1] < e2[1]) or ((e1[1]==e2[1]) and (e1[2]<e2[2])) end)
+        local S1 = {Min}
+        for _,elt in ipairs(aux) do 
+            table.insert(S1,S[elt[2]])
+        end
+        table.insert(S1,Min)
+        -- S1 est la liste triée, elle commence et finit par Min
+        -- on parcourt les points de S1 sans qu'il y ait de "virage à droite"
+        local fin = false 
+        local A, B, C, kb = S1[1], S1[2], S1[3], 2 -- kb = index de B
+        while not fin  do
+            if cpx.det(B-A,C-B) < 0 then -- virage à droite 
+                table.remove(S1,kb); kb = kb -1  -- on exclut B de l'enveloppe
+                B = A; A = S1[kb-1] -- on recule d'un cran
+            else A = B; B = C; kb = kb +1 
+                if kb+1 > #S1 then fin = true
+                else C = S1[kb+1] --on avance
+                end
+            end
+        end
+        table.remove(S1) -- on retire Min qui est en dernier
+        return S1 -- S1 contient l'enveloppe
+    end
 end

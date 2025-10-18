@@ -1,6 +1,6 @@
 -- luadraw_transformations3d.lua (chargé par luadraw_graph3d.lua)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -260,4 +260,54 @@ function rotateaxe3d(L,v1,v2,center)
         end
     end
     return rotate3d(L,theta*rad, {center,u})
+end
+
+function inv3d(L, radius, center)
+-- L est un point3d ou une liste de point3d ou une liste de listes de point3d
+-- image de  L par l'inversion par rapport à la sphère de centre center et de rayon radius
+    center = center or Origin
+    if (radius == nil) or (type(radius) ~= "number") or (radius <= 0) then return end
+    local r2 = radius^2
+    local inv1 = function(A)
+        if (A == nil) then return end
+        if A == center then return
+        else
+            local B = A-center
+            return center + r2/pt3d.abs2(B)*B
+        end
+    end    
+    return ftransform3d(L,inv1)
+end    
+
+function projstereo(L,S,N,h)
+-- L est un point3d ou une liste de point3d ou une liste de listes de point3d appartenant à la sphère S
+-- S = {C,r} sphère de centre C et de rayon r
+-- N point de la sphère qui sera le pôle de la projection
+-- h définit  le plan P de la projection, plan normal au vecteur CN passant par I = C+h*CN/abs(CN)
+    local C, r = table.unpack(S)
+    local u = pt3d.normalize(N-C)
+    N = C+r*u
+    local I = C+h*u
+    local projstereo1 = function(A)
+        if (A == nil) then return end
+        return interDP({A,A-N},{I,u})
+    end    
+    return ftransform3d(L,projstereo1)
+end
+
+function inv_projstereo(L,S,N)
+-- L est un point3d ou une liste de point3d ou une liste de listes de point3d appartenant à un plan orhogonal à CN
+-- S = {C,r} sphère de centre C et de rayon r
+-- N point de la sphère qui sera le pôle de la projection
+    local C, r = table.unpack(S)
+    local u = pt3d.normalize(N-C)
+    N = C+r*u
+    local inv_projstereo1 = function(A)
+        if (A == nil) then return end
+        local a,b = interDS({A,N-A},S)
+        if pt3d.abs(a-N) < 1e-10 then return b
+        else return a 
+        end
+    end    
+    return ftransform3d(L,inv_projstereo1)
 end

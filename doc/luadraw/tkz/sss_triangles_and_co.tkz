@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,7.7);%
-\pgfsetroundjoin%
 \pgfsetlinewidth{0.8pt}%
 \draw[] (2.7,4.5) -- (6.3,4.5) -- (2.7,7.2)--cycle;%
 \draw[] (0.9,0.9) -- (4.5,0.9) -- (1.8,2.4588)--cycle;%
@@ -14,6 +13,5 @@
 \draw[-] (2.7,4.5) node[below left] {\footnotesize $A$} (6.3,4.5) node[below right] {\footnotesize $B$} (2.7,7.2) node[above] {\footnotesize $C$};%
 \draw[-] (0.9,0.9) node[below left] {\footnotesize $A$} (4.5,0.9) node[below right] {\footnotesize $B$} (1.8,2.4588) node[above] {\footnotesize $C$};%
 \draw[-] (4.95,1.8) node[below left] {\footnotesize $A$} (8.55,1.8) node[below right] {\footnotesize $B$} (7.3751,3.2002) node[above] {\footnotesize $C$};%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

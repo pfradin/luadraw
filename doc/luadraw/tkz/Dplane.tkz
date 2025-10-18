@@ -1,7 +1,6 @@
 \begin{tikzpicture}[background rectangle/.style={,draw=black},show background rectangle]%
 \begin{scope}%
 \clip (0,0) rectangle (8.0,4.8484848484848);%
-\pgfsetroundjoin%
 \draw[] (4.0261,4.4112) -- (1.117,1.8918) -- (6.1557,0.4373);%
 \draw[] (5.1748,2.3823) -- (5.0071,2.4662);%
 \draw[] (5.0071,2.3823) -- (5.1748,2.4662);%
@@ -10,6 +9,5 @@
 \draw[->,line width=0.8pt] (0.8746,1.6819) -- (5.9133,0.2274);%
 \draw[->,line width=0.8pt] (0.6971,2.0131) -- (3.6062,4.5324);%
 \draw[-] (5.0909,2.4242) node[right] {\footnotesize $A$} (5.0909,4.1038) node[right] {\footnotesize $u$} (1.117,1.8918) node[above right,cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {\footnotesize $P$} (3.3939,0.9546) node[below,cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {\footnotesize $L_1\frac{V}{\|V\|}$ (bottom)} (2.1517,3.2727) node[above,cm={0.7559,0.6547,-0.9608,0.2774,(0,0)}] {\footnotesize $L_2\frac{W}{\|W\|}$ (left)};%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

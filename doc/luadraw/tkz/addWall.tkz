@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (0,0) rectangle (10.0,7.5);%
-\pgfsetroundjoin%
 \begin{scope}%
 \pgfsetstrokecolor{Cyan!50!white!75.79!black}%
 \pgfsetlinewidth{0.1pt}%
@@ -122,11 +121,11 @@
 \fill[] (5.6289,0) -- (6.7578,0.9777) -- (6.7578,7.0669) -- (5,5.5446) -- (5,0)--cycle;%
 \pgfsetstrokecolor{black}%
 \pgfsetdash{}{0pt}%
-\pgfsetlinewidth{0.6pt}%
+\pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (5.6289,0) -- (6.7578,0.9777);%
 \draw[] (6.7578,0.9777) -- (6.7578,3.7517);%
+\draw[] (5.6289,0) -- (6.7578,0.9777);%
 \pgfsetstrokecolor{ForestGreen!50!white!75.79!black}%
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillopacity{1}%
@@ -145,7 +144,7 @@
 \pgfsetfillcolor{ForestGreen!50!white!78.73!black}%
 \draw[fill] (8.5941,2.9246) -- (8.4518,3.0111) -- (8.4518,5.7175) -- (8.5941,5.6309)--cycle;%
 \pgfsetstrokecolor{black}%
-\pgfsetlinewidth{0.6pt}%
+\pgfsetlinewidth{0.4pt}%
 \draw[] (6.7578,3.7517) -- (6.7578,6.458);%
 \pgfsetstrokecolor{ForestGreen!50!white!84.72!black}%
 \pgfsetlinewidth{0.1pt}%
@@ -245,7 +244,7 @@
 \pgfsetfillcolor{ForestGreen!75.79!black}%
 \draw[fill] (7.8029,4.6656) -- (8.018,4.697) -- (8.2184,4.7472) -- (8.3977,4.8144) -- (8.5501,4.8965) -- (8.6708,4.9909) -- (8.7558,5.0946) -- (8.8024,5.2042) -- (8.8091,5.3162) -- (8.7757,5.427) -- (8.7032,5.5331) -- (8.5941,5.6309) -- (8.4518,5.7175) -- (8.2808,5.7899) -- (8.0867,5.8459) -- (7.8758,5.8837) -- (7.6547,5.9021) -- (7.4306,5.9004) -- (7.2108,5.8788) -- (7.0022,5.8378) -- (6.8115,5.7789) -- (6.645,5.704) -- (6.5079,5.6153) -- (6.4047,5.5159) -- (6.3386,5.4088) -- (6.3119,5.2975) -- (6.3253,5.1857) -- (6.3784,5.0768) -- (6.4695,4.9745) -- (6.5958,4.8819) -- (6.753,4.8021) -- (6.9363,4.7376) -- (7.1396,4.6905) -- (7.3565,4.6623) -- (7.58,4.6539)--cycle;%
 \pgfsetstrokecolor{black}%
-\pgfsetlinewidth{0.6pt}%
+\pgfsetlinewidth{0.4pt}%
 \draw[] (6.7578,6.458) -- (6.7578,7.0669);%
 \draw[] (6.7578,7.0669) -- (5,5.5446);%
 \pgfsetstrokecolor{Pink!89.13!black}%
@@ -257,7 +256,7 @@
 \pgfsetstrokecolor{black}%
 \pgfsetbuttcap%
 \pgfsetdash{}{0pt}%
-\pgfsetlinewidth{0.6pt}%
+\pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
 \draw[] (1.9554,0.3343) -- (3.1134,0);%
@@ -280,7 +279,7 @@
 \pgfsetfillcolor{Crimson!50!white!78.73!black}%
 \draw[fill] (3.4715,1.697) -- (3.3292,1.7836) -- (3.3292,4.4899) -- (3.4715,4.4034)--cycle;%
 \pgfsetstrokecolor{black}%
-\pgfsetlinewidth{0.6pt}%
+\pgfsetlinewidth{0.4pt}%
 \draw[] (1.9554,5.2733) -- (1.9554,2.567);%
 \pgfsetstrokecolor{Crimson!50!white!84.72!black}%
 \pgfsetlinewidth{0.1pt}%
@@ -380,7 +379,7 @@
 \pgfsetfillcolor{Crimson!75.79!black}%
 \draw[fill] (2.6803,3.4381) -- (2.8954,3.4695) -- (3.0958,3.5196) -- (3.2751,3.5868) -- (3.4275,3.669) -- (3.5482,3.7634) -- (3.6332,3.8671) -- (3.6798,3.9767) -- (3.6865,4.0887) -- (3.6531,4.1995) -- (3.5806,4.3055) -- (3.4715,4.4034) -- (3.3292,4.4899) -- (3.1582,4.5624) -- (2.9641,4.6184) -- (2.7532,4.6562) -- (2.5321,4.6745) -- (2.308,4.6729) -- (2.0882,4.6512) -- (1.8796,4.6103) -- (1.6889,4.5514) -- (1.5224,4.4764) -- (1.3853,4.3878) -- (1.2821,4.2883) -- (1.216,4.1812) -- (1.1893,4.07) -- (1.2027,3.9581) -- (1.2558,3.8493) -- (1.3469,3.7469) -- (1.4732,3.6543) -- (1.6305,3.5745) -- (1.8137,3.51) -- (2.017,3.4629) -- (2.2339,3.4347) -- (2.4574,3.4264)--cycle;%
 \pgfsetstrokecolor{black}%
-\pgfsetlinewidth{0.6pt}%
+\pgfsetlinewidth{0.4pt}%
 \draw[] (1.9554,6.4235) -- (1.9554,5.2733);%
 \draw[] (5,5.5446) -- (1.9554,6.4235);%
 \pgfsetstrokecolor{Pink!89.13!black}%
@@ -395,15 +394,14 @@
 \pgfsetstrokecolor{black}%
 \pgfsetbuttcap%
 \pgfsetdash{}{0pt}%
-\pgfsetlinewidth{0.6pt}%
+\pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
 \draw[] (8.0446,4.6657) -- (5,5.5446);%
 \draw[] (5,5.5446) -- (3.9851,4.6657);%
 \draw[] (8.0446,0) -- (8.0446,4.6657);%
-\draw[] (3.9851,4.6657) -- (3.2422,4.0223);%
 \draw[] (3.2422,4.0223) -- (3.2422,0);%
+\draw[] (3.9851,4.6657) -- (3.2422,4.0223);%
 \end{scope}%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%

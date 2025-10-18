@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2025/09/07
--- version 2.1
+-- date 2025/10/18
+-- version 2.2
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -50,6 +50,91 @@ end
 
 -- calcul de courbes
 function parametric3d(p,t1,t2,nbdots,discont,nbdiv) 
+-- le paramétrage p est une fonction : t (réel) -> p(t) (pt3d)
+    local saut = (discont or false)
+    local niveau = (nbdiv or 5)
+    local curve = {}
+    local lastJump = true
+    local dep = t1
+    local fin = t2
+    local nb = (nbdots or 40)
+    local pas = (fin - dep) / (nb-1)
+    local cp = {} -- composante connexe courante
+    local t = dep
+    local count = 0
+    local seuil = 3--math.abs(pas)*2.5 --empirique
+    
+
+    local closeCp = function ()
+            if count > 1 then
+                table.insert(curve, cp)
+            end
+            lastJump = true
+            count = 0
+            cp ={}
+        end
+    
+    local addCp = function (z)
+            lastJump = false
+            table.insert(cp, z)
+            count = count + 1
+        end
+        
+    local middle -- fonction récursive middle    
+    middle = function(t1,t2,f1,f2,n,d12)
+        if (n > niveau) then 
+            if saut then closeCp() end -- fermer la composante connexe
+        else
+           local tm = (t1 + t2) / 2  -- dichotomie
+           local fm = evalf(p,tm)
+           if (fm ~= nil) then
+                if (f1 ~= nil) and (f2 ~= nil) then
+                    if d12 == nil then d12 = pt3d.abs(f2-f1) end
+                    local d1m, dm2 = pt3d.abs(f1-fm), pt3d.abs(f2-fm)
+                    if (d12>seuil) or (d1m+dm2>1.0005*d12)
+                    then
+                        middle(t1,tm,f1,fm,n+1,d1m)
+                        addCp(fm)
+                        middle(tm,t2,fm,f2,n+1,dm2)
+                    end
+                else
+                    middle(t1,tm,f1,fm,n+1,nil)
+                    addCp(fm)
+                    middle(tm,t2,fm,f2,n+1,nil)
+                end
+            else -- fm = nil
+                if (f1 ~= nil) then middle(t1,tm,f1,fm,n+1,nil) else closeCp() end
+                if (f2 ~= nil) then middle(tm,t2,fm,f2,n+1,nil) else closeCp() end
+            end
+        end        
+    end
+    --corps de la fonction parametric
+    local prec = nil -- point précédent le point courant
+    local tPrec = nil -- valeur de t précédente
+    local z = nil -- point courant
+    for _ = 1, nb do
+        A = p(t)
+        if (A == nil) or notDef(A.x) or notDef(A.y) or notDef(A.z) then A = nil end
+        if (A ~= nil) then
+            if  (prec ~= nil) or ( (prec == nil) and (t > dep) ) then
+                middle(tPrec,t,prec,A,1,nil)
+            end
+            addCp(A)
+        else -- A = nil
+            if (prec ~= nil) then middle(tPrec,t,prec,A,1,nil) 
+            else closeCp()
+            end
+        end
+        tPrec = t
+        prec = A
+        t = t + pas
+    end
+    if (not lastJump) and (count > 1) then table.insert(curve, cp) end -- dernière composante
+    if #curve > 0 then return curve end
+end
+
+
+function OLDparametric3d(p,t1,t2,nbdots,discont,nbdiv) 
 -- le paramétrage p est une fonction : t (réel) -> p(t) (pt3d)
     local saut = (discont or false)
     local niveau = (nbdiv or 5)
@@ -159,7 +244,7 @@ end
     u, v = pt3d.normalize(u), pt3d.normalize(v)
     local n = normal
     if n == nil then n = pt3d.prod(u,v) end
-    if (n == nil) or pt3d.isNul(n) then return {{"nul"}} end
+    if (n == nil) or pt3d.isNul(n) then return end
     n = pt3d.normalize(n)
     local V = r*u --vecteur de depart
     local W = pt3d.prod(n,V)
@@ -483,11 +568,12 @@ function clipline3d(line, poly)
     local x1,x2,y1,y2,z1,z2 = getbounds3d(poly.vertices)
     local O = M(x1+x2,y1+y2,z1+z2)/2 -- centre de la boite contenant le polyèdre
     local delta = (math.abs(x2-x1)+math.abs(y2-y1)+math.abs(z2-z1))/2
-    local O1 = proj3d(O,line)
+    local O1 = dproj3d(O,line)
     local d = pt3d.N1(O-O1)
     local t = 1+delta+d
     local A, B = O1-t*u, O1+t*u -- deux points de la droite mais hors de la boite
     local L = clippolyline3d({A,B},poly)
+    if L ~= nil and (#L == 1) then L = L[1] end
     return L
 end
 
@@ -590,4 +676,190 @@ function path3d(chemin)
     end
     if #crt > 0 then table.insert(res, crt) end    
     if #res > 0 then return  res end
+end
+
+
+function split_points_by_visibility(L,visible_function)
+--L is a list of 3d points, or a lits of list of 3d points (polygonal line)
+-- visible_function is a function : visible_function(A) returns true is the 3d point A is visible.
+-- the function retuns a sequence :  visible_points, hidden_points (two tables)
+    if (L == nil) or (type(L) ~= "table") then return end
+    local Visible, Hidden = {},{}
+    local visible, hidden, state,I = {}, {}
+    
+    if isPoint3d(L[1]) then L = {L} end
+    for _, cp in ipairs(L) do
+        visible, hidden = {}, {}
+        state = 0
+        for _, A in ipairs(cp) do
+            if visible_function(A) then -- A is visible
+                table.insert(visible,A)
+                if state == 2 then-- previous dot was not visible
+                    I = (A+hidden[#hidden])/2
+                    table.insert(visible,1,I)
+                    table.insert(hidden,I)
+                    table.insert(Hidden, hidden); hidden = {}
+                end
+                state = 1
+            else -- A not visible
+                table.insert(hidden,A)
+                if state == 1 then -- previous dot was visible
+                    I = (A+visible[#visible])/2
+                    table.insert(hidden,1,I)
+                    table.insert(visible,I)
+                    table.insert(Visible, visible); visible = {}
+                end
+                state = 2
+            end
+        end
+        if #visible > 0 then table.insert(Visible, visible) end
+        if #hidden > 0 then  table.insert(Hidden, hidden) end
+    end
+    Visible = merge3d(Visible); Hidden = merge3d(Hidden)
+    return Visible, Hidden
+end
+
+-- enveloppe convexe 3d
+
+local cvx_hull3dAux = function(L,n)
+-- cvx_hull3dAux( liste de points 3D coplanaires, vecteur normal): renvoie l'enveloppe convexe plane de la liste de points}
+    if (L == nil) or (type(L) ~= "table") or (n == nil) then return end
+    local O, O1 = L[1], L[2]
+    local I = pt3d.normalize(O1-O)
+    local J = pt3d.normalize(pt3d.prod(n,I))
+    L = map( function(A) return Z(pt3d.dot(A,I), pt3d.dot(A,J)) end, shift3d(L,-O))
+    return map(function(z) return O+z.re*I+z.im*J end, cvx_hull2d(L))
+end
+
+local update_edges = function(edges,A1,A2,n)
+-- edges = liste de {A1,A2,normal vector}
+-- inserts {A1,A2,n} in the list edges without duplicates of A1 A2
+    local ok,k,nb = false, 1, #edges
+    local rep
+    while (k<=nb) and (not ok)  do
+        local A, B = edges[k][1], edges[k][2]
+        ok = ( (pt3d.abs(A-A1)<1e-10) and (pt3d.abs(B-A2)<1e-10) ) or ( (pt3d.abs(B-A1)<1e-10) and (pt3d.abs(A-A2)<1e-10) )
+        if ok then table.remove(edges,k) else k = k+1 end
+    end
+    if not ok then table.insert(edges,{A1,A2,n}) end
+end
+
+function cvx_hull3d(L)
+-- L is a list of 3d points
+-- returns convex hull of L as a list of facets
+    if (L == nil) or (type(L) ~= "table") or (#L < 2) then return end
+    if #L == 2 then return L end
+    local epsilon= 1e-10
+    local G = isobar3d(L)
+    local P1 = L[1]
+    local zmin = P1.z
+    for _,A in ipairs(L) do
+        if A.z < zmin then zmin = A.z; P1 = A end
+    end -- P1 point le plus bas
+    -- recherche de P2, point le plus proche (?) du plan z=P1.z, l'arête [P1,P2] est dans l'enveloppe
+    local cosmin, P2, P3 = 1.001
+    for _,A in ipairs(L) do
+        local B = A-P1
+        local d = pt3d.abs(B)
+        if d > epsilon then
+            local x = B.z/d
+            if x < cosmin then cosmin = x; P2 = A end 
+        end
+    end
+    -- recherche d'une première facette triangulaire de l'enveloppe
+    cosmin = 1.001; P3 = nil
+    local n1 = pt3d.normalize(pt3d.prod(P2-G,P1-G))
+    local k1 = pt3d.normalize(pt3d.prod(n1,P1-P2))
+    if pt3d.dot(k1,G-P1) < 0 then k1 = -k1 end
+    for _,A in ipairs(L) do
+        local B = A-P2
+        if pt3d.abs(pt3d.prod(B,A-P1)) > epsilon then -- A ne doit pas être sur (P1,P2)
+            local s = pt3d.dot(B,k1)
+            local x = s/math.sqrt(pt3d.dot(B,n1)^2+s^2)
+            if x < cosmin then cosmin = x; P3 = A end
+        end
+    end
+    if P3 == nil  then return {P1,P2} end
+    -- recherche de l'enveloppe convexe de tous les points dans le plan de cette première facette
+    n1 = pt3d.normalize(pt3d.prod(P2-P3,P1-P3))
+    if pt3d.dot(n1,G-P1) > 0 then n1 = -n1 end
+    local facette = {}
+    for  _, A in ipairs(L) do
+        local B = P2-A
+        if math.abs(pt3d.dot(B,n1)) < epsilon then table.insert(facette,A) end
+    end
+    facette = cvx_hull3dAux(facette,n1)
+    local rep = {}  --contiendra l'enveloppe convexe
+    table.insert(rep, facette) --insertion première facette de l'enveloppe
+    -- on initialise la liste des <bords> avec la première facette: { {A1,A2, vecteur normal},...]
+    local B = facette[1]
+    table.insert(facette, B)
+    local bords = {}
+    for k = 2, #facette do
+        local A = B; B = facette[k]
+        table.insert(bords,{A,B,n1})
+    end
+    while #bords ~= 0 do
+        local Z = bords[1] -- premier bord
+        local P1, P2, n1 = table.unpack(Z)
+        --recherche d'une facette triangulaire [P1,P2,P3] de l'enveloppe
+        local cosmin, P3, k1 = 1.001, nil, pt3d.normalize(pt3d.prod(P1-P2,n1))
+        for _, A in ipairs(L) do
+            local B = A-P2
+            if math.abs(pt3d.dot(B,n1)) > epsilon then --A ne doit pas être dans le plan de la facette
+                local s = pt3d.dot(B,k1)
+                local x = s/math.sqrt(pt3d.dot(B,n1)^2+s^2)
+                if x < cosmin then cosmin = x; P3 = A end
+            end
+        end
+        if P3 == nil  then return rep end
+        --recherche de l'enveloppe convexe de tous les points dans le plan de cette facette
+        local n2 = pt3d.normalize(pt3d.prod(P2-P3,P1-P3))
+        local facette = {}
+        for  _, A in ipairs(L) do
+            local B = P2-A
+            if math.abs(pt3d.dot(B,n2)) < epsilon then table.insert(facette,A) end
+        end
+        facette = cvx_hull3dAux(facette,n2)
+        table.insert(rep, facette) -- on ajoute cette facette à l'enveloppe
+        -- mise à jour de la liste des bords
+        local B = facette[1]
+        table.insert(facette, B)
+        for k = 2, #facette do
+            local A = B; B = facette[k]
+            update_edges(bords,A,B,n2)
+        end 
+    end
+    return rep
+end
+
+function curvilinear_param3d(L,close) -- curvilinear parametrization 3d
+-- L is a list of 3d points
+-- close=true/false, true if L must be closed
+-- returns a function f:t -> f(t) with t in [0;1] and f(t) is a point on L, f(0) is the first point, f(1) the last point.
+    if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
+    if not isPoint3d(L[1])  then L = L[1] end -- liste de liste de points 3d, on prend la première composante
+    close = close or false
+    local a, b, n, p = nil, L[1], #L
+    local L2, L1, s = {b}, {0}, 0 -- L2=points, L1 = length    
+    if close then p = n+1 else p = n end
+    for k = 2, p do
+        a = b; b = L[(k-1)%n+1]
+        s = s + pt3d.abs(b-a) -- curve length from beginning to b
+        table.insert(L2,b); table.insert(L1,s)
+    end
+    local total_len = s
+    local l = function(t) -- returns L(t) using linear interpolation with t in [0,1]
+        local k = 1
+        local n = math.min(#L1,#L2)
+        if t == 0 then return L2[1] end -- first point of L
+        if t == 1 then return L2[#L2] end -- last point
+        t = t*total_len
+        while (k<=n) and (L1[k] < t) do k = k+1 end
+        if k <=n then
+            local u = (t-L1[k-1])/(L1[k]-L1[k-1])
+            return L2[k-1]+u*(L2[k]-L2[k-1])
+        end
+    end
+    return l,total_len
 end

@@ -1,7 +1,6 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,9.5);%
-\pgfsetroundjoin%
 \pgfsetfillcolor{LightGray}%
 \fill[] (5.4883,0.3176) -- (0.8117,1.6676) -- (3.5117,4.0059) -- (8.1883,2.6559)--cycle;%
 \fill[] (8.1883,7.3324) -- (3.5117,8.6824) -- (3.5117,4.0059) -- (8.1883,2.6559)--cycle;%
@@ -118,6 +117,5 @@
 \draw[] (4.5218,3.1157) -- (4.7,3.0575);%
 \draw[] (4.6944,3.1293) -- (4.5274,3.044);%
 \draw[gray] (2.1617,7.5133) -- (4.5,6.8383) -- (5.85,8.0074);%
-\pgfsetmiterjoin%
 \end{scope}%
 \end{tikzpicture}%
