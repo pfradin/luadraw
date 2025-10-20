@@ -1,0 +1,101 @@
+\section{Introduction}
+
+\subsection{Prérequis}
+
+\begin{itemize}
+\item Ce document présente l'utilisation du package \emph{luadraw} avec l'option globale \emph{3d} :
+\verb|\usepackage[3d]{luadraw}|.
+\item Le paquet charge le module \emph{luadraw\_graph2d.lua} qui définit la classe \emph{graph}, et fournit l'environnement \emph{luadraw} qui permet de faire des graphiques en Lua. Tout ce qui est dit dans le précédent chapitre (Dessin 2d) s'applique donc, et est supposé connu ici.
+\item L'option globale \emph{3d} permet en plus le chargement du module \emph{luadraw\_graph3d.lua}. Celui-ci définit en plus la classe \emph{graph3d} (qui s'appuie sur la classe \emph{graph}) pour des dessins en 3d. 
+\end{itemize}
+
+\subsection{Quelques rappels}
+
+\begin{itemize}
+    \item Autre option globale du paquet : \emph{noexec}. Lorsque cette option globale est mentionnée la valeur par défaut de l'option \emph{exec} pour l'environnement \emph{luadraw} sera false (et non plus true).
+
+    \item Lorsqu'un graphique est terminé il est exporté au format tikz, donc ce paquet charge également le paquet \emph{tikz} ainsi que les librairies :
+    \begin{itemize}
+        \item\emph{patterns}
+        \item\emph{plotmarks}
+        \item\emph{arrows.meta}
+        \item\emph{decorations.markings}
+        \end{itemize}
+    \item Les graphiques sont créés dans un environnement \emph{luadraw}, celui-ci appelle \emph{luacode}, c'est donc du \textbf{langage Lua} qu'il faut utiliser dans cet environnement.
+
+    \item Sauvegarde du fichier \emph{.tkz} : le graphique est exporté au format tikz dans un fichier (avec l'extension \emph{tkz}), par défaut celui-ci est sauvegardé dans le dossier courant. Mais il est possible d'imposer un chemin spécifique en définissant dans le document, la commande \verb|\luadrawTkzDir|, par exemple : \verb|\def\luadrawTkzDir{tikz/}|, ce qui permettra d'enregistrer les fichiers \emph{*.tkz} dans le sous-dossier \emph{tikz} du dossier courant, à condition toutefois que ce sous-dossier existe !
+
+    \item Les options de l'environnement sont :
+    \begin{itemize}
+    \item \emph{name = \ldots{}} : permet de donner un nom au fichier tikz produit, on donne un nom sans extension (celle-ci sera automatiquement ajoutée, c'est \emph{.tkz}). Si cette option est omise, alors il y a un nom par défaut, qui est le nom du fichier maître suivi d'un numéro.
+    \item \emph{exec = true/false} : permet d'exécuter ou non le code Lua compris dans l'environnement. Par défaut cette option vaut true, \textbf{SAUF} si l'option globale \emph{noexec} a été mentionnée dans le préambule avec la déclaration du paquet. Lorsqu'un graphique complexe qui demande beaucoup de calculs est au point, il peut être intéressant de lui ajouter l'option \emph{exec=false}, cela évitera les recalculs de ce même graphique pour les compilations à venir.
+    \item \emph{auto = true/false} : permet d'inclure ou non automatiquement le fichier tikz en lieu et place de l'environnement \emph{luadraw} lorsque l'option \emph{exec} est à false. Par défaut l'option \emph{auto} vaut true.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Création d'un graphe 3d}
+
+\begin{TeXcode}
+\begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
+-- création d'un nouveau graphique en lui donnant un nom local
+local g = graph3d:new{ window3d={x1,x2,y1,y2,z1,z2}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom}, size={largeur,hauteur,ratio}, bg="color", border=true/false }
+-- construction du graphique g
+    instructions graphiques en langage Lua ...
+-- affichage du graphique g et sauvegarde dans le fichier <filename>.tkz
+g:Show()
+-- ou bien sauvegarde uniquement dans le fichier <filename>.tkz
+g:Save()
+\end{luadraw}
+\end{TeXcode}
+
+La création se fait dans un environnement \emph{luadraw}, c'est à la première ligne à l'intérieur de l'environnement qu'est faite cette création en nommant le graphique :
+
+\begin{Luacode}
+local g = graph3d:new{ window3d={x1,x2,y1,y2,z1,z2}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom}, size={largeur,hauteur,ratio}, bg="color", border=true/false }
+\end{Luacode}
+
+La classe \emph{graph3d} est définie dans le paquet \emph{luadraw} grâce à l'option globale \emph{3d}. On instancie cette classe en invoquant son constructeur et en donnant un nom (ici c'est \emph{g}), on le fait en local de sorte que le graphique \emph{g} ainsi créé, n'existera plus une fois sorti de l'environnement (sinon \emph{g} resterait en mémoire jusqu'à la fin du document).
+
+\begin{itemize}
+ \item Le paramètre (facultatif) \emph{window3d} définit le pavé de $\mathbf R^3$ correspondant au graphique : c'est $[x_1,x_2]\times[y_1,y_2]\times[z_1,z_2]$. Par défaut c'est $[-5,5]\times[-5,5]\times[-5,5]$.
+ \item Le paramètre (facultatif) \emph{adjust2d} indique si la fenêtre 2d qui va contenir la projection orthographique du dessin 3d, doit être déterminée automatiquement (false par défaut). Cette fenêtre 2d correspond à l'argument \emph{window}.
+ 
+ \item Le paramètre (facultatif) \emph{viewdir} est une table qui définit les deux angles de vue (en degrés) pour la projection orthographique. Par défaut c'est la table \{30,60\}.
+ 
+\begin{center}
+\captionof{figure}{Angles de vue}\label{viewdir}
+\begin{luadraw}{name=viewdir}
+local g = graph3d:new{ size={8,8} }
+local i = cpx.I
+local O, A = Origin, M(4,4,4)
+local B, C, D, E = pxy(A), px(A), py(A), pz(A)
+g:Dpolyline3d( {{O,A},{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, "->")
+g:Dpolyline3d( {{E,A,B,O}, {C,B,D}}, "dashed")
+g:Dpath3d( {C,O,B,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8")
+g:Darc3d(C,O,B,2.5,1,"->")
+g:Dpath3d( {E,O,A,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8")
+g:Darc3d(E,O,A,2.5,1,"->")
+g:Dballdots3d(O)
+g:Labelsize("footnotesize")
+g:Dlabel3d(
+    "$x$", 5.25*vecI,{}, "$y$", 5.25*vecJ,{}, "$z$", 5.25*vecK,{},
+    "vers observateur", A, {pos="E"},
+    "$O$", O, {pos="NW"},
+    "$\\theta$", (B+C)/2, {pos="N", dist=0.15},
+    "$\\varphi$", (A+E)/2, {pos="S",dist=0.25}
+)
+g:Dlabel("viewdir=\\{$\\theta,\\varphi$\\} (en degrés)",-5*i,{pos="N"})
+g:Show()            
+\end{luadraw}
+\end{center}
+
+\item Les autres paramètres sont ceux de la classe \emph{graph}, ils ont été décrits dans le chapitre 1.
+\end{itemize}
+
+\paragraph{Construction du graphique.}
+
+\begin{itemize}
+    \item L'objet instancié (\emph{g} ici dans l'exemple) possède toutes les méthodes de la classe \emph{graph}, plus des méthodes spécifiques à la 3d.
+    \item La classe \emph{graph3d} amène aussi un certain nombre de fonctions mathématiques propres à la 3d.
+\end{itemize}

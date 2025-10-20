@@ -1,0 +1,61 @@
+\section{Transformations}
+Dans ce qui suit :
+\begin{itemize}
+    \item l'argument \emph{L} est soit un complexe, soit une liste de complexes soit une liste de listes de complexes,
+    \item la droite \emph{d} est une liste de deux complexes : un point de la droite et un vecteur directeur.
+  \end{itemize}
+  
+\subsection{affin}
+La fonction \textbf{affin(L,d,v,k)} renvoie l'image de \emph{L} par l'affinité de base la droite \emph{d}, parallèlement au vecteur \emph{v} et de rapport \emph{k}.
+
+\subsection{ftransform}
+La fonction \textbf{ftransform(L,f)} renvoie l'image de \emph{L} par la fonction \emph{f} qui doit être une fonction de la variable complexe. Si un des éléments de \emph{L} est le complexe \emph{cpx.Jump} alors celui-ci est renvoyé tel quel dans le résultat.
+
+\subsection{hom}
+La fonction \textbf{hom(L,factor,center)} renvoie l'image de \emph{L} par l'homothétie de centre \emph{center} et de rapport \emph{factor}. Par défaut, l'argument \emph{center} vaut 0.
+
+\subsection{inv}
+La fonction \textbf{inv(L, radius, center)} renvoie l'image de \emph{L} par l'inversion par rapport au cercle de centre \emph{center} et de rayon \emph{radius}. Par défaut, l'argument \emph{center} vaut 0.
+
+\subsection{proj}
+La fonction \textbf{proj(L,d)} renvoie l'image de \emph{L} par la projection orthogonale sur la droite \emph{d}.
+
+\subsection{projO}
+La fonction \textbf{projO(L,d,v)} renvoie l'image de \emph{L} par la projection sur la droite \emph{d} parallèlement au vecteur \emph{v}.
+
+\subsection{rotate}
+La fonction \textbf{rotate(L,angle,center)} renvoie l'image de \emph{L} par la rotation de centre \emph{center} et d'angle \emph{angle} (en degrés). Par défaut, l'argument \emph{center} vaut 0.  
+
+\subsection{shift}
+La fonction \textbf{shift(L,u)} renvoie l'image de \emph{L} par la translation de vecteur \(u\).
+
+\subsection{simil}
+La fonction \textbf{simil(L,factor,angle,center)} renvoie l'image de \emph{L} par la similitude de centre \emph{center}, de rapport \emph{factor} et d'angle \emph{angle} (en degrés). Par défaut, l'argument \emph{center} vaut 0.
+
+\subsection{sym}
+La fonction \textbf{sym(L,d)} renvoie l'image de \emph{L} par la symétrie orthogonale d'axe la droite \emph{d}.
+
+\subsection{symG}
+La fonction \textbf{symG(L,d,v)} renvoie l'image de \emph{L} par la symétrie par rapport à la droite \emph{d} suivie de la translation de vecteur \emph{v} (symétrie glissée).
+
+\subsection{symO}
+La fonction \textbf{symO(L,d)} renvoie l'image de \emph{L} par la symétrie par rapport à la droite \emph{d} et parallèlement au vecteur \emph{v} (symétrie oblique).
+
+\begin{demo}{Utilisation de transformations}
+\begin{luadraw}{name=Sierpinski}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+local i = cpx.I
+local rand = math.random
+local A, B, C = 5*i, -5-5*i, 5-5*i -- triangle initial
+local T, niv = {{A,B,C}}, 5
+for k = 1, niv do
+    T = concat( hom(T,0.5,A), hom(T,0.5,B), hom(T,0.5,C) )
+end
+for _,cp in ipairs(T) do
+    g:Filloptions("full", rgb(rand(),rand(),rand()))
+    g:Dpolyline(cp,true)
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+

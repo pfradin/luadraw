@@ -1,0 +1,323 @@
+\section{The Dscene3d Method}
+
+\subsection{The Principle, the Limitations}
+
+The major flaw of the \textbf{g:Dpoly}, \textbf{g:Dfacet}, and \textbf{g:Dmixfacet} methods is that they do not handle possible intersections between facets of different solids. Not to mention that sometimes, even for a simple convex polyhedron, the painter's algorithm does not always produce the correct result (because the facets are sorted only by their center of gravity). Furthermore, these methods only allow you to draw facets.
+
+The principle of the \textbf{g:Dscene3d()} method is to classify the 3D objects to be drawn (facets, polygonal lines, points, labels, etc.) in a tree (which represents the scene). At each node of the tree, there is a 3D object, let's call it $A$, and two descendants. One of the descendants will contain the 3D objects that are in front of object A (i.e., closer to the observer than $A$), and the other descendant will contain the 3D objects that are behind object A (i.e., further from the observer than $A$).
+
+In particular, to classify a facet $B$ with respect to a facet $A$ that is already in the tree, we proceed as follows: we split facet $B$ with the plane containing facet $A$, which generally results in two "half" facets, one that will be in front of $A$ (the one in the half-space "containing" the observer), and the other that will therefore be behind $A$.
+
+This method is effective but has limitations because it can cause the number of facets in the tree to explode, thus increasing its size exponentially. This can make it prohibitive to use this method when there are many facets (long computation time\footnote{Lua is an interpreted language, so execution is generally longer than with a compiled language.}, excessively large tkz file size, excessively long drawing time per tikz). However, it is very effective when there are few facets, and therefore few facet intersections (convex objects with few facets). Furthermore, it is possible to draw below and above the 3D scene, i.e., before using the \textbf{g:Dscene3d} method, and after its use.
+
+This method should therefore be reserved for very simple scenes. For complex 3D scenes, the vector format is not suitable, so it is better to turn to other tools like Povray, Blender, or WebGL.
+
+
+\subsection{Construction of a 3D scene}
+
+The \textbf{g:Dscene3d(...)} method allows this construction. It takes as arguments the 3D objects that will constitute this scene one after the other. These 3D objects are themselves created using dedicated methods that will be detailed later. In the current version, these 3D objects can be:
+\begin{itemize}
+    \item polyhedra,
+    \item lists of facets (with point3d),
+    \item 3D polygonal lines,
+    \item 3D points,
+    \item labels,
+    \item axes,
+    \item planes, lines,
+    \item angles,
+    \item circles, and arcs.
+\end{itemize}
+
+\begin{demo}[planes]{First example with Dscene3d: intersection of two planes}
+\begin{luadraw}{name=intersection_plans}
+local g = graph3d:new{viewdir={-10,60}, window={-5,5.5,-5.5,5.5},bg="gray", size={10,10}}
+local P1 = planeEq(1,1,1,-2) -- plane of equation x+y+z-2=0
+local P2 = {Origin, vecK-vecJ} -- plane passing through O and normal to (1,1,1)
+local D = interPP(P1,P2) -- line of intersection between P1 and P2 (D = {A,u})
+local posD = D[1]+1.85*D[2] -- to place the label
+Hiddenlines = true; Hiddenlinestyle = "dotted" -- display hidden dotted lines
+g:Dscene3d(
+    g:addPlane(P1, {color="Crimson",edge=true,edgecolor="Pink",edgewidth=8}), -- plane P1
+    g:addPlane(P2, {color="ForestGreen",edge=true,edgecolor="Pink",edgewidth=8}),  -- plane P2
+    g:addLine(D, {color="Navy",edgewidth=12}),  -- line D
+    g:addAxes(Origin, {arrows=1, color="Gold",width=8}),  -- added arrow axes
+    g:addLabel( -- added labels, these could have been added over the scene
+        "$D=P_1\\cap P_2$",posD,{color="Navy"},
+        "$P_2$", M(3,0,0)+3.5*M(0,1,1),{color="white",dir={vecI,vecJ+vecK}},
+        "$P_1$",M(2,0,0)+1.8*M(-1,-1,2), {dir={M(-1,1,0),M(-1,-1,2),1.125*M(1,-1,0)}}
+        )
+    )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Methods for adding an object to the 3D scene}
+
+These methods are to be used as arguments to the \textbf{g:Dscene3d(...)} method, as in the example above.
+
+\subsubsection{Adding facets: g:addFacet and g:addPoly}
+
+The \textbf{g:addFacet(list,options)} method, where \emph{list} is a facet or a list of facets (with 3D points), allows you to add these facets to the scene.
+
+The \textbf{g:addPoly(list,options)} method allows you to add the polyhedron $P$ to the scene.
+
+In both cases, the optional \emph{options} argument is a 12-field table. These options (with their default values) are:
+
+\begin{itemize}
+    \item \opt{color="white"}: Sets the fill color of the facets. This color will be shaded depending on their inclination. By default, the edges of the facets are not drawn (only the fill).     \item \opt{usepalette} (\emph{nil} by default), this option allows you to specify a color palette for painting the facets as well as a calculation mode, the syntax is: \emph{usepalette = \{palette,mode\}}, where \emph{palette} designates a table of colors which are themselves tables of the form \emph{\{r,g,b\}} where r, g and b are numbers between $0$ and $1$, and \emph{mode} which is a string which can be either \emph{"x"}, or \emph{"y"}, or \emph{"z"}. In the first case for example, the facets at the center of gravity of minimum abscissa have the first color of the palette, the facets at the center of gravity of maximum abscissa have the last color of the palette, for the others, the color is calculated according to the abscissa of the center of gravity by linear interpolation.     \item \opt{opacity=1}: Number between 0 and 1 to define the opacity of the facets (1 means no transparency).
+    \item \opt{backcull=false}: Boolean indicating whether invisible facets should be excluded from the scene. By default, they are present.
+    \item \opt{clip=false}: Boolean indicating whether the facets should be clipped by the 3D window.
+    \item \opt{contrast=1}: Numerical value to increase or decrease the color contrast between the facets. With a value of 0, all facets have the same color.
+    \item \opt{twoside=true}: Boolean indicating whether the inner and outer sides of the facets are distinguished. The color of the inner side is slightly lighter than that of the outer side.
+
+    \item \opt{edge=false}: Boolean indicating whether edges should be added to the scene.
+    \item \opt{edgecolor=}: Indicates the color of the edges when they are drawn; this is the current color by default.
+    \item \opt{edgewidth=}: Indicates the line thickness (in tenths of a point) of the edges; this is the current thickness by default.
+    \item \opt{hidden=Hiddenlines}: Boolean indicating whether hidden edges should be drawn. \emph{Hiddenlines} is a global variable that defaults to false.
+    \item \opt{hiddenstyle=Hiddenlinestyle}: String defining the line style of the hidden edges. \emph{Hiddenlinestyle} is a global variable that defaults to "dotted."     \item \opt{matrix=ID3d}: 3D facet transformation matrix, by default this is the 3D identity matrix, i.e. the table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+
+\subsubsection{Adding a plane: g:addPlane and g:addPlaneEq}
+
+The \textbf{g:addPlane(P,options)} method adds the plane $P$ to the 3D scene. This plane is defined as a table \{A,u\} where $A$ is a point on the plane (a 3D point) and $u$ is a normal vector to the plane (a non-zero 3D point). This function determines the intersection between this plane and the parallelepiped given by the \emph{window3d} argument (itself defined when the graph is created), which results in a facet, which is added to the scene. This method uses \textbf{g:addFacet}.
+
+The method \textbf{g:addPlaneEq(coef,options)}, where \emph{coef} is a table consisting of four real numbers \{a,b,c,d\}, allows you to add the plane with the equation $ax+by+cz+d=0$ to the scene (this method uses the previous one).
+
+In both cases, the optional argument \emph{options} is a table with 12 fields. These options are those of the \textbf{g:addFacet} method, plus the option \opt{scale=1}: this number is a homothety ratio. The homothety ratio is applied to the facet with the center of gravity of the facet and the ratio \emph{scale}. This allows you to adjust the size of the plane in its representation.
+
+\subsubsection{Add a polygonal line: g:addPolyline}
+
+The method \textbf{g:addPolyline(L,options)}, where $L$ is a list of 3D points, or a list of lists of 3D points, adds $L$ to the scene. The optional argument \emph{options} is a 10-field table. These options (with their default values) are:
+\begin{itemize}
+    \item \opt{style="solid"}: to set the line style; this is the current style by default.
+    \item \opt{color=}: line color; this is the current color by default.
+    \item \opt{close=false}: indicates whether the line $L$ (or each component of $L$) should be closed.     \item \opt{clip=false}: Indicates whether the line $L$ (or each component of $L$) should be clipped by the 3D window.
+    \item \opt{width=}: Line thickness in tenths of a point; this is the current thickness by default.
+    \item \opt{opacity=1}: Opacity of the line drawing (1 means no transparency).
+    \item \opt{hidden=Hiddenlines}: Boolean indicating whether the hidden parts of the line should be represented. \emph{Hiddenlines} is a global variable that defaults to false.
+    \item \opt{hiddenstyle=Hiddenlinestyle}: String defining the line style of the hidden parts. \emph{Hiddenlinestyle} is a global variable that defaults to "dotted."     \item \opt{arrows=0}: This option can be 0 (no arrow added to the line), 1 (an arrow added at the end of the line), or 2 (an arrow at the beginning and end of the line). The arrows are small cones.
+    \item \opt{arrowscale=1}: Allows you to reduce or increase the size of the arrows.
+    \item \opt{matrix=ID3d}: 3D transformation matrix (of the line). By default, this is the 3D identity matrix, i.e., the table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+\subsubsection{Add Axes: g:addAxes}
+
+The \textbf{g:addAxes(O,options)} method adds the axes ($O$,\emph{vecI}), ($O$,\emph{vecJ}), and ($O$,\emph{vecK}) to the 3D scene, where the argument $O$ is a 3D point. The options are those of the \textbf{g:addPolyline} method, plus the \opt{legend=true} option, which automatically adds the name of each axis ($x$, $y$, and $z$) to the endpoint. These axes are not graduated.
+
+    
+\subsubsection{Add a line: g:addLine}
+
+The \textbf{g:addLine(d,options)} method adds the line $d$ to the scene. This line $d$ is a table of the form \{A,u\} where $A$ is a point on the line (3D point) and $u$ is a direction vector (non-zero 3D point). The optional argument \emph{options} is a 10-field table. These options are those of the \textbf{g:addPolyline} method, plus the \opt{scale=1} option: this number is a homothety ratio. The homothety ratio is applied to the facet, with the center being the midpoint of the segment representing the line, and the ratio \emph{scale}. This allows you to adjust the size of the segment in its representation. This segment is the line clipped by the polyhedron given by the \emph{window3d} argument (itself defined when the graph is created), which results in a segment (possibly empty).
+
+\subsubsection{Adding a "right" angle: g:addAngle}
+
+The \textbf{g:addAngle(B,A,C,r,options)} method allows you to add the angle $\widehat{BAC}$ in the form of a parallelogram with side $r$ ($r$ is 0.25 by default). Only two sides are represented. The arguments $B$, $A$, and $C$ are 3D points. The options are those of the \textbf{g:addPolyline} method.
+
+\subsubsection{Add a circular arc: g:addArc}
+
+The \textbf{g:addArc(B,A,C,r,direction,normal,options)} method adds the arc of a circle centered at $A$ (3D point), with radius $r$, extending from $B$ to $C$ (3D points) in the direct direction if \emph{direction} is 1 (indirect otherwise). The arc is drawn in the plane passing through $A$ and orthogonal to the \emph{normal} vector (non-zero 3D point); this same vector orients the plane. The options are those of the \textbf{g:addPolyline} method.
+
+\subsubsection{Add a circle: g:addCircle}
+
+The \textbf{g:addCircle(A,r,normal,options)} method adds the circle with center $A$ (3D point) and radius $r$ in the plane passing through $A$ and orthogonal to the \emph{normal} vector (non-zero 3D point). The options are those of the \textbf{g:addPolyline} method.
+
+\begin{demo}{Solid cylinder immersed in water}
+\begin{luadraw}{name=cylindres_imbriques}
+local g = graph3d:new{window={-5,5,-6,5}, viewdir={30,75},size={10,10},margin={0,0,0,0}}
+Hiddenlines = false
+local R, r, A, B = 3, 1.5
+local C1 = cylinder(M(0,0,-5),5*vecK,R)  -- to model water
+local C2 = cylinder(Origin,2*vecK,R,35,true) -- part of the container above the water (open cylinder)
+local C3 = cylinder(M(0,0,-3),7*vecK,r) -- small cylinder immersed in water
+-- sous la scène 3d
+g:Lineoptions(nil,"gray",12)
+g:Dcylinder(M(0,0,-5),7*vecK,R,{hiddenstyle="noline"}) -- container outline (large cylinder)
+-- scène 3d
+g:Dscene3d(
+        g:addPoly(C1,{contrast=0.125,color="cyan",opacity=0.5}), 
+        g:addPoly(C2,{contrast=0.125,color="WhiteSmoke", opacity=0.5}), 
+        g:addPoly(C3,{contrast=0.25,color="Salmon",backcull=true}), 
+        g:addCircle(M(0,0,2),R,vecK,{color="gray"}), -- upper edge of the container
+        g:addCircle(M(0,0,-5),R,vecK,{color="gray"}), -- lower edge of the container
+        g:addCircle(Origin,R-0.025,vecK, {width=2,color="cyan"}) -- upper edge water
+        )
+-- over the 3d scene
+g:Lineoptions(nil,"black",8); A = 4*vecK; B = A+r*g:ScreenX()
+g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$3\\,$cm",(A+B)/2,{pos="N",dist=0.25})
+A = Origin+(r+1)*g:ScreenX(); B = A-3*vecK
+g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("h",(A+B)/2,{pos="E"})
+g:Lineoptions("dashed")
+g:Dpolyline3d({{A,A-g:ScreenX()},{B,B-g:ScreenX()}})
+A = Origin-(R+1)*g:ScreenX(); B = A-vecK
+g:Dpolyline3d({{A,A+g:ScreenX()},{B,B+g:ScreenX()}})
+g:Linestyle("solid")
+g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$2$\\,cm",(A+B)/2,{pos="W"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Notes}:
+\begin{itemize}
+    \item The \textbf{g:ScreenX()} method returns the space vector (3D point) corresponding to the vector with affix 1 in the screen plane, and the \textbf{g:ScreenY()} method returns the space vector (3D point) corresponding to the vector with affix i in the screen plane.
+    \item For the small cylinder (C3), we use the \opt{backcull=true} option to reduce the number of facets; however, we do not do this for the other two cylinders (C1 and C2) because they are transparent.
+\end{itemize}
+
+\subsubsection{Adding points: g:addDots}
+
+The \textbf{g:addDots(dots,options)} method allows you to add 3D points to the scene. The argument \emph{dots} is either a 3D point or a list of 3D points. The optional argument \opt{options} is a four-field table. These options are:
+\begin{itemize}
+    \item \opt{style="ball"}: String defining the dot style. These are all 2D point styles, plus the "ball" (sphere) style, which is the default.
+    \item \opt{color="black"}: String defining the dot color.
+    \item \opt{scale=1}: Number allowing you to adjust the size of the points.
+    \item \opt{matrix=ID3d}: 3D transformation matrix. By default, this is the 3D identity matrix, i.e., the table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+\subsubsection{Adding Labels: g:addLabels}
+
+The \textbf{g:addLabel(text1, anchor1, options1, text2, anchor2, options2, ...)} method allows you to add the labels \emph{text1}, \emph{text2}, etc. The (required) arguments \emph{anchor1}, \emph{anchor2}, etc., are 3D points representing the anchor points of the labels. The (required) arguments \emph{options1}, \emph{options2}, etc., are 7-field tables. These options are:
+\begin{itemize}
+    \item \opt{color}: String defining the label color, initialized to the current label color.     \item \opt{style}: String defining the label style (as in 2D: "N", "NW", "W", ...), initialized to the current label style.
+    \item \opt{dist=0}: Expresses the distance between the label and its anchor point (in the screen plane).
+    \item \opt{size}: String defining the label size, initialized to the current label size.
+    \item \opt{dir=\{\}}: Table defining the writing direction in space (usual direction by default).
+In general, \emph{dir=\{dirX,dirY,dep\}}, and the three values ​​\emph{dirX}, \emph{dirY}, and \emph{dep} are three 3D points representing three vectors: the first two indicate the writing direction, the third a displacement (translation) of the label relative to the anchor point.
+    \item \opt{showdot=false}: Boolean indicating whether a (2D) point should be drawn at the anchor point.
+    \item \opt{matrix=ID3d}: 3D transformation matrix; by default, this is the 3D identity matrix, i.e., the table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+\begin{demo}{Construction of an icosahedron}
+\begin{luadraw}{name=icosaedre}
+local g = graph3d:new{window={-2.25,2.25,-2,2}, viewdir={40,60},bg="gray",size={10,10},margin={0,0,0,0}}
+Hiddenlines = false
+local phi = (1+math.sqrt(5))/2 -- nombre d'or
+local A1, B1, C1, D1 = M(phi,-1,0), M(phi,1,0), M(-phi,1,0), M(-phi,-1,0) -- in the plane z=0
+local A2, B2, C2, D2 = M(0,phi,1), M(0,phi,-1), M(0,-phi,-1), M(0,-phi,1) -- in the plane x=0
+local A3, B3, C3, D3 = M(1,0,phi), M(-1,0,phi), M(-1,0,-phi), M(1,0,-phi) -- in the plane y=0
+local ico = {   {A1,B1,A3}, {B1,A1,D3}, {D1,C1,C3}, {C1,D1,B3},
+                {B2,A2,B1}, {A2,B2,C1}, {D2,C2,A1}, {C2,D2,D1},
+                {B3,A3,A2}, {A3,B3,D2}, {D3,C3,B2}, {C3,D3,C2},
+                {A1,A3,D2}, {B1,A2,A3}, {A2,C1,B3}, {D1,D2,B3},
+                {B2,B1,D3}, {A1,C2,D3}, {B2,C3,C1}, {C2,D1,C3}  }
+g:Dscene3d(
+    g:addFacet({A2,B2,C2,D2},{color="Navy",twoside=false,opacity=0.8}),
+    g:addFacet({A1,B1,C1,D1},{color="Crimson",twoside=false,opacity=0.8}),
+    g:addFacet({A3,B3,C3,D3},{color="Chocolate",twoside=false,opacity=0.8}),
+    g:addPolyline(facetedges(ico), {color="Gold",width=12}), -- drawing edges only
+    g:addDots({A1,B1,C1,D1,A2,B2,C2,D2,A3,B3,C3,D3}, {color="black",scale=1.2}),
+    g:addLabel("A1",A1,{style="W",dist=0.1}, "B1",B1,{style="S"}, "C2",C2,{}, "C3",C3,{}, "A3",A3,{style="N"}, "D1",D1,{},  "A2",A2,{},  "D2",D2,{}, "B3",B3,{style="E"}, "C1",C1,{}, "B2",B2,{}, "D3",D3,{style="W"} )
+)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Adding dividing walls: g:addWall}
+
+Dividing walls are 3D objects that are inserted first into the scene tree. These objects are not drawn (therefore invisible); their role is to partition the space because a facet on one side of a dividing wall cannot be cut by the plane of a facet on the other side of the wall. This allows, in some cases, to significantly reduce the number of facet (or polygonal line) cuts during scene construction. A dividing wall can be an entire plane (i.e., a table of two 3D points of the form \{A,n\}, i.e., a point and a normal vector), or just a facet.
+
+The syntax is: \textbf{g:addWall(C,options)} where $C$ is either a plane, a list of planes, a facet, or a list of facets. The \emph{options} argument is a table. The only available option is
+\begin{itemize}
+    \item \opt{matrix=ID3d}: 3D transformation matrix. By default, this is the 3D identity matrix, i.e., the table \{M(0,0,0),vecI,vecJ,vecK\}.
+\end{itemize}
+
+In the following example, the two dividing walls have been drawn for visualization, but they are normally invisible:
+\begin{demo}{Example with addWall (the two transparent pink facets are normally invisible)}
+\begin{luadraw}{name=addWall}
+local g = graph3d:new{size={10,10},window={-8,8,-4,8}, margin={0,0,0,0}}
+local C = cylinder(M(0,0,-1),5*vecK,2)
+g:Dscene3d(
+    g:addWall( {{Origin,vecI}, {Origin,vecJ}}),
+    g:addPlane({Origin,vecI}, {color="Pink",opacity=0.3,scale=1.125,edge=true}), -- to show the first wall
+    g:addPlane({Origin,vecJ}, {color="Pink",opacity=0.3,scale=1.125,edge=true}), -- to show the second wall
+    g:addPoly( shift3d(C,M(-3,-3,1)), {color="Cyan"} ),
+    g:addPoly( shift3d(C,M(-3,3,0.5)), {color="ForestGreen"} ),
+    g:addPoly( shift3d(C,M(3,-3,-0.5)), {color="Crimson"} )
+)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Notes on this example}:
+\begin{itemize}
+    \item with the two dividing walls, there are no cut facets, and the scene contains exactly 111 (37 per cylinder).
+    \item without the dividing walls, there are 117 (useless) facet cuts, bringing their number to 228 in the scene.
+    \item with the two dividing walls, and the \opt{backcull=true} option for each cylinder, there are no cut facets, and the scene contains only 57.
+\end{itemize}
+
+Here is another, much more convincing example where the use of dividing walls is essential to have a drawing of reasonable size. It involves obtaining a lemniscate as the intersection of a torus with a certain plane. Since the torus is non-convex, the number of unnecessary facet cuts can be very high.
+
+\begin{demo}{Torus and lemniscate}
+\begin{luadraw}{name=torus}
+local g = graph3d:new{size={10,10}, margin={0,0,0,0}}
+local cos, sin, pi = math.cos, math.sin, math.pi
+local R, r = 2.5, 1
+local x0 = R-r
+local f = function(t) return M(0,R+r*cos(t),r*sin(t)) end
+local plan = {M(x0,0,0),-vecI} -- plane whose section with the torus gives the lemniscate
+local C, wall = rotcurve(f,-pi,pi,{Origin,vecK},360,0,{grid={25,37},addwall=2})
+local C1 = cutfacet(C,plan)  -- part of the torus in the half-space containing -vecI
+g:Dscene3d(
+    g:addWall(plan), g:addWall(wall), -- addition of partition walls
+    g:addFacet( C1, {color="Crimson", backcull=false}),
+    g:addPlane(plan, {color="Pink",opacity=0.4,edge=true}), -- sectional plan
+    g:addAxes( Origin, {arrows=1})
+)
+-- Cartesian equation of the torus : (x^2+y^2+z^2+R^2-r^2)^2-4*R^2*(x^2+y^2) = 0
+-- the lemniscate therefore has the equation (x0^2+y^2+z^2+R^2-r^2)^2-4*R^2*(x0^2+y^2)=0 (implicit curve)
+local h = function(y,z) return (x0^2+y^2+z^2+R^2-r^2)^2-4*R^2*(x0^2+y^2) end
+local I = implicit(h,-4,4,-3,3,{50,50}) -- 2d polygonal line (list of lists of complex numbers)
+local lemniscate = map(function(z) return M(x0,z.re,z.im) end, I[1]) -- conversion to 3d coordinates
+g:Dpolyline3d(lemniscate,"Navy,line width=1.2pt")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Notes on this example}:
+\begin{itemize}
+    \item With the dividing walls, we have 30 facets that are cut and a tkz file of approximately 140 KB.
+    \item Without the dividing walls, we have 2068 facet cuts (!) and a tkz file of approximately 550 KB.
+    \item We could have used the cut section returned by the \emph{cutfacet} function, but the result is not very satisfactory (this is because the torus is non-convex). 
+    \item If we hadn't wanted the axes passing through the torus and the cutting plane, we could have drawn the drawing with the \textbf{g:Dfacet} method, replacing the \emph{g:Dscene3d(...)} instruction with:
+\begin{Luacode}
+g:Dfacet(C1, {mode=mShadedOnly,color="Crimson"} )
+g:Dfacet( g:Plane2facet(plan,0.75), {color="Pink",opacity=0.4})
+\end{Luacode}
+We get exactly the same thing but without the axes (and without facet cutting, of course).
+\end{itemize}
+
+\paragraph{To conclude this section}: we use the \textbf{g:Dscene3d()} method when it is not possible to do otherwise, for example when there are intersections (few) that cannot be handled "by hand". But this isn't the case for all intersections! In the following example, we represent a section of a sphere using a plane, but without using the \textbf{g:Dscene3d()} method, as this would require drawing a faceted sphere, which isn't very attractive. The trick here is to draw the sphere using the \textbf{g:Dsphere()} method, then draw a previously perforated facet over the plane, the hole corresponding to the outline (3D path) of the part of the sphere located above the plane:
+
+\begin{demo}{Section of a sphere without Dscene3d()}
+\begin{luadraw}{name=section_sphere}
+local g = graph3d:new{ window3d={-4,4,-4,4,-4,4}, window={-5.5,5.5,-4,5}, viewdir={30,75}, size={10,10}}
+local O, R = Origin, 2.5 -- center and radius
+local S, P = sphere(O,R), {M(0,0,1.5),vecK+vecJ/2} -- the sphere and the section plane
+local w, n = pt3d.normalize(P[2]), g.Normal -- unit vectors normal to P for w and to the screen for n
+local I, r = interPS(P,{O,R}) -- center and radius of the small circle (intersection between the plane and the sphere)
+local C = g:Intersection3d(S,P) -- It is a list of edges
+local N = I-O
+local J = I+r*pt3d.normalize(vecJ-vecK/2) -- a point on the small circle
+local a = R/pt3d.abs(N)
+local A, B = O+a*N, O-a*N -- points of intersection of the axis (O,I) with the sphere
+local c1, alpha = Orange, 0.4
+local coul = {c1[1]*alpha, c1[2]*alpha,c1[3]*alpha} -- to simulate transparency
+g:Dhline( g:Proj3d({B,-N})) -- half-line (point B is not visible)
+g:Dsphere(O,R,{mode=mBorder,color="orange"})
+g:Dline3d(A,B,"dotted") -- dotted line (A,B)
+g:Dedges(C, {hidden=true,hiddenstyle="dashed"}) -- drawing of the intersection
+g:Dpolyline3d({I,J,O},"dashed") 
+g:Dangle3d(O,I,J)  -- right angle
+g:Dcrossdots3d({{B,N},{I,N},{O,N}},rgb(coul),0.75) -- points in the sphere
+g:Dlabel3d("$O$", O, {pos="NW"})
+local L = C.visible[1] -- visible part of the intersection (arc of a circle)
+A1 = L[1]; A2 = L[#L] -- ends of L
+local F = g:Plane2facet(P) -- plan converted to facet
+-- hole plane as 3d path, the hole is the outline of the part of the sphere above the plane
+insert(F,{"l","cl",A1,"m",I,A2,r,-1,w,"ca",Origin,A1,R,-1,n,"ca"})
+g:Dpath3d( F,"fill=Beige,fill opacity=0.6") -- drawing of the perforated plan
+g:Dhline( g:Proj3d({A,N})) -- half-line, upper part of the axis (AB)
+g:Dcrossdots3d({A,N},"black",0.75); g:Dballdots3d(J,"black",0.75)
+g:Dlabel3d("$A$", A, {pos="NW"}, "$I$", I, {}, "$B$", B, {pos="E"}, "$J$", J, {pos="S"})
+g:Show()            
+\end{luadraw}
+\end{demo}

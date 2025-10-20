@@ -1,0 +1,461 @@
+\section{Extensions}
+
+\subsection{Le module \emph{luadraw\_polyhedrons}}
+
+Ce module est encore à l'état d'ébauche et est appelé à s'étoffer par la suite. Comme son nom l'indique, il contient la définition de polyèdres. Toutes les données numériques sont issues du site \href{https://dmccooey.com/polyhedra/}{Visual Polyhedra}.
+
+Toutes les fonctions sont sur le même modèle : \textbf{<nom>(C,S,all)} où $C$ est le centre du polyèdre (point 3d) et $S$ un sommet du polyèdre (point 3d), lorsque $C$ ou $S$ ont la valeur \emph{nil}, c'est le polyèdre non transformé (de centre l'origine) qui est renvoyé . L'argument facultatif \emph{all} est un booléen, lorsqu'il a la valeur \emph{true} la fonction renvoie quatre choses : \emph{P, V, E, F} où :
+    \begin{itemize}
+        \item $P$ est le solide en tant que polyèdre,
+        \item $V$ la liste (table) des sommets,
+        \item $E$ la liste (table) des arêtes (avec points 3d),
+        \item $F$ la liste des facettes (avec points 3d). Certains polyèdres ont plusieurs types de facettes, dans ce cas la résultat renvoyé est de la forme : \emph{P, V, E, F1, F2, ...}, où $F1$, $F2$ ..., sont des listes de facettes.Cela peut permettre de sles dessiner avec des couleurs différentes par exemple.
+        \end{itemize}
+L'argument \emph{all} la valeur \emph{false},qui est la valeur par défaut, la fonction ne renvoie que le polyèdre.
+
+Voici les solides actuellement contenus dans ce module :
+
+\begin{itemize}
+    \item Les solides de Platon, ces solides n'ont qu'un type des faces :
+        \begin{itemize}
+            \item  la fonction \textbf{tetrahedron(C,S,all)} permet la construction d'un tétraèdre régulier de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d).
+            \item La fonction \textbf{octahedron(C,S,all)} permet la construction d'un octaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d).
+            \item La fonction \textbf{cube(C,S,all)} permet la construction d'un cube de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d).
+            \item La fonction \textbf{icosahedron(C,S,all)} permet la construction d'un icosaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d).
+            \item La fonction \textbf{dodecahedron(C,S,all)} permet la construction d'un dodécaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d).
+        \end{itemize}
+
+    \item Les solides d'Archimède :
+        \begin{itemize}
+            \item La fonction \textbf{cuboctahedron(C,S,all)} permet la construction d'un cuboctaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{icosidodecahedron(C,S,all)} permet la construction d'un icosidodécaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{lsnubcube(C,S,all)} permet la construction d'un cube adouci (forme 1) de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{lsnubdodecahedron(C,S,all)} permet la construction d'un dodécaèdre adouci (forme 1) de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{rhombicosidodecahedron(C,S,all)} permet la construction d'un rhombicosidodécaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a trois types de faces.
+            \item La fonction \textbf{rhombicuboctahedron(C,S,all)} permet la construction d'un rhombicuboctaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{rsnubcube(C,S,all)} permet la construction d'un cube adouci (forme 2) de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{rsnubdodecahedron(C,S,all)} permet la construction d'un dodécaèdre adouci (forme 2) de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{truncatedcube(C,S,all)} permet la construction d'un cube tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{truncatedcuboctahedron(C,S,all)} permet la construction d'un cuboctaèdre tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a trois types de faces.
+            \item La fonction \textbf{truncateddodecahedron(C,S,all)} permet la construction d'un dodécaèdre tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+            \item La fonction \textbf{truncatedicosahedron(C,S,all)} permet la construction d'un icosaèdre tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+             \item La fonction \textbf{truncatedicosidodecahedron(C,S,all)} permet la construction d'un icosidodécaèdre tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux trois de faces.
+            \item La fonction \textbf{truncatedoctahedron(C,S,all)} permet la construction d'un octaèdre tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.             
+            \item La fonction \textbf{truncatedtetrahedron(C,S,all)} permet la construction d'un tétraèdre tronqué de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+        \end{itemize}
+
+    \item Autres solides :
+    \begin{itemize}
+        \item La fonction \textbf{octahemioctahedron(C,S,all)} permet la construction d'un octahémioctaèdre de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a deux types de faces.
+        \item La fonction \textbf{small\_stellated\_dodecahedron(C,S,all)} permet la construction d'un petit dodécaèdre étoilé de centre $C$ (point 3d) et dont un sommet est $S$ (point 3d). Ce solide a un seul type de faces.
+    \end{itemize}
+\end{itemize}
+
+\begin{demo}{Polyèdres du module \emph{luadraw\_polyhedrons}}
+\begin{luadraw}{name=polyhedrons}
+local i = cpx.I
+require 'luadraw_polyhedrons' -- chargement du module
+local g = graph3d:new{bg="LightGray", size={10,10}}
+g:Labelsize("small"); Hiddenlines = false
+-- en haut à gauche 
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F = icosahedron(Origin,M(0,2,4.5),true) 
+g:Dscene3d(
+    g:addFacet(F, {color="Crimson",opacity=0.8}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Icosaèdre",5*i,{})
+g:Restoreattr()
+-- en haut à droite
+g:Saveattr()
+g:Viewport(0,5,0,5); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1,F2 = truncatedtetrahedron(Origin,M(0,0,5),true) -- sortie complète, affichage dans une scène 3d
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addFacet(F2, {color="Gold"}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Tétraèdre tronqué",5*i,{})
+g:Restoreattr()
+-- en bas à gauche
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1,F2,F3 = rhombicosidodecahedron(Origin,M(0,0,4.5),true)
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addFacet(F2, {color="Gold",opacity=0.8}), g:addFacet(F3, {color="ForestGreen"}),
+    g:addPolyline(A, {color="Pink", width=8}), g:addDots(S) )
+g:Dlabel("Rhombicosidodécaèdre",-5*i,{})
+g:Restoreattr()
+-- en bas à droite
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1 = small_stellated_dodecahedron(Origin,M(0,0,5),true)
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Petit dodécaèdre étoilé",-5*i,{})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+
+\end{demo}
+
+\subsection{Le module \emph{luadraw\_spherical}}
+
+Ce module permet de dessiner un certain nombre d'objets sur une sphère (comme par exemple des cercles, des triangles sphériques,...) sans avoir à gérer à la main les parties visibles ou non visibles. Le dessin se fait en trois temps:
+\begin{enumerate}
+    \item On définit les caractéristiques de la sphère (centre, rayon, couleur,...)
+    \item On définit les objets à ajouter dans la scène, grâce à des méthodes dédiées.
+    \item On affiche le tout avec la méthode \textbf{g:Dspherical()}.
+\end{enumerate}
+Bien sûr, toutes les méthodes de dessin 2d et 3d restent utilisables.
+
+\subsubsection{Variables et fonctions globales du module}
+
+\begin{itemize}
+    \item Variables avec leur valeur par défaut:
+        \begin{itemize}
+            \item \textbf{Insidelabelcolor} = "DarkGray": définit la couleur des labels dont le point d'ancrage est intérieur à la sphère.
+            \item \textbf{arrowBstyle} = "->" : type de flèche en fin de ligne
+            \item \textbf{arrowAstyle} = "<-" : type de flèche en début de ligne
+            \item \textbf{arrowABstyle} = "<->": très peu utilisée car la plupart du temps les lignes tracées sur la sphère doivent être découpées.
+        \end{itemize}
+    \item Fonctions :
+        \begin{itemize}
+            \item \textbf{sM(x,y,z)}: renvoie un point de la sphère, c'est le point $I$ de la sphère tel que la demi-droite $[O,I)$ ($O$ étant le centre de la sphère) passe par le point $A$ de coordonnées cartésiennes $(x,y,z)$. Les nombres $x$, $y$ et $z$ ne doivent pas être nuls simultanément.
+            \item \textbf{sM(theta,phi)}: où \emph{theta} et \emph{phi} sont des angles en degrés, renvoie un point de la sphère donc les coordonnées sphériques sont \emph{(R,theta,phi)} où $R$ est le rayon de la sphère.
+            \item \textbf{toSphere(A)}: renvoie le même point de la sphère que \emph{Ms(A.x,A.y,A.z)}.
+            \item \textbf{clear\_spherical()}: supprime les objets qui ont été ajoutés à la scène, et remet les valeurs par défaut.
+        \end{itemize}
+\end{itemize}
+
+Si la variable globale \textbf{Hiddenlines} a la valeur \emph{true}, alors les parties cachées seront dessinées dans le style défini par la variable globale \textbf{Hiddenlinestyle}, cependant on peut modifier ce comportement l'option locale \emph{hidden=true/false} .
+
+\subsubsection{Définition de la sphère}
+Par défaut, la sphère est centrée à l'origine, de rayon $3$ et de couleur orange, mais ceci peut être modifié avec la méthode \textbf{g:Define\_sphere( options )} où \emph{options} est une table permettant d'ajuster chaque paramètres. Ceux-ci sont les suivants (avec leur valeur par défaut entre parenthèses):
+\begin{itemize}
+    \item \opt{center =} (Origin),
+    \item \opt{radius =} (3),
+    \item \opt{color =} ("Orange"),
+    \item \opt{opacity =} (1),
+    \item \opt{mode =} (\emph{mBorder}), mode d'affichage de la sphère (\emph{mWireframe} ou \emph{mGrid} ou \emph{mBorder}, voir \textbf{Dsphere}),
+    \item \opt{edgecolor =} ("LightGray"),
+    \item \opt{edgestyle =} ("solid"),
+    \item \opt{hiddenstyle =} (Hiddenlinestyle),
+    \item \opt{hiddencolor =} ("gray"),
+    \item \opt{edgewidth =} (4),
+    \item \opt{show =} (true), pour montrer ou non la sphère.
+\end{itemize}
+
+\subsubsection{Ajouter un cercle : g:DScircle}
+
+La méthode \textbf{g:DScircle(P,options)} permet d'ajouter un cercle sur la sphère, l'argument \emph{P} est une table de la forme $\{A,n\}$ qui représente un plan (passant par $A$ et normal à $n$, deux points 3d). Le cercle est alors défini comme l'intersection de ce plan avec la sphère. L'argument \emph{options} est une table à 5 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{out =} (nil), si on affecte une variable de type liste à ce paramètre \emph{out}, alors la fonction ajoute à cette liste les deux points correspondant aux extrémités de l'arc caché, s'il y en a un, ce qi permet de les récupérer sans avoir à les calculer.
+    \end{itemize}
+    
+\subsubsection{Ajouter un grand cercle : g:DSbigcircle}
+
+La méthode \textbf{g:DSbigcircle(AB,options)} permet d'ajouter un grand cercle sur la sphère, l'argument \emph{AB} est une table de la forme $\{A,B\}$ où $A$ et $B$ sont deux points distincts de la sphère. Le grand cercle est alors le cercle de centre le centre de la sphère, et passant par $A$ et $B$. L'argument \emph{options} est une table à 5 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{out =} (nil), si on affecte une variable de type table à ce paramètre \emph{out}, alors la fonction ajoute à cette liste les deux points correspondant aux extrémités de l'arc caché, s'il y en a un, ce qi permet de les récupérer sans avoir à les calculer.
+    \end{itemize}
+
+\subsubsection{Ajouter un arc de grand cercle : g:DSarc}
+
+La méthode \textbf{g:DSarc(AB,sens,options)} permet d'ajouter un arc de grand cercle sur la sphère, l'argument \emph{AB} est une table de la forme $\{A,B\}$ où $A$ et $B$ sont deux points distincts de la sphère, on trace alors l'arc de grand cercle allant de $A$ vers $B$. L'argument \emph{sens} vaut 1 ou -1 pour indiquer le sens de l'arc. Lorsque $A$ et $B$ ne sont pas diamétralement opposés, le plan $OAB$ (où $O$ est le centre de la sphère) est orienté avec $\vec{OA}\wedge\vec{OB}$.  L'argument \emph{options} est une table à 6 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{arrows =} (0), trois valeurs possibles : 0 (pas de flèche), 1 (une flèche en $B$), 2 (flèche en $A$ et en $B$).
+        \item \opt{normal =} (nil), permet de préciser un vecteur normal au plan $OAB$ lorsque ces trois points sont alignés.
+    \end{itemize}
+
+\subsubsection{Ajouter un angle : g:DSangle}
+
+La méthode \textbf{g:DSangle(B,A,C,r,sens,options)} où $A$, $B$ et $C$ sont trois points de la sphère, permet de dessiner un arc de grand cercle sur la sphère pour représenter l'angle $(\vec{AB},\vec{AC})$ avec un rayon de \emph{r}. L'argument \emph{sens} vaut 1 ou -1 pour indiquer le sens de l'arc, le plan $ABC$ est orienté avec $\vec{AB}\wedge\vec{AC}$.  L'argument \emph{options} est une table à 6 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{arrows =} (0), trois valeurs possibles : 0 (pas de flèche), 1 (une flèche en $B$), 2 (flèche en $A$ et en $B$).
+        \item \opt{normal =} (nil), permet de préciser un vecteur normal au plan $ABC$ lorsque ces trois points sont "alignés" sur un même grand cercle.
+    \end{itemize}
+    
+\subsubsection{Ajouter une facette sphérique : g:DSfacet}
+
+La méthode \textbf{g:DSfacet(F,options)} où \emph{F} est une liste de points de la sphère, permet de dessiner la facette représentée par $F$, les arêtes étant des arcs de grands cercles. L'argument \emph{options} est une table à 6 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{fill =} (""), chaîne représentant la couleur de remplissage (aucune par défaut),
+        \item \opt{fillopacity =} (0.3), opacité de la couleur de remplissage.
+    \end{itemize}
+    
+\subsubsection{Ajouter une courbe sphérique : g:DScurve}
+
+La méthode \textbf{g:DScurve(L,options)} où \emph{L} est une liste de points de la sphère, permet de dessiner la courbe représentée par $L$. L'argument \emph{options} est une table à 6 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{out =} (nil), si on affecte une variable de type table à ce paramètre \emph{out}, alors la fonction ajoute à cette liste les points correspondant aux extrémités des parties cachées.
+    \end{itemize}
+    
+Nous allons maintenant traiter d'objets qui ne sont pas forcément sur la sphère, mais qui peuvent la traverser, ou être à l'intérieur, ou à l'extérieur.
+
+\subsubsection{ Ajouter un segment : g:DSseg}
+
+La méthode \textbf{g:DSseg(AB,options)} permet d'ajouter un segment, l'argument \emph{AB} est une table de la forme $\{A,B\}$ où $A$ et $B$ sont deux points de l'espace. La fonction traite les interactions avec la sphère. L'argument \emph{options} est une table à 5 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{arrows =} (0), trois valeurs possibles : 0 (pas de flèche), 1 (une flèche en $B$), 2 (flèche en $A$ et en $B$).
+    \end{itemize}
+    
+\subsubsection{Ajouter une droite : g:DSline}
+
+La méthode \textbf{g:DSline(d,options)} permet d'ajouter une droite, l'argument \emph{d} est une table de la forme $\{A,u\}$ où $A$ et un point de la droite et $u$ un vecteur directeur (deux points 3d). La fonction traite les interactions avec la sphère.  Le segment tracé est obtenu en intersectant la droite avec la fenêtre 3d, il peut être vide si la fenêtre est trop étroite. L'argument \emph{options} est une table à 6 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{arrows =} (0), trois valeurs possibles : 0 (pas de flèche), 1 (une flèche en $B$), 2 (flèche en $A$ et en $B$),
+        \item \opt{scale =} (1), permet de modifier la taille du segment tracé.
+    \end{itemize}
+    
+\subsubsection{ Ajouter une ligne polygonale : g:DSpolyline}
+
+La méthode \textbf{g:DSpolyline(L,options)} permet d'ajouter une ligne polygonale, l'argument \emph{L} est une liste de points de l'espace, ou une liste de listes de points de l'espace. La fonction traite les interactions avec la sphère. L'argument \emph{options} est une table à 6 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{arrows =} (0), trois valeurs possibles : 0 (pas de flèche), 1 (une flèche en $B$), 2 (flèche en $A$ et en $B$),
+        \item \opt{close =} (false), indique si la ligne doit être refermée.
+    \end{itemize}    
+
+\subsubsection{Ajouter un plan : g:DSplane}
+
+La méthode \textbf{g:DSplane(P,options)} permet d'ajouter le contour d'un plan, l'argument \emph{P} est une table de la forme \emph{\{A,n\}} où $A$ est un point du plan et $n$ un vecteur normal. La fonction dessine un parallélogramme représentant le plan $P$ en traitant les interactions avec la sphère. L'argument \emph{options} est une table à 7 champs, qui sont :
+    \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{scale =} (1), permet de changer la taille du parallélogramme,
+        \item \opt{angle =} (0), angle en degrés, permet de faire pivoter le parallélogramme autour de la droite perpendiculaire passant par le centre de la sphère.
+        \item \opt{trace =} (true), permet de dessiner ou non, l'intersection du plan avec la sphère lorsqu'elle n'est pas vide.
+    \end{itemize}    
+
+\subsubsection{Ajouter un label : g:DSlabel}
+
+La méthode \textbf{g:DSlabel(text1,anchor1,options1, text2,anchor2,options2,...)} permet d'ajouter un ou plusieurs labels sur le même principe que la méthode \emph{g:Dlabel3d}, sauf qu'ici la fonction traite les cas où le point d'ancrage est à l'intérieur de la sphère, derrière la sphère ou devant la sphère. Dans le cas où il est à l'intérieur la couleur du label est donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DrakGray"} par défaut.
+
+\subsubsection{Ajouter des points : g:DSdots et g:DSstars}
+
+La méthode \textbf{g:DSdots(dots,options)} permet d'ajouter des points dans la scène, l'argument \emph{dots} est une liste de points 3d. La fonction dessine les points en gérant les interactions avec la sphère. L'argument \emph{options} est une table à 2 champs, qui sont :
+    \begin{itemize}
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{mark\_options =} (""), chaîne qui sera passée directement à l'instruction \emph{\textbackslash draw}.
+    \end{itemize}
+Dans le cas où un point est à l'intérieur de la sphère, ou sur la face cachée, la couleur du point est donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DrakGray"} par défaut.
+
+La méthode \textbf{g:DSstars(dots,options)} permet d'ajouter des points sur la sphère, l'argument \emph{dots} est une liste de points 3d qui seront projetés sur la sphère. La fonction dessine ces points en forme d'astérisque. L'argument \emph{options} est une table à 2 champs, qui sont :
+   \begin{itemize}
+        \item \opt{style =} (style courant de ligne), 
+        \item \opt{color =} (couleur courante des lignes),
+        \item \opt{width =} (épaisseur courante des lignes en dixième de point),
+        \item \opt{opacity =} (opacité courante des lignes),
+        \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
+        \item \opt{scale =} (1), permet de changer la taille du parallélogramme,
+        \item \opt{circled =} (false), permet d'ajouter une cercle autour de l'étoile,
+        \item \opt{fill =} (""), chaîne représentant une couleur, lorsqu'elle n'est pas vide, l'astérisque est remplacée par une facette hexagonale cerclée et remplie avec la couleur précise par cette option.
+    \end{itemize}   
+Les points qui sont sur la face cachée de la sphère ont la couleur donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DrakGray"} par défaut.
+
+\subsubsection{Stéréographie inverse : g:DSinvstereo\_curve et g:DSinvstereo\_polyline}
+
+La méthode \textbf{g:DSinvstereo\_curve(L,options)}, où \emph{L} est une ligne polygonale 3d représentant une courbe tracée sur un plan d'équation $z =$cte, dessine sur la sphère l'image de $L$ par stéréographie inverse, le pôle étant le point \emph{C+r*vecK}, où $C$ est le centre de la sphère et $r$ le rayon.
+
+La méthode \textbf{g:DSinvstereo\_polyline(L,options)}, où \emph{L} est une ligne polygonale 3d tracée sur un plan d'équation $z =$cte, dessine sur la sphère l'image de $L$ par stéréographie inverse, le pôle étant le point \emph{C+r*vecK}, où $C$ est le centre de la sphère et $r$ le rayon.
+
+Dans les deux cas, les \emph{options} sont les mêmes que pour la méthode \textbf{g:DScurve}.
+
+\subsubsection{Exemples}
+
+\begin{demo}{Cube dans une sphère}
+\begin{luadraw}{name=cube_in_sphere}
+local g = graph3d:new{window={-9,9,-4,5},viewdir={25,70},size={16,8}}
+require 'luadraw_spherical'
+arrowBstyle = "-stealth"
+g:Linewidth(6); Hiddenlinestyle = "dashed"
+local a = 4
+local O = Origin
+local cube = parallelep(O,a*vecI,a*vecJ,a*vecK)
+local G = isobar3d(cube.vertices)
+cube = shift3d(cube,-G) -- pour centrer le cube à l'origine
+local R = pt3d.abs(cube.vertices[1])
+
+local dessin = function()
+    g:DSpolyline({{O,5*vecI},{O,5*vecJ},{O,5*vecK}},{arrows=1, width=8}) -- axes
+    g:DSplane({a/2*vecK,vecK},{color="blue",scale=0.9,angle=20}); 
+    g:DScircle({-a/2*vecK,vecK},{color="blue"})
+    g:DSpolyline( facetedges(cube) ); g:DSlabel("$O$",O,{pos="W"})
+    g:Dspherical()
+end
+
+g:Saveattr(); g:Viewport(-9,0,-4,5); g:Coordsystem(-5,5,-5,5)
+Hiddenlines = true; g:Define_sphere({radius=R})
+dessin()
+g:Dlabel3d("$x$",5*vecI,{pos="SW"},"$y$",5*vecJ,{pos="E"},"$z$",5*vecK,{pos="N"})
+g:Dlabel("Hiddenlines=true",0.5-4.5*cpx.I,{})
+g:Restoreattr()
+
+clear_spherical() -- supprime les objets précédemment créés
+
+g:Saveattr(); g:Viewport(0,9,-4,5); g:Coordsystem(-5,5,-5,5)
+Hiddenlines = false; g:Define_sphere({radius=R,opacity=0.7} )
+dessin()
+g:Dlabel3d("$x$",5*vecI,{pos="SW"},"$y$",5*vecJ,{pos="E"},"$z$",5*vecK,{pos="N"})
+g:Dlabel("Hiddenlines=false, opacity=0.7",0.5-4.5*cpx.I,{})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Courbe sphérique}
+
+\begin{demo}{Fenêtre de Viviani}
+\begin{luadraw}{name=courbe_spherique}
+local g = graph3d:new{window={-4.5,4.5,-4.5,4.5},viewdir={30,60},margin={0,0,0,0},size={10,10}}
+require 'luadraw_spherical'
+arrowBstyle = "-stealth"
+g:Linewidth(6); Hiddenlinestyle = "dotted"
+Hiddenlines = false; 
+local C = cylinder(M(1.5,0,-3.5),1.5,M(1.5,0,3.5),35,true)
+local L = parametric3d( function(t) return Ms(3,t-math.pi/2,t) end, -math.pi,math.pi) -- la courbe
+g:DSpolyline(facetedges(C),{color="gray"}) -- affichage cylindre
+g:DSpolyline({{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}},{arrows=1}) --axes
+Hiddenlines=true; g:DScurve(L,{width=12,color="blue"}) -- courbe avec partie cachée
+g:Dspherical()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Pour ne pas nuire à la lisibilité du dessin, les parties cachées n'ont pas été affichées sauf celle de la courbe.
+
+\paragraph{Un pavage sphérique}
+
+\begin{demo}{Un pavage sphérique}
+\begin{luadraw}{name=pavage_spherique}
+local g = graph3d:new{window={-3,3,-3,3},viewdir={30,60},size={10,10}}
+require 'luadraw_spherical'
+require "luadraw_polyhedrons"
+g:Linewidth(6); Hiddenlines = true; Hiddenlinestyle = "dotted"
+local P = poly2facet( octahedron(Origin,sM(30,10)) )
+local colors = {"Crimson","ForestGreen","Gold","SteelBlue","SlateGray","Brown","Orange","Navy"}
+for k,F in ipairs(P) do
+    g:DSfacet(F,{fill=colors[k],style="noline",fillopacity=0.7})  -- facettes sans les bords
+end
+for _, A in ipairs(facetedges(P)) do
+    g:DSarc(A,1,{width=8}) -- chaque arête est un arc de grand cercle
+end
+g:Dspherical()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Pour ce pavage sphérique, on a choisi un octaèdre régulier de centre identique celui de la sphère et avec un sommet sur la sphère (et donc tous les sommets sont sur la sphère).
+
+\paragraph{Tangentes à la sphère issues d'un point}
+
+\begin{demo}{Tangentes à la sphère issues d'un point}
+\begin{luadraw}{name=tangent_to_sphere}
+local g = graph3d:new{window={-4,5.5,-4,4},viewdir={30,60},size={10,10}}
+require 'luadraw_spherical'
+Hiddenlines=true; g:Linewidth(6)
+local O, I = Origin, M(0,6,0)
+local S,S1 = {O, 3}, {(I+O)/2,pt3d.abs(I-O)/2}
+-- the circle of tangency is the intersection between spheres S and S1
+local C,r,n = interSS(S,S1) 
+local L = circle3d(C,r,n)[1] -- list of 3d points on the circle
+local dots, lines = {}, {}
+-- draw
+g:Define_sphere({opacity=1})
+g:DScircle({C,n},{color="red"})
+for k = 1, math.floor(#L/4) do
+    local A = L[4*(k-1)+1]
+    table.insert(dots,A)
+    table.insert(lines,{I, 2*A-I})
+end
+g:DSpolyline(lines ,{color="gray"})
+g:DSstars(dots) -- dessin de points sur la sphère
+g:DSdots({O,I});  -- points dans la scène
+g:DSlabel("$I$",I,{pos="S",node_options="red"},"$O$",O,{})
+g:Dspherical()
+g:Dseg3d({O,dots[1]},"gray,dashed"); g:Dangle3d(O,dots[1],I,0.2,"gray")
+g:Show() 
+\end{luadraw}
+\end{demo}
+
+\paragraph{Stéréographie inverse}
+
+\begin{demo}{Méthodes \emph{DSinvstereo\_curve} et \emph{DSinvstereo\_polyline}}
+\begin{luadraw}{name=stereographic_curve}
+local g = graph3d:new{window3d={-5,5,-2,2,-2,2},window={-4.25,4.25,-2.5,2},size={10,10}, viewdir={40,70}}
+Hiddenlines = true; Hiddenlinestyle="dashed"; g:Linewidth(6)
+require 'luadraw_spherical'
+local C, R = Origin, 1
+local a = -R
+local P = planeEq(0,0,1,-a)
+local L = {M(2,0,a), M(2,2.5,a), M(-1,2,a)}
+local L2 = circle3d(M(2.25,-1,a),0.5,vecK)[1]
+local A, B = (L[2]+L[3])/2, L2[20]
+local a,b = table.unpack( inv_projstereo({A,B},{C,R},C+R*vecK) )
+g:Dplane(P,vecJ,6,6,15,"draw=none,fill=Beige")
+g:Define_sphere( {center=C,radius=R, color="SlateGray!30", show=true} )
+g:DSpolyline(L,{color="blue",close=true}); g:DSinvstereo_polyline(L,{color="red",width=8,close=true})
+g:DSpolyline(L2,{color="Navy"}); g:DSinvstereo_curve(L2,{color="Brown",width=6})
+g:DSplane(P,{scale=1.5})
+g:DSpolyline({{C+R*vecK,A},{C+R*vecK,B}}, {color="ForestGreen",width=8})
+g:DSpolyline({{-vecK,2*vecK}}, {arrows=1})
+g:DSstars({C+R*vecK,a,b}, {scale=0.75})
+g:Dspherical()
+g:Dballdots3d({A,B},"ForestGreen",0.75)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Le module \emph{luadraw\_palettes}}
+
+Le module \emph{luadraw\_palettes}\footnote{Ce module est une contribution de \href{https://github.com/projetmbc/for-writing/tree/main/palcol}{Christphe BAL}.} définit $88$ palettes de couleurs portant chacune un nom. Une palette est une liste (table) de couleurs qui sont elles-mêmes des listes de trois valeurs numériques entre $0$ et $1$ (composantes rouge, verte et bleue). Les noms de ces palettes ainsi que leur rendu, peuvent être visualisés dans ce \href{luadraw_palettes_doc.pdf}{document}.

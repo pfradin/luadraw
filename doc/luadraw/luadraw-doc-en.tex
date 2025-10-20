@@ -2,7 +2,7 @@
 10pt,%
 oneside,
 a4paper,%
-french,%
+%french,%
 ]%
 {book}%
 
@@ -27,25 +27,17 @@ french,%
   pdfcreator={LuaLatex}
 }
 
-\title{\textbf{Le paquet} \emph{luadraw} \\ version \version\\ Dessin 2d et 3d avec lua (et tikz).\\
+\title{\textbf{The package} \emph{luadraw} \\ version \version\\ 2d and 3d drawing with lua (and tikz).\\
 {\small \url{https://github.com/pfradin/luadraw}} \\
 
 \vspace{1cm}
 
 \begin{minipage}{16cm}
 \small
-\selectlanguage{english}
 
 \hfil\textbf{Abstract}\hfil
 
 The \emph{luadraw} package defines the environment of the same name, which lets you create mathematical graphs using the Lua language. These graphs are ultimately drawn by tikz (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language with good computational capabilities.
-
-\vspace{1cm}
-
-\hfil\textbf{Résumé}\hfil
-
-\selectlanguage{french}
-Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet de créer des graphiques mathématiques en utilisant le langage Lua. Ces graphiques sont dessinés au final par tikz (et automatiquement sauvegardés), alors pourquoi les faire en Lua ? Parce que celui-ci apporte toute la puissance d'un langage de programmation simple, efficace, capable de faire des calculs, tout en utilisant les possibilités graphiques de tikz.
 \end{minipage}
 }
 \author{Patrick Fradin}
@@ -110,8 +102,10 @@ Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet 
 \renewcommand{\thesubsection}{\arabic{subsection})}
 \renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
 \renewcommand{\thefigure}{\arabic{figure}}
+\newcommand{\og}{"}
+\newcommand{\fg}{"}
 
-\include{luadraw-doc2d}%
-\include{luadraw-doc3d}%
+\include{body-en/luadraw-doc2d-en.tex}
+\include{body-en/luadraw-doc3d-en.tex}
 
 \end{document}

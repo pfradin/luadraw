@@ -1,0 +1,60 @@
+\section{La classe pt3d}
+
+\subsection{Représentation des points et vecteurs}
+
+\begin{itemize}
+    \item L'espace usuel est $\mathbf R^3$, les points et les vecteurs sont donc des triplets de réels (appelés points 3d). Quatre triplets portent un nom spécifique (variables prédéfinies), il s'agit de :
+    \begin{itemize}
+        \item \textbf{Origin}, qui représente le triplet $(0,0,0)$.
+        \item \textbf{vecI}, qui représente le triplet $(1,0,0)$.
+        \item \textbf{vecJ}, qui représente le triplet $(0,1,0)$.
+        \item \textbf{vecK}, qui représente le triplet $(0,0,1)$.
+    \end{itemize}
+    À cela s'ajoute la variable \textbf{ID3d} qui est la table \emph{\{Origin, vecI, vecJ, vecK\}} représentant la matrice unité 3d. Par défaut c'est la matrice de transformation du graphe 3d.
+    \item La classe \emph{pt3d} (qui est automatiquement chargée) définit les triplets de réels, les opérations possibles, et un certain nombre de méthodes. Pour créer un point 3d, il y a trois méthodes :
+        \begin{itemize}
+            \item Définition en cartésien : la fonction \textbf{M(x,y,z)} renvoie le triplet $(x,y,z)$. On peut également obtenir ce triplet en faisant : \emph{x*vecI+y*vecJ+z*vecK}.
+            \item Définition en cylindrique : la fonction \textbf{Mc(r,$\theta$,z)} (angle exprimé en radians) renvoie le triplet $(r\cos(\theta),r\sin(\theta),z)$.
+            \item Définition en sphérique : la fonction \textbf{Ms(r,$\theta$,$\varphi$)} renvoie le triplet $(r\cos(\theta)\sin(\varphi), r\sin(\theta)\sin(\varphi),r\cos(\varphi))$ (angles exprimés en radians).
+        \end{itemize}
+    Accès aux composantes d'un point 3d : si une variable $A$ désigne un point 3d, alors ses trois composantes sont $A.x$, $A.y$ et $A.z$.
+    
+    Pour tester si une variable $A$ désigne un point 3d, on dispose de la fonction \textbf{isPoint3d()} qui renvoie un booléen.
+    
+    Conversion : pour convertir un réel ou un complexe en point 3d, on dispose de la fonction \textbf{toPoint3d()}.
+\end{itemize}
+
+\subsection{Opérations sur les points 3d}
+
+Ces opérations sont les opérations usuelles avec les symboles usuels :
+\begin{itemize}
+    \item L'addition (+), la différence (-), l'opposé (-).
+    \item Le produit par un scalaire, si k et un réel, \emph{k*M(x,y,z)} renvoie \emph{M(ka,ky,kz)}.
+    \item On peut diviser un point 3d par un scalaire, par exemple, si $A$ et $B$ sont deux points 3d, alors le milieu s'écrit simplement $(A+B)/2$.
+    \item On peut tester l'égalité de deux points 3d avec le symbole =.
+\end{itemize}
+
+\subsection{Méthodes de la classe \emph{pt3d}}
+
+Celles-ci sont :
+\begin{itemize}
+    \item \textbf{pt3d.abs(u)} : renvoie la norme euclidienne du point 3d $u$.
+    \item \textbf{pt3d.abs2(u)} : renvoie la norme euclidienne au carré du point 3d $u$.
+    \item \textbf{pt3d.N1(u)} : renvoie la norme 1 du point 3d $u$. Si $u=M(x,y,z)$, alors \emph{pt3d.N1(u)} renvoie $|x|+|y|+|z|$.
+    \item \textbf{pt3d.dot(u,v)} : renvoie le produit scalaire entre les vecteurs (points 3d) $u$ et $v$.
+    \item \textbf{pt3d.det(u,v,w)} : renvoie le déterminant entre les vecteurs (points 3d) $u$, $v$ et $w$.
+    \item \textbf{pt3d.prod(u,v)} : renvoie le produit vectoriel entre les vecteurs (points 3d) $u$ et $v$.
+    \item \textbf{pt3d.angle3d(u,v,epsilon)} : renvoie l'écart angulaire (en radians) entre les vecteurs (points 3d) $u$ et $v$ supposés non nuls. L'argument (facultatif) \emph{epsilon} vaut $0$ par défaut, il indique à combien près se fait un certain test d'égalité sur un flottant.
+
+    \item \textbf{pt3d.normalize(u)} : renvoie le vecteur (point 3d) $u$ normalisé (renvoie \emph{nil} si $u$ est nul).
+    \item \textbf{pt3d.round(u,nbDeci)} : renvoie un point 3d dont les composantes sont celles du point 3d $u$ arrondies avec \emph{nbDeci} décimales.
+\end{itemize}
+
+\subsection{Fonctions mathématiques}
+
+Dans le fichier définissant la classe \emph{pt3d}, quelques fonctions mathématiques sont introduites :
+\begin{itemize}
+    \item \textbf{isobar3d(L)} : renvoie l'isobarycentre des points 3d de la liste (table) $L$ (les éléments de $L$ qui ne sont pas des points 3d sont ignorés).
+    \item \textbf{insert3d(L,A,epsilon)} : cette fonction insère le point 3d $A$ dans la liste $L$ qui doit être une \textbf{variable} (et qui sera donc modifiée). Le point $A$ est inséré \textbf{sans doublon} et la fonction renvoie sa position (indice) dans la liste $L$ après insertion. L'argument (facultatif) \emph{epsilon} vaut $0$ par défaut, il indique à combien près se font les comparaisons.
+\end{itemize}
+

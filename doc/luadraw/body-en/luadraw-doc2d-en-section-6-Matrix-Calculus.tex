@@ -1,0 +1,172 @@
+\section{Matrix Calculus}
+
+If $f$ is an affine application of the complex plane, we will call the list (table) of $f$ the matrix:
+\begin{Luacode}
+{ f(0), Lf(1), Lf(i) }
+\end{Luacode}
+where $Lf$ denotes the linear part of $f$ (we have $Lf(1) = f(1)-f(0)$ and $Lf(i) = f(i)-f(0)$). The identity matrix is ​​denoted \emph{ID} in the \emph{luadraw} package; it simply corresponds to the list \mintinline{Lua}{ {0,1,i} }.
+
+\subsection{Matrix Calculations}
+
+\subsubsection{applymatrix and applyLmatrix}
+\begin{itemize}
+    \item The function \textbf{applymatrix(z,M)} applies the matrix $M$ to the complex $z$ and returns the result (which is equivalent to calculating $f(z)$ if $M$ is the matrix of $f$). When $z$ is the complex \emph{cpx.Jump} then the result is \emph{cpx.Jump}. When $z$ is a string then the function returns $z$.
+    \item The function \textbf{applyLmatrix(z,M)} applies the linear part of the matrix $M$ to the complex $z$ and returns the result (which is equivalent to calculating $Lf(z)$ if $M$ is the matrix of $f$). When $z$ is the complex \emph{cpx.Jump} then the result is \emph{cpx.Jump}.
+\end{itemize}
+
+\subsubsection{composematrix}
+The function \textbf{composematrix(M1,M2)} performs the matrix product $M1\times M2$ and returns the result.
+
+\subsubsection{invmatrix}
+The function \textbf{invmatrix(M)} calculates and returns the inverse of the matrix $M$ when possible.
+
+\subsubsection{matrixof}
+\begin{itemize}
+    \item The function \textbf{matrixof(f)} calculates and returns the matrix of $f$ (which must be an affine application of the complex plane.
+    \item Example: \mintinline{Lua}{ matrixof( function(z) return proj(z,{0,Z(1,-1)}) end )} returns \par
+\mintinline{Lua}{{0,Z(0.5,-0.5),Z(-0.5,0.5)}} (matrix of the orthogonal projection onto the second bisector).
+\end{itemize}
+
+\subsubsection{mtransform and mLtransform}
+\begin{itemize}
+    \item The function \textbf{mtransform(L,M)} applies the matrix $M$ to the list $L$ and returns the result. $L$ must be a list of complex numbers or a list of lists of complex numbers. If one of them is the complex \emph{cpx.Jump} or a string, then it is unchanged (and therefore returned as is).
+    \item The function \textbf{mLtransform(L,M)} applies the linear part of the matrix $M$ to the list $L$ and returns the result. $L$ must be a list of complex numbers. If one of them is the complex \emph{cpx.Jump}, then it is unchanged.
+\end{itemize}
+
+\subsection{Matrix associated with the graph}
+
+When creating a graph in the \emph{luadraw} environment, for example:
+\begin{Luacode}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+\end{Luacode}
+The created \emph{g} object has a transformation matrix that is initially the identity. All graphics methods used automatically apply the graph's transformation matrix. This matrix is ​​designated \mintinline{Lua}{g.matrix}, but to manipulate it, the following methods are available.
+
+\subsubsection{g:Composematrix()}
+The \textbf{g:Composematrix(M)} method multiplies the graph matrix \emph g by the matrix \emph{M} (with \emph{M} on the right) and assigns the result to the graph matrix. The argument \emph{M} must therefore be a matrix.
+
+\subsubsection{g:Det2d()()}
+The \textbf{g:Det2d()} method returns $1$ when the transformation matrix has a positive determinant, and $-1$ otherwise. This information is useful when we need to know whether the plane orientation has been changed or not.
+
+\subsubsection{g:IDmatrix()}
+The \textbf{g:IDmatrix()} method reassigns the identity to the graph matrix \emph g.
+
+\subsubsection{g:Mtransform()}
+The \textbf{g:Mtransform(L)} method applies the graph matrix \emph g to \emph{L} and returns the result. The argument \emph L must be a list of complex numbers, or a list of lists of complex numbers.
+
+\subsubsection{g:MLtransform()}
+The \textbf{g:MLtransform(L)} method applies the linear part of the graph matrix \emph g to \emph{L} and returns the result. The argument \emph L must be a list of complex numbers, or a list of lists of complex numbers.
+
+\begin{demo}{Using the Graph Matrix}
+\begin{luadraw}{name=Pythagore}
+local g = graph:new{window={-15,15,0,22},size={10,10}}
+local a, b, c = 3, 4, 5 -- un triplet de Pythagore
+local i, arccos, exp = cpx.I, math.acos, cpx.exp
+local f1 = function(z)
+        return (z-c)*a/c*exp(-i*arccos(a/c))+c+i*c end
+local M1 = matrixof(f1)
+local f2 = function(z)
+        return z*b/c*exp(i*arccos(b/c))+i*c end
+local M2 = matrixof(f2)
+local arbre
+arbre = function(n)
+    local color = mixcolor(ForestGreen,1,Brown,n)
+    g:Linecolor(color); g:Dsquare(0,c,1,"fill="..color)
+    if n > 0 then
+        g:Savematrix(); g:Composematrix(M1); arbre(n-1)
+        g:Restorematrix(); g:Savematrix(); g:Composematrix(M2)
+        arbre(n-1); g:Restorematrix()
+    end
+end
+arbre(8)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsubsection{g:Rotate()}
+The \textbf{g:Rotate(angle, center)} method modifies the transformation matrix of the graph \emph g by composing it with the rotation matrix with angle \emph{angle} (in degrees) and center \emph{center}. The argument \emph{center} is a complex matrix that defaults to $0$.
+
+\subsubsection{g:Scale()}
+The \textbf{g:Scale(factor, center)} method modifies the transformation matrix of the graph \emph g by composing it with the homothety matrix with ratio \emph{factor} and center \emph{center}. The argument \emph{center} is a complex matrix that defaults to $0$.
+
+\subsubsection{g:Savematrix() and g:Restorematrix()}
+\begin{itemize}
+    \item The \textbf{g:Savematrix()} method saves the transformation matrix of graph \emph g to a stack.
+    \item The \textbf{g:Restorematrix()} method restores the transformation matrix of graph \emph g to its last saved value.
+\end{itemize}
+
+\subsubsection{g:Setmatrix()}
+The \textbf{g:Setmatrix(M)} method assigns matrix \emph M to the transformation matrix of graph \emph g.
+
+\subsubsection{g:Shift()}
+The \textbf{g:Shift(v)} method modifies the transformation matrix of graph \emph g by compositing it with the translation matrix of vector \emph{v}, which must be a complex matrix.
+
+\begin{demo}{Using Shift, Rotate and Scale}
+\begin{luadraw}{name=free_art}
+local du = math.sqrt(2)/2
+local g = graph:new{window={1-du,4+du,1-du,4+du},
+            margin={0,0,0,0},size={7,7}}
+local i = cpx.I
+g:Linestyle("noline")
+g:Filloptions("full","Navy",0.1)
+for X = 1, 4 do
+    for Y = 1, 4 do
+        g:Savematrix()
+        g:Shift(X+i*Y); g:Rotate(45)
+        for k = 1, 25 do
+            g:Dsquare((1-i)/2,(1+i)/2,1)
+            g:Rotate(7); g:Scale(0.9)
+        end
+        g:Restorematrix()
+    end
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{View change. Change of coordinate system}
+
+\paragraph{View change: } when creating a new graph, for example:
+\begin{Luacode}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+\end{Luacode}
+The option \emph{window=\{xmin,xmax,ymin,ymax\}} sets the view for graph \emph{g}. This will be the \emph{[xmin, xmax]x [ymin, ymax]} block of $\mathbf R^2$, and all plots will be clipped by this window (except labels, which can overflow into the margins, but not beyond). Within this box, it is possible to define another box to create a new view, using the \textbf{g:Viewport(x1,x2,y1,y2)} method. The values ​​of \emph{x1}, \emph{x2}, \emph{y1}, \emph{y2} refer to the initial window defined by the \emph{window} option. From then on, everything outside this new area will be clipped, and the graph matrix will be reset to the same value. Therefore, you must first save the current graphics settings:
+\begin{Luacode}
+g:Saveattr()
+g:Viewport(x1,x2,y1,y2)
+\end{Luacode}
+To return to the previous view with the previous matrix, simply restore the graphics settings with the \textbf{g:Restoreattr()} method.
+
+\paragraph{Warning: } Each \emph{Saveattr()} instruction must correspond to a \emph{Restoreattr()} instruction, otherwise a compilation error will occur.
+
+\paragraph{Changing the coordinate system: } The coordinate system of the current view can be changed with the \textbf{g:Coordsystem(x1,x2,y1,y2,ortho)} method. This method will modify the graph matrix so that everything occurs as if the current view corresponded to the $[x1,x2]\times[y1,y2]$ box. The optional Boolean argument \emph{ortho} indicates whether the new coordinate system should be orthonormal or not (false by default). Since the graph matrix is ​​modified, it is best to save the graphical parameters first and restore them later. This can be used, for example, to create multiple figures in the current graph.
+
+\begin{demo}{Classification of the points of a parametric curve}
+\begin{luadraw}{name=viewport_changewin}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+local i = cpx.I
+g:Labelsize("tiny") 
+g:Writeln("\\tikzset{->-/.style={decoration={markings, mark=at position #1 with {\\arrow{>}}}, postaction={decorate}}}")
+g:Dline({0,1},"dashed,gray"); g:Dline({0,i},"dashed,gray")
+local legende = {"Point ordinaire", "Point d'inflexion", "Rebroussement 1ère espèce", "Rebroussement 2ème espèce"}
+local A, B, C =(1+i)*0.75, 0.75, 0
+local A2, B2 ={-1.25+i*0.5,-0.75-i*0.5,1.25-0.5*i, 0.5+i}, {-0.75,-0.75,0.75,0.75}
+local u = {Z(-5,0),Z(0,0),-5-5*i,-5*i}
+for k = 1, 4 do
+    g:Saveattr(); g:Viewport(u[k].re,u[k].re+5,u[k].im,u[k].im+5)
+    g:Coordsystem(-1.4,2.25,-1,1.25)
+    g:Composematrix({0,1,1+i}) -- pour pencher l'axe Oy
+    g:Dpolyline({{-1,1},{-i*0.5,i}}) -- axes
+    g:Lineoptions(nil,"blue",8)
+    g:Dpath({A2[k],(B2[k]+2*A2[k])/3,(C+5*B2[k])/6, C,"b"},"->-=0.5")
+    g:Dpath({C,(C+5*B)/6,(B+2*A)/3,A,"b"},"->-=0.75")
+    g:Dpolyline({{0,0.75},{0,0.75*i}},false,"->,red")
+    g:Dlabel(
+        legende[k],0.75-0.5*i, {pos="S"},
+        "$f^{(p)}(t_0)$",1,{pos="E",node_options="red"},
+        "$f^{(q)}(t_0)$",0.75*i,{pos="W",dist=0.05})
+    g:Restoreattr()
+end
+g:Show()
+\end{luadraw}
+\end{demo}

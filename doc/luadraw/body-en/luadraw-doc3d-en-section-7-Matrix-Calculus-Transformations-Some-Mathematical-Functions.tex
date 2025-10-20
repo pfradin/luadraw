@@ -1,0 +1,232 @@
+\section{Matrix Calculus Transformations and Some Mathematical Functions}
+
+\subsection{3D Transformations}
+
+In the following functions:
+\begin{itemize}
+\item the argument \emph{L} is either a 3D point, a polyhedron, a list of 3D points (facet), or a list of lists of 3D points (facet list),
+\item a line \emph{d} is a list of two 3D points \{A,u\}: a point on the line ($A$) and a direction vector ($u$),
+\item a plane \emph{P} is a list of two 3D points \{A,n\}: a point on the plane ($A$) and a normal vector to the plane ($n$).
+\end{itemize}
+The returned result is of the same type as $L$.
+
+\subsubsection{Apply a transformation function: ftransform3d}
+
+The function \textbf{ftransform3d(L,f)} returns the image of \emph{L} by the function \emph{f}; this must be a function from $\mathbf R^3$ to $\mathbf R^3$.
+
+\subsubsection{Projections: proj3d, proj3dO, dproj3d}
+
+\begin{itemize}
+\item The function \textbf{proj3d(L,P)} returns the image of $L$ by the orthogonal projection onto the plane $P$.
+\item The function \textbf{proj3dO(L,P,v)} returns the image of $L$ by the projection onto the plane $P$ parallel to the direction of the vector $v$ (non-zero 3d point).
+\item The function \textbf{dproj3d(L,d)} returns the image of $L$ by the projection onto the line $d$.
+\end{itemize}
+
+\subsubsection{Projections onto axes or planes related to axes}
+
+\begin{itemize}
+\item The function \textbf{pxy(L)} returns the image of $L$ by the orthogonal projection onto the $xOy$ plane.
+\item The function \textbf{pyz(L)} returns the image of $L$ by the orthogonal projection onto the $yOz$ plane.
+\item The function \textbf{pxz(L)} returns the image of $L$ by the orthogonal projection onto the $xOz$ plane.
+\item The function \textbf{px(L)} returns the image of $L$ by the orthogonal projection onto the $Ox$ axis.
+\item The function \textbf{py(L)} returns the image of $L$ by the orthogonal projection onto the $Oy$ axis.
+\item The function \textbf{pz(L)} returns the image of $L$ by the orthogonal projection onto the $Oz$ axis.
+\end{itemize}
+
+\subsubsection{Symmetries: sym3d, sym3dO, dsym3d, psym3d}
+
+\begin{itemize}
+\item The function \textbf{sym3d(L,P)} returns the image of $L$ by the orthogonal symmetry about the $P$ plane.
+\item The function \textbf{sym3dO(L,P,v)} returns the image of $L$ by the symmetry about the $P$ plane and parallel to the direction of the $v$ vector (non-zero 3d point).
+\item The function \textbf{dsym3d(L,d)} returns the image of $L$ by the orthogonal symmetry with respect to the line $d$.
+\item The function \textbf{psym3d(L,point)} returns the image of $L$ by the symmetry with respect to \emph{point} (3d point).
+\end{itemize}
+
+\subsubsection{Rotation: rotate3d, rotateaxe3d}
+
+\begin{itemize}
+\item The function \textbf{rotate3d(L,angle,d)} returns the image of $L$ rotated along axis $d$ (oriented by the direction vector, which is $d[2]$), and by \emph{angle} degrees.
+\item The function \textbf{rotateaxe3d(L,v1,v2,center)} returns the image of $L$ rotated along axis passing through the 3d point \emph{center}, which transforms the vector \emph{v1} into the vector \emph{v2}. These vectors are normalized by the function. The argument \emph{center} is optional and defaults to the point \emph{Origin}.
+\end{itemize}
+
+\subsubsection{Scaling: scale3d}
+
+The function \textbf{scale3d(L,k,center)} returns the image of $L$ by the scaling with center at the 3D point \emph{center}, and ratio \emph{k}. The argument \emph{center} is optional and is $M(0,0,0)$ by default (origin).
+
+\subsubsection{Inversion: inv3d}
+
+The function \textbf{inv3d(L,radius,center)} returns the image of $L$ by the inversion with respect to the sphere with center \emph{center}, and radius \emph{radius}. The argument \emph{center} is optional and is $M(0,0,0)$ by default (origin).
+
+\subsubsection{Stereography: projstereo and inv\_projstereo}
+
+Function \textbf{projstereo(L,S,N,h)}: the argument \emph{L} denotes a 3D point or a list of 3D points or a list of lists of 3D points, all belonging to the sphere \emph{S}, where \emph{S=\{C,r\}} ($C$ is the center of the sphere, and $r$ the radius). The argument \emph{N} denotes a point on the sphere that will be the pole of the projection. The argument \emph{h} is a real number that defines the projection plane. This plane is perpendicular to the axis $(CN)$, and passes through the point $I=C+h \frac{\vec{CN}}{CN}$ (with $h=0$ it is the equatorial plane, with $h=-r$ it is the plane tangent to the sphere at the opposite pole). The function returns the image of $L$ by the stereographic projection with respect to the sphere $S$ with $N$ as pole, and on the plane \emph{\{I,N-C\}}.
+
+Inverse function \textbf{inv\_projstereo(L,S,N)}: \emph{S=\{C,r\}} is the sphere with center $C$ and radius $r$, \emph{N} is a point on the sphere $S$ (pole), and \emph{L} is a 3D point or a list of 3D points or a list of lists of 3D points all belonging to the same plane orthogonal to the $(CN)$ axis. The function returns the image of $L$ by the inverse of the stereographic projection with respect to $S$ and with pole $N$.
+
+\subsubsection{Translation: shift3d}
+
+The function \textbf{shift3d(L,v)} returns the image of $L$ by the translation of vector $v$ (3D point).
+
+
+\subsection{Matrix Calculus}
+
+If $f$ is an affine mapping of the space $\mathbf R^3$, we will call the list (table) of $f$ a matrix:
+\begin{Luacode}
+{ f(Origin), Lf(vecI), Lf(vecJ), Lf(vecK) }
+\end{Luacode}
+where $Lf$ denotes the linear part of $f$ (we have \emph{Lf(vecI) = f(vecI)-f(Origin)}, etc.). The identity matrix is ​​denoted \emph{ID3d} in the \emph{luadraw} package; it simply corresponds to the list \mintinline{Lua}{ {Origin,vecI,vecJ,vecK} }.
+
+\subsubsection{applymatrix3d ​​and applyLmatrix3d}
+
+\begin{itemize}
+\item The function \textbf{applymatrix3d(A,M)} applies the matrix $M$ to the 3d point $A$ and returns the result (which is equivalent to calculating $f(A)$ if $M$ is the matrix of $f$). If $A$ is not a 3d point, the function returns $A$.
+
+\item The function \textbf{applyLmatrix3d(A,M)} applies the linear part of the matrix $M$ to the 3d point $A$ and returns the result (which is equivalent to calculating $Lf(A)$ if $M$ is the matrix of $f$). If $A$ is not a 3d point, the function returns $A$.
+
+\end{itemize}
+
+\subsubsection{composematrix3d}
+The function \textbf{composematrix3d(M1,M2)} performs the matrix product $M1\times M2$ and returns the result.
+
+\subsubsection{invmatrix3d}
+The function \textbf{invmatrix3d(M)} calculates and returns the inverse of the matrix $M$ when possible.
+
+\subsubsection{matrix3dof}
+
+The function \textbf{matrix3dof(f)} calculates and returns the matrix of $f$ (which must be an affine mapping of the space $\mathbf R^3$).
+
+\subsubsection{mtransform3d and mLtransform3d}
+\begin{itemize}
+\item The function \textbf{mtransform3d(L,M)} applies the matrix $M$ to the list $L$ and returns the result. $L$ must be a list of 3D points (a facet) or a list of lists of 3D points (a list of facets).
+\item The function \textbf{mLtransform3d(L,M)} applies the linear part of the matrix $M$ to the list $L$ and returns the result. $L$ must be a list of 3D points (a facet) or a list of lists of 3D points (a list of facets).
+\end{itemize}
+
+\subsection{Matrix associated with the 3D graph}
+
+When creating a graph in the \emph{luadraw} environment, for example:
+\begin{Luacode}
+local g = graph3d:new{size={10,10}}
+\end{Luacode}
+The created \emph{g} object has a 3D transformation matrix that is initially the identity. All graphics methods automatically apply the graph's 3D transformation matrix. One caveat, however: the \emph{Dcylinder}, \emph{Dcone}, and \emph{Dsphere} methods only yield the correct result with the transformation matrix equal to the identity. To manipulate this matrix, the following methods are available.
+
+\subsubsection{g:Composematrix3d()}
+The \textbf{g:Composematrix3d(M)} method multiplies the 3d matrix of the graph \emph g by the matrix \emph{M} (with \emph{M} on the right), and the result is assigned to the graph's 3d matrix. The argument \emph{M} must therefore be a 3d matrix.
+
+\subsubsection{g:Det3d()}
+The \textbf{g:Det3d()} method returns $1$ when the 3d transformation matrix has a positive determinant, and $-1$ otherwise. This information is useful when we need to know whether the orientation of space has been changed or not.
+
+\subsubsection{g:IDmatrix3d()}
+The \textbf{g:IDmatrix3d()} method reassigns the identity to the 3d matrix of the graph \emph g.
+
+\subsubsection{g:Mtransform3d()}
+The \textbf{g:Mtransform3d(L)} method applies the 3d graph matrix of \emph g to \emph{L} and returns the result. The argument \emph L must be a list of 3d points (a facet) or a list of lists of 3d points (a list of facets).
+
+\subsubsection{g:MLtransform3d()}
+The \textbf{g:MLtransform3d(L)} method applies the linear part of the 3d matrix of the graph \emph g to \emph{L} and returns the result. The argument \emph L must be a list of 3D points (a facet) or a list of lists of 3D points (a list of facets).
+
+\subsubsection{g:Rotate3d()}
+The method \textbf{g:Rotate3d(angle,axis)} modifies the 3D transformation matrix of the graph \emph g by composing it with the rotation matrix of angle \emph{angle} (in degrees) and axis \emph{axis}.
+
+\subsubsection{g:Scale3d()}
+The method \textbf{g:Scale3d(factor, center)} modifies the 3D transformation matrix of the graph \emph g by composing it with the homothety matrix of ratio \emph{factor} and center \emph{center}. The argument \emph{center} is a 3D point that defaults to \emph{Origin}.
+
+\subsubsection{g:Setmatrix3d()}
+The \textbf{g:Setmatrix3d(M)} method assigns the matrix \emph M to the 3D transformation matrix of the graph \emph g.
+
+\subsubsection{g:Shift3d()}
+The \textbf{g:Shift3d(v)} method modifies the 3D transformation matrix of the graph \emph g by composing it with the translation matrix of vector \emph{v}, which must be a 3D point.
+
+
+\subsection{Additional Mathematical Functions}
+
+\subsubsection{clippolyline3d()}
+The function \textbf{clippolyline3d(L, poly, exterior, close)} clips the 3D polygonal line \emph{L} to the \textbf{convex} polyhedron \emph{poly}. If the optional argument \emph{exterior} is true, then the part outside the polyhedron is returned (false by default). If the optional argument \emph{close} is true, then the polygonal line is closed (false by default). \emph{L} is a list of 3D points or a list of lists of 3D points.
+\textbf{Note}: The result is not always satisfactory for the exterior part.
+
+\paragraph{Special case}: Clipping a 3D polygonal line $L$ with the current 3D window can be done with this function as follows:
+
+\begin{center}
+\textbf{L = clippolyline3d(L, g:Box3d())}
+\end{center}
+
+Indeed, the \textbf{g:Box3d()} method returns the current 3D window as a parallelepiped.
+
+\subsubsection{clipline3d()}
+The function \textbf{clipline3d(line, poly)} clips the line \emph{line} with the \textbf{convex} polyhedron \emph{poly}; the function returns the part of the line inside the polyhedron. The argument \emph{line} is a table of the form \{A,u\} where $A$ is a point on the line and $u$ is a direction vector (two 3D points).
+
+\paragraph{Special case}: Clipping a line $d$ with the current 3D window can be done with this function as follows:
+
+\begin{center}
+\textbf{d = clipline3d(d, g:Box3d())}
+\end{center}
+
+Indeed, the \textbf{g:Box3d()} method returns the current 3D window as a parallelepiped ($d$ then becomes a segment).
+
+\subsubsection{cutpolyline3d()}
+The function \textbf{cutpolyline3d(L,plane,close)} intersects the 3D polygonal line \emph{L} with the plane \emph{plane}. If the optional argument \emph{close} is true, then the line is closed (false by default). \emph{L} is a list of 3D points or a list of lists of 3D points, \emph{plane} is a table of the form \{A,n\} where $A$ is a point in the plane and $n$ is a normal vector (two 3D points).
+
+The function returns three things:
+\begin{itemize}
+\item the part of \emph{L} that is in the half-space containing the vector $n$,
+\item followed by the part of \emph{L} that is in the other half-space,
+\item followed by the list of intersection points.
+\end{itemize}
+
+\subsubsection{getbounds3d()}
+The function \textbf{getbounds3d(L)} returns the bounds xmin, xmax, ymin, ymax, zmin, zmax of the 3D polygonal line \emph{L} (list of 3D points or a list of lists of 3D points).
+
+\subsubsection{interDP()}
+The function \textbf{interDP(d,P)} calculates and returns (if it exists) the intersection between line $d$ and plane $P$.
+
+\subsubsection{interPP()}
+The function \textbf{interPP(P1,P2)} calculates and returns (if it exists) the intersection between planes $P_1$ and $P_2$.
+
+\subsubsection{interDD()}
+The function \textbf{interDD(D1,D2,epsilon)} calculates and returns (if it exists) the intersection between lines $D_1$ and $D_2$. The argument \emph{epsilon} is $10^{-10}$ by default (used to test whether a given float is zero).
+
+\subsubsection{interDS()}
+The function \textbf{interDS(d,S)} calculates and returns (if it exists) the intersection between the line $d$ and the sphere $S$ where $S$ is a table $S=\{C,r\}$ with $C$ as the center (3d point) and $r$ as the radius. The function returns either \emph{nil} (empty intersection), a single point, or two points.
+
+\subsubsection{interPS()}
+The function \textbf{interPS(P,S)} calculates and returns (if it exists) the intersection between the plane $P$ and the sphere $S$ where $S$ is a table $S=\{C,r\}$ with $C$ as the center (3d point) and $r$ as the radius. The function returns either \emph{nil} (empty intersection) or a sequence of the form $I,r,n$, where I is a 3D point representing the center of a circle, $r$ its radius, and $n$ a normal vector to the plane of the circle. This circle is the desired intersection.
+
+\subsubsection{interSS()}
+The function \textbf{interPS(S1,S2)} calculates and returns (if it exists) the intersection between the sphere $S1=\{C1,r1\}$ and $S2=\{C2,r2\}$. The function returns either \emph{nil} (empty intersection) or a sequence of the form $I,r,n$, where I is a 3D point representing the center of a circle, $r$ its radius, and $n$ a normal vector to the plane of the circle. This circle is the desired intersection.
+
+\subsubsection{merge3d()}
+The function \textbf{merge3d(L)} combines, if possible, the connected components of \emph{L}, which must be a list of lists of 3D points. The function returns the result.
+
+\subsubsection{split\_points\_by\_visibility()}
+The function \textbf{split\_points\_by\_visibility(L, visible\_function)}, where $L$ is a list of 3D points, or a list of lists of 3D points, and where \emph{visible\_function} is a function such that \emph{visible\_function(A)} returns \emph{true} if the 3D point $A$ is visible, \emph{false} otherwise, sorts the points of $L$ according to whether they are visible or not. The function returns a sequence of two tables: \emph{visible\_points}, \emph{hidden\_points}.
+
+\begin{demo}{A curve on a cylinder}
+\begin{luadraw}{name=curve_on_cylinder}
+local g = graph3d:new{adjust2d=true,bbox=false,size={10,10}};
+g:Labelsize("footnotesize")
+Hiddenlines = true; Hiddenlinestyle = "dashed"
+
+local curve_on_cylinder = function(curve,cylinder) 
+-- curve is a 3d polyline on a cylinder, 
+-- cylinder = {A,r,V,B}
+    local  A,r,V,B = table.unpack(cylinder)
+    if B == nil then B = V; V = B-A end
+    local U = B-A
+    local visible_function = function(N)
+        local I = dproj3d(N,{A,U})
+        return (pt3d.dot(N-I,g.Normal) >= 0)
+    end
+    return split_points_by_visibility(curve,visible_function)
+end
+-- test
+local A, r, B = -5*vecJ, 4, 5*vecJ -- cylinder
+local p = function(t) return Mc(r,t,t/3) end
+local Curve = rotate3d( parametric3d(p,-4*math.pi,4*math.pi),90,{Origin,vecI})
+local Vi, Hi = curve_on_cylinder(Curve,{A,r,B})
+local curve_color = "DarkGreen"
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+g:Dcylinder(A,r,B,{color="orange"})
+g:Dpolyline3d(Vi,curve_color)
+g:Dpolyline3d(Hi,curve_color..","..Hiddenlinestyle)
+g:Show()
+\end{luadraw}
+\end{demo}

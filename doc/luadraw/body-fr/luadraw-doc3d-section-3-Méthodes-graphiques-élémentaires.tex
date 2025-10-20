@@ -1,0 +1,382 @@
+\section{Méthodes graphiques élémentaires}
+
+Toutes les méthodes graphiques 2d s'appliquent. À cela s'ajoute la possibilité de dessiner dans l'espace des lignes polygonales, des segments, droites, courbes, chemins, points, labels, plans, solides. Avec les solides vient également la notion de facettes que l'on ne trouvait pas en 2d.
+
+Les méthodes graphiques 3d vont calculer automatiquement la projection sur le plan de l'écran, après avoir appliquer aux objets la matrice de transformation 3d associée au graphique (qui est l'identité par défaut), ce sont ensuite les méthodes graphiques 2d qui prendront le relai.
+
+La méthode qui applique la matrice 3d et fait la projection sur l'écran (plan passant par l'origine et normal au vecteur unitaire dirigé vers l'observateur et défini par les angles de vue), est : \textbf{g:Proj3d(L)} où $L$ est soit un point 3d, soit une liste de points 3d, soit une liste de listes de points 3d. Cette fonction renvoie des complexes (affixes des projetés sur l'écran).
+
+\subsection{Dessin aux traits}
+
+\subsubsection{Ligne polygonale : Dpolyline3d}
+
+La méthode \textbf{g:Dpolyline3d(L,close,draw\_options,clip)} (où \emph{g} désigne le graphique en cours de création), \emph{L} est une ligne polygonale 3d (liste de listes de points 3d), \emph{close} un argument facultatif qui vaut \emph{true} ou \emph{false} indiquant si la ligne doit être refermée ou non (\emph{false} par défaut), et \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw} dans l'export. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si la ligne \emph{L} doit être clippée avec la fenêtre 3d courante.
+    
+\subsubsection{Angle droit : Dangle3d}
+
+La méthode \textbf{g:Dangle3d(B,A,C,r,draw\_options,clip)} dessine l'angle \(BAC\) avec un parallélogramme (deux côtés seulement sont dessinés), l'argument facultatif \emph{r} précise la longueur d'un côté (0.25 par défaut). Le parallélogramme est dans le plan défini par les points $A$, $B$ et $C$, ceux-ci ne doivent donc pas être alignés. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction  \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante.
+    
+\subsubsection{Segment : Dseg3d}
+
+La méthode \textbf{g:Dseg3d(seg,scale,draw\_options,clip)} dessine le segment défini par l'argument \emph{seg} qui doit être une liste de deux points 3d. L'argument facultatif \emph{scale} (1 par défaut) est un nombre qui permet d'augmenter ou réduire la longueur du segment (la longueur naturelle est multipliée par \emph{scale}). L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante.
+    
+\subsubsection{Droite : Dline3d}
+
+La méthode \textbf{g:Dline3d(d,draw\_options,clip)} trace la droite \emph{d}, celle-ci est une liste du type \emph{\{A,u\}} où \emph{A} représente un point de la droite (point 3d) et \emph{u} un vecteur directeur (un point 3d non nul). 
+
+Variante : la méthode \textbf{g:Dline3d(A,B,draw\_options,clip)} trace la droite passant par les points \emph{A} et \emph{B} (deux points 3d). L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante.
+
+La méthode \textbf{g:Line3d2seg(d,scale)} renvoie une table constituée de deux points 3d représentant un segment, ce segment est la partie de la droite \emph{d} à l'intérieur la fenêtre 3d courante. L'argument \emph{scale} (1 par défaut) permet de faire varier la taille de ce segment. Lorsque la fenêtre est trop petite l'intersection peut être vide.
+
+ \subsubsection{Arc de cercle : Darc3d}
+ 
+\begin{itemize}
+    \item La méthode \textbf{g:Darc3d(B,A,C,r,sens,normal,draw\_options,clip)} dessine un arc de cercle de centre \emph{A} (point 3d), de rayon \emph{r}, allant de \emph{B} (point 3d) vers \emph{C} (point 3d) dans le sens direct si l'argument \emph{sens} vaut 1, le sens inverse sinon. Cet arc est tracé dans le plan contenant les trois points $A$, $B$ et $C$, lorsque ces trois points sont alignés il faut préciser l'argument \emph{normal} (point 3d non nul) qui représente un vecteur normal au plan. Ce plan est orienté par le produit vectoriel $\vec{AB}\wedge\vec{AC}$ ou bien par le vecteur \emph{normal} si celui-ci est précisé. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante.
+    
+    \item La fonction \textbf{arc3d(B,A,C,r,sens,normal)} renvoie la liste des points de cet arc (ligne polygonale 3d). 
+    
+    \item La fonction \textbf{arc3db(B,A,C,r,sens,normal)} renvoie cet arc sous forme d'un chemin 3d (voir Dpath3d) utilisant des courbes de Bézier.
+\end{itemize}
+
+\subsubsection{Cercle : Dcircle3d}
+
+\begin{itemize}
+    \item La méthode \textbf{g:Dcircle3d(I,R,normal,draw\_options,clip)} trace le cercle de centre $I$ (point 3d) et de rayon $R$, dans le plan contenant $I$ et normal au vecteur défini par l'argument \emph{normal} (point 3d non nul). L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante. Autre syntaxe possible :  \textbf{g:Dcircle(C,draw\_options,clip)} où \emph{C=\{I,R,normal\}}.
+    
+    \item La fonction \textbf{circle3d(I,R,normal)} renvoie la liste des points de ce cercle (ligne polygonale 3d). 
+    
+    \item La fonction \textbf{circle3db(I,R,normal)} renvoie ce cercle sous forme d'un chemin 3d (voir Dpath3d) utilisant des courbes de Bézier.
+\end{itemize}
+    
+\subsubsection{Chemin 3d : Dpath3d}
+
+La méthode \textbf{g:Dpath3d(chemin,draw\_options,clip)} fait le dessin du \emph{chemin}. L'argument \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante. L'argument \emph{chemin} est une liste de points 3d suivis d'instructions (chaînes) fonctionnant sur le même principe qu'en 2d. Les instructions sont :
+    \begin{itemize}
+      \item \emph{"m"} pour moveto,
+      \item \emph{"l"} pour lineto,
+      \item \emph{"b"} pour bézier (il faut deux points de contrôles),
+      \item \emph{"c"} pour cercle (il faut un point du cercle, le centre et un vecteur normal),
+      \item \emph{"ca"} pour arc de cercle (il faut 3 points, un rayon, un sens et éventuellement un vecteur normal),
+      \item \emph{"cl"} pour close (ferme la composante courante).
+      \end{itemize}
+
+Voici par exemple le code de la figure \ref{viewdir}.
+
+\begin{Luacode}
+\begin{luadraw}{name=viewdir}
+local g = graph3d:new{ size={8,8} }
+local i = cpx.I
+local O, A = Origin, M(4,4,4)
+local B, C, D, E = pxy(A), px(A), py(A), pz(A) --projeté de A sur le plan xOy et sur les axes
+g:Dpolyline3d( {{O,A},{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, "->") -- axes
+g:Dpolyline3d( {{E,A,B,O}, {C,B,D}}, "dashed")
+g:Dpath3d( {C,O,B,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8") --secteur angulaire
+g:Darc3d(C,O,B,2.5,1,"->") -- arc de cercle pour theta
+g:Dpath3d( {E,O,A,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8") --secteur angulaire
+g:Darc3d(E,O,A,2.5,1,"->") -- arc de cercle pour phi
+g:Dballdots3d(O) -- le point origine sous forme d'une petite sphère
+g:Labelsize("footnotesize")
+g:Dlabel3d(
+    "$x$", 5.25*vecI,{}, "$y$", 5.25*vecJ,{}, "$z$", 5.25*vecK,{},
+    "vers observateur", A, {pos="E"},
+    "$O$", O, {pos="NW"},
+    "$\\theta$", (B+C)/2, {pos="N", dist=0.15},
+    "$\\varphi$", (A+E)/2, {pos="S",dist=0.25}
+)
+g:Dlabel("viewdir=\\{$\\theta,\\varphi$\\} (en degrés)",-5*i,{pos="N"}) -- label 2d
+g:Show()   
+\end{luadraw}      
+\end{Luacode}
+
+\subsubsection{Plan : Dplane}
+
+La méthode \textbf{g:Dplane(P,V,L1,L2,mode,draw\_options)} permet de dessiner les bords du plan $P=\{A,u\}$ où $A$ est un point du plan et $u$ un vecteur normal au plan ($P$ est donc une table de deux points 3d). L'argument $V$ doit être un vecteur non nul du plan $P$, $L_1$ et $L_2$ sont deux longueurs. La méthode construit un parallélogramme centré sur $A$, dont un côté est $L_1\frac{V}{\|V\|}$ et l'autre $L_2\frac{W}{\|W\|}$ où $W = u\wedge V$. L'argument \emph{mode} est un entier naturel qui indique les bords à tracer. Pour calculer cet entier on utilise les variables prédéfinies : \emph{top} (=8), \emph{right} (=4), \emph{bottom} (=2), \emph{left} (=1) et \emph{all} (=15), que l'on peut ajouter entre elles, par exemple :
+    \begin{itemize}
+        \item mode = bottom+left : pour les côtés bas et gauche
+        \item mode = top+right+bottom : pour les côtés haut, droit et bas
+        \item etc
+    \end{itemize}
+    Par défaut le mode vaut \emph{all} ce qui correspond à \emph{top+right+bottom+left}.
+
+\begin{demo}{Dplane, exemple avec mode = left+bottom}
+\begin{luadraw}{name=Dplane}
+local g = graph3d:new{size={8,8},window={-5.25,3,-2.5,2.5},margin={0,0,0,0},border=true}
+local i = cpx.I
+g:Labelsize("footnotesize")
+local A = Origin
+local P = {A, vecK}
+g:Dplane(P, vecJ, 6, 6, left+bottom)
+g:Dcrossdots3d({A,vecK},nil,0.75)
+g:Dseg3d({A,A+2*vecK},"->")
+g:Dangle3d(-vecJ,A,vecK,0.25)
+g:Dpolyline3d({{M(3.5,-3,0),M(3.5,3,0)},{M(3,-3.5,0), M(-3,-3.5,0)}}, "->,line width=0.8pt")
+g:Dlabel3d("$A$",A,{pos="E"}, 
+    "$u$",2*vecK,{},
+    "$P$", M(3,-3,0),{pos="NE", dir={vecJ,-vecI}},
+    "$L_1\\frac{V}{\\|V\\|}$ (bottom)", M(3.5,0,0), {pos="S"},
+    "$L_2\\frac{W}{\\|W\\|}$ (left)", M(0,-3.5,0), {pos="N",dir={-vecI,-vecJ}}
+)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Attention} : les notions de haut, droite, bas et gauche sont relatives ! Elles dépendent du sens des vecteurs $u$ (vecteur normal au plan) et $V$ (vecteur donné dans le plan). Le troisième vecteur $W$ est le produit vectoriel $u\wedge V$.
+
+\subsubsection{Courbe paramétrique : Dparametric3d}
+
+\begin{itemize}
+\item La fonction \textbf{parametric3d(p,t1,t2,nbdots,discont,nbdiv)} fait le calcul des points dela courbe et renvoie une ligne polygonale 3d (pas de dessin).
+  \begin{itemize}
+    \item L'argument \emph{p} est le paramétrage, ce doit être une fonction d'une variable réelle \emph{t} et à valeurs dans $\mathbf R^3$ (les images sont des points 3d), par exemple :
+    \mintinline{Lua}{local p = function(t) return Mc(3,t,t/3) end}
+    
+    \item  Les arguments \emph{t1} et \emph{t2} sont obligatoires avec \(t1 < t2\), ils forment les bornes de l'intervalle pour le paramètre.
+    
+    \item L'argument \emph{nbdots} est facultatif, c'est le nombre de points (minimal) à calculer, il vaut 40 par défaut.
+    
+    \item L'argument \emph{discont} est un booléen facultatif qui indique s'il y a des discontinuités ou non, c'est \emph{false} par défaut.
+    
+    \item L'argument \emph{nbdiv} est un entier positif qui vaut 5 par défaut et indique le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés.
+  \end{itemize}
+  
+\item La méthode \textbf{g:Dparametric3d(p,args)} fait le calcul des points et le dessin de la courbe paramétrée par \emph{p}. Le paramètre \emph{args} est une table à 6 champs :
+
+\begin{TeXcode}
+ { t={t1,t2}, nbdots=40, discont=true/false, clip=true/false, nbdiv=5, draw_options="" }
+\end{TeXcode}
+
+  \begin{itemize}
+      \item Par défaut, le champ \emph{t} est égal à \emph{\{g:Xinf(),g:Xsup()\}},
+      \item le champ \emph{nbdots} vaut 40, 
+      \item le champ \emph{discont} vaut \emph{false},
+      \item le champ \emph{nbdiv} vaut 5,
+      \item le champ \emph{clip} vaut \emph{false}, il indique si la courbe doit être clippée avec la fenêtre 3d courante.
+      \item le champ \emph{draw\_options} est une chaîne vide (celle-ci sera transmise telle quelle à l'instruction \emph{\textbackslash draw}).
+  \end{itemize}
+\end{itemize} 
+
+\begin{demo}{Une courbe et ses projections sur trois plans} 
+\begin{luadraw}{name=Dparametric3d}
+local g = graph3d:new{window3d={-4,4,-4,4,-3,3}, window={-7.5,6.5,-7,6}, size={8,8}}
+local pi = math.pi
+g:Labelsize("footnotesize")
+local p = function(t) return Mc(3,t,t/3) end
+local L = parametric3d(p,-2*pi,2*pi,25,false,2)
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+g:Lineoptions("dashed","red",2)
+-- projection sur le plan y=-4
+g:Dpolyline3d(proj3d(L,{M(0,-4,0),vecJ}))
+-- projection sur le plan x=-4
+g:Dpolyline3d(proj3d(L,{M(-4,0,0),vecI}))
+-- projection sur le plan z=-3
+g:Dpolyline3d(proj3d(L,{M(0,0,-3),vecK}))
+-- dessin de la courbe
+g:Lineoptions("solid","Navy",8)
+g:Dparametric3d(p,{t={-2*pi,2*pi}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Paramétrisation d'une ligne polygonale: \emph{curvilinear\_param3d}}
+Soit $L$ une liste de points 3d représentant une ligne \og continue \fg, il est possible d'obtenir une paramétrisation de cette ligne en fonction d'un paramètre $t$ entre $0$ et $1$ ($t$ est l'abscisse curviligne divisée par la longueur totale de $L$).
+
+La fonction \textbf{curvilinear\_param3d(L,close)} renvoie une fonction d'une variable $t\in[0;1]$ et à valeurs sur la ligne  $L$ (points 3d), la valeur en $t=0$ est le premier point de $L$, et la valeur en $t=1$ est le dernier point; cette fonction est suivie d'un nombre qui représente la longueur total de L. L'argument optionnel \emph{close} indique si la ligne $L$  doit être refermée (\emph{false} par défaut).
+
+
+\subsubsection{Le repère : Dboxaxes3d}
+
+La méthode \textbf{g:Dboxaxes3d( args )} permet de dessiner les trois axes, avec un certain nombre d'options définies dans la table \emph{args}. Ces options sont :
+\def\opt#1{\textcolor{blue}{\texttt{#1}}}%
+\begin{itemize}
+    \item \opt{xaxe=true/false}, \opt{yaxe=true/false} et \opt{zaxe=true/false} : indique si les axes correspondant doivent être dessinés ou non (true par défaut).
+
+    \item \opt{drawbox=true/false} : indique si une boite doit être dessinée avec les axes (false par défaut).
+
+    \item \opt{grid=true/false} : indique si une grille doit être dessinée (une pour $x$, une pour $y$ et une pour $z$). Lorsque cette option vaut true, on peut utiliser aussi les options suivantes :
+        \begin{itemize}
+            \item \opt{gridwidth} (=1 par défaut) indique l'épaisseur de trait de la grille en dixième de point.
+            \item \opt{gridcolor} ("black" par défaut) indique la couleur de la grille.
+            \item \opt{fillcolor} ("" par défaut) permet de peindre ou non le fond des grilles.
+        \end{itemize}
+    
+    \item \opt{xlimits=\{x1,x2\}}, \opt{ylimits=\{y1,y2\}}, \opt{zlimits=\{z1,z2\}} : permet de définir les trois intervalles utilisés pour les longueurs des axes. Par défaut ce sont les valeurs fournies à l'argument \opt{window3d} à la création du graphe.
+
+    \item \opt{xgradlimits=\{x1,x2\}}, \opt{ygradlimits=\{y1,y2\}}, \opt{zgradlimits=\{z1,z2\}} : permet de définir les trois intervalles de graduation sur les axes. Par défaut ces options ont la valeur "auto", ce qui veut dre qu'elles prennent les mêmes valeurs que \opt{xlimits}, \opt{ylimits} et \opt{zlimits}.
+    \item \opt{xyzstep} : indique le pas des graduations sur les trois axes (1 par défaut).
+    \item \opt{xstep}, \opt{ystep}, \opt{zstep} : indique le pas des graduations sur chaque axe (valeur de \opt{xyzstep} par défaut).
+
+    \item \opt{xyzticks} (0.2 par défaut) : indique la longueur des graduations.
+
+    \item \opt{labels} (true par défaut) : indique si la valeur des graduations doit être affichée ou non.
+    
+    \item \opt{xlabelsep}, \opt{ylabelsep}, \opt{zlabelsep} : indique la distance entre les labels et les graduations (0.25 par défaut).
+    
+    \item \opt{xlabelstyle}, \opt{ylabelstyle}, \opt{zlabelstyle} : indique le style des labels, c'est à dire la position par rapport au point d'ancrage. Par défaut c'est le style en cours qui s'applique.
+
+    \item \opt{xlegend} ("\$x\$" par défaut), \opt{ylegend} ("\$y\$" par défaut), \opt{zlegend} ("\$z\$" par défaut) : permet de définir une légende pour les axes.
+    
+    \item \opt{xlegendsep}, \opt{ylegendsep}, \opt{zlegendsep} : indique la distance entre les legendes et les graduations (0.5 par défaut).     
+\end{itemize}
+
+\subsection{Points et labels}
+
+\subsubsection{Points 3d : Ddots3d, Dballdots3d, Dcrossdots3d}
+
+Il y a trois possibilités de dessiner des points 3d. Pour les deux premières, l'argument \emph{L} peut être soit un seul point 3d, soit une liste (une table) de points 3d, soit une liste de listes de points 3d :
+
+\begin{itemize}
+    \item La méthode \textbf{g:Ddots3d(L, mark\_options,clip)}. Le principe est le même que dans la version 2d, les points sont dessinés dans la couleur courante du tracé de lignes avec le style courant. L'argument \emph{mark\_options} est une chaîne de caractères facultative qui sera passée telle quelle à l'instruction \emph{\textbackslash draw} (modifications locales). L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante.
+    
+    \item La méthode \textbf{g:Dballdots3d(L,color,scale,clip)} dessine les points de \emph{L} sous forme d'une sphère. L'argument facultatif \emph{color} précise la couleur de la sphère ("black" par défaut), et l'argument facultatif \emph{scale} permet de jouer sur la taille de la sphère (1 par défaut).
+    
+    \item La méthode \textbf{g:Dcrossdots3d(L,color,scale,clip)} dessine les points de \emph{L} sous forme d'une croix plane. L'argument \emph{L} est une liste de la forme \{point 3d, vecteur normal\} ou \{ \{point3d, vecteur normal\}, \{point3d, vecteur normal\}, ...\}. Pour chaque point 3d, le vecteur normal associé permet de déterminer le plan contenant la croix. L'argument facultatif \emph{color} précise la couleur de la croix ("black" par défaut), et l'argument facultatif \emph{scale} permet de jouer sur la taille de la croix (1 par défaut).
+\end{itemize}
+
+\begin{demo}{Un tétraèdre et les centres de gravité de chaque face}
+\begin{luadraw}{name=Ddots3d}
+local g = graph3d:new{viewdir={15,60},bbox=false,size={8,8}}
+local A, B, C, D = 4*M(1,0,-0.5), 4*M(-1/2,math.sqrt(3)/2,-0.5), 4*M(-1/2,-math.sqrt(3)/2,-0.5), 4*M(0,0,1)
+local u, v, w = B-A, C-A, D-A
+-- centres de gravité faces cachées
+for _, F in ipairs({{A,B,C},{B,C,D}}) do
+    local G, u = isobar3d(F), pt3d.prod(F[2]-F[1],F[3]-F[1])
+    g:Dcrossdots3d({G,u}, "blue",0.75)
+    g:Dpolyline3d({{F[1],G,F[2]},{G,F[3]}},"dotted")
+end
+-- dessin du tétraèdre construit sur A, B, C et D
+g:Dpoly(tetra(A,u,v,w),{mode=mShaded,opacity=0.7,color="Crimson"})
+-- centres de gravité faces visibles
+for _, F in ipairs({{A,B,D},{A,C,D}}) do
+    local G, u = isobar3d(F), pt3d.prod(F[2]-F[1],F[3]-F[1])
+    g:Dcrossdots3d({G,u}, "blue",0.75)
+    g:Dpolyline3d({{F[1],G,F[2]},{G,F[3]}},"dotted")
+end
+g:Dballdots3d({A,B,C,D}, "orange") --sommets
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Labels 3d : Dlabel3d}
+
+La méthode pour placer un label dans l'espace est :
+
+\hfil\textbf{g:Dlabel3d(text1, anchor1, args1, text2, anchor2, args2, ...)}.\hfil
+
+    \begin{itemize}
+    \item  Les arguments \emph{text1, text2,...} sont des chaînes de caractères, ce sont les labels.
+    \item  Les arguments \emph{anchor1, anchor2,...} sont des points 3d représentant les points d'ancrage des labels.
+    \item  Les arguments \emph{args1,arg2,...}  permettent de définir localement les paramètres des labels, ce sont des tables à 4 champs :
+\begin{TeXcode}
+    { pos=nil, dist=0, dir={dirX,dirY,dep}, node_options="" }
+\end{TeXcode}
+        \begin{itemize}
+            \item Le champ \emph{pos} indique la position du label dans le plan de l'écran par rapport au point d'ancrage, il peut valoir \emph{"N"} pour nord, \emph{"NE"} pour nord-est, \emph{"NW"} pour nord-ouest, ou encore \emph{"S"}, \emph{"SE"}, \emph{"SW"}. Par défaut, il vaut \emph{center}, et dans ce cas le label est centré sur le point  d'ancrage.
+            \item Le champ \emph{dist} est une distance en cm (dans le plan de l'écran) qui vaut $0$ par défaut, c'est la distance entre le label et son point d'ancrage lorsque \emph{pos} n'est pas égal a \emph{center}.
+            \item \emph{dir=\{dirX,dirY,dep\}} est la direction de l'écriture dans l'espace (\emph{nil}, valeur par défaut, pour le sens par défaut). Les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois points 3d représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage.
+            \item L'argument \emph{node\_options} est une chaîne (vide par défaut) destinée à recevoir des options qui seront directement passées à tikz dans l'instruction \emph{node{[}{]}}.
+            \item Les labels sont dessinés dans la couleur courante du texte du document, mais on peut changer de couleur avec l'argument \emph{node\_options} en mettant par exemple : \emph{node\_options="color=blue"}.
+            
+            \textbf{Attention} : les options choisies pour un label s'appliquent aussi aux labels suivants si elles sont inchangées.
+        \end{itemize}
+  \end{itemize}
+
+\subsection{Solides de base (sans facette)}
+
+\subsubsection{Cylindre : Dcylinder}
+
+Dessiner un cylindre à base circulaire (droit ou penché). Plusieurs syntaxes possibles :
+\begin{itemize}
+    \item Ancienne syntaxe : \textbf{g:Dcylinder(A,V,r,args)} dessine un cylindre droit, où \emph{A} est un point 3d représentant le centre d'une des faces circulaires, \emph{V} est un point 3d, c'est un vecteur représentant l'axe du cône, le centre de la face circulaire opposée est le point $A+V$ (cette face est orthogonale à $V$), et \emph{r} est le rayon de la base circulaire.
+    \item La syntaxe : \textbf{g:Dcylinder(A,r,B,args)} dessine un cylindre droit, où \emph{A} est un point 3d représentant le centre d'une des faces circulaires, \emph{B} est le centre de la face opposée, et \emph{r} est le rayon. Le cylindre est droit, c'est à dire que les faces circulaires sont orthogonales à l'axe $(AB)$.
+    \item Pour un cylindre penché :  \textbf{g:Dcylinder(A,r,V,B,args)}, où \emph{A} est un point 3d représentant le centre d'une des faces circulaires, \emph{B} est le centre de la face circulaire opposée, \emph{r} est le rayon, et \emph{V} est un vecteur 3d non nul orthogonal au plan des faces circulaires.
+\end{itemize}
+Pour les trois syntaxes, \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+       \begin{itemize}
+            \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
+            \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+            \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
+            \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
+            \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+            \item \emph{opacity=1}, définit la transparence du dessin.
+        \end{itemize}
+
+\subsubsection{Cône : Dcone}
+
+Dessiner un cône à base circulaire (droit ou penché). Plusieurs syntaxes possibles :
+\begin{itemize}
+    \item Ancienne syntaxe : \textbf{g:Dcone(A,V,r,args)} dessine un cône droit, où \emph{A} est un point 3d représentant le sommet du cône, \emph{V} est un point 3d, c'est un vecteur représentant l'axe du cône, le centre de la face circulaire est le point $A+V$ (cette face est orthogonale à $V$), et \emph{r} est le rayon de la base circulaire.
+    \item La syntaxe : \textbf{g:Dcone(C,r,A,args)} dessine un cône droit, où \emph{A} est un point 3d représentant le sommet du cône, \emph{C} est le centre de la face circulaire, et \emph{r} est le rayon. Le cône est droit, c'est à dire que la face circulaire est orthogonale à l'axe $(AC)$.
+    \item Pour un cône penché :  \textbf{g:Dcone(C,r,V,A,args)}, où \emph{A} est un point 3d représentant le sommet du cône, \emph{C} est le centre de la face circulaire, \emph{r} est le rayon, et \emph{V} est un vecteur 3d non nul orthogonal au plan de la face circulaire.
+\end{itemize}
+Pour les trois syntaxes, \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+\begin{itemize}
+    \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
+    \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+    \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
+    \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
+    \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+    \item \emph{opacity=1}, définit la transparence du dessin.
+\end{itemize}
+
+\subsubsection{Tronc de cône : Dfrustum}
+
+Dessiner un tronc de cône à base circulaire (droit ou penché). Deux syntaxes possibles :
+La méthode \textbf{g:Dfrustum(A,V,R,r,args)} dessine un tronc de cône à bases circulaires.
+
+\begin{itemize}
+    \item La syntaxe : \textbf{g:Dfrustum(A,R,r,V,args)} pour un tronc de cône droit, \emph{A} est un point 3d représentant le centre de la face de rayon \emph{R}, \emph{V} est un vecteur 3d représentant l'axe du tronc de cône, le centre de la deuxième face circulaire est le point $A+V$, et son rayon est \emph{r},  (les faces sont orthogonales à $V$). Lorsque $R=r$ on a simplement un cylindre.
+    \item La syntaxe : \textbf{g:Dfrustum(A,R,r,V,B,args)} pour un tronc de cône penché, \emph{A} est un point 3d représentant le centre de la face de rayon \emph{R}, \emph{V} est un vecteur 3d représentant un vecteur normal aux faces circulaires, le centre de la deuxième face circulaire est le point $B$, et son rayon est \emph{r}. Lorsque $R=r$ on a un cylindre penché.
+\end{itemize}
+Dans les deux cas, \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+    \begin{itemize}
+        \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
+        \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+        \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
+        \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
+        \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+        \item \emph{opacity=1}, définit la transparence du dessin.
+    \end{itemize}
+
+\subsubsection{ Sphère : Dsphere}
+
+La méthode \textbf{g:Dsphere(A,r,args)} dessine une sphère
+
+\begin{itemize}
+    \item \emph{A} est un point 3d représentant le centre de la sphère.
+    \item \emph{r} est le rayon de la pshère
+    \item \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+        \begin{itemize}
+            \item \emph{mode=mWireframe ou mGrid ou mBorder} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} on dessine le contour (cercle) et l'équateur, en mode \emph{mGrid} c'est le contour avec méridiens et fuseaux (grille), et en mode \emph{mBorder} c'est le contour uniquement.
+            \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+            \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
+            \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
+            \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec "ball color".
+            \item \emph{opacity=1}, définit la transparence du dessin.
+            \item \emph{edgestyle}, définit le style de ligne pour les arêtes visibles, par défaut c'est le style courant.
+            \item \emph{edgecolor}, définit la couleur des arêtes visibles (couleur courante par défaut).
+            \item \emph{edgewidth}, définit l'épaisseur des des arêtes visible en dixième de point (épaisseur courante par défaut).
+        \end{itemize}
+\end{itemize}
+
+\begin{demo}{Cylindres, cônes et sphères}
+\begin{luadraw}{name=cylindre_cone_sphere}
+local g = graph3d:new{ size={10,10} }
+local dessin = function(args)
+    g:Dsphere(M(-1,-2.5,1),2.5, args)
+    g:Dcone(M(-1,2.5,5),-5*vecK,2, args)
+    g:Dcylinder(M(3,-2,0),6*vecJ,1.5, args)
+end
+-- en haut à gauche, options par défaut
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-5,5,-5,5,true); dessin(); g:Restoreattr()
+-- en haut à droite
+g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-5,5,-5,5,true)
+dessin({mode=mGrid, hiddenstyle="solid", hiddencolor="LightGray"}); g:Restoreattr()
+-- en bas à gauche
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-5,5,-5,5,true)
+dessin({mode=Border, color="orange"}); g:Restoreattr()
+-- en bas à droite
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-5,5,-5,5,true)
+dessin({mode=mGrid,opacity=0.8,hiddenstyle="noline",color="LightBlue"}); g:Restoreattr()
+g:Show()            
+\end{luadraw}
+\end{demo}

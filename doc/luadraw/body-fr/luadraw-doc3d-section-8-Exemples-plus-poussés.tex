@@ -1,0 +1,272 @@
+\section{Exemples plus poussés}
+
+\subsection{La boîte de sucres}
+
+Le problème\footnote{Problème posé dans un forum, l'objectif étant d'en faire des exercices de comptage pour des élèves.} est de dessiner des sucres dans une boîte. Il faut pouvoir positionner le nombre que l'on veut de morceaux, et où on veut dans la boite\footnote{Un morceau doit reposer soit sur le fond de la boîte, soit sur un autre morceau} sans avoir à réécrire tout le code. Autre contrainte : pour alléger au maximum la figure, seules les facettes réellement vues doivent être affichées. Dans le code proposé ci-dessous on garde les angles de vues par défaut, et :
+\begin{itemize}
+    \item les sucres sont des cubes de côté 1 (on modifie ensuite la matrice 3d du graphe pour les "allonger"),
+    \item chaque morceau est repéré par les coordonnées $(x,y,z)$ du coin supérieur droit de la face avant, avec $x$ entier 1 et \emph{Lg}, $y$ entier entre 1 et \emph{lg} et $z$ entier entre 1 et \emph{ht}.
+    \item pour mémoriser les positions des morceaux on utilise une matrice \emph{positions} à trois dimensions, une pour $x$, une pour $y$ et une pour $z$, avec la convention que \emph{positions[x][y][z]} vaut 1 s'il y a un sucre à la position $(x,y,z)$, et 0 sinon.
+    \item pour chaque morceau il y a au plus trois faces visibles : celles du dessus, celle de droite et celle de devant\footnote{À condition de ne pas changer les angles de vue !}, mais on ne dessine la face du dessus que s'il n'y a pas un autre morceau de sucre au-dessus, on ne dessine la face du droite que s'il n'y a pas un autre morceau à droite, et on ne dessine la face de devant que s'il n'y a pas un autre morceau devant. On construit ainsi la liste des facettes réellement vues.
+    \item Dans l'affichage de la scène, il faut \textbf{mettre la boîte en premier}, sinon les facettes de celle-ci vont être découpées par les plans des facettes des morceaux de sucre. Les facettes des morceaux de sucre ne peuvent pas être découpées par la boîte car ils sont tous dedans.
+\end{itemize}
+
+\begin{demo}{Boite de morceaux de sucre}
+\begin{luadraw}{name=boite_sucres}
+local g = graph3d:new{window={-9,8,-10,4},size={10,10}}
+Hiddenlines = false
+local Lg, lg, ht = 5, 4, 3 -- longueur, largeur, hauteur (taille de la boîte)
+local positions = {} -- matrice de dimension 3 initialisée avec des 0
+for L = 1, Lg do
+    local X = {}
+    for l = 1, lg do
+        local Y = {}
+        for h = 1, ht do table.insert(Y,0) end
+        table.insert(X,Y)
+    end
+    table.insert(positions,X)
+end
+local facetList = function() -- renvoie la liste des facettes à dessiner (attention à l'orientation)
+    local facet = {}
+    for x = 1, Lg do -- parcours de la matrice positions
+        for y = 1, lg do
+            for z = 1, ht do
+                if positions[x][y][z] == 1 then -- il y a un sucre en (x,y,z)
+                    if (z == ht) or (positions[x][y][z+1] == 0) then -- pas de sucre au-dessus donc face du dessus visible
+                        table.insert(facet, {M(x,y,z),M(x-1,y,z),M(x-1,y-1,z),M(x,y-1,z)}) -- insertion face du dessus
+                    end
+                    if (y == lg) or (positions[x][y+1][z] == 0) then -- pas de sucre à droite donc face de droite visible
+                        table.insert(facet, {M(x,y,z),M(x,y,z-1),M(x-1,y,z-1),M(x-1,y,z)}) -- insertion face de droite
+                    end
+                    if (x == Lg) or (positions[x+1][y][z] == 0) then -- pas de sucre devant donc face de devant visible
+                        table.insert(facet, {M(x,y,z),M(x,y-1,z),M(x,y-1,z-1),M(x,y,z-1)}) -- insertion face de devant
+                    end
+                end
+            end
+        end
+    end
+    return facet
+end
+-- création de la boîte (parallélépipède)
+local O = Origin -0.1*M(1,1,1) -- pour ne pas que la boîte soit collée aux sucres
+local boite = parallelep(O, (Lg+0.2)*vecI, (lg+0.2)*vecJ, (ht+0.5)*vecK)
+table.remove(boite.facets,2) -- on retire le dessus de la boîte, c'est la facette numéro 2
+-- on positionne des sucres
+for y = 1, 4 do for z = 1, 3 do  positions[1][y][z] = 1 end end
+for x = 2, 5 do for z = 1, 2 do positions[x][1][z] = 1 end end
+for z = 1, 3 do positions[5][3][z] = 1 end
+for z = 1, 2 do positions[4][4][z] = 1 end
+for z = 1, 2 do positions[3][4][z] = 1 end
+positions[5][1][3] = 1; positions[3][1][3] = 1; positions[5][4][1] = 1; positions[2][3][1] = 1
+g:Setmatrix3d({Origin,3*vecI,2*vecJ,vecK}) -- dilatation sur Ox et Oy pour "allonger" les cubes ...
+g:Dscene3d( -- dessin
+    g:addPoly(boite,{color="brown",edge=true,opacity=0.9}),
+    g:addFacet(facetList(), {backcull=true,contrast=0.25,edge=true})    )
+g:Labelsize("huge"); g:Dlabel3d( "SUGAR", M(Lg/2+0.1,lg+0.1,ht/2+0.1), {dir={-vecI,vecK}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Empilement de cubes}
+
+On peut modifier l'exemple précédent pour dessiner un empilement de cubes positionnés au hasard, avec 4 vues. On va positionner les cubes en en mettant un nombre aléatoire par colonne en commençant par le bas. On va faire 4 vues de l'empilement en ajoutant les axes pour se repérer entre ces différentes vues. Cela change un peu la recherche des facettes potentiellement visibles, il y a 5 cas par cube et non plus seulement 3 (devant, derrière, gauche, droite et dessus, on ne fait pas de vues de dessous). Pour plus de lisibilité de l'empilement, on utilise trois couleurs pour peindre les faces des cubes (deux faces opposées ont la même couleur).
+
+\begin{demo}{Empilement de cubes}
+\begin{luadraw}{name=cubes_empiles}
+local g = graph3d:new{window3d={-6,6,-6,6,-6,6},size={10,10}}
+Hiddenlines = false
+local Lg, lg, ht, a = 5, 5, 5, 2 -- longueur, largeur, hauteur de l'espace à remplir, taille d'un cube
+local positions = {} -- matrice de dimension 3 initialisée avec des 0
+for L = 1, Lg do
+    local X = {}
+    for l = 1, lg do
+        local Y = {}
+        for h = 1, ht do table.insert(Y,0) end
+        table.insert(X,Y)
+    end
+    table.insert(positions,X)
+end
+for x = 1, Lg do  -- positionnement aléatoire de cubes
+    for y = 1, lg do
+        local nb = math.random(0,ht) -- on met nb cubes dans la colonne (x,y,*) en partant du bas
+        for z = 1, nb do positions[x][y][z] = 1 end
+    end
+end
+local dessus,gauche,devant = {},{},{} -- pour mémoriser les facettes
+for x = 1, Lg do -- parcours de la matrice positions pour déterminer les facettes à dessiner
+    for y = 1, lg do
+        for z = 1, ht do
+            if positions[x][y][z] == 1 then -- il y a un cube en (x,y,z)
+                if (z == ht) or (positions[x][y][z+1] == 0) then -- pas de cube au-dessus donc face visible
+                    table.insert(dessus,{M(x,y,z),M(x-1,y,z),M(x-1,y-1,z),M(x,y-1,z)}) -- insertion face du dessus
+                end
+                if (y == lg) or (positions[x][y+1][z] == 0) then -- pas de cube à droite donc face  visible
+                    table.insert(gauche,{M(x,y,z),M(x,y,z-1),M(x-1,y,z-1),M(x-1,y,z)}) -- insertion face droite
+                end
+                if (y == 1) or (positions[x][y-1][z] == 0) then -- pas de cube à gauche donc face visible
+                    table.insert(gauche,{M(x,y-1,z),M(x-1,y-1,z),M(x-1,y-1,z-1),M(x,y-1,z-1)}) -- insertion face gauche
+                end                    
+                if (x == Lg) or (positions[x+1][y][z] == 0) then -- pas de cube devant donc face visible
+                    table.insert(devant,{M(x,y,z),M(x,y-1,z),M(x,y-1,z-1),M(x,y,z-1)}) -- insertion face avant
+                end
+                if (x == 1) or (positions[x-1][y][z] == 0) then -- pas de cube derrière donc face de derrière visible
+                    table.insert(devant,{M(x-1,y,z),M(x-1,y,z-1),M(x-1,y-1,z-1),M(x-1,y-1,z)}) -- insertion face arrière
+                end
+            end
+        end
+    end
+end
+g:Setmatrix3d({M(-a*Lg/2,-a*lg/2,-a*ht/2),a*vecI,a*vecJ,a*vecK}) -- pour centrer la figure et avoir des cubes de côté a
+local dessin = function()
+    g:Dscene3d(
+        g:addFacet(dessus, {backcull=true,color="Crimson"}), g:addFacet(gauche, {backcull=true,color="DarkGreen"}),
+        g:addFacet(devant, {backcull=true,color="SteelBlue"}),
+        g:addPolyline(facetedges(concat(dessus,gauche,devant))), -- dessin des arêtes
+        g:addAxes(Origin,{arrows=1}))
+end
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-11,11,-11,11); g:Setviewdir(45,60) -- en haut à gauche
+ dessin(); g:Restoreattr()
+g:Saveattr(); g:Viewport(0,5,0,5);g:Coordsystem(-11,11,-11,11); g:Setviewdir(-45,60) -- en haut à droite
+dessin(); g:Restoreattr()
+g:Saveattr(); g:Viewport(-5,0,-5,0);g:Coordsystem(-11,11,-11,11); g:Setviewdir(-135,60) -- en bas à gauche
+dessin(); g:Restoreattr()
+g:Saveattr(); g:Viewport(0,5,-5,0);g:Coordsystem(-11,11,-11,11); g:Setviewdir(135,60) -- en bas à droite
+dessin(); g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Illustration du théorème de Dandelin}
+
+\begin{demo}{Illustration du théorème de Dandelin}
+\begin{luadraw}{name=Dandelin}
+local g = graph3d:new{window3d={-5,5,-5,5,-5,5}, window={-5,5,-5,6}, bg="lightgray",viewdir={-10,85}}
+g:Linewidth(8)
+local sqrt = math.sqrt
+local sqr = function(x) return x*x end
+local L, a = 4.5, 2
+local R = (a+5)*L/sqrt(100+L^2) --grosse sphère centre=M(0,0,a) rayon=R
+local S2 = sphere(M(0,0,a),R,45,45)
+local k = 0.35 --rapport d'homothetie
+local b, r = (a+5)*k-5, k*R -- petite sphère centre=M(0,0,b) rayon=r
+local S1 = sphere(M(0,0,b),r,45,45)
+local c = (b+k*a)/(1+k)  --deuxieme centre d'homothetie
+local z = a+sqr(R)/(c-a) --image de c par l'inversion par rapport à la grosse sphère
+local M1 = M(0,sqrt(sqr(R)-sqr(z-a)),z)--point de la grosse sphère et du plan tangent
+local N = M1-M(0,0,a) -- vecteur normal au plan tangent
+local plan = {M(0,0,c),-N} -- plan tangent
+local z2 = a+sqr(R)/(-5-a) --image du sommet par l'inversion par rapport à la grosse sphère
+local z1 = b+sqr(r)/(-5-b) -- image du sommet par l'inversion par rapport à la petite sphère
+local P2 = M(sqrt(R^2-(z2-a)^2),0,z2)
+local P1= M(sqrt(r^2-(z1-b)^2),0,z1)
+local S = M(0,0,-5)
+local P = interDP({P1,P2-P1},plan)
+local C = cone(M(0,0,-5),10*vecK,L,45,true)
+local ellips = g:Intersection3d(C,plan)
+local plan1 = {M(0,0,z1),vecK}
+local plan2 = {M(0,0,z2),vecK}
+local L1, L2 = g:Intersection3d(S1,plan1), g:Intersection3d(S2,plan2)
+local F1, F2 = proj3d(M(0,0,b), plan), proj3d(M(0,0,a), plan)  --foyers
+local s1, s2 = g:Proj3d(M(0,0,a)), g:Proj3d(M(0,0,b))
+local V, H = g:Classifyfacet(C) -- on sépare facettes visibles et les autres
+local V1, V2 = cutfacet(V,plan)
+local H1, H2 = cutfacet(H,plan)
+-- Dessin
+g:Dpolyline3d( border(H2),"left color=white, right color=DarkSeaGreen, draw=none" ) -- faces non visibles sous le plan, remplissage seulement
+g:Dsphere( M(0,0,b), r, {mode=mBorder,color="Orange"}) -- petite sphère
+g:Dpolyline3d( border(V2),"left color=white, right color=DarkSeaGreen, fill opacity=0.4" ) -- faces visibles sous le plan
+g:Dpolyline3d({S,P})  -- segment [S,P] qui est sous le plan en partie
+g:Dfacet( g:Plane2facet(plan,0.75), {color="Chocolate", opacity=0.8}) -- le plan
+g:Dpolyline3d( border(H1),"left color=white, right color=DarkSeaGreen,draw=none,fill opacity=0.7" ) -- contour faces non visibles au dessus du plan, remplissage seulement
+g:Dsphere( M(0,0,a),R, {mode=2,color="SteelBlue"}) -- grosse sphère
+g:Dpolyline3d( border(V1),"left color=white, right color=DarkSeaGreen, fill opacity=0.6" ) -- contour faces visibles au dessus du plan
+g:Dcircle3d(M(0,0,5),L,vecK) -- ouverture du cône
+g:Dpolyline3d({{P,F1},{F2,P,P2}})
+g:Dedges(L1,{hidden=true,color="FireBrick"})
+g:Dedges(L2,{hidden=true,color="FireBrick"})
+g:Dedges(ellips,{hidden=true, color="blue"})
+g:Dballdots3d({F1,F2,S,P1,P,P2},nil,0.75)
+g:Dlabel3d(
+  "$F_1$",F1,{pos="N"}, "$F_2$",F2,{}, "$N_2$",P2,{},"$S$",S,{pos="S"}, "$N_1$",P1,{pos="SE"}, "$P$",P,{pos="SE"} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+On veut dessiner un cône avec une section par un plan et deux sphères à l'intérieur de ce cône (et tangentes au plan), mais sans dessiner de sphères ni de cônes à facettes. Le point de départ est néanmoins la création de ces solides à facettes, les sphères \emph{S1} et \emph{S2} (lignes 11 et 8 du listing) ainsi que le cône \emph{C} en ligne 23. Le principe du dessin est le suivant :
+\begin{enumerate}
+    \item On sépare les facettes du cône en deux catégories : les facettes visibles (tournées vers l'observateur) et les autres (variables \emph{V} et \emph{H} ligne 30), ce qui correspond en fait à l'avant du cône et l'arrière du cône.
+    \item On découpe les deux listes de facettes avec le plan (lignes 31 et 32). Ainsi, \emph{V1} correspond aux facettes avant situées au-dessus du plan et \emph{V2} correspond aux facettes avant situées sous le plan (même chose avec \emph{H1} et \emph{H2} pour l'arrière).
+    \item On dessine alors le contour de \emph{H2} avec un remplissage (seulement) en gradient (ligne 34).
+    \item On dessine la petite sphère (en orange, ligne 35).
+    \item On dessine le contour de \emph{V2} avec un remplissage en gradient et transparence pour voir la petite sphère  (ligne 36).
+    \item On dessine le segment $[S,P]$ (ligne 37) puis le plan sous forme de facette transparente (ligne 38).
+    \item On dessine le contour de \emph{H1} avec un remplissage en gradient (ligne 39). C'est la partie arrière au dessus du plan.
+    \item On dessine la grande sphère (ligne 40).
+    \item On dessine enfin le contour de \emph{V1} avec un remplissage en gradient (ligne 41) et transparence pour voir la sphère (c'est la partie avant du cône au dessus du plan), puis l'ouverture du cône (ligne 42).
+    \item On dessine les intersections entre le cône et les sphères (lignes 44 et 45) ainsi qu'entre le cône et le plan (ligne 46).
+\end{enumerate}
+
+\subsection{Volume défini par une intégrale double}
+\begin{demo}{Volume correspondant à $\int_{x_1}^{x_2}\int_{y_1}^{y_2}f(x,y)dxdy$}
+\begin{luadraw}{name=volume_integrale}
+local i, pi, sin, cos = cpx.I, math.pi, math.sin, math.cos
+local g = graph3d:new{window3d={-4,4,-4,4,0,6},adjust2d=true,margin={0,0,0,0},size={10,10}}
+local x1, x2, y1, y2 = -3,3,-3,3 -- bornes
+local f = function(x,y) return cos(x)+sin(y)+5 end -- fonction à intégrer
+local p = function(u,v) return M(u,v,f(u,v)) end -- paramétrage surface z=f(x,y)
+local Fx1 = concat({pxy(p(x1,y2)), pxy(p(x1,y1))}, parametric3d(function(t) return p(x1,t) end,y1,y2,25,false,0)[1])
+local Fx2 = concat({pxy(p(x2,y1)), pxy(p(x2,y2))}, parametric3d(function(t) return p(x2,t) end,y2,y1,25,false,0)[1])
+local Fy1 = concat({pxy(p(x1,y1)), pxy(p(x2,y1))}, parametric3d(function(t) return p(t,y1) end,x2,x1,25,false,0)[1])
+local Fy2 = concat({pxy(p(x2,y2)), pxy(p(x1,y2))}, parametric3d(function(t) return p(t,y2) end,x1,x2,25,false,0)[1])
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="LightGray",labels=false})
+g:Filloptions("fdiag","black"); g:Dpolyline3d( {M(x1,y1,0),M(x1,y2,0),M(x2,y2,0),M(x2,y1,0)}) -- dessous
+g:Dfacet( {Fx1,Fx2,Fy1,Fy2},{mode=mShaded,opacity=0.7,color="Crimson"} )
+g:Dfacet(surface(p,x1,x2,y1,y2), {mode=mShadedOnly,color="cyan"})
+g:Dlabel3d("$x_1$", M(x1,4.75,0),{}, "$x_2$", M(x2,4.75,0),{}, "$y_1$", M(4.75,y1,0),{}, "$y_2$", M(4.75,y2,0),{}, "$0$",M(4,-4.75,0),{})  
+g:Show()  
+\end{luadraw}
+\end{demo}
+
+Ici le solide représenté a des faces latérales (\emph{Fx1}, \emph{Fx2}, \emph{Fy1} et \emph{Fy2}) présentant un côté qui est une courbe paramétrée. On prend donc les points de cette courbe paramétrée (sa première composante connexe) et on lui ajoute les projetés des deux extrémités sur le plan $xOy$. Il faut faire attention au sens de parcours pour que les faces soient bien orientées (normale vers l'extérieur), cette normale étant calculée à partir des trois premiers points de la face, il vaut mieux commencer la face par les deux projetés sur le plan pour être sur de l'orientation.
+On dessine en premier le dessous, puis les faces latérales, et on termine par la surface.
+
+\subsection{Volume défini sur autre chose qu'un pavé}
+\begin{demo}{Volume : $0\leqslant x\leqslant1;\ 0\leqslant y \leqslant x^2;\ 0\leqslant z\leqslant y^2$}
+\begin{luadraw}{name=volume2}
+local i = cpx.I
+local g = graph3d:new{window3d={0,1,0,1,0,1}, margin={0,0,0,0},adjust2d=true,viewdir={170,40}, size={10,10}}
+g:Labelsize("scriptsize")
+local f = function(t) return M(t,t^2,0) end
+local h = function(t) return M(1,t,t^2) end
+local C = parametric3d(f,0,1,25,false,0)[1] -- courbe y=x^2 dans le plan z=0 (première composante connexe)
+local D = parametric3d(h,1,0,25,false,0)[1] -- courbe z=y^2 dans le plan x=1, en sens inverse
+local dessous = concat({M(1,0,0)},C) -- forme la face du dessous
+local arriere = concat({M(1,1,0)},D) -- forme la face arrière
+local  avant, dessus, A, B = {}, {}, nil, C[1]
+for k = 2, #C do --on construit les faces avant et de dessus facette par facette, en partant des points de C
+    A = B; B = C[k]
+    table.insert(avant, {B,A,M(A.x,A.y,A.y^2),M(B.x,B.y,B.y^2)})
+    table.insert(dessus, {M(B.x,B.y,B.y^2),M(A.x,A.y,A.y^2),M(1,A.y,A.y^2),M(1,B.y,B.y^2)})
+end
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="LightGray", drawbox=false, 
+    xyzstep=0.25, zlabelstyle="W",zlabelsep=0})
+g:Lineoptions(nil,"Navy",8)  
+g:Dpolyline3d(arriere,close,"fill=Crimson, fill opacity=0.6") -- face arrière (plane)
+g:Filloptions("fdiag","black"); g:Dpolyline3d(dessous,close) -- dessous
+g:Dmixfacet(avant,{color="Crimson",opacity=0.7,mode=mShadedOnly}, dessus,{color="cyan",opacity=1})
+g:Filloptions("none"); g:Dpolyline3d(concat(border(avant),border(dessus)))
+g:Show() 
+\end{luadraw}
+\end{demo}
+
+Dans cet exemple, la surface a pour équation $z=y^2$ (cylindre parabolique), mais nous ne sommes plus sur un pavé. La face avant n'est pas plane, on construit celle-ci à la manière d'un cylindre (ligne 14) avec des facettes verticales qui s'appuient sur la courbe $C$ en bas, et sur la courbe $t\mapsto M(t,t^2,t^4)$ en haut.
+
+De même, la face du dessus (la surface) est construite à la manière d'un cylindre horizontal qui s'appuie sur les courbes $D$ et $t\mapsto M(t,t^2,t^4)$.
+
+On pourrait ne pas construire à la main la surface (appelée \emph{dessus} dans le code), et dessiner à la place la surface suivante (après la face avant) :
+\begin{Luacode}
+g:Dfacet( surface(function(u,v) return M(u,v*u^2,v^2*u^4) end, 0,1,0,1), {mode=mShadedOnly, color="cyan"})
+\end{Luacode}
+mais elle comporte bien plus de facettes (25*25) que la construction sous forme de cylindre (21 facettes), ce qui est moins intéressant.
+

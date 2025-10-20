@@ -1,0 +1,174 @@
+\section{Calcul matriciel}
+
+Si $f$ est une application affine du plan complexe, on appellera matrice de $f$ la liste (table) :
+\begin{Luacode}
+{ f(0), Lf(1), Lf(i) }
+\end{Luacode}
+où $Lf$ désigne la partie linéaire de $f$ (on a $Lf(1) = f(1)-f(0)$ et $Lf(i)=f(i)-f(0)$). La matrice identité est notée \emph{ID} dans le paquet \emph{luadraw}, elle correspond simplement à la liste \mintinline{Lua}{ {0,1,i} }.
+
+\subsection{Calculs sur les matrices}
+
+\subsubsection{applymatrix et applyLmatrix}
+\begin{itemize}
+    \item La fonction \textbf{applymatrix(z,M)} applique la matrice $M$ au complexe $z$ et renvoie le résultat (ce qui revient à calculer $f(z)$ si $M$ est la matrice de $f$). Lorsque $z$ est le complexe \emph{cpx.Jump} alors le résultat est \emph{cpx.Jump}. Lorsque $z$ est une chaîne de caractères alors la fonction renvoie $z$.
+    \item La fonction \textbf{applyLmatrix(z,M)} applique la partie linéaire la matrice $M$ au complexe $z$ et renvoie le résultat (ce qui revient à calculer $Lf(z)$ si $M$ est la matrice de $f$). Lorsque $z$ est le complexe \emph{cpx.Jump} alors le résultat est \emph{cpx.Jump}.
+\end{itemize}
+
+\subsubsection{composematrix}
+La fonction \textbf{composematrix(M1,M2)} effectue le produit matriciel $M1\times M2$ et renvoie le résultat.
+
+\subsubsection{invmatrix}
+La fonction \textbf{invmatrix(M)} calcule et renvoie l'inverse de la matrice $M$ lorsque cela est possible.
+
+\subsubsection{matrixof}
+\begin{itemize}
+    \item La fonction \textbf{matrixof(f)} calcule et renvoie la matrice de $f$ (qui doit être une application affine du plan complexe.
+    \item Exemple : \mintinline{Lua}{ matrixof( function(z) return proj(z,{0,Z(1,-1)}) end )} renvoie \par
+     \mintinline{Lua}{{0,Z(0.5,-0.5),Z(-0.5,0.5)}} (matrice de la projection orthogonale sur la deuxième bissectrice).
+\end{itemize}
+
+\subsubsection{mtransform et mLtransform}
+\begin{itemize}
+    \item La fonction \textbf{mtransform(L,M)} applique la matrice $M$ à la liste $L$ et renvoie le résultat. $L$ doit être une liste de complexes ou une liste de listes de complexes, si l'un d'eux est le complexe \emph{cpx.Jump} ou une chaîne de caractères alors il est inchangé (donc renvoyé tel quel).
+    \item La fonction \textbf{mLtransform(L,M)} applique la partie linéaire la matrice $M$ à la liste $L$ et renvoie le résultat. $L$ doit être une liste de complexes, si l'un d'eux est le complexe \emph{cpx.Jump} alors il est inchangé.
+\end{itemize}
+
+\subsection{Matrice associée au graphe}
+
+Lorsque l'on crée un graphe dans l'environnement \emph{luadraw}, par exemple :
+\begin{Luacode}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+\end{Luacode}
+l'objet \emph{g} créé possède une matrice de transformation qui est initialement l'identité. Toutes les méthodes graphiques utilisées appliquent automatiquement la matrice de transformation du graphe. Cette matrice est désignée par \mintinline{Lua}{g.matrix}, mais pour manipuler celle-ci, on dispose des méthodes qui suivent.
+
+\subsubsection{g:Composematrix()}
+La méthode \textbf{g:Composematrix(M)} multiplie la matrice du graphe \emph g par la matrice \emph{M} (avec \emph{M} à droite) et le résultat est affecté à la matrice du graphe. L'argument \emph{M} doit donc être une matrice.
+
+\subsubsection{g:Det2d()()}
+La méthode \textbf{g:Det2d()} envoie $1$ lorsque la matrice de transformation a un déterminant positif, et $-1$ dans le cas contraire. Cette information est utile lorsqu'on a besoin de savoir si l'orientation du plan a été changée ou non.
+
+\subsubsection{g:IDmatrix()}
+La méthode \textbf{g:IDmatrix()} réaffecte l'identité à la matrice du graphe \emph g.
+
+\subsubsection{g:Mtransform()}
+La méthode \textbf{g:Mtransform(L)} applique la matrice du graphe \emph g à \emph{L} et renvoie le résultat, l'argument \emph L doit être une liste de complexes, ou une liste de listes de complexes.
+
+\subsubsection{g:MLtransform()}
+La méthode \textbf{g:MLtransform(L)} applique la partie linéaire de la matrice du graphe \emph g à \emph{L} et renvoie le résultat, l'argument \emph L doit être une liste de complexes, ou une liste de listes de complexes.
+
+\begin{demo}{Utilisation de la matrice du graphe}
+\begin{luadraw}{name=Pythagore}
+local g = graph:new{window={-15,15,0,22},size={10,10}}
+local a, b, c = 3, 4, 5 -- un triplet de Pythagore
+local i, arccos, exp = cpx.I, math.acos, cpx.exp
+local f1 = function(z)
+        return (z-c)*a/c*exp(-i*arccos(a/c))+c+i*c end
+local M1 = matrixof(f1)
+local f2 = function(z)
+        return z*b/c*exp(i*arccos(b/c))+i*c end
+local M2 = matrixof(f2)
+local arbre
+arbre = function(n)
+    local color = mixcolor(ForestGreen,1,Brown,n)
+    g:Linecolor(color); g:Dsquare(0,c,1,"fill="..color)
+    if n > 0 then
+        g:Savematrix(); g:Composematrix(M1); arbre(n-1)
+        g:Restorematrix(); g:Savematrix(); g:Composematrix(M2)
+        arbre(n-1); g:Restorematrix()
+    end
+end
+arbre(8)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsubsection{g:Rotate()}
+La méthode \textbf{g:Rotate(angle, center)} modifie la matrice de transformation du graphe \emph g en la composant avec la matrice de la rotation d'angle \emph{angle} (en degrés) et de centre \emph{center}. L'argument \emph{center} est un complexe qui vaut $0$ par défaut.
+
+\subsubsection{g:Scale()}
+La méthode \textbf{g:Scale(factor, center)} modifie la matrice de transformation du graphe \emph g en la composant avec la matrice de l'homothétie de rapport \emph{factor} et de centre \emph{center}. L'argument \emph{center} est un complexe qui vaut $0$ par défaut.
+
+\subsubsection{g:Savematrix() et g:Restorematrix()}
+\begin{itemize}
+    \item La méthode \textbf{g:Savematrix()} permet de sauvegarder dans une pile la matrice de transformation du graphe \emph g.
+    \item La méthode \textbf{g:Restorematrix()} permet de restaurer la matrice de transformation du graphe \emph g à sa dernière valeur sauvegardée.
+\end{itemize}
+
+\subsubsection{g:Setmatrix()}
+La méthode \textbf{g:Setmatrix(M)} permet d'affecter la matrice \emph M à la matrice de transformation du graphe \emph g.
+
+\subsubsection{g:Shift()}
+La méthode \textbf{g:Shift(v)} modifie la matrice de transformation du graphe \emph g en la composant avec la matrice de la translation de vecteur \emph{v} qui doit être un complexe.
+
+\begin{demo}{Utilisation de Shift, Rotate et Scale}
+\begin{luadraw}{name=free_art}
+local du = math.sqrt(2)/2
+local g = graph:new{window={1-du,4+du,1-du,4+du},
+            margin={0,0,0,0},size={7,7}}
+local i = cpx.I
+g:Linestyle("noline")
+g:Filloptions("full","Navy",0.1)
+for X = 1, 4 do
+    for Y = 1, 4 do
+        g:Savematrix()
+        g:Shift(X+i*Y); g:Rotate(45)
+        for k = 1, 25 do
+            g:Dsquare((1-i)/2,(1+i)/2,1)
+            g:Rotate(7); g:Scale(0.9)
+        end
+        g:Restorematrix()
+    end
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Changement de vue. Changement de repère}
+
+\paragraph{Changement de vue : } lors de la création d'un nouveau graphique, par exemple :
+\begin{Luacode}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+\end{Luacode}
+L'option \emph{window=\{xmin,xmax,ymin,ymax\}} fixe la vue pour le graphique \emph{g}, ce sera le pavé \emph{[xmin, xmax]x [ymin, ymax]} de $\mathbf R^2$, et tous les tracés vont être clippés par cette fenêtre (sauf les labels qui peuvent débordés dans les marges, mais pas au-delà).
+Il est possible, à l'intérieur de ce pavé, de définir un autre pavé pour faire une nouvelle vue, avec la méthode \textbf{g:Viewport(x1,x2,y1,y2)}. Les valeurs de \emph{x1}, \emph{x2}, \emph{y1}, \emph{y2} se réfèrent la fenêtre initiale définie par l'option \emph{window}. À partir de là, tout ce qui sort de cette nouvelle zone va être clippé, et la matrice du graphe est réinitialisée à l'identité, par conséquent il faut sauvegarder auparavant les paramètres graphiques courants :
+\begin{Luacode}
+g:Saveattr()
+g:Viewport(x1,x2,y1,y2)
+\end{Luacode}
+Pour revenir à la vue précédente avec la matrice précédente, il suffit d'effectuer une restauration des paramètres graphiques avec la méthode \textbf{g:Restoreattr()}.
+
+\paragraph{Attention : } à chaque instruction \emph{Saveattr()} doit correspondre une instruction \emph{Restoreattr()}, sinon il y aura une erreur à la compilation.
+
+\paragraph{Changement de repère : } on peut changer le système de coordonnées de la vue courante avec la méthode \textbf{g:Coordsystem(x1,x2,y1,y2,ortho)}. Cette méthode va modifier la matrice du graphe de sorte que tout se passe comme si la vue courante correspondait au pavé $[x1,x2]\times[y1,y2]$, l'argument booléen facultatif \emph{ortho} indique si le nouveau repère doit être orthonormé ou non (false par défaut). Comme la matrice du graphe est modifiée il est préférable de sauvegarder les paramètres graphiques avant, et de les restaurer ensuite. Cela peut servir par exemple à faire plusieurs figures dans le graphique en cours.
+
+\begin{demo}{Classification des points d'une courbe paramétrée}
+\begin{luadraw}{name=viewport_changewin}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+local i = cpx.I
+g:Labelsize("tiny") 
+g:Writeln("\\tikzset{->-/.style={decoration={markings, mark=at position #1 with {\\arrow{>}}}, postaction={decorate}}}")
+g:Dline({0,1},"dashed,gray"); g:Dline({0,i},"dashed,gray")
+local legende = {"Point ordinaire", "Point d'inflexion", "Rebroussement 1ère espèce", "Rebroussement 2ème espèce"}
+local A, B, C =(1+i)*0.75, 0.75, 0
+local A2, B2 ={-1.25+i*0.5,-0.75-i*0.5,1.25-0.5*i, 0.5+i}, {-0.75,-0.75,0.75,0.75}
+local u = {Z(-5,0),Z(0,0),-5-5*i,-5*i}
+for k = 1, 4 do
+    g:Saveattr(); g:Viewport(u[k].re,u[k].re+5,u[k].im,u[k].im+5)
+    g:Coordsystem(-1.4,2.25,-1,1.25)
+    g:Composematrix({0,1,1+i}) -- pour pencher l'axe Oy
+    g:Dpolyline({{-1,1},{-i*0.5,i}}) -- axes
+    g:Lineoptions(nil,"blue",8)
+    g:Dpath({A2[k],(B2[k]+2*A2[k])/3,(C+5*B2[k])/6, C,"b"},"->-=0.5")
+    g:Dpath({C,(C+5*B)/6,(B+2*A)/3,A,"b"},"->-=0.75")
+    g:Dpolyline({{0,0.75},{0,0.75*i}},false,"->,red")
+    g:Dlabel(
+        legende[k],0.75-0.5*i, {pos="S"},
+        "$f^{(p)}(t_0)$",1,{pos="E",node_options="red"},
+        "$f^{(q)}(t_0)$",0.75*i,{pos="W",dist=0.05})
+    g:Restoreattr()
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+

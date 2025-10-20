@@ -1,0 +1,61 @@
+\section{The pt3d Class}
+
+\subsection{Representation of Points and Vectors}
+
+\begin{itemize}
+    \item The usual space is $\mathbf R^3$, so points and vectors are triplets of real numbers (called 3d points). Four triplets have specific names (predefined variables), namely:
+\begin{itemize}
+    \item \textbf{Origin}, which represents the triplet $(0,0,0)$.
+    \item \textbf{vecI}, which represents the triplet $(1,0,0)$.
+    \item \textbf{vecJ}, which represents the triplet $(0,1,0)$.
+    \item \textbf{vecK}, which represents the triplet $(0,0,1)$.
+\end{itemize}
+Added to this is the variable \textbf{ID3d}, which is the table \emph{\{Origin, vecI, vecJ, vecK\}} representing the 3D unit matrix. By default, it is the transformation matrix of the 3D graph.
+    \item The class \emph{pt3d} (which is automatically loaded) defines the real triplets, the possible operations, and a number of methods. To create a 3D point, there are three methods:
+\begin{itemize}
+    \item Cartesian definition: the function \textbf{M(x,y,z)} returns the triplet $(x,y,z)$. This triplet can also be obtained by doing: \emph{x*vecI+y*vecJ+z*vecK}.
+    \item Cylindrical definition: the function \textbf{Mc(r,$\theta$,z)} (angle expressed in radians) returns the triplet $(r\cos(\theta),r\sin(\theta),z)$.
+    \item Spherical definition: the function \textbf{Ms(r,$\theta$,$\varphi$)} returns the triplet $(r\cos(\theta)\sin(\varphi), r\sin(\theta)\sin(\varphi),r\cos(\varphi))$ (angles expressed in radians).
+\end{itemize}
+Accessing the components of a 3D point: if a variable $A$ denotes a 3D point, then its three components are $A.x$, $A.y$, and $A.z$.
+
+To test whether a variable $A$ designates a 3D point, we use the \textbf{isPoint3d()} function, which returns a Boolean.
+
+Conversion: To convert a real or complex number into a 3D point, we use the \textbf{toPoint3d()} function.
+
+\end{itemize}
+
+
+\subsection{Operations on 3D Points}
+
+These operations are the usual operations with the usual symbols:
+\begin{itemize}
+    \item Addition (+), difference (-), and negative (-).
+    \item The product by a scalar, if k is a real number, \emph{k*M(x,y,z)} returns \emph{M(ka,ky,kz)}.
+    \item A 3D point can be divided by a scalar; for example, if $A$ and $B$ are two 3D points, then the midpoint is simply written $(A+B)/2$.
+    \item The equality of two 3D points can be tested with the symbol =.
+\end{itemize}
+
+\subsection{Methods of the class \emph{pt3d}}
+
+These are:
+\begin{itemize}
+    \item \textbf{pt3d.abs(u)}: Returns the Euclidean norm of the 3d point $u$.
+    \item \textbf{pt3d.abs2(u)}: Returns the squared Euclidean norm of the 3d point $u$.
+    \item \textbf{pt3d.N1(u)}: Returns the 1-norm of the 3d point $u$. If $u=M(x,y,z)$, then \emph{pt3d.N1(u)} returns $|x|+|y|+|z|$.
+    \item \textbf{pt3d.dot(u,v)}: Returns the dot product between the vectors (3d points) $u$ and $v$.
+    \item \textbf{pt3d.det(u,v,w)}: Returns the determinant between the vectors (3D points) $u$, $v$, and $w$.
+    \item \textbf{pt3d.prod(u,v)}: Returns the cross product between the vectors (3D points) $u$ and $v$.
+    \item \textbf{pt3d.angle3d(u,v,epsilon)}: Returns the angular difference (in radians) between the vectors (3D points) $u$ and $v$, assumed to be non-zero. The (optional) argument \emph{epsilon} is $0$ by default; it indicates how close a given equality test is to a floating point.
+
+    \item \textbf{pt3d.normalize(u)}: Returns the normalized vector (3D point) $u$ (returns \emph{nil} if $u$ is zero).
+    \item \textbf{pt3d.round(u,nbDeci)}: Returns a 3D point whose components are those of the 3D point $u$ rounded to \emph{nbDeci} decimal places.
+\end{itemize}
+
+\subsection{Mathematical Functions}
+
+In the file defining the \emph{pt3d} class, some mathematical functions are introduced:
+\begin{itemize}
+    \item \textbf{isobar3d(L)}: Returns the isobarycenter of the 3D points in the list (table) $L$ (elements of $L$ that are not 3D points are ignored).
+    \item \textbf{insert3d(L,A,epsilon)}: This function inserts the 3D point $A$ into the list $L$, which must be a \textbf{variable} (and which will therefore be modified). Point $A$ is inserted \textbf{without duplicates} and the function returns its position (index) in list $L$ after insertion. The (optional) argument \emph{epsilon} is $0$ by default, indicating how closely the comparisons are made.
+\end{itemize}

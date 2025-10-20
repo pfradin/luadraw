@@ -1,0 +1,40 @@
+\section{History}
+
+\subsection{Version 2.2}
+Non-exhaustive list:
+\begin{itemize}
+    \item Added the \emph{clip} option for the methods: \emph{Dfacet()}, \emph{Dmixfacet()}, \emph{addFacet()}, \emph{addPoly()} and \emph{addPolyline()}, as well as for point cloud drawing methods, and line drawing methods such as \emph{Dpolyline3d()}, \emph{Dparametric3d()}, \emph{Dpath3d()}, etc.
+    \item Added the \emph{xyzstep} option for the \emph{Dboxaxes3d()} method. This option defines a common step for all three axes ($1$ by default).     \item Added the \emph{DSdots()}, \emph{DSstars()}, \emph{DSinvstereo\_curve()}, and \emph{DSinvstereo\_polyline()} methods to the \emph{luadraw\_spherical} module.
+    \item Added the \emph{luadraw\_palettes} module.
+    \item Added the \emph{interDC()} function (intersection between a line and a circle in 2D) and the \emph{interCC()} function (intersection between two circles in 2D).
+    \item Added the \emph{curvilinear\_param()} and \emph{curvilinear\_param3d()} functions, which allow you to parameterize a list of points (one in 2D and the other in 3D) with a function of a variable $t$ between $0$ and $1$.
+Added the function \emph{cvx\_hull2d()}, which returns the convex hull (polygonal line) of a list of points in 2D, and the function \emph{cvx\_hull3d()}, which returns the convex hull (list of facets) of a list of points in 3D.
+Added the methods \emph{g:Beginclip(<path>)} and \emph{g:Endclip()}, which make it easier to set up clipping using tikz.
+Added the functions \emph{normal()}, \emph{normalC()}, and \emph{normalI()}, which return the normal to a 2D curve at a given point. The corresponding graphics methods have also been added.
+Added the function \emph{isobar()}, which returns the isobarycenter of a list of complexes. Added the \emph{usepalette=\{palette,mode\}} option for the \emph{Dpoly}, \emph{Dfacet}, \emph{Dmixfacet}, and \emph{addFacet} methods.
+Added the \emph{clipplane()} function, which allows you to clip a plane with a convex polyhedron. The function returns the section, if it exists, as a facet.
+Added the \emph{cartesian3d()} and \emph{cylindrical\_surface()} functions, which calculate and return surfaces, with the option to add dividing walls for the \emph{Dscene3d()} method.     \item Added the function \emph{evalf(f,...)} which allows a protected evaluation of $f(...)$. It returns the result of the evaluation if there is no runtime error from Lua, otherwise it returns \emph{nil} but without causing the script execution to terminate.
+    \item Added the function \emph{split\_points\_by\_visibility()} (3d) to separate a curve into two parts: visible part, hidden part.
+    \item In the methods \emph{g:Dfacet}, \emph{g:Dmixfacet}, \emph{g:Dpoly}, \emph{g:Dedges}, \emph{g:addFacet}, \emph{g:addPolyline}, \emph{g:addPoly}, the default values ​​for the line drawing options (thickness, color, and style) are the current values.
+Bug fix...
+...     \item Graduated axes (2d, 3d) use the \emph{siunitx} package to format labels when the global variable \emph{siunitx} is set to \emph{true}.
+    \item Added upright and slanted truncated cones (\textbf{frustum} and \textbf{Dfrustum}).
+    \item Added regular pyramids (\textbf{regular\_pyramid} and truncated pyramids \textbf{truncated\_pyramid}).
+    \item Cylinders and cones are no longer necessarily upright; they can now be slanted.
+    \item Added the \textbf{cutpolyline(L,D,close)} function.
+    \item (Elementary) drawing of sets (\emph{set} function) and operations on sets (\emph{cap}, \emph{cup}, \emph{setminus}).
+    \item Modification of the \emph{mode} argument of the \textbf{g:Dplane} method.
+    \item Addition of the \emph{close} option for the \textbf{g:addPolyline} method.
+    \item Bug fix...
+\end{itemize}
+
+\subsection{Version 2.0}
+
+\begin{itemize}
+    \item Introduction of the \emph{luadraw\_graph3d.lua} module for 3D drawings.
+    \item Introduction of the \emph{dir} option for the \textbf{g:Dlabel} method.
+    \item Minor changes in color management.
+\end{itemize}
+
+\subsection{Version 1.0}
+First version.

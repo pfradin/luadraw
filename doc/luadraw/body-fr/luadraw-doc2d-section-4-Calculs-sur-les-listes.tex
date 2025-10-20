@@ -1,0 +1,258 @@
+\section{Calculs sur les listes}
+
+\subsection{concat}
+La fonction \textbf{concat\{table1, table2, \ldots{} \}} concatène toutes les tables passées en argument, et renvoie la table qui en résulte.
+
+\begin{itemize}
+ \item Chaque argument peut être un réel un complexe ou une table.
+\item Exemple : l'instruction \mintinline{Lua}{concat( 1,2,3,{4,5,6},7 )} renvoie la table \emph{\{1,2,3,4,5,6,7\}}.
+\end{itemize}
+
+\subsection{cut}
+La fonction \textbf{cut(L,A,before)} permet de couper \emph{L} au point \emph{A} qui est supposé être situé sur la ligne \emph{L} (\emph{L} est soit une liste de complexes, soit une ligne polygonale c'est à dire une liste de listes de complexes). Si l'argument \emph{before} vaut \emph{false} (valeur par défaut), alors la fonction renvoie la partie située avant \emph{A}, suivie de la partie située après \emph{A}, sinon c'est l'inverse.
+
+\subsection{cutpolyline}
+La fonction \textbf{cutpolyline(L,D,close)} permet de couper la ligne polygonale \emph{L} avec la droite \emph{D}. L'argument \emph{L} doit être une liste de complexes ou une liste de listes de complexes, l'argument \emph{D} est une liste de la forme \emph{\{A,u\}} où est un complexe (point de la droite) et $u$ un complexe non nul (vecteur directeur de la droite). L'argument \emph{close} indique si la ligne \emph{L} doit être refermée (false par défaut). La fonction renvoie trois choses:
+\begin{itemize}
+    \item La partie de \emph{L} qui est dans le demi-plan défini par la droite à "gauche" de $u$ (c'est à dire contenant le point $A+iu$) (c'est une ligne polygonale),
+    \item suivi de la partie de \emph{L} qui est dans l'autre demi-plan (ligne polygonale),
+    \item suivi de la liste des points d'intersection entre \emph{L} et la droite.
+\end{itemize}
+
+\begin{demo}{Illustrer un exercice de programmation linéaire}
+\begin{luadraw}{name=cutpolyline}
+local g = graph:new{window={-5,5,-5,5}, size={10,10},margin={0,0,0,0}}
+g:Linewidth(6)
+local i = cpx.I
+local P = g:Box2d() -- polygon representing the 2d window
+local D1, D2, D3 = {0,1+i}, {2.5,-i}, {-3*i,-1-i/4}  -- three lines
+local P1 = cutpolyline(P,D1,true)
+local P2 = cutpolyline(P,D2,true)
+local P3 = cutpolyline(P,D3,true)
+g:Daxes({0,1,1},{grid=true,gridcolor="LightGray",arrows="->",legend={"$x$","$y$"}})
+g:Filloptions("horizontal","blue"); g:Dpolyline(P1,true,"draw=none")
+g:Filloptions("fdiag","red"); g:Dpolyline(P2,true,"draw=none")
+g:Filloptions("bdiag","green"); g:Dpolyline(P3,true,"draw=none")
+g:Filloptions("none","black",1)
+g:Linewidth(8)
+g:Dline(D1,"blue"); g:Dline(D2,"red"); g:Dline(D3,"green")
+g:Dlabel(
+    "$x-y\\leqslant 0$",-3-3*i,{pos="N",dir={1+i,-1+i},dist=0.1,node_options="fill=white,fill opacity=0.8"},
+    "$x-2.5\\geqslant0$", 2.5+i,{dir={-i,1}},
+    "$-\\frac{x}{4}+y+3\\leqslant0$", -3-15/4*i,{pos="S",dir={1+i/4,i-1/4}}
+)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{getbounds}
+\begin{itemize}
+    \item La fonction \textbf{getbounds(L)} renvoie les bornes xmin,xmax,ymin,ymax de la ligne polygonale \emph{L}.
+    \item Exemple : \mintinline{Lua}{ local xmin, xmax, ymin, ymax = getbounds(L)} (où \emph{L} désigne une ligne polygonale).
+\end{itemize}
+
+\subsection{getdot}
+La fonction \textbf{getdot(x,L)} renvoie le point d'abscisse \emph{x} (réel entre $0$ et $1$) le long de la composante connexe \emph{L} (liste de complexes). L'abscisse $0$ correspond au premier point et l'abscisse $1$ au dernier, plus généralement, \emph{x} correspond à un pourcentage de la longueur de \emph{L}.
+
+\subsection{insert}
+La fonction \textbf{insert(table1, table2, pos)} insère les éléments de \emph{table2} dans \emph{table1} à la position \emph{pos}.
+
+\begin{itemize}
+    \item L'argument \emph{table2} peut être un réel, un complexe ou une table.
+    \item L'argument \emph{table1} doit être une variable qui désigne une table, celle-ci sera modifiée par la fonction.
+    \item Si l'argument \emph{pos} vaut \emph{nil}, l'insertion se fait à la fin de \emph{table1}.
+    \item Exemple : si une variable \emph{L} vaut \emph{\{1,2,6\}}, alors après l'instruction \mintinline{Lua}{insert(L, {3,4,5},3)}, la variable \emph{L} sera égale à \emph{\{1,2,3,4,5,6\}}.
+\end{itemize}
+
+\subsection{interCC}
+La fonction \textbf{interCC(C1,C2)} renvoie l'intersection cercle \emph{C1} avec le cercle \emph{C2}, où \emph{C1=\{O1,r1\}} (cercle de centre $O$1 et de rayon $r$1), et \emph{C2=\{O2,r2\}} (cercle de centre $O2$ et de rayon $r2$). La fonction renvoie une liste contenant $1$ ou $2$ points ou le cercle en entier,  si l'intersection n'est pas vide, elle renvoie \emph{nil} sinon.
+
+\begin{demo}{Tangentes à un cercle \{O,2\} et à une ellipse \{O,3,2\} issues d'un point}
+\begin{luadraw}{name=interCC}
+local g = graph:new{window={-10,10,-5,5}, margin={0,0,0,0},size={16,8}}
+local i = cpx.I
+-- pour le cercle {O,2}
+g:Saveattr(); g:Viewport(-10,0,-5,5); g:Coordsystem(-4,6,-5,5)
+local O = -1 
+local C1, I = {O, 2}, 4-i
+local C2 = {(O+I)/2,cpx.abs(I-O)/2}
+local rep = interCC(C1,C2) -- points de tangence
+g:Dcircle(C1,"blue"); g:Dcircle(C2,"dashed")
+g:Dhline(I,rep[1],"red"); g:Dhline(I,rep[2],"red")  --demi- tangentes
+g:Ddots(rep); g:Ddots({O,I}); g:Dlabel("$I$",I,{pos="SE"},"$O$",O,{pos="W"},
+    "tangentes au cercle issues de $I$",1-5*i,{pos="N"})
+g:Restoreattr()
+
+-- pour l'ellipse (E) : {O,3,2}
+g:Saveattr(); g:Viewport(0,10,-5,5); g:Coordsystem(-4,6,-5,5)
+local mat = {0,1.5,i} -- cette matrice transforme un cercle {01,2} en l'ellipse (E)
+local inv_mat = invmatrix(mat) -- matrice inverse
+local O1, I1 = table.unpack( mtransform({O,I},inv_mat) ) -- antécédents de O et de I
+C1 = {O1, 2}
+C2 = {(O1+I1)/2,cpx.abs(I1-O1)/2}
+rep = interCC(C1,C2) -- points de tangence (tangentes issues de I1)
+g:Composematrix(mat) -- on applique la matrice pour retrouver l'ellipse, la tangence est conservée
+g:Dcircle(C1,"blue"); g:Dcircle(C2,"dashed")
+g:Dhline(I1,rep[1],'red'); g:Dhline(I1,rep[2],"red")
+g:Ddots(rep); g:Ddots({O1,I1}); g:Dlabel("$I$",I1,{pos="SE"},"$O$",O1,{pos="W"},
+    "tangentes à l'ellipse issues de $I$",1-5*i,{pos="N"})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{interD}
+La fonction \textbf{interD(d1,d2)} renvoie le point d'intersection des droites \emph{d1} et \emph{d2}, une droite est une liste de deux complexes : un point de la droite et un vecteur directeur.
+
+\subsection{interDC}
+La fonction \textbf{interDC(d,C)} renvoie l'intersection de la droite \emph{d} avec le cercle \emph{C}, où \emph{d=\{A,u\}} (droite passant par $A$ et dirigée par $u$), et \emph{C=\{O,r\}} (cercle de centre $O$ et de rayon $r$). La fonction renvoie une liste contenant $1$ ou $2$ points  si l'intersection n'est pas vide, elle renvoie \emph{nil} sinon.
+
+
+\subsection{interDL}
+La fonction \textbf{interDL(d,L)} renvoie la liste des points d'intersection entre la droite \emph{d} et la ligne polygonale \emph{L}.
+
+\subsection{interL}
+La fonction \textbf{interL(L1,L2)} renvoie la liste des points d'intersection des lignes polygonales définies par \emph{L1} et \emph{L2}, ces deux arguments sont deux listes de complexes ou deux listes de listes de complexes).
+
+\subsection{interP}
+La fonction \textbf{interP(P1,P2)} renvoie la liste des points d'intersection des chemins définis par \emph{P1} et \emph{P2}, ces deux arguments sont deux listes de complexes et d'instructions (voir \emph{Dpath}).
+
+\subsection{isobar}
+La fonction \textbf{isobar(L)} où \emph{L} est une liste de complexes, renvoie l'isobarycentre de ces nombres. Si \emph{L} contient des éléments qui ne sont pas des nombres rées ou complexes, ceux-ci sont ignorés.
+
+\subsection{linspace}
+La fonction \textbf{linspace(a,b,nbdots)} renvoie une liste de \emph{nbdots} nombres équirépartis de \emph{a} jusqu'à \emph{b}. Par défaut \emph{nbdots} vaut 50.
+
+\subsection{map}
+La fonction \textbf{map(f,list)} applique la fonction \emph{f} à chaque élément de la \emph{list} et renvoie la table des résultats. Lorsqu'un résultat vaut \emph{nil}, c'est le complexe \emph{cpx.Jump} qui est inséré dans la liste.
+
+\subsection{merge}
+La fonction \textbf{merge(L)} recolle si c'est possible, les composantes connexes de \emph{L} qui doit être une liste de listes de complexes, la fonction renvoie le résultat.
+
+\subsection{range}
+La fonction \textbf{range(a,b,step)} renvoie la liste des nombres de \emph{a} jusqu'à \emph{b} avec un pas égal à \emph{step}, celui-ci vaut 1 par défaut.
+
+\subsection{Fonctions de clipping}
+
+\begin{itemize}
+    \item La fonction \textbf{clipseg(A,B,xmin,xmax,ymin,ymax)} clippe le segment \emph{{[}A,B{]}} avec la fenêtre \emph{{[}xmin,xmax{]}x{[}ymin,ymax{]}}et renvoie le résultat.
+    \item La fonction \textbf{clipline(d,xmin,xmax,ymin,ymax)} clippe la droite \emph{d} avec la fenêtre \emph{{[}xmin,xmax{]}x{[}ymin,ymax{]}} et renvoie le résultat. La droite \emph{d} est une liste de deux complexes : un point et un vecteur directeur.
+    \item La fonction \textbf{clippolyline(L,xmin,xmax,ymin,ymax,close)} clippe ligne polygonale \emph{L} avec \emph{{[}xmin,xmax{]}x{[}ymin,ymax{]}} et renvoie le résultat. L'argument \emph{L} est une liste de complexes ou une liste de listes de complexes. L'argument facultatif \emph{close} (false par défaut) indique si la ligne polygonale doit être refermée.
+    \item La fonction \textbf{clipdots(L,xmin,xmax,ymin,ymax)} clippe la liste de points \emph{L} avec la fenêtre \emph{{[}xmin,xmax{]}x{[}ymin,ymax{]}} et renvoie le résultat (les points extérieurs sont simplement exclus). L'argument \emph{L} est une liste de complexes ou une liste de listes de complexes.
+\end{itemize}
+
+\subsection{Ajout de fonctions mathématiques}
+Outre les fonctions associées aux méthodes graphiques qui font des calculs et renvoient une ligne polygonale (comme \emph{cartesian}, \emph{periodic}, \emph{implicit}, \emph{odesolve}, etc), le paquet \emph{luadraw} ajoute quelques fonctions mathématiques qui ne sont pas proposées nativement dans le module \emph{math}.
+
+\subsubsection{Évaluation protégée : evalf}
+La fonction \textbf{evalf(f,...)} permet d'évaluer \emph{f(...)} et de renvoyer le résultat s'il n'y a pas d'erreur d'exécution par Lua, dans le cas contraire, la fonction renvoie \emph{nil}. Exemple, l'exécution de :
+\begin{Luacode}
+local f = function(a,b)
+    return 2*Z(a,1/b)
+end
+print(f(1,0))
+\end{Luacode}
+provoque l'erreur d'exécution \verb|attempt to perform arithmetic on a nil value| (dans la console), car ici \emph{Z(1,1/0)} renvoie \emph{nil}, et Lua n'accepte pas un argument égal à \emph{nil} dans un calcul. Par contre, l'exécution de :
+\begin{Luacode}
+local f = function(a,b)
+    return 2*Z(a,1/b)
+end
+print(evalf(f,1,0))
+\end{Luacode}
+ne provoque pas d'erreur de la part de Lua, et il n'y a pas d'affichage non plus dans la console puisque la valeur à afficher est \emph{nil}.
+
+\subsubsection{int}
+La fonction \textbf{int(f,a,b)} renvoie une valeur approchée de l'intégrale de la fonction \emph{f} sur l'intervalle $[a;b]$. La fonction \emph{f} est à variable réelle et à valeurs réelles ou complexes. La méthode utilisée est la méthode de Simpson accélérée deux fois avec la méthode Romberg.
+
+\paragraph{Exemple :}
+\begin{TeXcode}
+$\int_0^1 e^{t^2}\mathrm d t \approx \directlua{tex.sprint(int(function(t) return math.exp(t^2) end, 0, 1))}$
+\end{TeXcode}
+\paragraph{Résultat :} $\int_0^1 e^{t^2}\mathrm d t \approx \directlua{tex.sprint(int(function(t) return math.exp(t^2) end, 0, 1))}$.
+
+\subsubsection{gcd}
+La fonction \textbf{gcd(a,b)} renvoie le plus grand diviseur commun entre $a$ et $b$.
+
+\subsubsection{lcm}
+La fonction \textbf{lcm(a,b)} renvoie le plus petit diviseur commun strictement positif entre $a$ et $b$.
+
+\subsubsection{solve}
+La fonction \textbf{solve(f,a,b,n)} fait une résolution numérique de l'équation $f(x)=0$ dans l'intervalle $[a;b]$, celui-ci est subdivisé en $n$ morceaux ($n$ vaut $25$ par défaut). La fonction renvoie une liste de résultats ou bien \emph{nil}. La méthode utilisée est une variante de Newton.
+
+\paragraph{Exemple 1 :}
+\begin{TeXcode}
+\begin{luacode}
+resol = function(f,a,b)
+    local y = solve(f,a,b)
+    if y == nil then tex.sprint("\\emptyset")
+    else
+        local str = y[1]
+        for k = 2, #y do
+            str = str..", ".. y[k]
+        end
+        tex.sprint(str)
+    end
+end
+\end{luacode}
+\def\solve#1#2#3{\directlua{resol(#1,#2,#3)}}%
+\begin{luacode}
+f1 = function(x) return math.cos(x)-x end
+f2 = function(x) return x^3-2*x^2+1/2 end
+\end{luacode}
+La résolution de l'équation $\cos(x)=x$ dans $[0;\frac{\pi}2]$ donne $\solve{f1}{0}{math.pi/2}$.\par
+La résolution de l'équation $\cos(x)=x$ dans $[\frac{\pi}2;\pi]$ donne $\solve{f1}{math.pi/2}{math.pi}$.\par
+La résolution de l'équation $x^3-2x^2+\frac12=0$ dans $[-1;2]$ donne : $\{\solve{f2}{-1}{2}\}$.
+\end{TeXcode}
+\paragraph{Résultat :}\ \par
+
+\begin{luacode}
+resol = function(f,a,b)
+    local y = solve(f,a,b)
+    if y == nil then tex.sprint("\\emptyset")
+    else
+        local str = y[1]
+        for k = 2, #y do
+            str = str..", ".. y[k]
+        end
+        tex.sprint(str)
+    end
+end
+\end{luacode}
+\def\solve#1#2#3{\directlua{resol(#1,#2,#3)}}%
+\begin{luacode}
+f1 = function(x) return math.cos(x)-x end
+f2 = function(x) return x^3-2*x^2+1/2 end
+\end{luacode}
+
+La résolution de l'équation $\cos(x)=x$ dans $[0;\frac{\pi}2]$ donne $\solve{f1}{0}{math.pi/2}$.\par
+La résolution de l'équation $\cos(x)=x$ dans $[\frac{\pi}2;\pi]$ donne $\solve{f1}{math.pi/2}{math.pi}$.\par
+La résolution de l'équation $x^3-2x^2+\frac 12=0$ dans $[-1;2]$ donne : $\{\solve{f2}{-1}{2}\}$.
+
+\paragraph{Exemple 2 :} on souhaite tracer la courbe de la fonction $f$ définie par la condition :
+\[\forall x\in \mathbf R,\ \int_x^{f(x)} \exp(t^2)\mathrm d t = 1.\]
+On a deux méthodes possibles :
+\begin{enumerate}
+    \item On considère la fonction $G\colon (x,y) \mapsto \int_x^y \exp(t^2)\mathrm d t-1$, et on dessine la courbe implicite d'équation $G(x,y)=0$.
+    \item On détermine un réel $y_0$ tel que $\int_0^{y_0}\exp(t^2)\mathrm d t = 1$ et on dessine la solution de l'équation différentielle $y'=e^{x^2-y^2}$ vérifiant la  condition initiale $y(0)=y_0$.
+\end{enumerate}
+Dessinons les deux :
+\begin{demo}{Fonction $f$ définie par $\int_x^{f(x)} \exp(t^2)\mathrm d t = 1$.}
+\begin{luadraw}{name=int_solve}
+local g = graph:new{window={-3,3,-3,3},size={10,10}}
+local h = function(t) return math.exp(t^2) end
+local G = function(x,y) return int(h,x,y)-1 end
+local H = function(y) return G(0,y) end
+local F = function(x,y) return math.exp(x^2-y^2) end
+local y0 = solve(H,0,1)[1] -- solution de H(x)=0
+g:Daxes({0,1,1}, {arrows="->"})
+g:Dimplicit(G, {draw_options="line width=4.8pt,Pink"})
+g:Dodesolve(F,0,y0,{draw_options="line width=0.8pt"}) 
+g:Lineoptions("dashed","gray",4); g:DlineEq(1,-1,0); g:DlineEq(1,1,0) -- bissectrices
+g:Dlabel("${\\mathcal C}_f$",Z(2.15,2),{pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+On voit que les deux courbes se superposent bien, cependant la première méthode (courbe implicite) est beaucoup plus gourmande en calculs, la méthode 2 est donc préférable.
+
+

@@ -1,0 +1,174 @@
+\section{Introduction}
+
+\subsection{Prerequisites}
+
+\begin{itemize}
+\item In the preamble, you must declare the \emph{luadraw} package: \verb|\usepackage[global options]{luadraw}|
+\item Compilation is done with LuaLatex \textbf{exclusively}.
+\item The colors in the \emph{luadraw} environment are strings that must correspond to colors known to tikz. It is strongly recommended to use the \emph{xcolor} package with the \emph{svgnames} option.
+\end{itemize}
+
+Regardless of the global options chosen, this package loads the \emph{luadraw\_graph2d.lua} module, which defines the \emph{graph} class, and provides the \emph{luadraw} environment for creating graphs in Lua.
+
+\paragraph{Global package options}: \emph{noexec}, \emph{3d}, and \emph{cachedir=}.
+
+\begin{itemize}
+\item \emph{noexec}: When this global option is specified, the default value of the \emph{exec} option for the \emph{luadraw} environment will be false (and no longer true).
+\item \emph{3d}: When this global option is specified, the \emph{luadraw\_graph3d.lua} module is also loaded. This module also defines the \emph{graph3d} class (which relies on the \emph{graph} class) for 3D drawings.
+\item \emph{cachedir = <folder>}: By default, the created files are saved in the \emph{\_luadraw} folder, which is a subfolder of the current folder (containing the master document). This folder can be changed with the \emph{cachedir} option, for example \emph{cachedir = \{tikz\}}.
+\end{itemize}
+
+\noindent\textbf{NB}: In this chapter, we will not discuss the \emph{3d} option. This is the subject of the next chapter. We will therefore only discuss the 2d version.
+
+When a graph is finished, it is exported in tikz format, so this package also loads the tikz package and the libraries:
+\begin{itemize}
+\item\emph{patterns}
+\item\emph{plotmarks}
+\item\emph{arrows.meta}
+\item\emph{decorations.markings}
+\end{itemize}
+
+Graphs are created in a luadraw environment, which calls luacode, so the lua language must be used in this environment:
+
+\begin{TeXcode}
+\begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
+-- create a new graph with a local name
+local g = graph:new{ window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom},
+size={width,height,ratio}, bg="color", border=true/false }
+-- build the g chart
+graphic instructions in Lua language ...
+-- display the g chart and save it in the <filename>.tkz file
+g:Show()
+-- or save it only in the <filename>.tkz file
+g:Save()
+\end{luadraw}
+\end{TeXcode}
+
+\paragraph{Saving the \emph{.tkz} file}: the chart is exported in tikz format to a file (with the \emph{tkz} extension). By default, it is saved in the \emph{\_luadraw} folder, which is a subfolder of the current folder (containing the master document), but it is possible to specify a path to another subfolder. with the global option \emph{cachedir=}.
+
+\subsection{Environment Options}
+
+These are:
+\begin{itemize}
+\item \emph{name = \ldots{}}: Allows you to name the produced tikz file. It is given a name without an extension (this will be automatically added; it is \emph{.tkz}). If this option is omitted, then a default name is the name of the master file followed by a number.
+\item \emph{exec = true/false}: Allows you to execute or not the Lua code included in the environment. By default, this option is true, \textbf{UNLESS} if the global option \emph{noexec} was mentioned in the preamble with the package declaration. When a complex graph that requires a lot of calculations is ready, it may be useful to add the \emph{exec=false} option. This will prevent recalculations of the same graph for future compilations.
+
+\emph{auto = true/false}: Allows you to automatically include or exclude the tikz file in place of the \emph{luadraw} environment when the \emph{exec} option is set to false. By default, the \emph{auto} option is true.
+
+\end{itemize}
+
+\subsection{The cpx (complex) class}
+
+It is automatically loaded by the \emph{luadraw\_graph2d} module and therefore when the \emph{luadraw} package is loaded. This class allows you to manipulate complex numbers and perform common calculations. We create a complex number with the function \textbf{Z(a,b)} for \(a + i\times b\), or with the function \textbf{Zp(r,theta)} for \(r\times e^{i\theta}\) in polar coordinates.
+
+\begin{itemize}
+\item Example: \emph{local z = Z(a,b)} will create the complex number corresponding to \(a + i\times b\) in the variable \emph{z}. We then access the real and imaginary parts of \emph{z} like this: \emph{z.re} and \emph{z.im}.
+\item \textbf{Warning}: A real number \emph{x} is not considered complex by Lua. However, the functions provided for graphical constructions perform the verification and conversion from real to complex. However, we can use \emph{Z(x,0)} instead of \emph{x}.
+\item The usual operators have been overloaded, allowing the use of the usual symbols, namely: +, x, -, /, as well as the equality test with =. When a calculation fails, the returned result should normally be equal to \emph{nil}.
+In addition, the following functions are added (dot notation must be used in Lua):
+
+begin{itemize}
+
+modulus: \textbf{cpx.abs(z)},
+
+modulus squared: \textbf{cpx.abs2(z)},
+
+norm 1: \textbf{cpx.N1(z)},
+
+main argument: \textbf{cpx.arg(z)},
+
+conjugate: \textbf{cpx.bar(z)},
+
+complex exponential: \textbf{cpx.exp(z)},
+
+scalar product: \textbf{cpx.dot(z1,z2)}, where the complex numbers represent vector affixes,
+
+determinant: \textbf{cpx.det(z1,z2)},
+
+the oriented angle (in radians) between two non-zero vectors: \textbf{cpx.angle(z1,z2)}
+\item rounding: \textbf{cpx.round(z, number of decimals)},
+\item the function: \textbf{cpx.isNul(z)} tests whether the real and imaginary parts of \emph{z} are in absolute value less than a variable \emph{epsilon} which is equal to \emph{1e-16} by default.
+\end{itemize}
+
+The last function returns a Boolean, the bar, exponential, and round functions return a complex number, and the others return a real number.
+
+We also have the constant \emph{cpx.I} which represents the pure imaginary \emph{i}.
+
+Example:
+
+\begin{Luacode}
+local i = cpx.I
+local A = 2+3*i
+\end{Luacode}
+
+The multiplication symbol is required.
+
+\subsection{Creating a Graph}
+
+As seen above, creation is done in a \emph{luadraw} environment. This creation is done by naming the graph:
+
+\begin{Luacode}
+local g = graph:new{ window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom},
+size={width,height,ratio}, bg="color", border=true/false, bbox=true/false, pictureoptions="" }
+\end{Luacode}
+
+The \emph{graph} class is defined in the \emph{luadraw} package. This class is instantiated by invoking its constructor and giving it a name (here it's \emph{g}). This is done locally so that the graph \emph{g} thus created will no longer exist once it leaves the environment (otherwise \emph{g} would remain in memory until the end of the document).
+
+\begin{itemize}
+\item The (optional) parameter \emph{window} defines the $\mathbf R^2$ block corresponding to the graph: it is $[x_1,x_2]\times[y_1,y_2]$. The \emph{xscale} and \emph{yscale} parameters are optional and set to $1$ by default; they represent the scale (cm per unit) on the axes. By default, we have \emph{window = \{-5.5,-5.5,1,1\}}.
+
+\item The (optional) \emph{margin} parameter sets the margins around the graph in cm. By default, we have \emph{margin = \{0.5,0.5,0.5,0.5\}}.
+
+\item The (optional) \emph{size} parameter allows you to impose a size (in cm, including margins) for the graph. The \emph{ratio} argument corresponds to the desired scale ratio (\emph{xscale}/\emph{yscale}). A ratio of 1 will result in an orthonormal coordinate system, and if the ratio is not specified, the default ratio is retained. Using this parameter will modify the values ​​of \emph{xscale} and \emph{yscale} to obtain the correct sizes. By default, the size is $11\times 11$ (in cm) with margins ($10\times 10$ without margins).
+
+\item The (optional) \emph{bg} parameter allows you to define a background color for the graph. This color is a string representing a color for tikz. By default, this string is empty, meaning the background will not be painted.
+
+\item The (optional) \emph{border} parameter indicates whether or not a frame should be drawn around the graph (including the margins). By default, this parameter is set to \emph{false}.
+
+\item The (optional) \emph{bbox} parameter indicates whether a bounding box should be added to the graph so that it has the desired size. Everything outside of it is clipped by tikz. By default, this parameter is set to \emph{true}. With the value \emph{false}, no bounding box is added, but everything outside the 2D window, except for the paths, is clipped by luadraw. The graph size can be smaller than the requested size.
+
+\item The (optional) parameter \emph{pictureoptions} is a string containing options that will be passed to \emph{tikzpicture} like this:
+\begin{TeXcode}
+\begin{tikzpicture}[line join=round <,pictureoptions>]
+\end{TeXcode}
+\end{itemize}
+
+\paragraph{Graph construction.}
+
+\begin{itemize}
+\item The instantiated object (\emph{g} in the example) has several methods for drawing (segments, lines, curves, etc.). Drawing instructions are not sent directly to \TeX; they are stored as strings in a table that is a property of the \emph{g} object. The \textbf{g:Show()} method will send these instructions to \TeX while saving them in a text file.\footnote{This file will contain a \emph{tikzpicture} environment.} The \textbf{g:Save()} method saves the graph in the file designated by the (environment) option \emph{name} but without sending the instructions to \TeX.
+\item The current graph can be saved to another file with the \textbf{g:Savetofile(<filename with extension>)} method.
+\item A current graph can be reset, i.e., delete all elements already created, with the \textbf{g:Cleargraph()} method.
+\item The \emph{luadraw} package also provides a number of mathematical functions, as well as functions for calculating lists (tables) of complex numbers, geometric transformations, etc.
+\end{itemize}
+
+\paragraph{Coordinate system. Location}
+
+\begin{itemize}
+\item The instantiated object (\emph{g} in the example) has:
+\begin{enumerate}
+\item An original view: this is the $\mathbf R^2$ block defined by the \emph{window} option at creation. This \textbf{must not be modified} subsequently.
+\item A current view: this is a $\mathbf R^2$ block that must be included in the original view; anything outside this block will be clipped. By default, the current view is the original view. To retrieve the current view, you can use the \textbf{g:Getview()} method, which returns a table \verb|{x1,x2,y1,y2}|, representing the block $[x1,x2]\times [y1,y2]$.
+\item A transformation matrix: this is initialized to the identity matrix. During a drawing instruction, the points are automatically transformed by this matrix before being sent to tikz.
+\item A coordinate system (Cartesian coordinate system) linked to the current view; this is the user's coordinate system. By default, this is the canonical coordinate system of $\mathbf R^2$, but it is possible to change it. Let's say the current view is the $[-5,5]\times[-5,5]$ block. It is possible, for example, to decide that this block represents the $[-1,12]$ interval for the abscissas and the $[0,8]$ interval for the ordinates. The method that makes this change will modify the graph's transformation matrix, so that for the user, everything happens as if they were in the $[-1,12]\times [0,8]$ block. The intervals of the user's coordinate system can be retrieved using the methods: \textbf{g:Xinf(), g:Xsup(), g:Yinf(), and g:Ysup()}.
+\end{enumerate}
+\item Complex numbers are used to represent points or vectors in the user's Cartesian coordinate system.
+\item In the tikz export, the coordinates will be different because the lower left corner (excluding margins) will have coordinates $(0,0)$, and the upper right corner (excluding margins) will have coordinates corresponding to the size (excluding margins) of the graph, and with $1$ cm per unit on both axes. This means that normally, tikz should only handle \og small\fg\ numbers. \item The conversion is done automatically with the \textbf{g:strCoord(x,y)} method, which returns a string of the form \emph{(a,b)}, where \emph{a} and \emph{b} are the coordinates for tikz, or with the \textbf{g:Coord(z)} method, which also returns a string of the form \emph{(a,b)} representing the tikz coordinates of the point with affix \emph{z} in the user's coordinate system.
+\end{itemize}
+
+\subsection{Can we use tikz directly in the \emph{luadraw} environment?}
+
+Suppose we are creating a graph named \emph{g} in a \emph{luadraw} environment. It is possible to write a tikz instruction during this creation, but not using \verb|tex.sprint("<tikz instruction>")|, because then this instruction would not be part of the graph \emph{g}. To do this, you must use the method \textbf{g:Writeln("<tikz instruction>")}, with the constraint that \textbf{the backslashes must be doubled}, and without forgetting that the graphic coordinates of a point in \emph{g} are not the same for tikz. For example:
+\begin{Luacode}
+g:Writeln("\\draw"..g:Coord(Z(1,-1)).." node[red] {Text};")
+\end{Luacode}
+
+Or to change styles:
+\begin{Luacode}
+g:Writeln("\\tikzset{every node/.style={fill=white}}")
+\end{Luacode}
+
+In a Beamer presentation, this can also be used to insert pauses in a graph:
+\begin{Luacode}
+g:Writeln("\\pause")
+\end{Luacode}

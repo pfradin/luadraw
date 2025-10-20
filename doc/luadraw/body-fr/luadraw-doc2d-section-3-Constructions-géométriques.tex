@@ -1,0 +1,47 @@
+\section{Constructions géométriques}
+
+Dans cette section sont regroupées les fonctions construisant des figures géométriques sans méthode graphique dédiée correspondante.
+
+\subsection{cvx\_hull2d}
+
+La fonction \textbf{cvx\_hull2d(L)} où $L$ est une liste de complexes, calcule et renvoie une liste de complexes représentant l'enveloppe convexe de $L$.
+
+\subsection{sss\_triangle}
+
+La fonction \textbf{sss\_triangle(ab,bc,ca)} où \emph{ab}, \emph{bc} et \emph{ca} sont trois longueurs, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle direct dont les longueurs des côtés sont les arguments, c'est à dire $AB=ab$, $BC=bc$ et $CA=ca$, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline}.
+
+\subsection{sas\_triangle}
+
+La fonction \textbf{sas\_triangle(ab,alpha,ca)} où \emph{ab} et \emph{ca} sont deux longueurs, \emph{alpha} un angle en degrés, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle tel que $AB=ab$, $CA=ca$, et tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline}.
+
+\subsection{asa\_triangle}
+
+La fonction \textbf{asa\_triangle(alpha,ab,beta)} où \emph{ab} est une longueur, \emph{alpha} et \emph{beta} deux angles en degrés, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle tel que $AB=ab$, tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, et tel que l'angle $(\vec{BA},\vec{BC})$ a pour mesure \emph{beta}, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline}.
+
+
+\begin{demo}{sss\_triangle, sas\_triangle et asa\_triangle}
+\begin{luadraw}{name=sss_triangles_and_co}
+local g = graph:new{window={-5,5,-3,5},size={10,10}}
+g:Labelsize("footnotesize"); g:Linewidth(8)
+local i = cpx.I
+local T1 = shift( sss_triangle(4,5,3), 2*i-2)
+local T2 = shift( sas_triangle(4,60,2), -4-2*i)
+local T3 = shift( asa_triangle(30,4,50), 0.5-i)
+g:Dpolyline({T1,T2,T3}, true)
+g:Linewidth(4)
+g:Darc(T2[2],T2[1],T2[3],0.5,1,"->")
+g:Darc(T3[2],T3[1],T3[3],0.75,1,"->")
+g:Darc(T3[1],T3[2],T3[3],0.75,-1,"->")
+g:Dlabel( 
+    "$4$",(T1[1]+T1[2])/2,{pos="N"}, "$5$",(T1[2]+T1[3])/2,{pos="NE"},"$3$",(T1[1]+T1[3])/2,{pos="W"},
+    "$4$",(T2[1]+T2[2])/2,{pos="N"}, "$60^\\circ$",T2[1]+Zp(0.9,30*deg),{pos="center"},"$2$",(T2[1]+T2[3])/2,{pos="W"},
+    "$4$",(T3[1]+T3[2])/2,{pos="N"}, "$30^\\circ$",T3[1]+Zp(1.15,15*deg),{pos="center"},
+    "$50^\\circ$",T3[2]+Zp(1.15,155*deg),{pos="center"},
+    "sss\\_triangle(4,5,3)",(T1[1]+T1[2])/2,{pos="S"}, "sas\\_triangle(4,60,2)",(T2[1]+T2[2])/2,{}, "asa\\_triangle(30,4,50)",(T3[1]+T3[2])/2,{})
+for _,T in ipairs({T1,T2,T3}) do
+    g:Dlabel("$A$",T[1],{pos="SW"}, "$B$",T[2],{pos="SE"},"$C$",T[3],{pos="N"})
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+

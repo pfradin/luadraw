@@ -1,0 +1,32 @@
+\chapter{Dessin 3d}
+
+\begin{center}
+\captionof{figure}{Point col en $M(0,0,0)$ ($z=x^2-y^2$)}\label{pointcol}\par
+\begin{luadraw}{name=point_col}
+local g = graph3d:new{window3d={-2,2,-2,2,-4,4}, window={-4,3.5,-5,5}, size={8,9,0}, viewdir={120,60}}
+local S = cartesian3d(function(u,v) return u^2-v^2 end, -2,2,-2,2,{20,20})
+local P = facet2poly(S) -- conversion en polyèdre
+local Tx = g:Intersection3d(P, {Origin,vecI}) --intersection de P avec le plan yOz
+local Ty = g:Intersection3d(P, {Origin,vecJ}) --intersection de P avec le plan xOz
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray",drawbox=true})
+g:Dfacet(S,{mode=mShadedOnly,color="ForestGreen"}) -- dessin de la surface
+g:Dedges(Tx, {color="Crimson", hidden=true, width=8}) -- intersection avec yOz
+g:Dedges(Ty, {color="Navy",hidden=true, width=8}) -- intersection avec xOz
+g:Dpolyline3d( {M(2,0,4),M(-2,0,4),M(-2,0,-4)}, "Navy,line width=.8pt")
+g:Dpolyline3d( {M(0,-2,4),M(0,2,4),M(0,2,-4)}, "Crimson,line width=.8pt")
+g:Show()
+\end{luadraw}
+\end{center}
+
+
+
+\input{body-fr/luadraw-doc3d-section-1-Introduction.tex}%
+\input{body-fr/luadraw-doc3d-section-2-La-classe-pt3d.tex}%
+\input{body-fr/luadraw-doc3d-section-3-Méthodes-graphiques-élémentaires.tex}%
+\input{body-fr/luadraw-doc3d-section-4-Solides-à-facettes.tex}%
+\input{body-fr/luadraw-doc3d-section-5-La-méthode-Dscene3d.tex}%
+\input{body-fr/luadraw-doc3d-section-6-Constructions-géométriques.tex}%
+\input{body-fr/luadraw-doc3d-section-7-Transformations-calcul-matriciel-et-quelques-fonctions-mathématiques.tex}%
+\input{body-fr/luadraw-doc3d-section-8-Exemples-plus-poussés.tex}%
+\input{body-fr/luadraw-doc3d-section-9-Extensions.tex}%
+\input{body-fr/luadraw-doc3d-section-10-Historique.tex}%

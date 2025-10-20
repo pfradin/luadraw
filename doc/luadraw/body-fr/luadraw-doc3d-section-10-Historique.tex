@@ -1,0 +1,52 @@
+\section{Historique}
+
+\subsection{Version 2.2}
+Liste non exhaustive :
+\begin{itemize}
+    \item Ajout de l'option \emph{clip} pour les méthodes : \emph{Dfacet()}, \emph{Dmixfacet()}, \emph{addFacet()}, \emph{addPoly()} et \emph{addPolyline()}, ainsi que pour les méthodes de dessin de nuages de points, et les méthodes de dessin "au trait" comme \emph{Dpolyline3d()}, \emph{Dparametric3d()}, \emph{Dpath3d()}, etc.
+    \item Ajout de l'option \emph{xyzstep} pour la méthode \emph{Dboxaxes3d()}, cette option définit un pas commun aux trois axes ($1$ par défaut).
+    \item Ajout des méthodes \emph{DSdots()}, \emph{DSstars()}, \emph{DSinvstereo\_curve()} et \emph{DSinvstereo\_polyline()} dans le module \emph{luadraw\_spherical}.
+    \item Ajout du module \emph{luadraw\_palettes}.
+    \item Ajout de la fonction \emph{interDC()} (intersection entre une droite et un cercle en 2d) et de la fonction \emph{interCC()} (intersection entre 2 cercles en 2d).
+    \item Ajout des fonctions \emph{curvilinear\_param()} et \emph{curvilinear\_param3d()} qui permettent d'obtenir une paramétrisation d'une liste de points (2d pour l'une, et 3d pour l'autre) avec une fonction d'une variable $t$ entre $0$ et $1$.
+    \item Ajout de la fonction \emph{cvx\_hull2d()} qui renvoie l'enveloppe convexe (ligne polygonale) d'une liste de points en 2d, et de la fonction \emph{cvx\_hull3d()} qui renvoie l'enveloppe convexe (liste de facettes) d'une liste de points en 3d.
+    \item Ajout des méthodes \emph{g:Beginclip(<chemin>)} et \emph{g:Endclip()} qui facilitent la mise en place d'un clipping par tikz.
+    \item Ajout des fonctions \emph{normal()}, \emph{normalC()}, \emph{normalI()} qui renvoient la normale à une courbe 2d en un point donné. Les méthodes graphiques correspondantes ont également été ajoutées.
+    \item Ajout de la fonction \emph{isobar()} qui renvoie l'isobarycentre d'une liste de complexes.
+    \item Ajout de l'option \emph{usepalette=\{palette,mode\}} pour les méthodes \emph{Dpoly}, \emph{Dfacet}, \emph{Dmixfacet}, \emph{addFacet}.
+    \item Ajout de la fonction \emph{clipplane()} qui permet de clipper un plan avec un polyèdre convexe, la fonction renvoie la section, si elle existe, sous forme d'une facette.
+    \item Ajout des fonctions \emph{cartesian3d()} et \emph{cylindrical\_surface()} qui calculent et renvoient des surfaces avec la possibilité d'ajouter ou non des cloisons séparatrices pour la méthode \emph{Dscene3d()}.
+    \item Ajout de la fonction \emph{evalf(f,...)} qui permet une évaluation protégée de $f(...)$, elle renvoie le résultat de l'évaluation s'il n'y a pas d'erreur d'exécution de la part de Lua, sinon, elle renvoie \emph{nil} mais sans provoquer la fin de l'exécution du script.
+    \item Ajout de la fonction \emph{split\_points\_by\_visibility()} (3d) pour séparer une courbe en deux parties : partie visible, partie cachée.
+    \item Dans les méthodes \emph{g:Dfacet}, \emph{g:Dmixfacet}, \emph{g:Dpoly}, \emph{g:Dedges}, \emph{g:addFacet}, \emph{g:addPolyline}, \emph{g:addPoly}, les valeurs par défaut des options de tracé de lignes (épaisseur, couleur et style), sont les valeurs courantes en cours.
+    \item Correction de bug...    
+\end{itemize}
+
+\subsection{Version 2.1}
+Liste non exhaustive :
+\begin{itemize}
+    \item Par défaut, les fichiers tikz sont sauvegardés dans un sous-dossier appelé \emph{\_luadraw}. La nouvelle option de package \emph{cachedir} permet d'en changer.
+    \item L'option \emph{line join = round} est automatiquement ajoutée à l'environnement \emph{tikzpicture}.
+    \item Deux options supplémentaires pour l'environnement \emph{luadraw} : \emph{bbox} et \emph{pictureoptions}.
+    \item Un certain nombre de fonctions de constructions géométriques supplémentaires en 2d et 3d.
+    \item Les axes gradués (2d, 3d) utilisent le package \emph{siunitx}  pour formater les labels lorsque la variable globale \emph{siunitx} a la valeur \emph{true}.
+    \item Ajout des cônes tronqués droits ou penchés (\textbf{frustum} et \textbf{Dfrustum}).
+    \item Ajout des pyramides régulières (\textbf{regular\_pyramid} et pyramides tronquées \textbf{truncated\_pyramid}).
+    \item Les cylindres et les cônes ne sont plus forcément droits, ils peuvent désormais être penchés.
+    \item Ajout de la fonction \textbf{cutpolyline(L,D,close)}.    
+    \item Dessin (élémentaire) d'ensembles (fonction \emph{set}) et opérations sur les ensembles (\emph{cap}, \emph{cup}, \emph{setminus}).
+    \item Modification de l'argument \emph{mode} de la méthode \textbf{g:Dplane}.
+    \item Ajout de l'option \emph{close} pour la méthode \textbf{g:addPolyline}.
+    \item Correction de bug...
+\end{itemize}
+
+\subsection{Version 2.0}
+
+\begin{itemize}
+    \item Introduction du module \emph{luadraw\_graph3d.lua} pour les dessins en 3d.
+    \item Introduction de l'option \emph{dir} pour la méthode \textbf{g:Dlabel}.
+    \item Menus changements dans la gestion des couleurs.
+\end{itemize}
+
+\subsection{Version 1.0}
+Première version.

@@ -1,0 +1,102 @@
+\section{Constructions géométriques}
+
+Dans cette section sont regroupées les fonctions construisant des figures géométriques sans méthode graphique dédiée.
+
+\subsection{Cercle circonscrit, cercle inscrit : circumcircle3d(), incircle3d()}
+
+\begin{itemize}
+    \item La fonction \textbf{circumcircle3d(A,B,C)}, où $A$, $B$ et $C$ sont trois points 3d non alignés, renvoie le cercle circonscrit au triangle formé par ces trois points, sous la forme d'une séquence: $A,R,n$, où $A$ est le centre du cercle, $R$ son rayon, et $n$ un vecteur normal au plan du cercle.
+    \item La fonction \textbf{incircle3d(A,B,C)}, où $A$, $B$ et $C$ sont trois points 3d non alignés, renvoie le cercle inscrit dans le triangle formé par ces trois points, sous la forme d'une séquence: $A,R,n$, où $A$ est le centre du cercle, $R$ son rayon, et $n$ un vecteur normal au plan du cercle.    
+\end{itemize}
+
+\subsection{Enveloppe convexe : cvx\_hull3d()}
+
+La fonction \textbf{cvx\_hull3d(L)} où $L$ est une liste de points 3d \textbf{distincts}, calcule et renvoie l'enveloppe convexe de $L$ sous la forme d'une liste de facettes.
+
+\begin{demo}{Utilisation de cvx\_hull3d()}
+\begin{luadraw}{name=cvx_hull3d}
+local g = graph3d:new{window={-2,4,-6,1},bbox=false,size={10,10}}
+local L = {Origin, 4*vecI, M(4,4,0), 4*vecJ}
+insert(L, shift3d(L,-3*vecK))
+insert(L, {M(2,1,2), M(2,3,2)})
+local V = cvx_hull3d(L)
+local P = facet2poly(V)
+g:Dpoly(P , {color="cyan",mode=mShadedHidden})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Plans : plane(), planeEq(), orthoframe(), plane2ABC()}
+
+Un plan de l'espace est une table de la forme $\{A,n\}$ où $A$ est un point du plan (point 3d) et $n$ un vecteur normal au plan (point 3d non nul).
+\begin{itemize}
+    \item La fonction \textbf{plane(A,B,C)} envoie le plan passant par les trois points 3d $A$, $B$ et $C$ (s'ils sont non alignés, sinon le résultat est \emph{nil}).
+    \item La fonction \textbf{planeEq(a,b,c,d)} envoie le plan dont une équation cartésienne est $ax+by+cz+d=0$ (si les coefficients $a$, $b$ et $c$ ne sont pas tous nuls, sinon le résultat est\emph{nil}).
+    \item La fonction \textbf{plane2ABC(P)} où $P=\{A,n\}$ désigne un plan, renvoie une séquence de trois points 3d $A,B,C$, appartenant au plan, et tels que $(A,\vec{AB},\vec{AC})$ soit un repère orthonormal direct de ce plan.
+    \item La fonction \textbf{orthoframe(P)} où $P=\{A,n\}$ désigne un plan, renvoie une séquence de trois points 3d $A,u,v$, tels que $(A,u,v)$ soit un repère orthonormal direct de ce plan.
+\end{itemize}
+
+\begin{demo}{Faces d'un cube trouées avec un hexagone régulier}
+\begin{luadraw}{name=plans}
+local g = graph3d:new{window={-3,3,-3.25,3.25},margin={0,0,0,0},viewdir={20,60},bg="LightGray",size={10,10}}
+Hiddenlines = true; Hiddenlinestyle = "dashed"
+local p = polyreg(0,1,6)
+local P = parallelep(M(-2,-2,-2),4*vecI,4*vecJ,4*vecK)
+local V = g:Sortpolyfacet(P)
+local list = {}
+g:Filloptions("full","Crimson",1,true); -- true pour le mode evenodd
+g:Lineoptions("solid","Gold",8)
+for _, F in  ipairs(V) do
+    local P1 = plane(isobar3d(F),F[1],F[2]) -- plan de la facette F
+    local A, u, v = orthoframe(P1)  -- repère orthonormé sur la facette avec centre de gravité comme origine
+    local p1 = map(function(z) return A+z.re*u+z.im*v end,p) -- hexagone reproduit sur la facette
+    table.insert(p1,2,"m")
+    local color = "Crimson"
+    if not g:Isvisible(F) then  color = "Crimson!60!black" end
+    g:Dpath3d( concat(F,{"l"},p1,{"l","cl"}),"fill="..color ) -- dessin de la facette "trouée" avec l'hexagone
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Sphère circonscrite, Sphère inscrite : circumsphere(), insphere()}
+
+\begin{itemize}
+    \item La fonction \textbf{circumsphere(A,B,C,D)}, où $A$, $B$, $C$ et $D$ sont quatre points 3d non coplanaires, renvoie la sphère circonscrite au tétraèdre formé par ces quatre points, sous la forme d'une séquence: $A,R$, où $A$ est le centre de la sphère, et $R$ son rayon.
+    \item La fonction \textbf{insphere(A,B,C,D)}, où $A$, $B$, $C$ et $D$ sont quatre points 3d non coplanaires, renvoie la sphère inscrite dans le tétraèdre formé par ces quatre points, sous la forme d'une séquence: $A,R$, où $A$ est le centre de la sphère, et $R$ son rayon.
+\end{itemize}
+
+\subsection{Tétraèdre à longueurs fixées : tetra\_len()}
+
+La fonction \textbf{tetra\_len(ab,ac,ad,bc,bd,cd)} calcule les sommets $A,B,C,D$ d'un tétraèdre dont les longueurs des arêtes sont données, c'est à dire tels que $AB=ab$, $AC=ac$, $AD=ad$, $BC=bc$, $BD=bd$ et $CD=cd$. La fonction renvoie la séquence de quatre points $A,B,C,D$. Le sommet $A$ est toujours le point $M(0,0,0)$ (\emph{Origin}) et le sommet $B$ est toujours le point \emph{ab*vecI} et le sommet $C$ dans le plan $xOy$. Le tétraèdre en tant que polyèdre peut ensuite être construit avec la fonction \textbf{tetra(A,B-A,C-A,D-A)}.
+
+\begin{demo}{Un tétraèdre avec la longueur des arêtes fixée}
+\begin{luadraw}{name=tetra_len}
+local g = graph3d:new{window={-4,4,-4,4},margin={0,0,0,0},viewdir={25,65},size={10,10}}
+Hiddenlines = true; Hiddenlinestyle = "dashed"
+require 'luadraw_spherical'
+local R = 4
+local A,B,C,D = tetra_len(R,R,R,R,R,R)
+local T = tetra(A,B-A,C-A,D-A)
+g:Define_sphere({radius=R})
+g:DSpolyline( facetedges(T), {color="DarkGreen"})
+g:DSbigcircle( {B,C},{color="Blue"} )
+g:DSbigcircle( {B,D},{color="Blue"} )
+g:DSbigcircle( {C,D},{color="Blue"}  )
+g:DSlabel("$R$",(2*A+C)/3,{pos="S"})
+g:Dspherical()
+g:Ddots3d({A,B,C,D})
+g:Dlabel3d("$A$",A,{pos="S"},"$B$",B,{pos="SW"},"$C$",C,{},"$D$",D,{pos="N"} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Triangles : sss\_triangle3d(), sas\_triangle3d(), asa\_triangle3d()}
+
+Ces fonctions sont la version 3d des fonctions  sss\_triangle(), sas\_triangle(), asa\_triangle() déjà décrites.
+\begin{itemize}
+    \item La fonction \textbf{sss\_triangle3d(ab,bc,ca)} où \emph{ab}, \emph{bc} et \emph{ca} sont trois longueurs, calcule et renvoie une liste de trois points 3d $\{A,B,C\}$ formant les sommets d'un triangle direct dans le plan $xOy$ dont les longueurs des côtés sont les arguments, c'est à dire $AB=ab$, $BC=bc$ et $CA=ca$, lorsque cela est possible. Le sommet $A$ est toujours le point $M(0,0,0)$ (\emph{Origin}) et le sommet $B$ est toujours le point \emph{ab*vecI}. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline3d}.
+    \item La fonction \textbf{sas\_triangle3d(ab,alpha,ca)} où \emph{ab} et \emph{ca} sont deux longueurs, \emph{alpha} un angle en degrés, calcule et renvoie une liste de trois points 3d $\{A,B,C\}$ formant les sommets d'un triangle dans le plan $xOy$ tel que $AB=ab$, $CA=ca$, et tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, lorsque cela est possible. Le sommet $A$ est toujours le point $M(0,0,0)$ (\emph{Origin}) et le sommet $B$ est toujours le point \emph{ab*vecI}. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline3d}.
+    \item La fonction \textbf{asa\_triangle3d(alpha,ab,beta)} où \emph{ab} est une longueur, \emph{alpha} et \emph{beta} deux angles en degrés, calcule et renvoie une liste de trois points 3d $\{A,B,C\}$ formant les sommets d'un triangle dans le plan $xOy$ tel que $AB=ab$, tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, et tel que l'angle $(\vec{BA},\vec{BC})$ a pour mesure \emph{beta}, lorsque cela est possible. Le sommet $A$ est toujours le point $M(0,0,0)$ (\emph{Origin}) et le sommet $B$ est toujours le point \emph{ab*vecI}. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline3d}.
+\end{itemize}
+

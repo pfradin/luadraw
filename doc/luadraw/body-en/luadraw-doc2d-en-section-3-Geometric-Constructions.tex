@@ -1,0 +1,45 @@
+\section{Geometric Constructions}
+
+This section groups together functions that construct geometric figures without a corresponding dedicated graphical method.
+
+\subsection{cvx\_hull2d}
+
+The function \textbf{cvx\_hull2d(L)}, where $L$ is a list of complex numbers, computes and returns a list of complex numbers representing the convex hull of $L$.
+
+\subsection{sss\_triangle}
+
+The function \textbf{sss\_triangle(ab,bc,ca)}, where \emph{ab}, \emph{bc}, and \emph{ca} are three lengths, computes and returns a list of three points (3 complexes) $\{A,B,C\}$ forming the vertices of a direct triangle whose side lengths are the arguments, i.e., $AB=ab$, $BC=bc$, and $CA=ca$, when possible. Vertex A is always the complex 0 and vertex B is always the complex ab. This triangle can be drawn with the \textbf{g:Dpolyline} method.
+
+\subsection{sas\_triangle}
+
+The function \textbf{sas\_triangle(ab,alpha,ca)}, where \emph{ab} and \emph{ca} are two lengths and \emph{alpha} is an angle in degrees, calculates and returns a list of three points (3 complexes) A, B, C forming the vertices of a triangle such that AB=ab, CA=ca, and angle (AB, AC) has a measure of alpha, whenever possible. Vertex A is always the complex 0 and vertex B is always the complex ab. This triangle can be drawn with the \textbf{g:Dpolyline} method.
+
+\subsection{asa\_triangle}
+
+The function \textbf{asa\_triangle(alpha,ab,beta)}, where \emph{ab} is a length, \emph{alpha} and \emph{beta} are two angles in degrees, calculates and returns a list of three points (3 complexes) $\{A,B,C\}$ forming the vertices of a triangle such that $AB=ab$, such that angle $(\vec{AB},\vec{AC})$ has measure \emph{alpha}, and such that angle $(\vec{BA},\vec{BC})$ has measure \emph{beta}, whenever possible. Vertex $A$ is always complex $0$ and vertex $B$ is always complex $ab$. This triangle can be drawn using the \textbf{g:Dpolyline} method.
+
+\begin{demo}{sss\_triangle, sas\_triangle and asa\_triangle}
+\begin{luadraw}{name=sss_triangles_and_co}
+local g = graph:new{window={-5,5,-3,5},size={10,10}}
+g:Labelsize("footnotesize"); g:Linewidth(8)
+local i = cpx.I
+local T1 = shift( sss_triangle(4,5,3), 2*i-2)
+local T2 = shift( sas_triangle(4,60,2), -4-2*i)
+local T3 = shift( asa_triangle(30,4,50), 0.5-i)
+g:Dpolyline({T1,T2,T3}, true)
+g:Linewidth(4)
+g:Darc(T2[2],T2[1],T2[3],0.5,1,"->")
+g:Darc(T3[2],T3[1],T3[3],0.75,1,"->")
+g:Darc(T3[1],T3[2],T3[3],0.75,-1,"->")
+g:Dlabel( 
+    "$4$",(T1[1]+T1[2])/2,{pos="N"}, "$5$",(T1[2]+T1[3])/2,{pos="NE"},"$3$",(T1[1]+T1[3])/2,{pos="W"},
+    "$4$",(T2[1]+T2[2])/2,{pos="N"}, "$60^\\circ$",T2[1]+Zp(0.9,30*deg),{pos="center"},"$2$",(T2[1]+T2[3])/2,{pos="W"},
+    "$4$",(T3[1]+T3[2])/2,{pos="N"}, "$30^\\circ$",T3[1]+Zp(1.15,15*deg),{pos="center"},
+    "$50^\\circ$",T3[2]+Zp(1.15,155*deg),{pos="center"},
+    "sss\\_triangle(4,5,3)",(T1[1]+T1[2])/2,{pos="S"}, "sas\\_triangle(4,60,2)",(T2[1]+T2[2])/2,{}, "asa\\_triangle(30,4,50)",(T3[1]+T3[2])/2,{})
+for _,T in ipairs({T1,T2,T3}) do
+    g:Dlabel("$A$",T[1],{pos="SW"}, "$B$",T[2],{pos="SE"},"$C$",T[3],{pos="N"})
+end
+g:Show()
+\end{luadraw}
+\end{demo}

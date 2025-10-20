@@ -1,0 +1,60 @@
+\section{Transformations}
+In the following:
+\begin{itemize}
+    \item the argument \emph{L} is either a complex number, a list of complex numbers, or a list of lists of complex numbers,
+    \item the line \emph{d} is a list of two complex numbers: a point on the line and a direction vector.
+\end{itemize}
+
+\subsection{affin}
+The function \textbf{affin(L,d,v,k)} returns the image of \emph{L} by the affinity of base line \emph{d}, parallel to the vector \emph{v} and of ratio \emph{k}.
+
+\subsection{ftransform}
+The function \textbf{ftransform(L,f)} returns the image of \emph{L} by the function \emph{f}, which must be a function of the complex variable. If one of the elements of \emph{L} is the complex number \emph{cpx.Jump}, then it is returned as is in the result.
+
+\subsection{hom}
+The function \textbf{hom(L,factor,center)} returns the image of \emph{L} by the homothety with center \emph{center} and ratio \emph{factor}. By default, the argument \emph{center} is 0.
+
+\subsection{inv}
+The function \textbf{inv(L, radius, center)} returns the image of \emph{L} by the inversion with respect to the circle with center \emph{center} and radius \emph{radius}. By default, the argument \emph{center} is 0.
+
+\subsection{proj}
+The function \textbf{proj(L,d)} returns the image of \emph{L} by the orthogonal projection onto the line \emph{d}.
+
+\subsection{projO}
+The function \textbf{projO(L,d,v)} returns the image of \emph{L} by projection onto the line \emph{d} parallel to the vector \emph{v}.
+
+\subsection{rotate}
+The function \textbf{rotate(L,angle,center)} returns the image of \emph{L} by rotation with center \emph{center} and angle \emph{angle} (in degrees). By default, the argument \emph{center} is 0.
+
+\subsection{shift}
+The function \textbf{shift(L,u)} returns the image of \emph{L} by translation of vector \(u\).
+
+\subsection{simil}
+The function \textbf{simil(L,factor,angle,center)} returns the image of \emph{L} by the similarity of center \emph{center}, ratio \emph{factor}, and angle \emph{angle} (in degrees). By default, the argument \emph{center} is 0.
+
+\subsection{sym}
+The function \textbf{sym(L,d)} returns the image of \emph{L} by the orthogonal symmetry of axis \emph{d}.
+
+\subsection{symG}
+The function \textbf{symG(L,d,v)} returns the image of \emph{L} by the symmetry about the line \emph{d} followed by the translation of vector \emph{v} (sliding symmetry).
+
+\subsection{symO}
+The function \textbf{symO(L,d)} returns the image of \emph{L} by symmetry with respect to the line \emph{d} and parallel to the vector \emph{v} (oblique symmetry).
+
+\begin{demo}{Using Transformations}
+\begin{luadraw}{name=Sierpinski}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+local i = cpx.I
+local rand = math.random
+local A, B, C = 5*i, -5-5*i, 5-5*i -- triangle initial
+local T, niv = {{A,B,C}}, 5
+for k = 1, niv do
+    T = concat( hom(T,0.5,A), hom(T,0.5,B), hom(T,0.5,C) )
+end
+for _,cp in ipairs(T) do
+    g:Filloptions("full", rgb(rand(),rand(),rand()))
+    g:Dpolyline(cp,true)
+end
+g:Show()
+\end{luadraw}
+\end{demo}

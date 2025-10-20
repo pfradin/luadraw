@@ -1,0 +1,168 @@
+\section{Ajouter ses propres méthodes à la classe graph}
+
+Sans avoir à modifier les fichiers sources Lua associés au paquet \emph{luadraw}, on peut ajouter ses propres méthodes à la classe \emph{graph}, ou modifier une méthode existante. Ceci n'a d'intérêt que si ces modifications doivent être utilisées dans différents graphiques et/ou différents documents (sinon il suffit d'écrire localement une fonction dans le graphique où on en a besoin).
+
+\subsection{Un exemple}
+Dans le graphique de la page \pageref{champ}, nous avons dessiné un champ de vecteurs, pour cela on a écrit une fonction qui calcule les vecteurs avant de faire le dessin, mais cette fonction est locale. On pourrait en faire une fonction globale (en enlevant le mot clé \emph{local}), elle serait alors utilisable dans tout le document, mais pas dans un autre document !
+
+Pour généraliser cette fonction, on va devoir créer un fichier Lua qui pourra ensuite être importé dans des documents en cas de besoin. Pour rendre l'exemple un peu consistant, on va créer un fichier qui va définir une fonction qui calcule les vecteurs d'un champ, et qui va ajouter à la classe \emph{graph} deux nouvelles méthodes : une pour dessiner un champ de vecteurs d'une fonction $f\colon(x,y)\to(x,y)\in \mathbf R^2$, on la nommera \emph{graph:Dvectorfield}, et une autre pour dessiner un champ de gradient d'une fonction $f\colon(x,y)\to\mathbf R$, on la nommera \emph{graph:Dgradientfield}. Du coup nous appellerons ce fichier : \emph{luadraw\_fields.lua}.
+
+\paragraph{Contenu du fichier :}
+\begin{Luacode}
+-- luadraw_fields.lua
+-- ajout de méthodes à la classe graph du paquet luadraw
+-- pour dessiner des champs de vecteurs ou de gradient
+function field(f,x1,x2,y1,y2,grid,long)  -- fonction mathématique, indépendante du graphique
+-- calcule un champ de vecteurs dans le pavé [x1,x2]x[y1,y2]
+-- f fonction de deux variables à valeurs dans R^2
+-- grid = {nbx, nby} : nombre de vecteurs suivant x et suivant y
+-- long = longueur d'un vecteur
+    if grid == nil then grid = {25,25} end
+    local deltax, deltay = (x2-x1)/(grid[1]-1), (y2-y1)/(grid[2]-1) -- pas suivant x et y
+    if long == nil then long = math.min(deltax,deltay) end -- longueur par défaut
+    local vectors = {} -- contiendra la liste des vecteurs
+    local x, y, v = x1 
+    for _ = 1, grid[1] do -- parcours suivant x
+        y = y1
+        for _ = 1, grid[2] do -- parcours suivant y
+            v = f(x,y) -- on suppose que v est bien défini
+            v = Z(v[1],v[2]) -- passage en complexe
+            if not cpx.isNul(v) then
+                v = v/cpx.abs(v)*long -- normalisation de v
+                table.insert(vectors, {Z(x,y), Z(x,y)+v} ) -- on ajoute le vecteur
+            end
+            y = y+deltay
+        end
+        x = x+deltax
+    end
+    return vectors -- on renvoie le résultat (ligne polygonale)
+end
+
+function graph:Dvectorfield(f,args) -- ajout d'une méthode à la classe graph
+-- dessine un champ de vecteurs
+-- f fonction de deux variables à valeurs dans R^2
+-- args table à 4 champs :
+-- { view={x1,x2,y1,y2}, grid={nbx,nby}, long=, draw_options=""}
+    args = args or {}
+    local view = args.view or {self:Xinf(),self:Xsup(),self:Yinf(),self:Ysup()} -- repère utilisateur par défaut
+    local vectors = field(f,view[1],view[2],view[3],view[4],args.grid,args.long) -- calcul du champ
+    self:Dpolyline(vectors,false,args.draw_options) -- le dessin (ligne polygonale non fermée)
+end
+
+function graph:Dgradientfield(f,args) -- ajout d'une autre méthode à la classe graph
+-- dessine un champ de gradient
+-- f fonction de deux variables à valeurs dans R
+-- args table à 4 champs :
+-- { view={x1,x2,y1,y2}, grid={nbx,nby}, long=, draw_options=""}
+    local h = 1e-6
+    local grad_f = function(x,y) -- fonction gradient de f
+        return { (f(x+h,y)-f(x-h,y))/(2*h), (f(x,y+h)-f(x,y-h))/(2*h) }
+    end
+    self:Dvectorfield(grad_f,args) -- on utilise la méthode précédente
+end
+\end{Luacode}
+
+\subsection{Comment importer le fichier}
+
+Il y a deux méthodes pour cela :
+
+\begin{enumerate}
+    \item Avec l'instruction Lua \emph{dofile}. On peut l'écrire par exemple dans le préambule après la déclaration du paquet :
+    \begin{TeXcode}
+    \usepackage[]{luadraw}
+    \directlua{dofile("<chemin>/luadraw_fields.lua")}
+    \end{TeXcode}
+    Bien entendu, il faudra remplacer \verb|<chemin>| par le chemin d'accès à ce fichier. 
+    
+    L'instruction \verb|\directlua{dofile("<chemin>/luadraw_fields.lua")}| peut être placée ailleurs dans le document pourvu que ce soit après le chargement du paquet (sinon la classe \emph{graph} ne sera pas reconnue lors de la lecture du fichier). On peut aussi placer l'instruction \verb|dofile("<chemin>/luadraw_fields.lua")| dans un environnement \emph{luacode}, et donc en particulier dans un environnement \emph{luadraw}.
+    
+    Dès que le fichier est importé, les nouvelles méthodes sont disponibles pour la suite du document.
+    
+    Cette façon de procéder a au moins deux inconvénients : il faut se souvenir à chaque utilisation de \verb|<chemin>|, et d'autre part l'instruction \emph{dofile} ne vérifie par si le fichier a déjà été lu. Pour ces raisons, on préférera la méthode suivante.
+    
+    \item Avec l'instruction Lua \emph{require}. On peut l'écrire par exemple dans le préambule après la déclaration du paquet :
+    \begin{TeXcode}
+    \usepackage[]{luadraw}
+    \directlua{require "luadraw_fields"}
+    \end{TeXcode}
+    On remarquera l'absence du chemin (et l'extension lua est inutile).
+    
+    L'instruction \verb|\directlua{require "luadraw_fields"}| peut être placée ailleurs dans le document pourvu que ce soit après le chargement du paquet (sinon la classe \emph{graph} ne sera pas reconnue lors de la lecture du fichier). On peut aussi placer l'instruction \verb|require "luadraw_fields"| dans un environnement \emph{luacode}, et donc en particulier dans un environnement \emph{luadraw}.
+    
+    L'instruction \emph{require} vérifie si le fichier a déjà été chargé ou non, ce qui est préférable. Mais il faut cependant que Lua soit capable de trouver ce fichier, et le plus simple pour cela est qu'il soit quelque part dans une arborescence connue de TeX. On peut par exemple créer dans son \emph{texmf} local le chemin suivant :
+    \begin{TeXcode}
+    texmf/tex/lualatex/myluafiles/
+    \end{TeXcode}
+    puis copier le fichier \emph{luadraw\_fields.lua} dans le dossier \emph{myluafiles}.
+\end{enumerate}
+
+\begin{demo}{Utilisation des nouvelles méthodes}
+\begin{luadraw}{name=fields}
+require "luadraw_fields" -- import des nouvelles méthodes
+local g = graph:new{window={0,21,0,10},size={16,10}}
+local i = cpx.I
+g:Labelsize("footnotesize")
+local f = function(x,y) return {x-x*y,-y+x*y} end -- Volterra
+local F = function(x,y) return x^2+y^2+x*y-6 end
+local H = function(t,Y) return f(Y[1],Y[2]) end
+-- graphique du haut
+g:Saveattr();g:Viewport(0,10,0,10);g:Coordsystem(-5,5,-5,5)
+g:Dgradbox({-4.5-4.5*i,4.5+4.5*i,1,1}, {originloc=0,originnum={0,0},grid=true,title="gradient field, $f(x,y)=x^2+y^2+xy-6$"}) 
+g:Arrows("->"); g:Lineoptions(nil,"blue",6)
+g:Dgradientfield(F,{view={-4,4,-4,4},grid={15,15},long=0.5})
+g:Arrows("-"); g:Lineoptions(nil,"Crimson",12); g:Dimplicit(F, {view={-4,4,-4,4}})
+g:Restoreattr()
+-- graphique du bas
+g:Saveattr();g:Viewport(11,21,0,10);g:Coordsystem(-5,5,-5,5)
+g:Dgradbox({-4.5-4.5*i,4.5+4.5*i,1,1}, {originloc=0,originnum={0,0},grid=true,title="vector field, $f(x,y)=(x-xy,-y+xy)$"}) 
+g:Arrows("->"); g:Lineoptions(nil,"blue",6); g:Dvectorfield(f,{view={-4,4,-4,4}})
+g:Arrows("-");g:Lineoptions(nil,"Crimson",12)
+g:Dodesolve(H,0,{2,3},{t={0,50},out={2,3},nbdots=250})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Modifier une méthode existante}
+
+Prenons par exemple la méthode \emph{DplotXY(X,Y,draw\_options)} qui prend comme arguments deux listes (tables) de réels et dessine la ligne polygonale formée par les points de coordonnées $(X[k],Y[k])$. Nous allons la modifier afin qu'elle prenne en compte le cas où \emph{X} est une liste de noms (chaînes), dans ce cas, on affichera les noms sous l'axe des abscisses (avec l'abscisse $k$ pour le k\ieme\ nom) et on dessinera la ligne polygonale formée par les points de coordonnées $(k,Y[k])$, sinon on fera comme l'ancienne méthode. Il suffit pour cela de réécrire la méthode (dans un fichier Lua pour pouvoir ensuite l'importer) :
+
+\begin{Luacode}
+function graph:DplotXY(X,Y,draw_options)
+-- X est une liste de réels ou de chaînes
+-- Y est une liste de réels de même longueur que X 
+    local L = {} -- liste des points à dessiner
+    if type(X[1]) == "number" then -- liste de réels
+        for k,x in ipairs(X) do
+            table.insert(L,Z(x,Y[k]))
+        end
+    else
+        local noms = {} -- liste des labels à placer
+        for k = 1, #X do
+            table.insert(L,Z(k,Y[k]))
+            insert(noms,{X[k],k,{pos="E",node_options="rotate=-90"}})
+        end
+        self:Dlabel(table.unpack(noms)) --dessin des labels
+    end
+    self:Dpolyline(L,draw_options) -- dessin de la courbe
+end
+\end{Luacode}
+
+Dès que le fichier sera importé, cette nouvelle définition va écraser l'ancienne (pour toute la suite du document). Bien entendu on pourrait imaginer ajouter d'autres options sur le style de tracé par exemple (ligne, bâtons, points ...).
+
+\begin{demo}{Modification d'une méthode existante}
+\begin{luadraw}{name=newDplotXY}
+require "luadraw_fields" -- import de la méthode modifiée
+local g = graph:new{window={-0.5,11,-1,20}, margin={0.5,0.5,0.5,1}, size={10,10,0}}
+g:Labelsize("scriptsize")
+local X, Y = {}, {} -- on définit deux listes X et Y, on pourrait aussi les lire dans un fichier
+for k = 1, 10 do
+    table.insert(X,"nom"..k)
+    table.insert(Y,math.random(1,20))
+end
+defaultlabelshift = 0
+g:Daxes({0,1,2},{limits={{0,10},{0,20}}, labelpos={"none","left"},arrows="->", grid=true})
+g:DplotXY(X,Y,"line width=0.8pt, blue")
+g:Show()
+\end{luadraw}
+\end{demo}

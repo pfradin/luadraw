@@ -1,0 +1,1275 @@
+\section{Graphics Methods}
+
+Polygonal lines, curves, paths, points, and labels can be created.
+
+\subsection{Polygonal Lines}
+
+\textbf{A polygonal line is a list (table) of connected components, and a connected component is a list (table) of complexes that represent the affixes of the points}. For example, the instruction:
+\begin{Luacode}
+local L = { {Z(-4,0), Z(0,2), Z(1,3)}, {Z(0,0), Z(4,-2), Z(1,-1)} }
+\end{Luacode}
+creates a polygonal line with two components in a variable \emph{L}.
+
+\paragraph{Drawing a polygonal line.}
+
+This is the \textbf{g:Dpolyline(L,close, draw\_options,clip)} method (where \emph{g} denotes the graphic being created), \emph{L} is a polygonal line, \emph{close} is an optional argument equal to \emph{true} or \emph{false} indicating whether the line should be closed or not (\emph{false} by default), and \emph{draw\_options} is a string that will be passed directly to the \emph{\textbackslash draw} instruction in the export. The argument \emph{clip} must contain either \emph{nil} (default value) or a table of the form \emph{\{x1,x2,y1,y2\}}, in the first case the line is clipped by the current 2d window \textbf{after} its transformation by the 2d matrix of the graph, in the second case the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph matrix.
+
+
+\paragraph{Choosing options for drawing a polygonal line.}
+
+Drawing options can be passed directly to the \emph{\textbackslash draw} instruction in the export, but they will have only a local effect. These options can be modified globally using the:
+\par\hfil\textbf{g:Lineoptions(style,color,width,arrows)}\hfil\par
+ method (when one of the arguments is nil, its default value is used):
+
+\begin{itemize}
+    \item \emph{color} is a string representing a color known to tikz (default is black),
+    \item \emph{style} is a string representing the type of line to draw. This style can be:
+\begin{itemize}
+    \item \emph{"noline"}: undrawn line,
+    \item \emph{"solid"}: solid line (default value),
+    \item \emph{"dotted"}: dotted line,
+    \item \emph{"dashed"}: dashed line,
+    \item custom style: the \emph{style} argument can be a string of the form (example): \emph{"\{2.5pt\}\{2pt\}"} which means: a 2.5pt line followed by a 2pt space, the number of values ​​can be greater than 2, e.g.: \emph{"\{2.5pt\}\{2pt\}\{1pt\}\{2pt\}"} (succession of on, off).
+\end{itemize}
+    \item \emph{width} is a number representing the line thickness expressed in tenths of a point, for example $8$ for an actual thickness of 0.8pt (default value of $4$),
+    \item \emph{arrows} is a string that specifies the type of arrow that will be drawn, this can be:
+\begin{itemize}
+    \item \emph{"-"} which means no arrow (default value),
+    \item \emph{"->"} which means an arrow at the end,
+    \item \emph{"<-"} which means an arrow at the beginning,
+    \item \emph{"<->"} which means an arrow at each end.\\
+\textbf{WARNING}: The arrow is not drawn when the argument \emph{close} is true. \end{itemize}
+\end{itemize}
+
+The options can be modified individually using the following methods:
+\begin{itemize}
+    \item \textbf{g:Linecolor(color)},
+    \item \textbf{g:Linestyle(style)},
+    \item \textbf{g:Linewidth(width)},
+    \item \textbf{g:Arrows(arrows)},
+    \item plus the following methods:
+\begin{itemize}
+    \item \textbf{g:Lineopacity(opacity)}, which sets the opacity of the line drawing. The \emph{opacity} argument must be a value between $0$ (fully transparent) and $1$ (fully opaque). The default value is $1$.     \item \textbf{g:Linecap(style)}, to adjust the line ends, the \emph{style} argument is a string that can be:
+\begin{itemize}
+    \item \emph{"butt"} (straight end at the breakpoint, default value),
+    \item \emph{"round"} (rounded semicircle end),
+    \item \emph{"square"} (rounded square end).
+\end{itemize}
+
+    \item \textbf{g:Linejoin(style)}, to adjust the join between segments, the style argument is a string that can be:
+\begin{itemize}
+    \item \emph{"miter"} (pointed corner, default value),
+    \item \emph{"round"} (or rounded corner),
+    \item \emph{"bevel"} (cut corner).
+\end{itemize} 
+\end{itemize}
+\end{itemize}
+
+\paragraph{Polygonal line fill options.}
+
+This is the \textbf{g:Filloptions(style,color,opacity,evenodd)} method (which uses the tikz \emph{patterns} library, which is loaded with the package). When one of the arguments is \emph{nil}, its default value is used:
+
+\begin{itemize}
+    \item \emph{color} is a string representing a color known to tikz (default is black).     \item \emph{style} is a string representing the fill type. This style can be:
+\begin{itemize}
+    \item \emph{"none"}: no fill, this is the default value,
+    \item \emph{"full"}: full fill,
+    \item \emph{"bdiag"}: descending hatching from left to right,
+    \item \emph{"fdiag"}: ascending hatching from left to right,
+    \item \emph{"horizontal"}: horizontal hatching,
+    \item \emph{"`vertical"}: vertical hatching,
+    \item \emph{"hvcross"}: horizontal and vertical hatching,
+    \item \emph{"diagcross"}: descending and ascending diagonals,
+    \item \emph{"gradient"}: in this case, the fill is done with a gradient defined with the method \textbf{g:Gradstyle(string)}, this style is passed as is to the \emph{\textbackslash draw} instruction. By default, the string defining the gradient style is \emph{"left color = white, right color = red"}.
+
+Any other style known from the \emph{patterns} library is also possible.
+
+\end{itemize}
+\end{itemize}
+
+Some options can be modified individually with the methods:
+\begin{itemize}
+
+    \item \textbf{g:Fillopacity(opacity)},
+
+    \item \textbf{g:Filleo(evenodd)}.
+
+\end{itemize}
+
+\begin{demo}{Vector field, integral curve of $y'= 1-xy^2$}
+\begin{luadraw}{name=champ}
+local g = graph:new{window={-5,5,-5,5},bg="Cyan!30",size={10,10}}
+local f = function(x,y) -- éq. diff. y'= 1-x*y^2=f(x,y)
+    return 1-x*y^2     
+end
+local A = Z(-1,1) -- A = -1+i
+local deltaX, deltaY, long = 0.5, 0.5, 0.4
+local champ = function(f)
+    local vecteurs, v = {}
+    for y = g:Yinf(), g:Ysup(), deltaY do
+        for x = g:Xinf(), g:Xsup(), deltaX do
+            v = Z(1,f(x,y)) -- coordonnées 1 et f(x,y)
+            v = v/cpx.abs(v)*long -- normalisation de v
+            table.insert(vecteurs, {Z(x,y), Z(x,y)+v} )
+        end
+    end 
+    return vecteurs -- vecteurs est une ligne polygonale
+end
+g:Daxes( {0,1,1}, {labelpos={"none","none"}, arrows="->"} )
+g:Dpolyline( champ(f), "->,blue")
+g:Dodesolve(f, A.re, A.im, {t={-2.75,5},draw_options="red,line width=0.8pt"})
+g:Dlabeldot("$A$", A, {pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+\label{field}
+
+
+\subsection{Segments and Lines}
+
+\textbf{A segment is a list (table) of two complex numbers representing the endpoints. A line is a list (table) of two complex numbers, the first representing a point on the line, and the second a direction vector of the line (this must be non-zero).}
+
+\subsubsection{Dangle}
+\begin{itemize}
+    \item The \textbf{g:Dangle(B,A,C,r,draw\_options)} method draws the angle \(BAC\) with a parallelogram (only two sides are drawn). The optional argument \emph{r} specifies the length of one side (0.25 by default). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.     \item The function \textbf{angleD(B,A,C,r)} returns the list of points of this angle.
+\end{itemize}
+
+\subsubsection{Dbissec}
+\begin{itemize}
+    \item The method \textbf{g:Dbissec(B,A,C,interior,draw\_options)} draws a bisector of the geometric angle BAC, interior if the optional argument \emph{interior} is \emph{true} (default value), exterior otherwise. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction
+\emph{\textbackslash draw}.
+    \item The function \textbf{bissec(B,A,C,interior)} returns this bisector as a list \emph{\{A,u\}} where \emph{u} is a direction vector of the line. \end{itemize}
+
+\subsubsection{Dhline}
+The method \textbf{g:Dhline(d,draw\_options)} draws a half-line. The argument \emph{d} must be a list of complex \emph{\{A,B\}} variables. The half-line $[A,B)$ is drawn.
+
+Variant: \textbf{g:Dhline(A,B,draw\_options)}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+
+\subsubsection{Dline}
+The \textbf{g:Dline(d,draw\_options)} method draws the line \emph{d}, which is a list of type \emph{\{A,u\}} where \emph{A} represents a point on the line (a complex) and \emph{u} a direction vector (a non-zero complex).
+
+Variant: the \textbf{g:Dline(A,B,draw\_options)} method draws the line passing through the points \emph{A} and \emph{B} (two complexes). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+
+\subsubsection{DlineEq}
+\begin{itemize}
+    \item The \textbf{g:DlineEq(a,b,c,draw\_options)} method draws the line with the equation \(ax+by+c=0\). The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{lineEq(a,b,c)} function returns the line with the equation \(ax+by+c=0\) as a list \emph{\{A,u\}} where \emph{A} is a point on the line and \emph{u} is a direction vector. \end{itemize}
+
+\subsubsection{Dmarkarc}
+The method \textbf{g:Dmarkarc(b,a,c,r,n,long,space)} marks the arc of a circle with center \emph{a}, radius \emph{r}, extending from \emph{b} to \emph{c}, with \emph{n} small segments. By default, the length (argument \emph{long}) is 0.25, and the spacing (argument \emph{space}) is 0.0625.
+
+\subsubsection{Dmarkseg}
+The method \textbf{g:Dmarkseg(a,b,n,long,space,angle)} marks the segment defined by \emph{a} and \emph{b} with \emph{n} small segments inclined at \emph{angle} degrees (45° by default). By default, the length (argument \emph{long}) is 0.25, and the spacing (argument \emph{space}) is 0.125.
+
+\subsubsection{Dmed}
+\begin{itemize}
+    \item The \textbf{g:Dmed(A,B, draw\_options)} method draws the perpendicular bisector of the segment $[A;B]$.
+
+Variant: \textbf{g:Dmed(seg,draw\_options)} where segment is a list of two points representing the segment. The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.     \item The function \textbf{med(A,B)} (or \textbf{med(seg)}) returns the perpendicular bisector of the segment \emph{{[}A,B{]}} as a list \emph{\{C,u\}} where \emph{C} is a point on the line and \emph{u} is a direction vector.
+\end{itemize}
+
+\subsubsection{Dparallel}
+\begin{itemize}
+    \item The method \textbf{g:Dparallel(d,A,draw\_options)} draws the parallel to \emph{d} passing through \emph{A}. The argument \emph{d} can be either a line (a list consisting of a point and a direction vector) or a non-zero vector. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
+    \item The function \textbf{parallel(d,A)} returns the parallel to \emph{d} passing through \emph{A} as a list \emph{\{B,u\}} where \emph{B} is a point on the line and \emph{u} is a direction vector. \end{itemize}
+
+\subsubsection{Dperp}
+\begin{itemize}
+    \item The method \textbf{g:Dperp(d,A,draw\_options)} draws the perpendicular to \emph{d} passing through \emph{A}. The argument \emph{d} can be either a line (a list consisting of a point and a direction vector) or a non-zero vector. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
+    \item The function \textbf{perp(d,A)} returns the perpendicular to \emph{d} passing through \emph{A} as a list \emph{\{B,u\}} where \emph{B} is a point on the line and \emph{u} is a direction vector. \end{itemize}
+
+\subsubsection{Dseg}
+The \textbf{g:Dseg(seg,scale,draw\_options)} method draws the segment defined by the \emph{seg} argument, which must be a list of two complex numbers. The optional \emph{scale} argument (1 by default) is a number that allows you to increase or decrease the segment length (the natural length is multiplied by \emph{scale}). The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+
+\subsubsection{Dtangent}
+\begin{itemize}
+    \item The \textbf{g:Dtangent(p,t0,long,draw\_options)} method draws the tangent to the curve parameterized by \(p: t \mapsto p(t)\) (with complex values), at the parameter point \(t0\). If the argument \emph{long} is \emph{nil} (the default value), then the entire line is drawn; otherwise, it is a segment of length \emph{long}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The function \textbf{tangent(p,t0,long)} returns either the line or a segment (depending on whether \emph{long} is \emph{nil} or not). \end{itemize}
+
+\subsubsection{ DtangentC}
+\begin{itemize}
+    \item The method \textbf{g:DtangentC(f,x0,long,draw\_options)} draws the tangent to the Cartesian curve with equation \(y=f(x)\), at the abscissa point \emph{x0}. If the argument \emph{long} is \emph{nil} (the default value), then the entire line is drawn; otherwise, it is a segment of length \emph{long}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
+    \item The function \textbf{tangentC(f,x0,long)} returns either the line or a segment (depending on whether \emph{long} is \emph{nil} or not).
+\end{itemize}
+
+\subsubsection{ DtangentI}
+\begin{itemize}
+    \item The method \textbf{g:DtangentI(f,x0,y0,long,draw\_options)} draws the tangent to the implicit curve with equation \(f(x,y)=0\), at the assumed point \emph{(x0,y0)} on the curve. If the argument \emph{long} is \emph{nil} (the default value), then the entire line is drawn; otherwise, it is a segment of length \emph{long}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
+    \item The function \textbf{tangentI(f,x0,y0,long)} returns either the line or a segment (depending on whether \emph{long} is \emph{nil} or not).
+\end{itemize}
+
+\subsubsection{Dnormal}
+\begin{itemize}
+    \item The method \textbf{g:Dnormal(p,t0,long,draw\_options)} draws the normal to the curve parameterized by \(p: t \mapsto p(t)\) (with complex values), at the point parameter \(t0\). If the argument \emph{long} is \emph{nil} (the default value), then the entire line is drawn; otherwise, it is a segment of length \emph{long}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
+    \item The function \textbf{normal(p,t0,long)} returns either the line or a segment (depending on whether \emph{long} is \emph{nil} or not).
+\end{itemize}
+
+\subsubsection{ DnormalC}
+\begin{itemize}
+    \item The \textbf{g:DnormalC(f,x0,long,draw\_options)} method draws the normal to the Cartesian curve with equation \(y=f(x)\), at the abscissa point \emph{x0}. If the argument \emph{long} is \emph{nil} (the default value), then the entire line is drawn; otherwise, it is a segment of length \emph{long}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The function \textbf{normalC(f,x0,long)} returns either the line or a segment (depending on whether \emph{long} is \emph{nil} or not). \end{itemize}
+
+\subsubsection{DnormalI}
+\begin{itemize}
+    \item The \textbf{g:DnormalI(f,x0,y0,long,draw\_options)} method draws the normal to the implicit curve with equation \(f(x,y)=0\), at the assumed point \emph{(x0,y0)} on the curve. If the \emph{long} argument is \emph{nil} (the default value), then the entire line is drawn; otherwise, it is a segment of length \emph{long}. The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The function \textbf{normalI(f,x0,y0,long)} returns either a line or a segment (depending on whether \emph{long} is \emph{nil} or not).
+\end{itemize}
+
+\begin{demo}{Symmetric of the orthocenter}
+\begin{luadraw}{name=orthocentre}
+local g = graph:new{window={-5,5,-5,5},bg="cyan!30",size={10,10}}
+local i = cpx.I
+local A, B, C = 4*i, -2-2*i, 3.5
+local h1, h2 = perp({B,C-B},A), perp({A,B-A},C) -- hauteurs
+local A1, F = proj(A,{B,C-B}), proj(C,{A,B-A}) -- projetés
+local H = interD(h1,h2) -- orthocentre
+local A2 = 2*A1-H -- symétrique de H par rapport à BC
+g:Dpolyline({A,B,C},true, "draw=none,fill=Maroon,fill opacity=0.3") -- fond du triangle
+g:Linewidth(6); g:Filloptions("full", "blue", 0.2)
+g:Dangle(C,A1,A,0.25); g:Dangle(B,F,C,0.25) -- angles droits
+g:Linecolor("black"); g:Filloptions("full","cyan",0.5)
+g:Darc(H,C,A2,1); g:Darc(B,A,A1,1) -- arcs
+g:Filloptions("none","black",1) -- on rétablit l'opacité à 1
+g:Dmarkarc(H,C,A1,1,2); g:Dmarkarc(A1,C,A2,1,2) -- marques
+g:Dmarkarc(B,A,H,1,2)
+g:Linewidth(8); g:Linecolor("black")
+g:Dseg({A,B},1.25); g:Dseg({C,B},1.25); g:Dseg({A,C},1.25) -- côtés
+g:Linecolor("red"); g:Dcircle(A,B,C) -- cercle
+g:Linecolor("blue"); g:Dline(h1); g:Dline(h2) -- hauteurs
+g:Dseg({A2,C}); g:Linecolor("red"); g:Dseg({H,A2}) -- segments
+g:Dmarkseg(H,A1,2); g:Dmarkseg(A1,A2,2) -- marques
+g:Labelcolor("blue") -- pour les labels
+g:Dlabel("$A$",A, {pos="NW",dist=0.1}, "$B$",B, {pos="SW"}, "$A_2$",A2,{pos="E"}, "$C$", C, {pos="S" }, "$H$", H, {pos="NE"}, "$A_1$", A1, {pos="SW"})
+g:Linecolor("black"); g:Filloptions("full"); g:Ddots({A,B,C,H,A1,A2}) -- dessin des points
+g:Show(true)
+\end{luadraw}
+\end{demo}
+
+\subsection{Geometric Figures}
+
+\subsubsection{Darc}
+\begin{itemize}
+    \item The \textbf{g:Darc(B,A,C,r,sens,draw\_options)} method draws an arc of a circle with center \emph{A} (complex), radius \emph{r}, going from \emph{B} (complex) to \emph{C} (complex) counterclockwise if the argument \emph{sens} is 1, and counterclockwise otherwise. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{arc(B,A,C,r,sens)} function returns the list of points on this arc (polygonal line).
+    \item The function \textbf{arcb(B,A,C,r,sens)} returns this arc as a path (see Dpath) using Bézier curves.
+\end{itemize}
+
+\subsubsection{Dcircle}
+\begin{itemize}
+    \item The method \textbf{g:Dcircle(c,r,d,draw\_options)} draws a circle. When the argument \emph{d} is nil, it is the circle with center \emph{c} (complex) and radius \emph{r}; when \emph{d} is specified (complex), it is the circle passing through the affix points \emph{c}, \emph{r}, and \emph{d}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}. Another possible syntax: \textbf{g:Dcircle(C,draw\_options)} where \emph{C=\{c,r,d\}}.
+    \item The \textbf{circle(c,r,d)} function returns the list of points on this circle (polygonal line).
+    \item The \textbf{circleb(c,r,d)} function returns this circle as a path (see Dpath) using Bézier curves. \end{itemize}
+
+\subsubsection{Dellipse}
+\begin{itemize}
+    \item The \textbf{g:Dellipse(c,rx,ry,inclin,draw\_options)} method draws the ellipse centered at \emph{c} (complex). The arguments \emph{rx} and \emph{ry} specify the two radii (on x and y). The optional argument \emph{inclin} is an angle in degrees that indicates the inclination of the ellipse relative to the \(Ox\) axis (zero by default). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{ellipse(c,rx,ry,inclin)} function returns the list of points on this ellipse (polygonal line).
+    \item The function \textbf{ellipseb(c,rx,ry,inclination)} returns this ellipse as a path (see Dpath) using Bézier curves.
+\end{itemize}
+
+\subsubsection{Dellipticarc}
+\begin{itemize}
+    \item The method \textbf{g:Dellipticarc(B,A,C,rx,ry,sens,inclination,draw\_options)} draws an arc of an ellipse centered at \emph{A} (complex) and radii at \emph{rx} and \emph{ry}, making an angle equal to \emph{inclination} with respect to the \(Ox\) axis (zero by default), going from \emph{B} (complex) to \emph{A} (complex) in the counterclockwise direction if the argument \emph{sens} is 1, and the opposite direction otherwise. The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{ellipticarc(B,A,C,rx,ry,sens,inclination)} function returns the list of points of this arc (polygonal line).
+    \item The \textbf{ellipticarcb(B,A,C,rx,ry,sens,inclination)} function returns this arc as a path (see Dpath) using Bézier curves.
+\end{itemize}
+
+\subsubsection{Dpolyreg}
+\begin{itemize}
+    \item The \textbf{g:Dpolyreg(vertex1,vertex2,number of points,direction,draw\_options)} or \par \textbf{g:Dpolyreg(center,vertex,number of points,draw\_options)} method draws a regular polygon. The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{polyreg(vertex1,vertex2,number of points,direction)} function and the \textbf{polyreg(center,vertex,number of points)} function return the list of vertices of this regular polygon. \end{itemize}
+
+\subsubsection{Drectangle}
+\begin{itemize}
+    \item The \textbf{g:Drectangle(a,b,c,draw\_options)} method draws a rectangle with consecutive vertices \emph{a} and \emph{b}, and whose opposite side passes through \emph{c}. The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{rectangle(a,b,c)} function returns the list of vertices of this rectangle. \end{itemize}
+
+\subsubsection{Dsequence}
+\begin{itemize}
+    \item The \textbf{g:Dsequence(f,u0,n,draw\_options)} method draws the "staircases" of the recurrent sequence defined by its first term \emph{u0} and the relation \(u_{k+1}=f(u_k)\). The argument \emph{f} must be a function of a real-valued variable, and the argument \emph{n} is the number of terms calculated. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{sequence(f,u0,n)} function returns the list of points constituting these "staircases".
+\end{itemize}
+
+\begin{demo}{Sequence $u_{n+1}=\cos(u_n)$}
+\begin{luadraw}{name=sequence}
+local g = graph:new{window={-0.1,1.7,-0.1,1.1},size={10,10,0}}
+local i, pi, cos = cpx.I, math.pi, math.cos
+local f = function(x) return cos(x)-x end
+local ell = solve(f,0,pi/2)[1]
+local L = sequence(cos,0.2,5) -- u_{n+1}=cos(u_n), u_0=0.2
+local seg, z = {}, L[1]
+for k = 2, #L do 
+    table.insert(seg,{z,L[k]})
+    z = L[k]
+end -- seg est la liste des segments de l'escalier
+g:Writeln("\\tikzset{->-/.style={decoration={markings, mark=at position #1 with {\\arrow{Stealth}}}, postaction={decorate}}}")
+g:Daxes({0,1,1}, {arrows="-Stealth"})
+g:DlineEq(1,-1,0,"line width=0.8pt,ForestGreen")
+g:Dcartesian(cos, {x={0,pi/2},draw_options="line width=1.2pt,Crimson"})
+g:Dpolyline(seg,false,"->-=0.65,blue")
+g:Dlabel("$u_0$",0.2,{pos="S",node_options="blue"})
+g:Dseg({ell, ell*(1+i)},1,"dashed,gray")
+g:Dlabel("$\\ell\\approx"..round(ell,3).."$", ell,{pos="S"})
+g:Ddots(ell*(1+i)); g:Labelcolor("Crimson")
+g:Dlabel("${\\mathcal C}_{\\cos}$",Z(1,cos(1)),{pos="E"})
+g:Labelcolor("ForestGreen"); g:Labelangle(g:Arg(1+i)*180/pi)
+g:Dlabel("$y=x$",Z(0.4,0.4),{pos="S",dist=0.1}) 
+g:Show()
+\end{luadraw}
+\end{demo}
+
+The \textbf{g:Arg(z)} method calculates and returns the \textit{real} argument of the complex $z$, that is, its argument (in radians) when exported to the tikz coordinate system (to do this, you must apply the graph's transformation matrix to $z$, then convert the coordinate system to that of tikz). If the graph coordinate system is orthonormal and the transformation matrix is ​​the identity matrix, then the result is identical to that of \textbf{cpx.arg(z)} (this is not the case in the example above).
+
+Similarly, the \textbf{g:Abs(z)} method calculates and returns the \textit{real} modulus of the complex $z$, that is, its modulus when exported to the tikz coordinate system; it is therefore a length in centimeters. If the graph coordinate system is orthonormal with 1 cm per unit on each axis, and if the transformation matrix is ​​an isometry, then the result is identical to that of \textbf{cpx.abs(z)}.
+
+\subsubsection{Dsquare}
+\begin{itemize}
+    \item The \textbf{g:Dsquare(a,b,sens,draw\_options)} method draws the square with consecutive vertices \emph{a} and \emph{b}, in the counterclockwise direction when \emph{sens} is 1 (the default value). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \textbf{square(a,b,sens)} function returns the list of vertices of this square. \end{itemize}
+
+\subsubsection{Dwedge}
+The method \textbf{g:Dwedge(B,A,C,r,sens,draw\_options)} draws an angular sector with center \emph{A} (complex), radius \emph{r}, going from \emph{B} (complex) to \emph{C} (complex) counterclockwise if the argument \emph{sens} is 1, and counterclockwise otherwise. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
+
+\subsection{Curves}
+
+\subsubsection{Parametric: Dparametric}
+
+\begin{itemize}
+    \item The function \textbf{parametric(p,t1,t2,nbdots,discont,nbdiv)} calculates the points and returns a polygonal line (no drawing).
+\begin{itemize}
+    \item The argument \emph{p} is the parameterization; it must be a function of a real variable \emph{t} and complex-valued variables, for example:
+\mintinline{Lua}{local p = function(t) return cpx.exp(t*cpx.I) end}
+    \item The arguments \emph{t1} and \emph{t2} are required with \(t1 < t2\); they form the bounds of the interval for the parameter.     \item The argument \emph{nbdots} is optional; it is the (minimum) number of points to calculate; it is 40 by default.
+    \item The argument \emph{discont} is an optional Boolean that indicates whether there are discontinuities or not; it is false by default.
+    \item The argument \emph{nbdiv} is a positive integer that is 5 by default and indicates the number of times the interval between two consecutive values ​​of the parameter can be cut in two (dichotomized) when the corresponding points are too far apart.
+\end{itemize}
+
+    \item The method \textbf{g:Dparametric(p,args)} calculates the points and draws the curve parametrized by \emph{p}. The \emph{args} parameter is a 6-field table:
+
+\begin{TeXcode}
+{ t={t1,t2}, nbdots=40, discont=true/false, nbdiv=5, draw_options=", clip={x1,x2,y1,y2} }
+\end{TeXcode}
+
+\begin{itemize}
+    \item By default, the \emph{t} field is equal to \emph{\{g:Xinf(),g:Xsup()\}},
+    \item the \emph{nbdots} field is equal to 40,
+    \item the \emph{discont} field is equal to \emph{false},
+    \item the \emph{nbdiv} field is equal to 5,
+    \item the \emph{draw\_options} field is an empty string (this will be passed as is to the instruction \emph{\textbackslash draw}),
+    \item the \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix. In the second case, the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph's matrix.
+\end{itemize}
+\end{itemize}
+
+
+\subsubsection{Polars: Dpolar}
+
+\begin{itemize}
+    \item The function \textbf{polar(rho,t1,t2,nbdots,discont,nbdiv)} calculates the points and returns a polygonal line (no drawing). The argument \emph{rho} is the polar parameterization of the curve; it must be a function of a real variable \emph{t} and with real values, for example:
+
+\mintinline{Lua}{local rho = function(t) return 4*math.cos(2*t) end}
+
+The other arguments are identical to those for parameterized curves.
+    \item The method \textbf{g:Dpolar(rho,args)} calculates the points and draws the polar curve parameterized by \emph{rho}. The \emph{args} parameter is a 6-field table:
+
+\begin{TeXcode}
+{ t={t1,t2}, nbdots=40, discont=true/false, nbdiv=5, draw_options=", clip={x1,x2,y1,y2} }
+\end{TeXcode}
+
+\begin{itemize}
+    \item By default, the \emph{t} field is equal to $\{-\pi,\pi\}$,
+    \item the \emph{nbdots} field is equal to 40,
+    \item the \emph{discont} field is equal to \emph{false},
+    \item the \emph{nbdiv} field is equal to 5,
+    \item the \emph{draw\_options} field is an empty string (this will be passed as is to the \emph{\textbackslash instruction). draw}),
+    \item the \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix; in the second case, the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph's matrix.
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Cartesian: Dcartesian}
+
+\begin{itemize}
+    \item The function \textbf{cartesian(f,x1,x2,nbdots,discont,nbdiv)} calculates the points and returns a polygonal line (no drawing). The argument \emph{f} is the function whose curve we want to obtain. It must be a function of a real variable \emph{x} and with real values, for example:
+
+\mintinline{Lua}{local f = function(x) return 1+3*math.sin(x)*x end}
+
+The arguments \emph{x1} and \emph{x2} are required and form the bounds of the interval for the variable. The other arguments are identical to those for parametric curves.
+
+    \item The method \textbf{g:Dcartesian(f,args)} calculates the points and draws the curve of \emph{f}. The \emph{args} parameter is a 6-field table:
+
+\begin{TeXcode}
+{ x={x1,x2}, nbdots=40, discont=true/false, nbdiv=5, draw_options=", clip={x1,x2,y1,y2} }
+\end{TeXcode}
+
+\begin{itemize}
+    \item By default, the \emph{x} field is equal to \emph{\{g:Xinf(),g:Xsup()\}},
+    \item the \emph{nbdots} field is equal to 40,
+    \item the \emph{discont} field is equal to \emph{false},
+    \item the \emph{nbdiv} field is equal to 5,
+    \item the \emph{draw\_options} field is an empty string (this will be passed as is to the instruction \emph{\textbackslash draw}),
+    \item the \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the 2D graph matrix. In the second case, the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph matrix.
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Periodic Functions: Dperiodic}
+
+\begin{itemize}
+    \item The function \textbf{periodic(f,period,x1,x2,nbdots,discont,nbdiv)} calculates the points and returns a polygonal line (no drawing).
+
+\begin{itemize}
+    \item The argument \emph{f} is the function whose curve we want; it must be a function of a real variable \emph{x} and with real values.
+    \item The argument \emph{period} is a table of the type \emph{\{a,b\}}, with \(a<b\) representing a period of the function \emph{f}.
+    \item The arguments \emph{x1} and \emph{x2} are required and form the bounds of the interval for the variable.
+    \item The other arguments are identical to those for parametric curves. \end{itemize}
+    \item The method \textbf{g:Dperiodic(f,period,args)} calculates the points and draws the curve of \emph{f}. The \emph{args} parameter is a 6-field table:
+
+\begin{TeXcode}
+{ x={x1,x2}, nbdots=40, discont=true/false, nbdiv=5, draw_options=", clip={x1,x2,y1,y2} }
+\end{TeXcode}
+
+\begin{itemize}
+    \item By default, the \emph{x} field is equal to \emph{\{g:Xinf(),g:Xsup()\}},
+    \item the \emph{nbdots} field is equal to 40,
+    \item the \emph{discont} field is equal to \emph{false},
+    \item the \emph{nbdiv} field is equal to 5,
+    \item the \emph{draw\_options} field is an empty string (this will be passed as is to the instruction). \emph{\textbackslash draw}),
+    \item the \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix; in the second case, the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph's matrix.
+
+\end{itemize}
+
+\end{itemize}
+
+\subsubsection{Step Functions: Dstepfunction}
+
+\begin{itemize}
+    \item The \textbf{stepfunction(def,discont)} function calculates the points and returns a polygonal line (no drawing).
+
+\begin{itemize}
+    \item The \emph{def} argument defines the step function; it is a two-field table:
+
+\begin{TeXcode}
+{ {x1,x2,x3,...,xn}, {c1,c2,...} }
+\end{TeXcode}
+
+The first element \emph{\{x1,x2,x3,\ldots,xn\}} must be a subdivision of the segment \([x1,xn]\).
+
+The second element \emph{\{c1,c2,\ldots\}} is the list of constants, with \emph{c1} for the segment \emph{{[}x1,x2{]}}, \emph{c2} for the segment \emph{{[}x2,x3{]}}, etc.
+
+    \item The argument \emph{discont} is a Boolean that defaults to \emph{true}.
+\end{itemize}
+
+    \item The method \textbf{g:Dstepfunction(def,args)} calculates the points and draws the curve of the step function.
+
+\begin{itemize}
+    \item The argument \emph{def} is the same as the one described above (definition of the step function).     \item The \emph{args} argument is a three-field table:
+
+\begin{TeXcode}
+{ discont=true/false, draw_options=",clip={x1,x2,y1,y2} }
+\end{TeXcode}
+
+By default, the \emph{discont} field is true, and the \emph{draw\_options} field is an empty string (this will be passed as is to the \emph{\textbackslash draw} instruction). The \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix. In the second case, the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph's matrix.
+
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Piecewise Affine Functions: Daffinebypiece}
+
+\begin{itemize}
+    \item The function \textbf{affinebypiece(def,discont)} calculates the points and returns a polygonal line (no drawing).
+
+\begin{itemize}
+    \item The argument \emph{def} defines the step function; it is a two-field table:
+
+\begin{TeXcode}
+{ {x1,x2,x3,...,xn}, { {a1,b1}, {a2,b2},...} }
+\end{TeXcode}
+
+The first element \emph{\{x1,x2,x3,\ldots,xn\}} must be a subdivision of the segment \([x1,xn]\).
+
+The second element \emph{\{ \{a1,b1\}, \{a2,b2\}, \ldots\}} means that on \emph{{[}x1,x2{]}} the function is \(x\mapsto a_1x+b_1\), on \emph{{[}x2,x3{]}} the function is
+\(x\mapsto a_2x+b_2\), etc.
+
+    \item The argument \emph{discont} is a boolean that defaults to \emph{true}.
+\end{itemize}
+
+    \item The method \textbf{g:Daffinebypiece(def,args)} calculates the points and draws the curve of the piecewise affine function.
+
+\begin{itemize}
+    \item The argument \emph{def} is the same as the one described above (definition of the piecewise affine function).
+    \item The \emph{args} argument is a 3-field table:
+
+\begin{TeXcode}
+{ discont=true/false, draw_options=", clip={x1,x2,y1,y2} }
+\end{TeXcode}
+
+By default, the \emph{discont} field is set to \emph{true}, and the \emph{draw\_options} field is an empty string (this will be passed as is to the \emph{\textbackslash draw} instruction). The \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}, in the first case the line is clipped by the current 2d window \textbf{after} its transformation by the 2d matrix of the graph, in the second case the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph matrix. \end{itemize}
+\end{itemize}
+
+\subsubsection{Differential Equations: Dodesolve}
+
+\begin{itemize}
+    \item The function \textbf{odesolve(f,t0,Y0,tmin,tmax,nbdots,method)} allows an approximate solution of the differential equation \(Y'(t)=f(t,Y(t))\) in the interval {[}tmin,tmax{]} which must contain \emph{t0}, with the initial condition $Y(t0)=Y0$.
+
+\begin{itemize}
+    \item The argument \emph{f} is a function \(f: (t,Y) -> f(t,Y)\) with values ​​in \(R^n\) and where \emph{Y} is also in \(R^n\): \emph{Y=\{y1, y2,\ldots, yn\}} (when $n=1$, \emph{Y} is a real number).
+    \item The arguments \emph{t0} and \emph{Y0} give the initial conditions with \emph{Y0=\{y1(t0), \ldots, yn(t0)\}} (the yi numbers are real), or \emph{Y0=y1(t0)} when $n=1$.
+    \item The arguments \emph{tmin} and \emph{tmax} define the resolution interval; this must contain \(t0\).
+    \item The argument \emph{nbdots} indicates the number of points calculated on either side of \(t0\).
+    \item The optional argument \emph{method} is a string that can be \emph{"rkf45"} (default), or \emph{"rk4"}. In the first case, we use the Runge Kutta-Fehlberg method (with variable step size), in the second case, it is the classic Runge-Kutta method of order 4.
+    \item As output, the function returns the following matrix (list of lists of real numbers):
+
+\begin{TeXcode}
+{ {tmin,...,tmax}, {y1(tmin),...,y1(tmax)}, {y2(tmin),...,y2(tmax)},...}
+\end{TeXcode}
+
+The first component is the list of values ​​of \emph{t} (in ascending order), the second is the list of (approximate) values ​​of the component \emph{y1} corresponding to these values ​​of \emph{t}, ... etc.
+\end{itemize}
+
+    \item The method \textbf{g:DplotXY(X,Y,draw\_options,clip)}, where the arguments \emph{X} and \emph{Y} are two lists of real numbers of the same length, draws the polygonal line consisting of the points $(X[k],Y[k])$. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction. The \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix. In the second case, the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph's matrix.
+
+\begin{demo}{A Lokta-Volterra differential system}
+\begin{luadraw}{name=lokta_volterra}
+local g = graph:new{window={-5,50,-0.5,5},size={10,10,0}, border=true}
+local i = cpx.I
+local f = function(t,y) return {y[1]-y[1]*y[2],-y[2]+y[1]*y[2]} end
+g:Labelsize("footnotesize")
+g:Daxes({0,10,1},{limits={{0,50},{0,4}}, nbsubdiv={4,0}, legendsep={0.1,0}, originpos={"center","center"}, legend={"$t$",""}})
+local y0 = {2,2}
+local M = odesolve(f,0,y0,0,50,250) -- résolution approchée
+-- M est une table à 3 éléments: t, x et y
+g:Lineoptions("solid","blue",8)
+g:Dseg({5+3.5*i,10+3.5*i}); g:Dlabel("$x$",10+3.5*i,{pos="E"})
+g:DplotXY(M[1],M[2]) -- points (t,x(t))
+g:Linecolor("red"); g:Dseg({5+3*i,10+3*i}); g:Dlabel("$y$",10+3*i,{pos="E"})
+g:DplotXY(M[1],M[3])  -- points (t,y(t))
+g:Lineoptions(nil,"black",4)
+g:Saveattr(); g:Viewport(20,50,3,5) -- changement de vue
+g:Coordsystem(-0.5,3.25,-0.5,3.25) -- nouveau repère associé
+g:Daxes({0,1,1},{legend={"$x$","$y$"},arrows="->"})
+g:Lineoptions(nil,"ForestGreen",8); g:DplotXY(M[2],M[3]) -- points (x(t),y(t))
+g:Restoreattr() -- retour à l'ancienne vue
+g:Dlabel("$\\begin{cases}x'=x-xy\\\\y'=-y+xy\\end{cases}$", 5+4.75*i,{})
+g:Show()
+\end{luadraw}
+\end{demo}
+    
+    \item The method \textbf{g:Dodesolve(f,t0,Y0,args)} allows the drawing of a solution to the equation \(Y'(t)=f(t,Y(t))\).
+\begin{itemize}
+    \item The required argument \emph{f} is a function \(f: (t,Y) -> f(t,Y)\) with values ​​in \(R^n\) and where \emph{Y} is also in \(R^n\): \emph{Y=\{y1, y2,\ldots, yn\}} (when $n=1$, \emph{Y} is a real number).
+    \item The arguments \emph{t0} and \emph{Y0} give the initial conditions with \emph{Y0=\{y1(t0), \ldots, yn(t0)\}} (the yi are real), or \emph{Y0=y1(t0)} when $n=1$.
+    \item The \emph{args} argument (optional) allows you to define the parameters for the curve. It is a table with 6 fields:
+
+\begin{TeXcode}
+{ t={tmin,tmax}, out={i1,i2}, nbdots=50, method="rkf45"/"rk4", draw_options="", clip={x1,x2,y1,y2} }
+\end{TeXcode}
+
+\begin{itemize}
+    \item The \emph{t} field determines the interval for the variable \(t\). By default, it is \emph{\{g:Xinf(), g:Xsup()\}}.
+    \item The \emph{out} field is a table of two integers \{i1, i2\}. If \emph{M} denotes the matrix returned by the \emph{odesolve} function, the points drawn will have the M{[}i1{]} as abscissas and the M{[}i2{]} as ordinates. By default, we have \emph{i1=1} and \emph{i2=2}, which corresponds to the \emph{y1} function as a function of \emph{t}.
+    \item The \emph{nbdots} field determines the number of points to calculate for the function (50 by default).
+    \item The \emph{method} field determines the method to use; possible values ​​are \emph{"rkf45"} (default value), or \emph{"rk4"}.     \item The \emph{draw\_options} field is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The \emph{clip} field is either \emph{nil} (default value) or a table \emph{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix. In the second case, the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} its transformation by the graph's matrix.
+
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Implicit Curves: Dimplicit}
+
+\begin{itemize}
+    \item The function \textbf{implicit(f,x1,x2,y1,y2,grid)} calculates and returns a polygonal line constituting the implicit curve with equation $f(x,y)=0$ in the box $[x_1,x_2]\times[y_1,y_2]$. This box is split according to the parameter \emph{grid}.
+
+\begin{itemize}
+    \item The required argument \emph{f} is a function \(f: (x,y) -> f(x,y)\) with values ​​in \(R\).
+    \item The arguments \emph{x1}, \emph{x2}, \emph{y1}, \emph{y2} define the plot window, which will be the $[x_1,x_2]\times[y_1,y_2]$ box. We must have \(x1<x2\) and \(y1<y2\).
+    \item The argument \emph{grid} is a table containing two positive integers: \{n1,n2\}. The first integer indicates the number of subdivisions following $x$, and the second the number of subdivisions following $y$.
+\end{itemize}
+
+    \item The \textbf{g:Dimplicit(f,args)} method draws the implicit curve of equations $f(x,y)=0$.
+
+\begin{itemize}
+    \item The required argument \emph{f} is a function \(f: (x,y) -> f(x,y)\) with values ​​in \(R\).
+    \item The argument \emph{args} defines the drawing parameters; it is a table with 3 fields:
+
+\begin{TeXcode}
+{ view={x1,x2,y1,y2}, grid={n1,n2}, draw_options="" }
+\end{TeXcode}
+\begin{itemize}
+    \item The \emph{view} field determines the drawing area $[x_1,x_2]\times[y_1,y_2]$. By default, we have \emph{view=\{g:Xinf(), g:Xsup(), g:Yinf(), g:Ysup()\}},
+    \item the \emph{grid} field determines the grid, this field defaults to \emph{\{50,50\}},
+    \item the \emph{draw\_options} field is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Contour Lines: Dcontour}
+
+The \textbf{g:Dcontour(f,z,args)} method draws \textbf{contour lines} of the function \(f: (x,y) -> f(x,y)\) with real values.
+
+\begin{itemize}
+    \item The argument \emph{z} (required) is the list of different levels to plot.
+    \item The \emph{args} argument (optional) allows you to define the drawing parameters. It is a 4-field table:
+
+\begin{TeXcode}
+{ view={x1,x2,y1,y2}, grid={n1,n2}, colors={"color1","color2",...}, draw_options="" }
+\end{TeXcode}
+
+\begin{itemize}
+    \item The \emph{view} field determines the drawing area {[}x1,x2{]}x{[}y1,y2{]}. By default, we have \emph{view=\{g:Xinf(),g:Xsup(), g:Yinf(), g:Ysup()\}}.
+    \item The \emph{grid} field determines the grid. By default, we have \emph{grid=\{50,50\}}.     \item The \emph{colors} field is the list of colors per level. By default, this list is empty and the current drawing color is used.
+    \item The \emph{draw\_options} field is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+\end{itemize}
+\end{itemize}
+
+\begin{demo}{Example with Dcontour}
+\begin{luadraw}{name=Dcontour}
+local g = graph:new{window={-1,6.5,-1.5,11},size={10,10,0}}
+local i, sin, cos = cpx.I, math.sin, math.cos
+local f = function(x,y) return (x+y)/(2+cos(x)*sin(y)) end
+local Lz = range(1,10) -- niveaux à tracer
+local Colors = getpalette(palRainbow,10)
+g:Dgradbox({0,5+10*i,1,1},{legend={"$x$","$y$"}, grid=true, title="$z=\\frac{x+y}{2+\\cos(x)\\sin(y)}$"})
+g:Linewidth(12); g:Dcontour(f,Lz,{view={0,5,0,10}, colors=Colors})
+for k = 1, 10 do
+    local y = (2*k+4)/3*i
+    g:Dseg({5.25+y,5.5+y},1,"color="..Colors[k])
+    g:Labelcolor(Colors[k])
+    g:Dlabel("$z="..k.."$",5.5+y,{pos="E"})
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Parameterization of a Polygonal Line: \emph{curvilinear\_param}}
+Let $L$ be a list of complex numbers representing a continuous \og \fg line. It is possible to obtain a parameterization of this line based on a parameter $t$ between $0$ and $1$ ($t$ is the curvilinear abscissa divided by the total length of $L$).
+
+The function \textbf{curvilinear\_param(L,close)} returns a function of one variable $t\in[0;1]$ and values ​​on the line $L$ (complex numbers). The value at $t=0$ is the first point of $L$, and the value at $t=1$ is the last point; this function is followed by a number representing the total length of L. The optional argument \emph{close} indicates whether the line $L$ should be closed (\emph{false} by default).
+
+\begin{demo}{Points distributed on a polygonal line}
+\begin{luadraw}{name=curvilinear_param}
+local g = graph:new{bbox=false,size={10,10}}
+local i = cpx.I; g:Linewidth(8)
+local L = cartesian(math.sin,-5,5)[1]
+insert(L, {5-2*i, -5-2*i})
+local f = curvilinear_param(L, true)
+local I = map(f,linspace(0,1,20)) -- 20 points répartis sur L
+g:Shift(4*i)
+g:Lineoptions(nil,"ForestGreen",6); g:Dpolyline(L,true)
+g:Filloptions("full","white"); g:Ddots(I) -- le premier et le dernier point sont confondus car L est fermée
+
+-- autre exemple d'utilisation:
+local nb = 16 --nb arrows
+local t = linspace(0,1,3*nb+1)
+g:Shift(-4*i)
+for k = 0,nb-1 do
+    g:Dparametric(f,{t={t[3*k+1],t[3*k+3]},nbdots=10,nbdiv=2,draw_options="-stealth"})
+end
+g:Show() 
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Domains related to Cartesian curves}
+
+\subsubsection{Ddomain1}
+
+\begin{itemize}
+    \item The function \textbf{domain1(f,a,b,nbdots,discont,nbdiv)} returns a list of complexes that represents the contour of the part of the plane bounded by the curve of the function \emph{f} on an interval \([a;b]\), the \emph{Ox} axis, and the lines \(x=a\), \(x=b\).
+
+    \item The method \textbf{g:Ddomain1(f,args)} draws this contour. The optional \emph{args} argument defines the parameters for the curve. It is a table with 5 fields:
+
+\begin{TeXcode}
+{ x={a,b}, nbdots=50, discont=false, nbdiv=5, draw_options="" }
+\end{TeXcode}
+
+\begin{itemize}
+    \item The \emph{x} field determines the study interval; by default, it is \emph{\{g:Xinf(), g:Xsup()\}}.
+    \item The \emph{nbdots} field determines the number of points to calculate for the function (50 by default).
+    \item The \emph{discont} field indicates whether or not there are discontinuities for the function (\emph{false} by default).     \item The \emph{nbdiv} field is used in the method for calculating the curve points (5 by default).
+    \item The \emph{draw\_options} field is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Ddomain2}
+
+\begin{itemize}
+    \item The \textbf{domain2(f,g,a,b,nbdots,discont,nbdiv)} function returns a list of complexes that represents the contour of the part of the plane bounded by the curve of the function \emph{f}, the curve of the function \emph{g}, and the lines \(x=a\), \(x=b\).
+
+    \item The \textbf{g:Ddomain2(f,g,args)} method draws this contour. The optional \emph{args} argument allows you to define the parameters for the curves. It is a table with 6 fields:
+
+\begin{TeXcode}
+{ x={a,b}, nbdots=50, discont=false, nbdiv=5, draw_options="" }
+\end{TeXcode}
+
+\begin{itemize}
+    \item The \emph{x} field determines the study interval; by default, it is \emph{\{g:Xinf(), g:Xsup()\}}.
+    \item The \emph{nbdots} field determines the number of points to calculate for the function (50 by default).
+    \item The \emph{discont} field indicates whether or not there are discontinuities for the function (false by default).     \item The \emph{nbdiv} field is used in the method for calculating the curve points (5 by default).
+    \item The \emph{draw\_options} field is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Ddomain3}
+
+\begin{itemize}
+    \item The \textbf{domain3(f,g,a,b,nbdots,discont,nbdiv)} function returns a list of complexes that represents the contour of the part of the plane bounded by the curve of the function \emph{f} and that of the function \emph{g} (searching for intersection points in the interval $[a;b]$).
+
+    \item The \textbf{g:Ddomain3(f,g,args)} method draws this contour. The optional \emph{args} argument defines the parameters for the curve. It is a table with 5 fields:
+
+\begin{TeXcode}
+{ x={a,b}, nbdots=50, discont=false, nbdiv=5, draw_options="" }
+\end{TeXcode}
+
+\begin{itemize}
+    \item The \emph{x} field determines the study interval; by default, it is \emph{\{g:Xinf(), g:Xsup()\}}.
+    \item The \emph{nbdots} field determines the number of points to calculate for the function (50 by default).
+    \item The \emph{discont} field indicates whether or not there are discontinuities for the function (false by default).     \item The \emph{nbdiv} field is used in the curve point calculation method (5 by default).
+    \item The \emph{draw\_options} field is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+\end{itemize}
+\end{itemize}
+
+\begin{demo}{Integer part, Ddomain1 and Ddomain3 functions}
+\begin{luadraw}{name=courbe}
+local g = graph:new{ window={-5,5,-5,5}, bg="", size={10,10} }
+local f = function(x) return (x-2)^2-2 end
+local h = function(x) return 2*math.cos(x-2.5)-2.25 end
+g:Daxes( {0,1,1},{grid=true,gridstyle="dashed", arrows="->"})
+g:Filloptions("full","brown",0.3)
+g:Ddomain1( math.floor, { x={-2.5,3.5} })
+g:Filloptions("none","white",1); g:Lineoptions("solid","red",12)
+g:Dstepfunction( {range(-5,5), range(-5,4)},{draw_options="arrows={Bracket-Bracket[reversed]},shorten >=-2pt"})
+g:Labelcolor("red")
+g:Dlabel("Partie entière",Z(-3,3),{node_options="fill=white"})
+g:Ddomain3(f,h,{draw_options="fill=blue,fill opacity=0.6"})
+g:Dcartesian(f, {x={0,5}, draw_options="blue"})
+g:Dcartesian(h, {x={0,5}, draw_options="green"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Points (Ddots) and Labels (Dlabel)}
+
+\begin{itemize}
+    \item The method for drawing one or more points is: \textbf{g:Ddots(dots, mark\_options)}.
+
+\begin{itemize}
+    \item The argument \emph{dots} can be either a single point (i.e., a complex), a list (a table) of complexes, or a list of lists of complexes. The points are drawn in the current color of the line plot.     \item The \emph{mark\_options} argument is an optional string that will be passed as is to the \emph{\textbackslash draw} instruction (local modifications), for example:
+\begin{TeXcode}
+"color=green, line width=1.2, scale=0.25"
+\end{TeXcode}
+
+    \item Two methods to globally modify the appearance of points:
+\begin{itemize}
+    \item The \textbf{g:Dotstyle(style)} method defines the point style. The \emph{style} argument is a string that defaults to \emph{"*"}. The possible styles are those of the \emph{plotmarks} library.     \item The \textbf{g:Dotscale(scale)} method allows you to adjust the dot size. The \emph{scale} argument is a positive integer that defaults to $1$. It is used to multiply the default dot size. The current line width also affects the dot size. For "solid" dot styles (e.g., the \emph{triangle*} style), the current fill style and color are used by the library.
+\end{itemize}
+\end{itemize}
+
+    \item The method for placing a label is:
+
+\hfil\textbf{g:Dlabel(text1, anchor1, args1, text2, anchor2, args2, ...)}.\hfil
+
+\begin{itemize}
+    \item The arguments \emph{text1, text2, ...} are strings; they are the labels.     \item The arguments \emph{anchor1, anchor2,...} are complexes representing the anchor points of the labels.
+    \item The arguments \emph{args1, arg2,...} allow you to locally define the label parameters; they are tables with 4 fields:
+\begin{TeXcode}
+{ pos=nil, dist=0, dir={dirX,dirY,dep}, node_options="" }
+\end{TeXcode}
+\begin{itemize}
+    \item The \emph{pos} field indicates the position of the label relative to the anchor point. It can be \emph{"N"} for north, \emph{"NE"} for northeast, \emph{"NW"} for northwest, or \emph{"S"}, \emph{"SE"}, \emph{"SW"}. By default, it is set to \emph{center}, and in this case the label is centered on the anchor point.
+    \item The \emph{dist} field is a distance in cm that defaults to $0$. It is the distance between the label and its anchor point when \emph{pos} is not equal to \emph{center}.
+    \item \emph{dir=\{dirX,dirY,dep\}} is the writing direction (\emph{nil}, the default value, for the default direction). The three values ​​\emph{dirX}, \emph{dirY}, and \emph{dep} are three complex vectors representing three vectors: the first two indicate the writing direction, and the third a displacement (translation) of the label relative to the anchor point.     \item The \emph{node\_options} argument is a string (empty by default) intended to receive options that will be passed directly to tikz in the \emph{node{[}{]}} instruction.
+    \item The labels are drawn in the current color of the document text, but the color can be changed with the \emph{node\_options} argument, for example, by setting: \emph{node\_options="color=blue"}.
+
+\textbf{Warning}: The options chosen for a label also apply to subsequent labels if they are unchanged.
+\end{itemize}
+\end{itemize}
+
+Global options for labels:
+
+\begin{itemize}
+    \item The \textbf{g:Labelstyle(position)} method allows you to specify the position of the labels relative to the anchor points. The \emph{position} argument is a string that can be: \emph{"N"} for north, \emph{"NE"} for northeast, \emph{"NW"} for northwest, or \emph{"S"}, \emph{"SE"}, \emph{"SW"}. By default, it
+is set to \emph{center}, in which case the label is centered on the anchor point.
+    \item The \textbf{g:Labelcolor(color)} method allows you to set the color of the labels. The \emph{color} argument is a string representing a color for tikz. By default, the argument is an empty string, which represents the current color of the document.
+    \item The \textbf{g:Labelangle(angle)} method allows you to specify an angle (in degrees) for rotating the labels around the anchor point. This angle is zero by default.
+    \item The \textbf{g:Labelsize(size)} method allows you to manage the size of the labels. The \emph{size} argument is a string that can be: \emph{"tiny"}, or \emph{"scriptsize"}, or \emph{"footnotesize"}, etc. By default, the argument is an empty string, which represents the \emph{"normalsize"} size.
+\end{itemize}
+
+    \item The \textbf{g:Dlabeldot(text,anchor,args)} method allows you to place a label and draw the anchor point at the same time.
+
+\begin{itemize}
+    \item The \emph{text} argument is a string; it is the label.
+    \item The \emph{anchor} argument is a complex representing the label's anchor point.
+    \item The \emph{args} argument (optional) allows you to define the label and point parameters; it is a 4-field table:
+
+\begin{TeXcode}
+{ pos=nil, dist=0, node_options="", mark_options="" }
+\end{TeXcode}
+
+The fields are identical to those of the \emph{Dlabel} method, plus the \emph{mark\_options} field, which is a string that will be passed as is to the \emph{\textbackslash draw} instruction when drawing the anchor point.
+\end{itemize}
+\end{itemize}
+
+\subsection{Paths: Dpath, Dspline, and Dtcurve}
+
+\begin{itemize}
+    \item The \textbf{path( path )} function returns a polygonal line containing the points constituting the \emph{path}. This is a table of complex and string instructions, for example:
+
+\begin{TeXcode}
+{ Z(-3,2),-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" }
+\end{TeXcode}
+with:
+\begin{itemize}
+    \item \emph{"m"} for moveto,
+    \item \emph{"l"} for lineto,
+    \item \emph{"b"} for Bezier (two control points are required),
+    \item \emph{"s"} for a natural cubic spline passing through the points listed,
+    \item \emph{"c"} for circle (one point and the center, or three points are required),
+    \item \emph{"ca"} for a circular arc (requires 3 points, a radius, and a direction),
+    \item \emph{"ea"} for an elliptical arc (requires 3 points, a radius rx, a radius ry, a direction, and possibly an inclination in degrees),
+    \item \emph{"e"} for an ellipse (requires a point, the center, a radius rx, a radius ry, and possibly an inclination in degrees),
+    \item \emph{"cl"} for close (closes the current component),
+    \item \emph{"la"} for a line arc, i.e., a line with rounded corners (the radius must be specified just before the \emph{"la"} instruction),
+    \item \emph{"cla"} for a closed line with rounded corners (the radius must be specified just before the \emph{"cla"} instruction). \end{itemize}
+
+    \item The \textbf{g:Dpath(path,draw\_options)} method draws the \emph{path} (using Bézier curves as much as possible, including arcs, ellipses, etc.). The \emph{draw\_options} argument is a string that will be passed directly to the \emph{\textbackslash draw} instruction.
+\begin{itemize}
+    \item The \emph{path} argument was described above.
+    \item The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+\end{itemize}
+
+    \item The function \textbf{spline(points,v1,v2)} returns a path (to be drawn with Dpath) of the cubic spline passing through the points of the argument \emph{points} (which must be a list of complex vectors). The arguments \emph{v1} and \emph{v2} are tangent vectors imposed at the ends (constraints); when these are equal to \emph{nil}, a natural cubic spline (i.e., unconstrained) is calculated.
+
+    \item The method \textbf{g:Dspline(points,v1,v2,draw\_options)} draws the spline described above. The argument \emph{draw\_options} is a string that will be passed directly to the instruction \emph{\textbackslash draw}.
+
+\begin{demo}{Path and Spline}
+\begin{luadraw}{name=path_spline}
+local g = graph:new{window={-5,5,-5,5},size={10,10},bg="Beige"}
+local i = cpx.I
+local p = {-3+2*i,-3,-2,"l",0,2,2,1,"ca",3,3+3*i,0.5,"la",1,-1+5*i,-3+2*i,"b",-1,"m",0,"c"}
+g:Daxes( {0,1,1} )
+g:Filloptions("full","blue!30",1,true); g:Dpath(p,"line width=0.8pt")
+g:Filloptions("none")
+local A,B,C,D,E = -4-i,-3*i,4,3+4*i,-4+2*i
+g:Lineoptions(nil,"ForestGreen",12); g:Dspline({A,B,C,D,E},nil,-5*i) -- contrainte en E
+g:Ddots({A,B,C,D,E},"fill=white,scale=1.25")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+    \item The function \textbf{tcurve(L} returns a curve passing through given points as a path, with tangent vectors (left and right) imposed at each point. \emph{L} is a table of the form:
+\begin{Luacode}
+L = {point1,{t1,a1,t2,a2}, point2,{t1,a1,t2,a2}, ..., pointN,{t1,a1,t2,a2}}
+\end{Luacode}
+\emph{point1}, ..., \emph{pointN} are the interpolation points of the curve (affixes), and each of them is followed by a table of the form \verb|{t1,a1,t2,a2}| which specifies the tangent vectors to the curve to the left of the point (with \emph{t1} and \emph{a1}) and to the right of the point (with \emph{t2} and \emph{a2}). The left tangent vector is given by the formula $V_g = t_1\times e^{ia_1\pi/180}$, so $t1$ represents the modulus and $a1$ is an argument \textbf{in degrees} of this vector. The same is true for \emph{t2} and \emph{a2} for the right tangent vector, \textbf{but these are optional}, and if not specified, they take the same values ​​as \emph{t1} and \emph{a1}.
+
+Two consecutive points will be connected by a Bézier curve; the function calculates the control points to obtain the desired tangent vectors.
+
+    \item The method \textbf{g:Dtcurve(L,options)} draws the path obtained by \emph{tcurve} described above. The argument \emph{options} is a two-field table:
+\begin{itemize}
+    \item \emph{showdots=true/false} (false by default). This option allows you to draw the given interpolation points as well as the calculated control points, allowing for visualization of the constraints.
+    \item \emph{draw\_options=""}. This is a string that will be passed directly to the \emph{\textbackslash draw} instruction.
+\end{itemize}
+\end{itemize}
+
+\begin{demo}{Interpolation curve with imposed tangent vectors}
+\begin{luadraw}{name=tcurve}
+local g = graph:new{window={-0.5,10.5,-0.5,6.5},size={10,10,0}}
+local i = cpx.I
+local L = {
+    1+4*i,{2,-20},
+    2+3*i,{2,-70},
+    4+i/2,{3,0},
+    6+3*i,{4,15},
+    8+6*i,{4,0,4,-90}, -- point anguleux
+    10+i,{3,-15}}
+g:Dgrid({0,10+6*i},{gridstyle="dashed"})
+g:Daxes(nil,{limits={{0,10},{0,6}},originpos={"center","center"}, arrows="->"})
+g:Dtcurve(L,{showdots=true,draw_options="line width=0.8pt,red"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Paths and Clipping: Beginclip() and Endclip()}
+
+A path can be used for clipping using two functions: \textbf{g:Beginclip(path,reverse)} and \textbf{g:Endclip()}. The first opens a \emph{scope} group and passes the \emph{path} as an argument to tikz's \emph{\textbackslash clip} function. The second closes the \emph{scope} group; it is essential (otherwise there will be a compilation error).
+The \emph{reverse} argument is a Boolean that defaults to \emph{false}. When it has the value \emph{true}, the clipping is reversed, meaning that only what is outside the \emph{path} will be drawn, but for this to happen, the path must be counterclockwise.
+
+\begin{demo}{Clipping Example}
+\begin{luadraw}{name=polygon_with_different_line_color_and_rounded_corners}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+local i = cpx.I
+local Dcolored_polyreg = function(c,a,nb,r,wd,colors) 
+-- c=center, a=vertice, nb=number of sides, r=radius, wd=width in point, colors=list of colors
+    local L = polyreg(c,a,nb)
+    insert(L,{r,"cla"}) --polygon width rounded corners (radius=r)
+    local angle = 360/nb
+    local b = a
+    for k = 1, nb do
+        a = b; b = rotate(a,angle,c)
+        g:Beginclip({2*a-c,c,2*b-c,"l"})  -- définition d'un secteur angulaire pour clipper
+        g:Dpath(L,"line width="..wd.."pt,color="..colors[k])
+        g:Endclip()
+    end
+end
+Dcolored_polyreg(3+2*i,5+2*i,5,0.8,12,{"red","blue","orange","green","yellow"}) -- pentagon
+Dcolored_polyreg(-2.5-2*i,-5-2*i,7,1,24,getpalette(palGasFlame,7))  -- heptagon
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Axes and Grids}
+
+Global variables used for axes and grids:
+\begin{itemize}
+    \item \emph{maxGrad = 100}: Maximum number of tick marks on an axis.
+    \item \emph{defaultlabelshift = 0.125}: When a grid is drawn with the axes (option \emph{grid=true}), the labels are automatically shifted along the axis using this variable.
+    \item \emph{defaultxylabelsep = 0}: Sets the default distance between labels and tick marks.
+    \item \emph{defaultlegendsep = 0.2}: Sets the default distance between the legend and the axis.
+    \item \emph{digits = 4}: Default number of decimal places in string conversions; terminal $0$s are removed.     \item \emph{dollar = true}: to add dollars around the tick labels.
+    \item \emph{siunitx = false}: with the value \emph{true}, the labels are formatted with the macro \verb|\num{..}| of the \emph{siunitx} package, which allows you to use certain options of this package, such as replacing the decimal point with a comma by doing: \par
+\begin{TeXcode}
+\usepackage[local=FR]{siunitx}
+\end{TeXcode}
+or by doing:
+\begin{TeXcode}
+\usepackage{siunitx}
+\sisetup{output-decimal-marker={,}}
+\end{TeXcode}
+\end{itemize}
+For axes, in both 2D and 3D, all labels are formatted as strings with the \textbf{num(x)} function. This transforms the number $x$ into a string \emph{str} with the number of decimal places set by the global variable \emph{digits}. When the \emph{siunitx} variable has the value \emph{true}, the function returns \verb|"\num{str}"|, otherwise it simply returns \emph{str}. This also applies to 3D axes. Here is the code for this function:
+\begin{Luacode}
+function num(x) -- x is a real, returns a string
+local rep = strReal(x) -- conversion to string with digits decimals max
+if siunitx then rep = "\\num{"..rep.."}" end --needs \usepackage{siunitx}
+return rep
+end
+\end{Luacode}
+
+\subsubsection{Daxes}
+\def\opt#1{\textcolor{blue}{\texttt{#1}}}%
+The axes are plotted using the method \textbf{g:Daxes( \{A,xpas,ypas\}, options)}.
+\begin{itemize}
+    \item The first argument specifies the intersection point of the two axes (this is the complex \emph{A}), the graduation spacing on the $Ox$ axis (this is \emph{xpas}), and the graduation spacing on $Oy$ (this is \emph{ypas}). By default, the point \emph{A} is the origin $Z(0,0)$, and both spacings are equal to $1$.
+    \item The argument \emph{options} is a table specifying the possible options. Here are these options with their default values:
+
+\begin{itemize}
+    \item \opt{showaxe={1,1}}. This option specifies whether or not the axes should be plotted ($1 or $0). The first value is for the 0x axis and the second for the 0y axis.
+
+    \item \opt{arrows="-"}. This option allows you to add an arrow to the axes (no arrow by default; enter "->" to add an arrow).
+
+    \item \opt{limits={"auto","auto"}}. This option specifies the extent of the two axes (first value for 0x, second value for 0y). The value "auto" means that it is the entire line, but you can specify the extreme abscissas, for example:
+opt{limits={{-4,4},"auto"}}.
+    \item \opt{gradlimits=\{"auto","auto"\}}. This option allows you to specify the range of the graduations on both axes (first value for $Ox$, second value for $Oy$). The value "auto" means that it is the entire line, but you can specify the extreme graduations, for example: \opt{gradlimits=\{\{-4.4\},\{-2.3\}\}}.
+    \item \opt{unit=\{"",""\}}. This option allows you to specify the range of the graduations on the axes. The default value ("") means that the step value should be taken (\emph{xstep} on $Ox$, or \emph{ystep} on $Oy$), EXCEPT when the option \opt{labeltext} is not the empty string, in which case \emph{unit} takes the value $1$.
+    \item \opt{nbsubdiv=\{0,0\}}. This option specifies the number of subdivisions between two main ticks on the axis.
+    \item \opt{tickpos=\{0.5,0.5\}}. This option specifies the position of the ticks relative to each axis. These are two numbers between $0$ and $1$. The default value of $0.5$ means they are centered on the axis. ($0$ and $1$ represent the ends).
+    \item \opt{tickdir=\{"auto","auto"\}}. This option specifies the direction of the ticks on the axis. This direction is a non-zero (complex) vector. The default value "auto" means the ticks are orthogonal to the axis.
+    \item \opt{xyticks=\{0.2,0.2\}}. This option specifies the length of the ticks on the axis.
+    \item \opt{xylabelsep=\{0,0\}}. This option specifies the distance between the labels and the tick marks on the axis.
+    \item \opt{originpos=\{"right","top"\}}. This option specifies the position of the label at the origin on the axis. Possible values ​​are: "none", "center", "left", "right" for $Ox$, and "none", "center", "bottom", "top" for $Oy$.
+    \item \opt{originnum=\{A.re,A.im\}}. This option specifies the tick mark value at the intersection of the axes (tick mark number $0$).
+
+The formula that defines the label at tick mark number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
+
+    \item \opt{originloc=A}. This option specifies the intersection point of the axes. 
+    \item \opt{legend=\{"",""\}}. This option allows you to specify a legend for the axis.
+    \item \opt{legendpos=\{0.975,0.975\}}. This option specifies the position (between $0$ and $1$) of the legend relative to each axis.
+    \item \opt{legendsep=\{0.2,0.2\} }. This option specifies the distance between the legend and the axis. The legend is on the other side of the axis from the graduations.
+    \item \opt{legendangle=\{"auto","auto"\}}. This option specifies the angle (in degrees) that the legend should make for the axis. The default value "auto" means that the legend must be parallel to the axis if the \emph{labelstyle} option is also set to "auto", otherwise the legend is horizontal.
+    \item \opt{labelpos=\{"bottom","left"\}}. This option specifies the position of the labels relative to the axis. For the $Ox$ axis, the possible values ​​are: "none", "bottom", or "top", for the $Oy$ axis it is: "none", "right", or "left".
+    \item \opt{labelden=\{1,1\}}. ​​This option specifies the denominator of the labels (integer) for the axis. The formula that defines the label at graduation number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
+    \item \opt{labeltext=\{"",""\}}. This option defines the text that will be added to the numerator of the labels for the axis.
+    \item \opt{labelstyle=\{"S","W"\}}. This option sets the label style for each axis. Possible values ​​are "auto","N", "NW", "W", "SW", "S", "SE", "E".
+    \item \opt{labelangle=\{0,0\}}. This option sets the angle of the labels in degrees from the horizontal for each axis.
+    \item \opt{labelcolor=\{"",""\}}. This option allows you to choose a color for the labels on each axis. The empty string represents the default color.
+    \item \opt{labelshift=\{0,0\}}. This option allows you to set a systematic offset for the labels on the axis (along axis offset).
+    \item \opt{nbdeci=\{2,2\}}. This option specifies the number of decimal places for numeric values ​​on the axis.     \item \opt{numericFormat=\{0,0\}}. This option specifies the type of digital display (not yet implemented).
+    \item \opt{myxlabels=""}. This option allows you to impose custom labels on the $Ox$ axis. When any are present, the value passed to the option must be a list of the type: \verb|{pos1,"text1", pos2,"text2",...}|. The number \emph{pos1} represents an abscissa in the (A,xpas) coordinate system, which corresponds to the affix point $A+$pos1$*$xpas.
+    \item \opt{myylabels=""}. This option allows you to impose custom labels on the $Oy$ axis. When any are present, the value passed to the option must be a list of the type: \verb|{pos1,"text1", pos2,"text2",...}|. The number \emph{pos1} represents an abscissa in the coordinate system (A,i*ypas), which corresponds to the affix point $A+$pos1$*$ypas$*i$.
+    \item \opt{grid=false}. This option allows you to add a grid or not.
+    \item \opt{drawbox=false}. This option draws the axes as a box; in this case, the graduations are on the left and bottom sides.
+    \item \opt{gridstyle="solid"}. This option sets the line style for the primary grid.
+    \item \opt{subgridstyle="solid"}. This option sets the line style for the secondary grid. A secondary grid appears when there are subdivisions on one of the axes.
+    \item \opt{gridcolor="gray"}. This sets the color of the primary grid.     \item \opt{subgridcolor="lightgray"}. This sets the color of the secondary grid.
+    \item \opt{gridwidth=4}. Line thickness of the primary grid (which is 0.4pt).
+    \item \opt{subgridwidth=2}. Line thickness of the secondary grid (which is 0.2pt).
+\end{itemize}
+\end{itemize}
+
+
+\begin{demo}{Example with axes with grid}
+\begin{luadraw}{name=axes_grid}
+local g = graph:new{window={-6.5,6.5,-3.5,3.5}, size={10,10,0}}
+local i, pi, a = cpx.I, math.pi, math.sqrt(2)
+local f = function(x) return 2*a*math.sin(x) end
+g:Labelsize("footnotesize"); g:Linewidth(8)
+g:Daxes({0,pi/2,a},{labeltext={"\\pi","\\sqrt{2}"}, labelden={2,1},nbsubdiv={1,1},grid=true,arrows="->"})
+g:Lineoptions("solid","Crimson",12); g:Dcartesian(f, {x={-2*pi,2*pi}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{DaxeX and DaxeY}
+
+The methods \textbf{g:DaxeX(\{A,xsteps\}, options)} and \textbf{g:DaxeY(\{A,ysteps\}, options)} allow you to plot the axes separately.
+\begin{itemize}
+    \item The first argument specifies the point serving as the origin (the complex \emph{A}) and the step size of the tick marks on the axis. By default, the point \emph{A} is the origin $Z(0,0)$, and the step size is equal to $1$.
+    \item The argument \emph{options} is a table specifying the possible options. Here are these options with their default values:
+\begin{itemize}
+    \item \opt{showaxe=1}. This option specifies whether or not the axis should be plotted ($1$ or $0$).
+    \item \opt{arrows="-"}. This option allows you to add an arrow to the axis (no arrow by default; enter "->" to add an arrow).
+    \item \opt{limits="auto"}. This option allows you to specify the range of the two axes. The value "auto" means that it is the entire line, but you can specify the extreme abscissas, for example: \opt{limits=\{-4.4\}}.
+    \item \opt{gradlimits="auto"}. This option allows you to specify the range of the graduations on both axes. The value "auto" means that it is the entire line, but you can specify the extreme graduations, for example: \opt{gradlimits=\{-2.3\}}.
+    \item \opt{unit=""}. This option allows you to specify the range of the graduations on the axis. The default value ("") means to take the step value, EXCEPT when the \opt{labeltext} option is not the empty string, in which case \emph{unit} takes the value $1$.
+    \item \opt{nbsubdiv=0}. This option specifies the number of subdivisions between two main tick marks.
+    \item \opt{tickpos=0.5}. This option specifies the position of the tick marks relative to the axis. These are two numbers between $0$ and $1$. The default value of $0.5$ means they are centered on the axis. ($0$ and $1$ represent the ends).
+    \item \opt{tickdir="auto"}. This option indicates the direction of the tick marks on the axis. This direction is a non-zero (complex) vector. The default value "auto" means the tick marks are orthogonal to the axis.     \item \opt{xyticks=0.2}. This option specifies the length of the tick marks.
+    \item \opt{xylabelsep=0}. This option specifies the distance between the labels and the tick marks.
+    \item \opt{originpos="center"}. This option specifies the position of the label at the origin on the axis. Possible values ​​are: "none", "center", "left", "right" for $Ox$, and "none", "center", "bottom", "top" for $Oy$.
+    \item \opt{originnum=A.re} for $Ox$ and \opt{originnum=A.im} for $Oy$. This option specifies the value of the tick mark at the origin (tick mark number $0$).
+
+The formula that defines the label at tick mark number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
+
+    \item \opt{legend=""}. This option allows you to specify a legend for the axis.
+    \item \opt{legendpos=0.975}. This option specifies the position (between $0$ and $1$) of the legend relative to the axis.
+    \item \opt{legendsep=0.2}. This option specifies the distance between the legend and the axis. The legend is on the other side of the axis from the graduations.
+    \item \opt{legendangle="auto"}. This option specifies the angle (in degrees) that the legend should make for the axis. The default value "auto" means that the legend must be parallel to the axis if the \emph{labelstyle} option is also set to "auto", otherwise the legend is horizontal.
+    \item \opt{labelpos="bottom"} for $Ox$ and \opt{labelpos="left"} for $Oy$. This option specifies the position of the labels relative to the axis. For the $Ox$ axis, the possible values ​​are: "none", "bottom", or "top", for the $Oy$ axis it is: "none", "right", or "left".
+    \item \opt{labelden=1}. This option specifies the denominator of the labels (integer) for the axis. The formula that defines the label at graduation number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
+    \item \opt{labeltext=""}. This option defines the text that will be added to the numerator of the labels.
+    \item \opt{labelstyle="S"} for $Ox$ and \opt{labelstyle="W"} for $Oy$. This option defines the style of the labels. The possible values ​​are "auto", "N", "NW", "W", "SW", "S", "SE", "E".
+    \item \opt{labelangle=0}. This option sets the angle of the labels in degrees from the horizontal.
+    \item \opt{labelcolor=""}. This option allows you to choose a color for the labels. The empty string represents the current text color.
+    \item \opt{labelshift=0}. This option allows you to set a systematic offset for labels on the axis (along-axis offset).
+    \item \opt{nbdeci=2}. This option specifies the number of decimal places for numeric labels.
+    \item \opt{numericFormat=0}. This option specifies the type of numeric display (not yet implemented).
+    \item \opt{mylabels=""}. This option allows you to impose custom labels. When there are any, the value passed to the option must be a list of the type: \verb|{pos1,"text1", pos2,"text2",...}|. The number \emph{pos1} represents an abscissa in the coordinate system (A,xpas) for $Ox$, or (A,ypas$*$i) for $Oy$, which corresponds to the affix point $A+$pos1$*$xpas for $Ox$, and $A+$pos1$*$ypas$*i$ for $Oy$.
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Dgradline}
+
+The axis plotting methods are based on the method \textbf{g:Dgradline(\{A,u\}, options)}, where \emph{\{A,u\}} represents the line passing through $A$ (a complex) and directed by the vector $u$ (a non-zero complex). The pair (A,u) serves as a reference point on this line (and orients this line), so each point $M$ on this line has an abscissa $x$ such that $M=A+xu$. This method allows you to draw this graduated line. The argument \emph{options} is a table specifying the possible options, which are (with their default values):
+\begin{itemize}
+    \item \opt{showaxe=1}. This option specifies whether or not the axis should be plotted ($1$ or $0$).     \item \opt{arrows="-"}. This option allows you to add an arrow to the axis (no arrow by default; enter "->" to add an arrow).
+    \item \opt{limits="auto"}. This option allows you to specify the range of the two axes. The value "auto" means that it is the entire line, but you can specify the extreme abscissas, for example: \opt{limits=\{-4.4\}}.
+    \item \opt{gradlimits="auto"}. This option allows you to specify the range of the graduations on both axes. The value "auto" means that it is the entire line, but you can specify the extreme graduations, for example: \opt{gradlimits=\{-2.3\}}.
+    \item \opt{unit=1}. This option allows you to specify the number of graduations on the axis.
+    \item \opt{nbsubdiv=0}. This option specifies the number of subdivisions between two main ticks.
+    \item \opt{tickpos=0.5}. This option specifies the position of the ticks relative to the axis. These are two numbers between $0$ and $1$. The default value of $0.5$ means they are centered on the axis. ($0$ and $1$ represent the ends).
+    \item \opt{tickdir="auto"}. This option specifies the direction of the ticks on the axis. This direction is a non-zero (complex) vector. The default value "auto" means the ticks are orthogonal to the axis.
+    \item \opt{xyticks=0.2}. This option specifies the length of the ticks.
+    \item \opt{xylabelsep=defaultxylabelsep}. This option specifies the distance between the labels and the tick marks. \emph{defaultxylabelsep} is a global variable with a default value of $0$.
+    \item \opt{originpos="center"}. This option specifies the position of the label at the origin on the axis. Possible values ​​are: "none", "center", "left", "right".
+    \item \opt{originnum=0}. This option specifies the value of the tick mark at the origin $A$ (tick mark number $0$).
+    
+The formula that defines the label at graduation number $n$ (at point $A+nu$) is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
+
+    \item \opt{legend=""}. This option allows you to specify a legend for the axis.
+    \item \opt{legendpos=0.975}. This option specifies the position (between $0$ and $1$) of the legend relative to the axis.
+    \item \opt{legendsep=defaultlegendsep}. This option specifies the distance between the legend and the axis. The legend is on the other side of the axis from the graduations; \emph{defaultlegendsep} is a global variable that defaults to 0.2.
+    \item \opt{legendangle="auto"}. This option specifies the angle (in degrees) that the legend should form for the axis. The default value "auto" means that the legend must be parallel to the axis if the \emph{labelstyle} option is also set to "auto", otherwise the legend is horizontal.
+    \item \opt{legendstyle="auto"}. Specifies the position of the legend relative to the axis. Possible values ​​are: "auto", "top", or "bottom".
+    \item \opt{labelpos="bottom"}. This option specifies the position of the labels relative to the axis. Possible values ​​are: "none", "bottom", or "top".
+    \item \opt{labelden=1}. This option specifies the denominator of the labels (integer) for the axis. The formula that defines the label at graduation number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
+    \item \opt{labeltext=""}. This option defines the text that will be added to the numerator of the labels.     \item \opt{labelstyle="auto"}. This option defines the label style. Possible values ​​are "auto", "N", "NW", "W", "SW", "S", "SE", "E".
+    \item \opt{labelangle=0}. This option defines the angle of the labels in degrees from the horizontal.
+    \item \opt{labelcolor=""}. This option allows you to choose a color for the labels. The empty string represents the current text color.
+    \item \opt{labelshift=0}. This option allows you to define a systematic offset for the labels on the axis (along axis offset).
+    \item \opt{nbdeci=2}. This option specifies the number of decimal places for numeric labels.
+    \item \opt{numericFormat=0}. This option specifies the type of numeric display (not yet implemented).
+    \item \opt{mylabels=""}. This option allows you to impose custom labels. When any are present, the value passed to the option must be a list of the type: \verb|{x1,"text1", x2,"text2",...}|. The numbers \emph{x1, x2, ...} represent abscissas in the $(A,u)$ coordinate system.
+\end{itemize}
+
+\begin{demo}{Examples of numbered lines}
+\begin{luadraw}{name=gradline}
+local g = graph:new{window={-5,5,-5,5},size={10,10}}
+g:Labelsize("footnotesize")
+local i = cpx.I
+g:Dgradline({3.25*i,1+i/2}, {limits={-4,4}, legend="Axe", legendpos=0.5, arrows="-stealth"})
+g:Dgradline({-3,1}, {legend="demo", labeltext="\\pi", labelden=3, unit=2, nbsubdiv=1, arrows="-latex"})
+g:Dgradline({3-4*i,-1.25+i/5}, {legend="A", labelstyle="N", gradlimits={-1,5}, nbsubdiv=3, unit=1.411, nbdeci=3, arrows="-Latex"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dgrid}
+
+The \textbf{g:Dgrid(\{A,B\},options} method allows you to draw a grid.
+\begin{itemize}
+    \item The first argument is mandatory; it specifies the lower-left corner (this is the \emph{A} complex) and the upper-right corner (this is the $B$ complex) of the grid.
+    \item The \emph{options} argument is a table specifying the possible options. Here are these options with their default values:
+\begin{itemize}
+    \item \opt{unit=\{1,1\}}. ​​This option defines the units on the axes for the main grid.
+    \item \opt{gridwidth=4}. This option defines the line thickness of the main grid (0.4pt by default).
+    \item \opt{gridcolor="gray"}. Grid color of the main grid.
+    \item \opt{gridstyle="solid"}. Line style for the primary grid.
+    \item \opt{nbsubdiv={0,0}}. Number of subdivisions (for each axis) between two lines of the primary grid. These subdivisions determine the secondary grid.
+    \item \opt{subgridcolor="lightgray"}. Color of the secondary grid.
+    \item \opt{subgridwidth=2}. Line thickness of the secondary grid (0.2pt by default).
+    \item \opt{subgridstyle="solid"}. Line style for the secondary grid.
+    \item \opt{originloc=A}. Location of the grid origin.
+\end{itemize}
+\end{itemize}
+
+\paragraph{Example:} It is possible to work in a non-orthogonal coordinate system. Here is an example where the $Ox$ axis is retained, but the first bisector becomes the new axis. $Oy$, we modify the graph's transformation matrix. Based on this modification, the affixes represent the coordinates in the new coordinate system.
+
+\begin{demo}{Example of a non-orthogonal coordinate system}
+\begin{luadraw}{name=axes_non_ortho}
+local g = graph:new{window={-5.25,5.25,-4,4},size={10,10}}
+local i, pi = cpx.I, math.pi
+local f = function(x) return 2*math.sin(x) end
+g:Setmatrix({0,1,1+i}); g:Labelsize("small")
+g:Dgrid({-5-4*i,5+4*i},{gridstyle="dashed"})
+g:Daxes({0,1,1}, {arrows="-Stealth"})
+g:Lineoptions("solid","ForestGreen",12); g:Dcartesian(f,{x={-5,5}})
+g:Dcircle(0,3,"Crimson")
+g:DlineEq(1,0,3,"Navy") -- droite d'équation x=-3
+g:Lineoptions("solid","black",8); g:DtangentC(f,pi/2,1.5,"<->")
+g:Dpolyline({pi/2,pi/2+2*i,2*i},"dotted")
+g:Ddots(Z(pi/2,2))
+g:Dlabeldot("$\\frac{\\pi}2$",pi/2,{pos="SW"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dgradbox}
+
+The \textbf{g:Dgradbox(\{A,B,xpas,ypas\},options} method allows you to draw a graduated box.
+\begin{itemize}
+    \item The first argument is mandatory; it specifies the lower-left corner (this is the \emph{A} complex) and the upper-right corner (this is the $B$ complex) of the box, as well as the step on each axis.
+    \item The \emph{options} argument is a table specifying the possible options. These are the same as for the axes, except for some default values. In addition, the following option is added: \opt{title=""}, which allows you to add a title at the top of the box; however, be careful to leave enough space for this.
+\end{itemize}
+
+\begin{demo}{Using Dgradbox}
+\begin{luadraw}{name=gradbox}
+local g = graph:new{window={-5,4,-5.5,5},size={10,10}}
+local i, pi = cpx.I, math.pi
+local h = function(x) return x^2/2-2 end
+local f = function(x) return math.sin(3*x)+h(x) end
+g:Dgradbox({-pi-4*i,pi+4*i,pi/3,1},{grid=true,originloc=0, originnum={0,0},labeltext={"\\pi",""},labelden={3,1}, title="\\textbf{Title}",legend={"Legend $x$","Legend $y$"}})
+g:Saveattr(); g:Viewport(-pi,pi,-4,4) -- on limite la vue (clip)
+g:Filloptions("full","blue",0.6); g:Linestyle("noline"); g:Ddomain2(f,h,{x={-pi/2,2*pi/3}})
+g:Filloptions("none",nil,1); g:Lineoptions("solid",nil,8); g:Dcartesian(h,{x={-pi,pi}, draw_options="DarkBlue"})
+g:Dcartesian(f,{x={-pi,pi},draw_options="Crimson"})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Set Drawings (Venn Diagrams)}
+
+\subsubsection{Drawing a Set}
+
+The function \textbf{set(center,angle,scale)} returns a path representing a set (egg-shaped), with the center being \emph{center} (complex), the argument \emph{angle} representing the inclination (in degrees) of the set's vertical axis (0 by default), and the argument \emph{scale} being a scale factor to modify the size of the set (1 by default). Such a path can be drawn with the method \textbf{g:Dpath()}.
+
+\begin{demo}{Drawing a Set}
+\begin{luadraw}{name=set}
+local g = graph:new{window={-5.25,5.25,-5,5},size={10,10}}
+local i = cpx.I
+local A, B, C = set(i,0), set(-2-i,25), set(2-i,-25)
+g:Fillopacity(0.3)
+g:Dpath(A,"fill=orange"); g:Dpath(B,"fill=blue")
+g:Dpath(C,"fill=green")
+g:Fillopacity(1)
+g:Dlabel("$A$",5*i,{pos="N"},"$B$",-4+3*i,{pos="W"},"$C$",4+3*i,{pos="E"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Operations on Sets}
+
+Let $C_1$ and $C_2$ be two lists of complexes representing the contour of two sets (simple closed curves, all in one piece).
+There are three possible operations:
+\begin{itemize}
+    \item The function \textbf{cap(C1,C2)} returns a list of complexes representing the contour of the intersection of the sets corresponding to $C_1$ and $C_2$.
+    \item The function \textbf{cup(C1,C2)} returns a list of complexes representing the contour of the union of the sets corresponding to $C_1$ and $C_2$.
+    \item The function \textbf{setminus(C1,C2)} returns a list of complexes representing the contour of the difference of the sets corresponding to $C_1$ and $C_2$ ($C_1\setminus C_2$).
+\end{itemize}
+The result of these operations, being a list of complexes, can be drawn with the \textbf{g:Dpolyline()} method.
+
+\begin{demo}{Set Operations}
+\begin{luadraw}{name=cap_and_cup}
+local g = graph:new{window={-5.5,5.5,-5,5},size={10,10}}
+local i = cpx.I
+local A, B, C = set(i,0), set(-2-i,25), set(2-i,-25)
+g:Fillopacity(0.3)
+g:Dpath(A,"fill=orange"); g:Dpath(B,"fill=blue"); g:Dpath(C,"fill=green")
+g:Fillopacity(1)
+local C1, C2, C3 = path(A), path(B), path(C) -- conversion chemin -> liste de complexes
+local I = cap(cup(C1,C2),C3)
+g:Linecolor("red"); g:Filloptions("full","white")
+g:Dpolyline(I,true,"line width=0.8pt,fill opacity=0.8")
+g:Dlabel("$A$",5*i,{pos="N"},"$B$",-4+3*i,{pos="W"},"$C$",4+3*i,{pos="E"},
+"$(A\\cup B) \\cap C$",-i,{pos="NE",node_options="red,draw"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{NB}: The result is not always satisfactory when the contours become too complex, or when the contours share common sections.
+
+\subsection{Color Calculations}
+
+In the \emph{luadraw} environment, colors are character strings that must correspond to colors known to tikz. The \emph{xcolor} package is strongly recommended so as not to be limited to basic colors.
+
+To be able to manipulate colors, they have been defined (in the \emph{luadraw\_colors.lua} module) as tables of three components: red, green, blue, each component being a number between $0$ and $1$, and with their names in the \emph{svgnames} format of the \emph{xcolor} package. For example, we find (among others) the declarations:
+
+\begin{Luacode}
+AliceBlue = {0.9412, 0.9725, 1}
+AntiqueWhite = {0.9804, 0.9216, 0.8431}
+Aqua = {0.0, 1.0, 1.0}
+Aquamarine = {0.498, 1.0, 0.8314}
+\end{Luacode}
+You can refer to the \emph{xcolor} documentation for a list of these colors.
+
+To use these in the \emph{luadraw} environment, you can:
+\begin{itemize}
+    \item either use them by name if you have declared them in the preamble: \verb|\usepackage[svgnames]{xcolor}|, for example: \mintinline{Lua}{g:Linecolor("AliceBlue")},
+
+    \item or use them with the \emph{luadraw} \textbf{rgb()} function, for example: \mintinline{Lua}{g:Linecolor(rgb(AliceBlue))}. However, with this \emph{rgb()} function, to change the color locally, you must do the following (example): \par
+\mintinline{Lua}{g:Dpolyline(L,"color="..rgb(AliceBlue))}, or \mintinline{Lua}{g:Dpolyline(L,"fill="..rgb(AliceBlue))}. Because the \emph{rgb()} function does not return a color name, but a color definition.
+\end{itemize}
+
+\paragraph{Functions for color management:}
+\begin{itemize}
+    \item The \textbf{rgb(r,g,b)} or \textbf{rgb(\{r,g,b\})} function returns the color as a string understandable by tikz in the \verb|color=...| and \verb|fill=...| options. The values ​​of $r$, $g$, and $b$ must be between $0$ and $1$.
+
+    \item The \textbf{hsb(h,s,b,table)} function returns the color as a string understandable by tikz. The $h$ (hue) argument must be a number between $0$ and $360$, the $s$ (saturation) argument must be between $0$ and $1$, and the $b$ (brightness) argument must also be between $0$ and $1$.
+
+The (optional) argument \emph{table} is a boolean (false by default) that indicates whether the result should be returned as a table \verb|{r,g,b}| or not (by default it is as a string).
+
+    \item The function \textbf{mixcolor(color1,proportion1 color2,proportion1,...,colorN,proportionN)} mixes the colors \emph{color1}, ...,\emph{colorN} in the requested proportions and returns the resulting color as a string understandable by tikz, followed by the same color as a table \verb|{r,g,b}| . Each color must be a table of three components \verb|{r,g,b}|.
+
+    \item The function \textbf{palette(colors,pos,table)}: the argument \emph{colors} is a list (table) of colors in the format \verb|{r,b,g}|, the argument \emph{pos} is a number between $0$ and $1$, the value $0$ corresponds to the first color in the list and the value $1$ to the last. The function calculates and returns the color corresponding to the position \emph{pos} in the list by linear interpolation. The (optional) argument \emph{table} is a boolean (false by default) that indicates whether the result should be returned as a table \verb|{r,g,b}| or not (by default it is as a string).
+
+    \item The \textbf{getpalette(colors,nb,table)} function: the \emph{colors} argument is a list (table) of colors in \verb|{r,b,g}| format, the \emph{nb} argument indicates the desired number of colors. The function returns a list of \emph{nb} colors evenly distributed in \emph{colors}. The (optional) \emph{table} argument is a boolean (false by default) that indicates whether the colors are returned as \verb|{r,g,b}| tables or not (by default, they are as strings).
+
+    \item The \textbf{g:Newcolor(name,rgbtable)} method allows you to define a new color in the tikz export in rgb format, whose name will be \emph{name} (string). \emph{rgbtable} is a table of three components: red, green, blue (between 0 and 1) defining this color.
+
+\end{itemize}
+You can also use all of TikZ's usual color management features.
+
+By default, there are five color palettes.\footnote{A palette is a table of colors; these are themselves tables of numbers between $0$ and $1$ representing the red, green, and blue components.}.
+
+\begin{demo}{The five default palettes}
+\begin{luadraw}{name=palettes}
+local g = graph:new{window={-5,5,-5,5},bbox=false, border=true}
+g:Linewidth(1)
+local Dpalette = function(pal,A,h,L,N,name)
+    local dl = L/N
+    for k = 1, N do
+        local color = palette(pal,(k-1)/(N-1))
+        g:Drectangle(A,A+h,A+h+dl,"color="..color..",fill="..color)
+        A = A+dl
+    end
+    g:Drectangle(A,A+h,A+h-L); g:Dlabel(name,A+h/2,{pos="E"})
+end
+local A, h, dh, L, N = Z(-5,4), Z(0,-1), Z(0,-1.1), 5, 100
+Dpalette(rainbow,A,h,L,N,"rainbow"); A = A+dh
+Dpalette(palAutumn,A,h,L,N,"palAutumn"); A = A+dh
+Dpalette(palGistGray,A,h,L,N,"palGistGray"); A = A+dh
+Dpalette(palGasFlame,A,h,L,N,"palGasFlame"); A = A+dh
+Dpalette(palRainbow,A,h,L,N,"palRainbow")
+g:Show()
+\end{luadraw}
+\end{demo}
