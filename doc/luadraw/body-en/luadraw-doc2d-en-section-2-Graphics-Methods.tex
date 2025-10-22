@@ -4,7 +4,7 @@ Polygonal lines, curves, paths, points, and labels can be created.
 
 \subsection{Polygonal Lines}
 
-\textbf{A polygonal line is a list (table) of connected components, and a connected component is a list (table) of complexes that represent the affixes of the points}. For example, the instruction:
+\textbf{A polygonal line is a list (table) of connected components, and a connected component is a list (table) of complex numbers that represent the affixes of the points}. For example, the instruction:
 \begin{Luacode}
 local L = { {Z(-4,0), Z(0,2), Z(1,3)}, {Z(0,0), Z(4,-2), Z(1,-1)} }
 \end{Luacode}
@@ -148,7 +148,7 @@ Variant: \textbf{g:Dhline(A,B,draw\_options)}. The argument \emph{draw\_options}
 \subsubsection{Dline}
 The \textbf{g:Dline(d,draw\_options)} method draws the line \emph{d}, which is a list of type \emph{\{A,u\}} where \emph{A} represents a point on the line (a complex) and \emph{u} a direction vector (a non-zero complex).
 
-Variant: the \textbf{g:Dline(A,B,draw\_options)} method draws the line passing through the points \emph{A} and \emph{B} (two complexes). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
+Variant: the \textbf{g:Dline(A,B,draw\_options)} method draws the line passing through the points \emph{A} and \emph{B} (two complex numbers). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
 
 \subsubsection{DlineEq}
 \begin{itemize}
@@ -673,7 +673,7 @@ g:Show()
 \subsubsection{Ddomain1}
 
 \begin{itemize}
-    \item The function \textbf{domain1(f,a,b,nbdots,discont,nbdiv)} returns a list of complexes that represents the contour of the part of the plane bounded by the curve of the function \emph{f} on an interval \([a;b]\), the \emph{Ox} axis, and the lines \(x=a\), \(x=b\).
+    \item The function \textbf{domain1(f,a,b,nbdots,discont,nbdiv)} returns a list of complex numbers that represents the contour of the part of the plane bounded by the curve of the function \emph{f} on an interval \([a;b]\), the \emph{Ox} axis, and the lines \(x=a\), \(x=b\).
 
     \item The method \textbf{g:Ddomain1(f,args)} draws this contour. The optional \emph{args} argument defines the parameters for the curve. It is a table with 5 fields:
 
@@ -692,7 +692,7 @@ g:Show()
 \subsubsection{Ddomain2}
 
 \begin{itemize}
-    \item The \textbf{domain2(f,g,a,b,nbdots,discont,nbdiv)} function returns a list of complexes that represents the contour of the part of the plane bounded by the curve of the function \emph{f}, the curve of the function \emph{g}, and the lines \(x=a\), \(x=b\).
+    \item The \textbf{domain2(f,g,a,b,nbdots,discont,nbdiv)} function returns a list of complex numbers that represents the contour of the part of the plane bounded by the curve of the function \emph{f}, the curve of the function \emph{g}, and the lines \(x=a\), \(x=b\).
 
     \item The \textbf{g:Ddomain2(f,g,args)} method draws this contour. The optional \emph{args} argument allows you to define the parameters for the curves. It is a table with 6 fields:
 
@@ -711,7 +711,7 @@ g:Show()
 \subsubsection{Ddomain3}
 
 \begin{itemize}
-    \item The \textbf{domain3(f,g,a,b,nbdots,discont,nbdiv)} function returns a list of complexes that represents the contour of the part of the plane bounded by the curve of the function \emph{f} and that of the function \emph{g} (searching for intersection points in the interval $[a;b]$).
+    \item The \textbf{domain3(f,g,a,b,nbdots,discont,nbdiv)} function returns a list of complex numbers that represents the contour of the part of the plane bounded by the curve of the function \emph{f} and that of the function \emph{g} (searching for intersection points in the interval $[a;b]$).
 
     \item The \textbf{g:Ddomain3(f,g,args)} method draws this contour. The optional \emph{args} argument defines the parameters for the curve. It is a table with 5 fields:
 
@@ -752,7 +752,7 @@ g:Show()
     \item The method for drawing one or more points is: \textbf{g:Ddots(dots, mark\_options)}.
 
 \begin{itemize}
-    \item The argument \emph{dots} can be either a single point (i.e., a complex), a list (a table) of complexes, or a list of lists of complexes. The points are drawn in the current color of the line plot.     \item The \emph{mark\_options} argument is an optional string that will be passed as is to the \emph{\textbackslash draw} instruction (local modifications), for example:
+    \item The argument \emph{dots} can be either a single point (i.e., a complex), a list (a table) of complex numbers, or a list of lists of complex numbers. The points are drawn in the current color of the line plot.     \item The \emph{mark\_options} argument is an optional string that will be passed as is to the \emph{\textbackslash draw} instruction (local modifications), for example:
 \begin{TeXcode}
 "color=green, line width=1.2, scale=0.25"
 \end{TeXcode}
@@ -768,7 +768,7 @@ g:Show()
 \hfil\textbf{g:Dlabel(text1, anchor1, args1, text2, anchor2, args2, ...)}.\hfil
 
 \begin{itemize}
-    \item The arguments \emph{text1, text2, ...} are strings; they are the labels.     \item The arguments \emph{anchor1, anchor2,...} are complexes representing the anchor points of the labels.
+    \item The arguments \emph{text1, text2, ...} are strings; they are the labels.     \item The arguments \emph{anchor1, anchor2,...} are complex numbers representing the anchor points of the labels.
     \item The arguments \emph{args1, arg2,...} allow you to locally define the label parameters; they are tables with 4 fields:
 \begin{TeXcode}
 { pos=nil, dist=0, dir={dirX,dirY,dep}, node_options="" }
@@ -1179,14 +1179,14 @@ g:Show()
 
 \subsubsection{Operations on Sets}
 
-Let $C_1$ and $C_2$ be two lists of complexes representing the contour of two sets (simple closed curves, all in one piece).
+Let $C_1$ and $C_2$ be two lists of complex numbers representing the contour of two sets (simple closed curves, all in one piece).
 There are three possible operations:
 \begin{itemize}
-    \item The function \textbf{cap(C1,C2)} returns a list of complexes representing the contour of the intersection of the sets corresponding to $C_1$ and $C_2$.
-    \item The function \textbf{cup(C1,C2)} returns a list of complexes representing the contour of the union of the sets corresponding to $C_1$ and $C_2$.
-    \item The function \textbf{setminus(C1,C2)} returns a list of complexes representing the contour of the difference of the sets corresponding to $C_1$ and $C_2$ ($C_1\setminus C_2$).
+    \item The function \textbf{cap(C1,C2)} returns a list of complex numbers representing the contour of the intersection of the sets corresponding to $C_1$ and $C_2$.
+    \item The function \textbf{cup(C1,C2)} returns a list of complex numbers representing the contour of the union of the sets corresponding to $C_1$ and $C_2$.
+    \item The function \textbf{setminus(C1,C2)} returns a list of complex numbers representing the contour of the difference of the sets corresponding to $C_1$ and $C_2$ ($C_1\setminus C_2$).
 \end{itemize}
-The result of these operations, being a list of complexes, can be drawn with the \textbf{g:Dpolyline()} method.
+The result of these operations, being a list of complex numbers, can be drawn with the \textbf{g:Dpolyline()} method.
 
 \begin{demo}{Set Operations}
 \begin{luadraw}{name=cap_and_cup}
