@@ -2,19 +2,74 @@
 
 Dans cette section sont regroupées les fonctions construisant des figures géométriques sans méthode graphique dédiée correspondante.
 
-\subsection{cvx\_hull2d}
+\subsection{circumcircle(), incircle()}
+
+\begin{itemize}
+    \item La fonction \textbf{circumcircle(a,b,c)} (ou \textbf{circumcircle(\{a,b,c\})}) , où $a$, $b$ et $c$ sont trois points (trois nombres complexes), renvoie le cercle circonscrit au triangle formé par ces trois points, sous la forme d'une séquence: $C,r$, où $C$ est le centre du cercle (nombre complexe), $r$ son rayon.
+    \item La fonction \textbf{incircle3d(a,b,c)} (ou \textbf{incircle3d(\{a,b,c\})}) , où $a$, $b$ et $c$ sont trois points (trois nombres complexes), renvoie le cercle inscrit dans triangle formé par ces trois points, sous la forme d'une séquence: $C,r$, où $C$ est le centre du cercle (nombre complexe), $r$ son rayon.    
+\end{itemize}
+
+\subsection{cvx\_hull2d()}
 
 La fonction \textbf{cvx\_hull2d(L)} où $L$ est une liste de complexes, calcule et renvoie une liste de complexes représentant l'enveloppe convexe de $L$.
 
-\subsection{sss\_triangle}
+\subsection{delaunay()}
+
+La fonction \textbf{delaunay(L)} où \emph{L} est une liste de nombres complexes \textbf{distincts}, renvoie une liste de triangles (un triangle étant une liste de trois nombres complexes) obtenus par triangulation de Delaunay des points de \emph{L} (le cercle circonscrit de chacun des triangles ne contient aucun des autres points).
+
+\begin{demo}{Triangulation de Delaunay}
+\begin{luadraw}{name=delaunay}
+local g = graph3d:new{bbox=false, pictureoptions="scale=2"}
+local i = cpx.I; g:Linewidth(6)
+local L = {0.285+1.46*i,1.556-0.142*i,2.344+1.313*i,-2.38+1.218*i,1.548-0.624*i,0.969+1.819*i, -0.086-2.191*i,-0.477+1.834*i,-0.904+1.322*i,-2.892+0.025*i}
+local T = delaunay(L)
+local n = #T
+local num = 7 -- we choose a triangle
+local colors = getpalette(palGasFlame,n)
+for k = 1, n do
+    g:Dpolyline(T[k],true,'fill='..colors[k])
+end
+g:Ddots(L)
+g:Dcircle( {circumcircle(T[num])}, "line width=0.4pt,gray,dashed" )
+g:Ddots(T[num],"gray")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{line2strip()}
+
+La fonction \textbf{line2strip(L,width,close,ends)} où \emph{L} est une liste de nombres complexes, ou une liste de listes de nombres complexes, renvoie un chemin représentant une "bande" centrée sur \emph{L} et de largeur \emph{width}. L'argument optionnel \emph{close} est un booléen qui indique si \emph{L} doit être refermée (\emph{false} par défaut). L'argument optionnel \emph{ends} est un booléen qui indique si les deux extrémités de la bande doivent être dessinées (\emph{true} par défaut, sauf quand l'argument \emph{close} vaut \emph{true}).
+
+\begin{demo}{Exemple avec \emph{line2strip}}
+\begin{luadraw}{name=line2strip}
+local g = graph:new{bbox=false, bg="lightgray"}
+local i = cpx.I; g:Linewidth(8)
+local p = {-3+3*i,-3,"l",0,3,3,1,"ca", 3+3*i,"l"} 
+g:Setmatrix({-3+3*i,0.5,0.5*i})
+local L = line2strip(path(p),1,true) -- p is first converted to polyline
+g:Dpath(L,"Crimson,fill=Gold"); g:Dpath(p,"gray,dashed")
+g:Dlabel("close=true",i,{})
+g:Setmatrix({3+3*i,0.5,0.5*i})
+local L = line2strip(path(p),1,false) -- p is first converted to polyline
+g:Dpath(L,"Crimson,fill=Gold"); g:Dpath(p,"gray,dashed")
+g:Dlabel("close=false",i,{}) 
+g:Setmatrix({-i,0.5,0.5*i})
+local L = line2strip(path(p),1,false,false) -- p is first converted to polyline
+g:Dpath(L,"Crimson,fill=Gold"); g:Dpath(p,"gray,dashed")
+g:Dlabel("close=false",1.5*i,{}); g:Dlabel("ends=false",0.5*i,{}) 
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{sss\_triangle()}
 
 La fonction \textbf{sss\_triangle(ab,bc,ca)} où \emph{ab}, \emph{bc} et \emph{ca} sont trois longueurs, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle direct dont les longueurs des côtés sont les arguments, c'est à dire $AB=ab$, $BC=bc$ et $CA=ca$, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline}.
 
-\subsection{sas\_triangle}
+\subsection{sas\_triangle()}
 
 La fonction \textbf{sas\_triangle(ab,alpha,ca)} où \emph{ab} et \emph{ca} sont deux longueurs, \emph{alpha} un angle en degrés, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle tel que $AB=ab$, $CA=ca$, et tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline}.
 
-\subsection{asa\_triangle}
+\subsection{asa\_triangle()}
 
 La fonction \textbf{asa\_triangle(alpha,ab,beta)} où \emph{ab} est une longueur, \emph{alpha} et \emph{beta} deux angles en degrés, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle tel que $AB=ab$, tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, et tel que l'angle $(\vec{BA},\vec{BC})$ a pour mesure \emph{beta}, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline}.
 
@@ -44,4 +99,3 @@ end
 g:Show()
 \end{luadraw}
 \end{demo}
-

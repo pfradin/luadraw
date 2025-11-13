@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -302,6 +302,32 @@ function circleb(c,r,d)  -- circleb(center,radius) ou circleb(a,b,c) (3 points)
             c-u-dn, c-du-n, c-n, "b",
             c-n+du, c-dn+u, c+u, "b"}
 end
+
+function circumcircle(a,b,c) -- ou circumcircle({a,b,c})
+-- renvoie le centre et le rayon du cercle circonscrit
+    if b == nil then 
+        a, b, c = table.unpack(a)
+    end
+    local Ce = interD(med(a,b),med(b,c)) -- centre du cercle circonscrit
+    if Ce ~= nil then
+        return Ce, cpx.abs(Ce-a) -- centre et rayon
+    end
+end
+
+function incircle(a,b,c) -- ou incircle({a,b,c})
+-- renvoie le centre et le rayon du cercle inscrit
+    if b == nil then 
+        a, b, c = table.unpack(a)
+    end
+    local Ce = interD(bissec(b,a,c),bissec(a,b,c)) -- centre du cercle inscrit
+    if Ce ~= nil then
+        local I =  proj(Ce,{a,b-a})
+        if I ~= nil then
+            return Ce, cpx.abs(Ce - I) -- centre et rayon
+        end
+    end
+end
+
 
 function ellipticarc(b, a, c, rx, ry, sens, inclin)
 -- renvoie la liste des points constituant un arc d'ellipse de AB vers AC
@@ -1158,11 +1184,12 @@ function roundline(L,r,close,bezier)  -- utilisée par path
     if #res > 0 then return res end
 end
 
-function path(chemin)
+function path(chemin,nbdots)
 -- renvoie les points constituant le chemin
 -- celui-ci est une table de complexes et d'instructions ex: {-1,2+i,3,"l", 4, "m", -2*i,-3-3*i,"l","cl",...}
 -- "m" pour moveto, "l" pour lineto, "b" pour bézier, "c" pour cercle, "ca" pour arc de cercle, "ea" arc d'ellipse, "e" pour ellipse, "cl" pour close
 -- "la" pour line arc (ligne aux coins arrondis), "cla" ligne fermée aux coins arrondis
+-- nbdots (optionnel) est utilisé pour la conversion bézier -> ligne polygonale
     if (chemin == nil) or (type(chemin) ~= "table") or (#chemin < 3) then return end
     local res = {} -- résultat
     local crt = {} -- composante courante
@@ -1198,7 +1225,8 @@ function path(chemin)
         if first ~= nil then 
             table.insert(aux,1,first); table.remove(crt)
         end
-        local C = bezier(table.unpack(aux)) -- renvoie une liste de listes de complexes
+        local a,c1,c2,b = table.unpack(aux)
+        local C = bezier(a,c1,c2,b,nbdots) -- renvoie une liste de listes de complexes
         for _, z in ipairs(C[1]) do
             table.insert(crt,z)
         end
@@ -1221,7 +1249,7 @@ function path(chemin)
                 else
                     if i == 4 then 
                         b = C[k]
-                        L = bezier(a,c1,c2,b)
+                        L = bezier(a,c1,c2,b,nbdots)
                         for j = 2, #L[1] do
                             table.insert(crt,L[1][j])
                         end
@@ -1348,6 +1376,20 @@ function path(chemin)
     
     if #crt > 0 then table.insert(res, crt) end    
     if #res > 0 then return  res end
+end
+
+function polyline2path(L) -- conversion list of complex numbers or a list of lists of  complex numbers (L) to path
+    if (L==nil) or (type(L) ~= "table") or (#L == 0) then return end
+    if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
+    local ret = {} 
+    local aux
+    for _, cp in ipairs(L) do
+        aux = table.copy(cp)
+        table.insert(aux,2,"m") -- move
+        table.insert(aux,"l")  -- lineto
+        insert(ret,aux)
+    end
+    return ret
 end
 
 
@@ -1585,4 +1627,143 @@ function cvx_hull2d(L)
         table.remove(S1) -- on retire Min qui est en dernier
         return S1 -- S1 contient l'enveloppe
     end
+end
+
+-- conversion ligne polygonale -> bande
+function line2strip(L,wd,closed,ends)
+-- L is a list of complex numbers or a list of list od complex numbers
+-- wd is the width of the strip (cm)
+-- closed boolean indicating whether the line should be closed
+-- ends boolean indicating whether the two end segments should be drawn
+-- retrns apath
+    if (L == nil) or (type(L) ~= "table") then return end
+    local ep = wd/2
+    local i = cpx.I
+    closed = closed or false
+    if closed then ends = false end
+    if ends == nil then ends = true end
+    if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
+    local ret, aux = {}
+    local bord, dessus, first, a, b, c, u, v, w
+    for _, cp1 in ipairs(L) do
+        aux = {}
+        local cp = table.copy(cp1)
+        a, b = cp[1], cp[2]
+        while a == b do table.remove(cp,1); b = cp[2] end
+        table.remove(cp,1); table.remove(cp,1)
+        if closed then
+            if a ~= cp[#cp] then table.insert(cp,a) end
+            a = (a+b)/2
+            table.insert(cp,a)
+        end
+        v = i*(b-a)/cpx.abs(b-a)
+            bord = {a-ep*v,a+ep*v}; dessus= {bord[2],"l"}
+        first = bord[1]; table.insert(aux,first); table.insert(aux,"m")
+        c = b; b = a; v = v/i
+        for _, z in ipairs(cp) do
+            a = b; b = c; c = z; u  =-v; v = cpx.normalize(c-b)
+            if v == nil then
+                c = b; b = a; v = -u
+            else
+                w = cpx.normalize(u+v)
+                if w == nil then
+                    bord = {b+ep*i*u, b-ep*i*u}
+                else
+                    bord = projO( bord,{b,w},u)
+                end
+                table.insert(aux,bord[1]); table.insert(dessus,1,bord[2])
+            end
+        end
+        if ends then
+            aux = concat(aux,{c-ep*v*i, c+ep*v*i}, dessus,"cl")
+            insert(ret, aux)
+        else
+            insert(aux,{c-ep*i*v,"l"}); insert(dessus,{c+ep*i*v,"m"},1)
+            ret = concat(ret, aux,dessus)
+        end
+    end
+    return ret
+end
+
+
+-- triangulation de Delaunay, algorithme de Bowyer-Watson
+function delaunay(points)  -- points is a list of distinct complex numbers
+-- renvoie une liste de triangles { {u,v,w}, ... }
+    local superTri = function(points)
+        --superTri(points) : renvoie un triangle contenant la liste de points
+        local x1,x2,y1,y2 = getbounds(points)
+        local a, c = Z(x1,y1) - 100*(x2-x1)*Z(1,1), Z(x2,y2) + 100*(y2-y1)*Z(1,1) -- on agrandit la boite
+        local d, b = Z(a.re,c.im), Z(c.re,a.im)
+        local A = (c+b)/2+c-d
+        local B, C = interD({A,c-A},{a,d-a}), interD({A,b-A},{a,d-a}) --triangle englobant la grande boite
+        return {A,B,C}
+    end
+    
+    local add_contour = function(T,contour) -- T = triangle, contour = liste d'arêtes = {{a,b},{c,d},...}
+        --insère les aretes du triangle dans la liste, si elle est déjà présente, il faut la supprimer
+        local b, a, A, index = T[1], nil
+        for k = 1, 3 do  -- pour chaque arête du triangle
+            a = b; b = T[k%3+1]
+            local ok, j, N = true, 0, #(contour)
+            while ok and (j < N) do -- cette arête est-elle déjà dans le contour ?
+                j = j+1
+                A = contour[j]
+                if ((a == A[1]) and (b == A[2])) or ((a == A[2]) and (b == A[1])) then 
+                    ok = false
+                    index = j
+                end
+            end
+            if not ok then --l'arete est déjà dans le contour, on la supprime
+               table.remove(contour,index)
+            else --sinon on l'ajoute au contour
+                table.insert(contour,{a,b})
+            end
+        end
+        return contour
+    end
+
+    local function contains(list, value)
+        for _, v in ipairs(list) do
+            if v == value then
+                return true
+            end
+        end
+        return false
+    end
+
+    points = map(toComplex,points)
+    table.sort(points, function(e1,e2) return (e1.re < e2.re) or ((e1.re == e2.re) and (e1.im < e2.im)) end) --tri suivant les x croissants
+    local T = superTri(points) --triangle englobant le nuage
+    local triangles = { {T,circumcircle(T)} } -- premier triangle avec centre et rayon du cercle circonscrit
+    for _,sommet in ipairs(points) do  -- on traite sommet par sommet
+        local contour = {}  -- contour défini par les "mauvais" triangles (polygone connexe)
+        local index = 0        -- indice du triangle traité
+        local a_supprimer = {} -- liste des indices des triangles à supprimer
+        for _,z in ipairs(triangles) do --on balaie chaque triangle
+            index = index +1  -- numéro du triangle traité
+            if cpx.abs(sommet-z[2])<z[3] then  --sommet dans le cercle circonscrit => mauvais triangle
+                contour = add_contour(z[1],contour) --calcul du nouveau contour (=liste d'arêtes)
+                table.insert(a_supprimer,index) --il faudra supprimer de triangle
+            end
+        end
+        local newtriangles= {}
+        for k,z in ipairs(triangles) do --suppression des mauvais triangles
+            if not contains(a_supprimer,k) then table.insert(newtriangles,z) end
+        end
+        triangles = newtriangles
+        --Chaque arête du contour donne un nouveau triangle en ajoutant le sommet en cours
+        for _,z in ipairs(contour) do
+            table.insert(z,sommet)
+            table.insert(triangles,{z,circumcircle(z)})
+        end
+    end
+    --finalisation : supprimer les triangles contenant un des sommets du premier triangle T (superTri)
+    local rep = {}
+    for _,z in ipairs(triangles) do
+        local t = z[1]
+        if not  (contains(t,T[1]) or contains(t,T[2]) or contains(t,T[3])) then
+           table.insert(rep,t) --on insert un triangle de Delaunay
+        end
+    end
+    return rep
 end

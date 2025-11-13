@@ -1,6 +1,6 @@
 -- luadraw_transformations3d.lua (chargé par luadraw_graph3d.lua)
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.

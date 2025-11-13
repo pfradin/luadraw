@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -931,53 +931,47 @@ function curve2cylinder(f,t1,t2,V,args)
     return poly2facet(cyl), bords
 end
 
-function line2tube(L,r,args)
+function section2tube(section,L,args)
+-- section est une facette 3d qui doit être centrée sur le premier point de L
 -- L est une liste de points 3d 
--- la fonction renvoie un tube centré sur L (liste de facettes)
--- args est une table à 4 champs:
--- nbfacet=3 par défaut
+-- la fonction renvoie un "tube" centré sur L (liste de facettes)
+-- args est une table à 3 champs:
 -- close=true/false indique si la ligne doit être refermée
 -- hollow=true/false indique si le tube a ses extrémités ouvertes (true) ou fermées
 -- addwall=0 (ou 1) permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "tronçon" du tube
     if (L == nil) or (type(L) ~= "table") then return end
     args = args or {}
-    local nbfacet = args.nbfacet or 3
+    local nbfacet = #section
     local close = args.close or false
     local hollow = args.hollow or false
     if close then hollow = true end
     local addwall = args.addwall or 0
     local rep, sep = {}, {}
     local list, list1, firstList, P, a, b, c = {}, {}
+    -- orientation de la section
+    a, b = L[1], L[2]
+    local v = pt3d.prod(section[2]-section[1],section[3]-section[1])
+    if pt3d.dot(b-a,v) < 0 then section = reverse(section) end
     
-    local cp2tube = function(cp) -- traitement d'une composante connexe
+    local cp2tube = function(cp) -- traitement de la composante 
         local last, u, b1, v, theta, face = nil,nil,nil,nil,{},{}
+        if pt3d.abs(cp[1]-cp[#cp])<1e-8 then table.remove(cp); close = true end
         if close then last = cp[#cp]; table.insert(cp,cp[1]) end
         a = nil; b = nil; c = nil
         for _,m in ipairs(cp) do
             a = b; b = c; c = m
             if a == nil then 
                 if b ~= nil then -- première section au début de cp
-                    u = pt3d.prod(b-c,vecI)
-                    if pt3d.isNul(u) then u = pt3d.prod(b-c,vecJ) end
-                    u = r*pt3d.normalize(u)
-                    b1, v, theta = b+u, c-b, 2*math.pi/nbfacet*rad
-                    list = {b1}
-                    for k = 1, nbfacet-1 do
-                        table.insert(list,rotate3d(b1,k*theta,{b,v}))
-                    end
+                    list = section
                     if close then
-                        P = {b, pt3d.normalize(last-b)-pt3d.normalize(v)} --plan bissecteur last/b/c en b
+                        P = {b, pt3d.normalize(last-b)-pt3d.normalize(c-b)} --plan bissecteur last/b/c en b
                         list1 = proj3dO(list,P,b-c)
                         if list1 ~= nil then list = list1 end
                     end
                     firstList = list -- première section
                     if (not close) and (addwall == 1) then table.insert(sep,list) end
                     if not hollow then 
-                        face = {b1}
-                        for k = 1, nbfacet-1 do
-                            table.insert(face,rotate3d(b1,k*theta,{b,-v}))
-                        end
-                        table.insert(rep, face)
+                        table.insert(rep, reverse(section))
                     end
                 end
             else -- on a trois points consécutifs
@@ -994,31 +988,69 @@ function line2tube(L,r,args)
         end
     end
     
+    local cp = table.copy(L)-- cp is modified
+    if #cp > 1 then
+        cp2tube(cp) 
+        if close then
+            for k = 1, nbfacet-1 do
+                table.insert(rep, {list1[k],list1[k+1],firstList[k+1],firstList[k]})
+            end
+            table.insert(rep, {list1[nbfacet],list1[1],firstList[1],firstList[nbfacet]})
+        else
+            P = {c,b-c} -- plan de la dernière section
+            list1 = proj3dO(list,P,b-c)
+            if list1 == nil then list1 = shift3d(list,c-b) end
+            for k = 1, nbfacet-1 do
+                table.insert(rep, {list[k],list[k+1],list1[k+1],list1[k]})
+            end
+            table.insert(rep, {list[nbfacet],list[1],list1[1],list1[nbfacet]})
+            if not hollow then 
+                table.insert(rep, list1)
+            end
+        end
+        if addwall == 1 then table.insert(sep,list1) end -- facette séparatrice
+    end
+    if #sep == 0 then sep = nil end
+    return rep, sep
+end
+
+function line2tube(L,r,args)
+-- L est une liste de points 3d 
+-- la fonction renvoie un tube centré sur L (liste de facettes)
+-- args est une table à 4 champs:
+-- nbfacet=4 par défaut
+-- close=true/false indique si la ligne doit être refermée
+-- hollow=true/false indique si le tube a ses extrémités ouvertes (true) ou fermées
+-- addwall=0 (ou 1) permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "tronçon" du tube
+    if (L == nil) or (type(L) ~= "table") then return end
+    args = args or {}
+    local nbfacet = args.nbfacet or 3
+    local close = args.close or false
+    local hollow = args.hollow or false
+    if close then hollow = true end
+    local addwall = args.addwall or 0
+    local rep, sep = {}, {}
+   
+    local cp2section = function(cp) -- traitement d'une composante connexe
+        local b, c = cp[1], cp[2]
+        local u = pt3d.prod(b-c,vecI)
+        if pt3d.isNul(u) then u = pt3d.prod(b-c,vecJ) end
+        u = r*pt3d.normalize(u)
+        local b1, v, theta = b+u, c-b, 2*math.pi/nbfacet*rad
+        local list = {b1}
+        for k = 1, nbfacet-1 do
+            table.insert(list,rotate3d(b1,k*theta,{b,v}))
+        end
+        return list
+    end
+    
     if isPoint3d(L[1]) then L = {L} end
     for _, cp in ipairs(L) do
         if #cp > 1 then
-            cp2tube(cp)
+            local ret, wall = section2tube( cp2section(cp), cp, {hollow = hollow, close = close, addwall= addwall})
+            insert(rep, ret); insert(sep, wall)
         end
     end
-    if close then
-        for k = 1, nbfacet-1 do
-            table.insert(rep, {list1[k],list1[k+1],firstList[k+1],firstList[k]})
-        end
-        table.insert(rep, {list1[nbfacet],list1[1],firstList[1],firstList[nbfacet]})
-        
-    else
-        P = {c,b-c} -- plan de la dernière section
-        list1 = proj3dO(list,P,b-c)
-        if list1 == nil then list1 = shift3d(list,c-b) end
-        for k = 1, nbfacet-1 do
-            table.insert(rep, {list[k],list[k+1],list1[k+1],list1[k]})
-        end
-        table.insert(rep, {list[nbfacet],list[1],list1[1],list1[nbfacet]})
-        if not hollow then 
-            table.insert(rep, list1)
-        end
-    end
-    if addwall == 1 then table.insert(sep,list1) end -- facette séparatrice
     if #sep == 0 then sep = nil end
     return rep, sep
 end
@@ -1063,7 +1095,7 @@ function rotcurve(p,t1,t2,axe,angle1,angle2,args)
 end
 
 function rotline(L,axe,angle1,angle2,args)
--- renvoie la surface (liste de facettes) balayer par la liste de points 3d L
+-- renvoie la surface (liste de facettes) balayée par la liste de points 3d L
 -- en la faisant tourner autour de axe = {point3d, vecteur 3d}
 -- d'un angle allant de angle1 (degrés) à angle2
 -- agrs est une table à 3 champs :

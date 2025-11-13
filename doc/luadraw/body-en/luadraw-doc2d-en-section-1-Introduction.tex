@@ -33,7 +33,7 @@ Graphs are created in a luadraw environment, which calls luacode, so the lua lan
 \begin{TeXcode}
 \begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
 -- create a new graph with a local name
-local g = graph:new{ window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom},
+local g = graph:new{ window={x1,x2,y1,y2,xscale,yscale}, margin={top,right,bottom,left},
 size={width,height,ratio}, bg="color", border=true/false }
 -- build the g chart
 graphic instructions in Lua language ...
@@ -66,28 +66,20 @@ It is automatically loaded by the \emph{luadraw\_graph2d} module and therefore w
 \item \textbf{Warning}: A real number \emph{x} is not considered complex by Lua. However, the functions provided for graphical constructions perform the verification and conversion from real to complex. However, we can use \emph{Z(x,0)} instead of \emph{x}.
 \item The usual operators have been overloaded, allowing the use of the usual symbols, namely: +, x, -, /, as well as the equality test with =. When a calculation fails, the returned result should normally be equal to \emph{nil}.
 In addition, the following functions are added (dot notation must be used in Lua):
-
-begin{itemize}
-
-modulus: \textbf{cpx.abs(z)},
-
-modulus squared: \textbf{cpx.abs2(z)},
-
-norm 1: \textbf{cpx.N1(z)},
-
-main argument: \textbf{cpx.arg(z)},
-
-conjugate: \textbf{cpx.bar(z)},
-
-complex exponential: \textbf{cpx.exp(z)},
-
-scalar product: \textbf{cpx.dot(z1,z2)}, where the complex numbers represent vector affixes,
-
-determinant: \textbf{cpx.det(z1,z2)},
-
-the oriented angle (in radians) between two non-zero vectors: \textbf{cpx.angle(z1,z2)}
-\item rounding: \textbf{cpx.round(z, number of decimals)},
-\item the function: \textbf{cpx.isNul(z)} tests whether the real and imaginary parts of \emph{z} are in absolute value less than a variable \emph{epsilon} which is equal to \emph{1e-16} by default.
+    \begin{itemize}
+    \item modulus: \textbf{cpx.abs(z)},
+    \item modulus squared: \textbf{cpx.abs2(z)},
+    \item normalization: \textbf{cpx.normalize(z)} (returns \emph{nil} if $z$ is null),
+    \item norm 1: \textbf{cpx.N1(z)},
+    \item main argument: \textbf{cpx.arg(z)},
+    \item conjugate: \textbf{cpx.bar(z)},
+    \item complex exponential: \textbf{cpx.exp(z)},
+    \item scalar product: \textbf{cpx.dot(z1,z2)}, where the complex numbers represent vector affixes,
+    \item determinant: \textbf{cpx.det(z1,z2)},
+    \item the oriented angle (in radians) between two non-zero vectors: \textbf{cpx.angle(z1,z2)}
+    \item rounding: \textbf{cpx.round(z, number of decimals)},
+    \item the function: \textbf{cpx.isNul(z)} tests whether the real and imaginary parts of \emph{z} are in absolute value less than a variable \emph{epsilon} which is equal to \emph{1e-16} by default.
+    \end{itemize}
 \end{itemize}
 
 The last function returns a Boolean, the bar, exponential, and round functions return a complex number, and the others return a real number.
@@ -102,6 +94,10 @@ local A = 2+3*i
 \end{Luacode}
 
 The multiplication symbol is required.
+
+\subsection{Displaying a Variable in the Terminal}
+
+The instruction \textbf{whatis(variable,msg)} displays the type of the \emph{variable} and its contents in the terminal during compilation. Recognized types include the predefined types plus: \emph{complex number}, \emph{list of (complex) numbers}, and \emph{list of lists of (complex) numbers}. The argument \emph{msg} is an optional string (empty by default) which is displayed with the type to locate the variable in the terminal.
 
 \subsection{Creating a Graph}
 

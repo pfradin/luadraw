@@ -1,0 +1,265 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.5);%
+\draw[] (0,4.5) -- (9,4.5);%
+\draw[] (4.5,0) -- (4.5,9);%
+\begin{scope}%
+\begin{scope}%
+\pgfsetroundcap%
+\draw[] (2.025,4.725) -- (2.025,6.75);%
+\draw[] (0,6.75) -- (2.025,6.75);%
+\draw[] (2.6831,7.8899) -- (1.4034,5.6734);%
+\draw[] (2.025,6.75) -- (3.9375,6.75);%
+\draw[] (2.025,6.75) -- (2.025,8.6625);%
+\draw[] (2.025,8.6625) -- (2.025,8.775);%
+\pgfsetstrokecolor{black!98.36!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!98.36!black}%
+\draw[fill] (2.025,8.775) -- (2.0128,8.6414) -- (2.0514,8.6519)--cycle;%
+\pgfsetstrokecolor{black!68.81!black}%
+\pgfsetfillcolor{black!68.81!black}%
+\draw[fill] (2.0636,8.6731) -- (2.025,8.775) -- (2.0514,8.6519)--cycle;%
+\pgfsetstrokecolor{black!86.59!black}%
+\pgfsetfillcolor{black!86.59!black}%
+\draw[fill] (1.9864,8.6519) -- (2.0128,8.6414) -- (2.025,8.775)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (2.025,8.9775) node[] {\footnotesize $z$};%
+\draw[] (3.9375,6.75) -- (4.05,6.75);%
+\pgfsetstrokecolor{black!78.53!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!78.53!black}%
+\draw[fill] (4.05,6.75) -- (3.9253,6.7289) -- (3.9314,6.707)--cycle;%
+\pgfsetstrokecolor{black!77.52!black}%
+\pgfsetfillcolor{black!77.52!black}%
+\draw[fill] (3.9314,6.7719) -- (4.05,6.75) -- (3.9436,6.793)--cycle;%
+\pgfsetstrokecolor{black!100!black}%
+\pgfsetfillcolor{black!100!black}%
+\draw[fill] (3.9314,6.7719) -- (3.9253,6.7289) -- (4.05,6.75)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (4.2525,6.75) node[] {\footnotesize $y$};%
+\draw[] (1.4034,5.6734) -- (1.3669,5.6101);%
+\pgfsetstrokecolor{black!55.8!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!55.8!black}%
+\draw[fill] (1.4222,5.6409) -- (1.4409,5.6734) -- (1.3669,5.6101)--cycle;%
+\pgfsetstrokecolor{black!86.01!black}%
+\pgfsetfillcolor{black!86.01!black}%
+\draw[fill] (1.3669,5.6101) -- (1.4409,5.6734) -- (1.4222,5.7059)--cycle;%
+\draw[fill] (1.3847,5.7059) -- (1.3669,5.6101) -- (1.4222,5.7059)--cycle;%
+\pgfsetstrokecolor{black!55.8!black}%
+\pgfsetfillcolor{black!55.8!black}%
+\draw[fill] (1.3847,5.7059) -- (1.3659,5.6734) -- (1.3669,5.6101)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (1.3011,5.4961) node[] {\footnotesize $x$};%
+\end{scope}%
+\draw[->] (3.0488,6.75) .. controls (3.0488,7.1176) and (2.8552,7.4528) .. (2.5369,7.6366);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(2.9025,6.75)};%
+\draw[-] (3.0382,7.335) node[above right] {\footnotesize $\alpha$} (2.9025,6.75) node[below right] {\footnotesize $k$};%
+\draw[] (2.9025,6.75) .. controls (2.9025,7.237) and (2.512,7.6275) .. (2.025,7.6275) .. controls (1.538,7.6275) and (1.1475,7.237) .. (1.1475,6.75) .. controls (1.1475,6.263) and (1.538,5.8725) .. (2.025,5.8725) .. controls (2.512,5.8725) and (2.9025,6.263) .. (2.9025,6.75);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(1.5862,5.9901)};%
+\draw[-] (1.5862,5.9901) node[left=0.1cm] {\footnotesize $x=1$};%
+\draw[-] (2.25,4.5) node[above,fill=white] {\footnotesize perspective on yz plane};%
+\end{scope}%
+\begin{scope}%
+\begin{scope}%
+\pgfsetroundcap%
+\draw[] (7.1918,7.8266) -- (7.2274,7.8899);%
+\pgfsetstrokecolor{black!54.66!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!54.66!black}%
+\draw[fill] (7.2101,7.8591) -- (7.2274,7.8899) -- (7.1735,7.8591)--cycle;%
+\draw[fill] (7.2101,7.8591) -- (7.2284,7.8266) -- (7.2274,7.8899)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (7.2916,8.0039) node[] {\footnotesize $y$};%
+\pgfsetstrokecolor{black!93.19!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!93.19!black}%
+\draw[fill] (7.1735,7.8591) -- (7.1552,7.8266) -- (7.1735,7.7941) -- (7.2101,7.7941) -- (7.2284,7.8266) -- (7.2101,7.8591)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\draw[] (6.5854,4.725) -- (6.5854,6.75);%
+\draw[] (6.5854,6.75) -- (7.1918,7.8266);%
+\draw[] (4.6098,6.75) -- (8.4512,6.75);%
+\draw[] (5.9433,5.6101) -- (6.5854,6.75);%
+\draw[] (6.5854,6.75) -- (6.5854,8.6625);%
+\draw[] (6.5854,8.6625) -- (6.5854,8.775);%
+\pgfsetstrokecolor{black!62.35!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!62.35!black}%
+\draw[fill] (6.5854,8.775) -- (6.5488,8.6625) -- (6.5568,8.6442)--cycle;%
+\pgfsetstrokecolor{black!97.41!black}%
+\pgfsetfillcolor{black!97.41!black}%
+\draw[fill] (6.5934,8.6442) -- (6.5854,8.775) -- (6.5568,8.6442)--cycle;%
+\pgfsetstrokecolor{black!89.62!black}%
+\pgfsetfillcolor{black!89.62!black}%
+\draw[fill] (6.5934,8.6442) -- (6.622,8.6625) -- (6.5854,8.775)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (6.5854,8.9775) node[] {\footnotesize $z$};%
+\draw[] (8.4512,6.75) -- (8.561,6.75);%
+\pgfsetstrokecolor{black!78.53!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!78.53!black}%
+\draw[fill] (8.561,6.75) -- (8.4393,6.7289) -- (8.4453,6.707)--cycle;%
+\pgfsetstrokecolor{black!77.52!black}%
+\pgfsetfillcolor{black!77.52!black}%
+\draw[fill] (8.4453,6.7719) -- (8.561,6.75) -- (8.4572,6.793)--cycle;%
+\pgfsetstrokecolor{black!100!black}%
+\pgfsetfillcolor{black!100!black}%
+\draw[fill] (8.4453,6.7719) -- (8.4393,6.7289) -- (8.561,6.75)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (8.7585,6.75) node[] {\footnotesize $x$};%
+\end{scope}%
+\draw[->] (7.5841,6.75) .. controls (7.5841,7.1176) and (7.3953,7.4528) .. (7.0848,7.6366);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(7.4415,6.75)};%
+\draw[-] (7.5739,7.335) node[above right] {\footnotesize $\alpha$} (7.4415,6.75) node[below right] {\footnotesize $k$};%
+\draw[] (7.4415,6.75) .. controls (7.4415,7.237) and (7.0605,7.6275) .. (6.5854,7.6275) .. controls (6.1102,7.6275) and (5.7293,7.237) .. (5.7293,6.75) .. controls (5.7293,6.263) and (6.1102,5.8725) .. (6.5854,5.8725) .. controls (7.0605,5.8725) and (7.4415,6.263) .. (7.4415,6.75);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(7.0134,7.5099)};%
+\draw[-] (7.0134,7.5099) node[above left] {\footnotesize $y=1$};%
+\draw[-] (6.8049,4.5) node[above,fill=white] {\footnotesize perspective on xz plane};%
+\end{scope}%
+\begin{scope}%
+\begin{scope}%
+\pgfsetroundcap%
+\draw[] (2.6831,3.2285) -- (2.025,2.1429);%
+\draw[] (2.025,0.2143) -- (2.025,2.1429);%
+\draw[] (0,2.1429) -- (3.9375,2.1429);%
+\draw[] (2.025,2.1429) -- (2.025,3.9643);%
+\draw[] (2.025,2.1429) -- (1.4034,1.1175);%
+\draw[] (1.4034,1.1175) -- (1.3669,1.0572);%
+\pgfsetstrokecolor{black!86.01!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!86.01!black}%
+\draw[fill] (1.4409,1.1175) -- (1.4222,1.1485) -- (1.3669,1.0572)--cycle;%
+\draw[fill] (1.3669,1.0572) -- (1.4222,1.1485) -- (1.3847,1.1485)--cycle;%
+\pgfsetstrokecolor{black!55.8!black}%
+\pgfsetfillcolor{black!55.8!black}%
+\draw[fill] (1.3659,1.1175) -- (1.3669,1.0572) -- (1.3847,1.1485)--cycle;%
+\draw[fill] (1.4222,1.0866) -- (1.4409,1.1175) -- (1.3669,1.0572)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (1.3011,0.9487) node[] {\footnotesize $z$};%
+\draw[] (2.025,3.9643) -- (2.025,4.0714);%
+\pgfsetstrokecolor{black!62.35!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!62.35!black}%
+\draw[fill] (2.025,4.0714) -- (1.9875,3.9643) -- (1.9957,3.9469)--cycle;%
+\pgfsetstrokecolor{black!97.41!black}%
+\pgfsetfillcolor{black!97.41!black}%
+\draw[fill] (2.0332,3.9469) -- (2.025,4.0714) -- (1.9957,3.9469)--cycle;%
+\pgfsetstrokecolor{black!89.62!black}%
+\pgfsetfillcolor{black!89.62!black}%
+\draw[fill] (2.0332,3.9469) -- (2.0625,3.9643) -- (2.025,4.0714)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (2.025,4.2643) node[] {\footnotesize $y$};%
+\draw[] (3.9375,2.1429) -- (4.05,2.1429);%
+\pgfsetstrokecolor{black!33.61!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!33.61!black}%
+\draw[fill] (3.9481,2.1781) -- (3.9375,2.1786) -- (4.05,2.1429)--cycle;%
+\pgfsetstrokecolor{black!94.63!black}%
+\pgfsetfillcolor{black!94.63!black}%
+\draw[fill] (4.05,2.1429) -- (3.9375,2.1786) -- (3.9269,2.1433)--cycle;%
+\pgfsetstrokecolor{black!95.06!black}%
+\pgfsetfillcolor{black!95.06!black}%
+\draw[fill] (3.9269,2.1076) -- (4.05,2.1429) -- (3.9269,2.1433)--cycle;%
+\pgfsetstrokecolor{black!37.42!black}%
+\pgfsetfillcolor{black!37.42!black}%
+\draw[fill] (3.9269,2.1076) -- (3.9375,2.1071) -- (4.05,2.1429)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (4.2525,2.1429) node[] {\footnotesize $x$};%
+\end{scope}%
+\draw[->] (3.0488,2.1429) .. controls (3.0488,2.4929) and (2.8552,2.8122) .. (2.5369,2.9872);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(2.9025,2.1429)};%
+\draw[-] (3.0382,2.7) node[above right] {\footnotesize $\alpha$} (2.9025,2.1429) node[below right] {\footnotesize $k$};%
+\draw[] (2.9025,2.1429) .. controls (2.9025,2.6067) and (2.512,2.9786) .. (2.025,2.9786) .. controls (1.538,2.9786) and (1.1475,2.6067) .. (1.1475,2.1429) .. controls (1.1475,1.679) and (1.538,1.3071) .. (2.025,1.3071) .. controls (2.512,1.3071) and (2.9025,1.679) .. (2.9025,2.1429);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(1.5862,1.4191)};%
+\draw[-] (1.5862,1.4191) node[left] {\footnotesize $z=1$};%
+\draw[-] (2.25,0) node[above,fill=white] {\footnotesize perspective on xy plane};%
+\end{scope}%
+\begin{scope}%
+\begin{scope}%
+\pgfsetroundcap%
+\draw[] (6.525,0.5682) -- (6.525,2.1429);%
+\draw[] (5.0931,2.9302) -- (6.525,2.1429);%
+\draw[] (7.9569,2.9302) -- (5.1727,1.3993);%
+\draw[] (6.525,2.1429) -- (7.8773,1.3993);%
+\draw[] (6.525,2.1429) -- (6.525,3.63);%
+\draw[] (6.525,3.63) -- (6.525,3.7175);%
+\pgfsetstrokecolor{black!93.81!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!93.81!black}%
+\draw[fill] (6.4985,3.6155) -- (6.5347,3.6101) -- (6.525,3.7175)--cycle;%
+\pgfsetstrokecolor{black!85.53!black}%
+\pgfsetfillcolor{black!85.53!black}%
+\draw[fill] (6.525,3.7175) -- (6.5347,3.6101) -- (6.5612,3.6247)--cycle;%
+\pgfsetstrokecolor{black!21.03!black}%
+\pgfsetfillcolor{black!21.03!black}%
+\draw[fill] (6.5515,3.6446) -- (6.525,3.7175) -- (6.5612,3.6247)--cycle;%
+\pgfsetstrokecolor{black!67.33!black}%
+\pgfsetfillcolor{black!67.33!black}%
+\draw[fill] (6.4888,3.6354) -- (6.4985,3.6155) -- (6.525,3.7175)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (6.525,3.875) node[] {\footnotesize $z$};%
+\draw[] (7.8773,1.3993) -- (7.9569,1.3555);%
+\pgfsetstrokecolor{black!54.07!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!54.07!black}%
+\draw[fill] (7.8508,1.3847) -- (7.8641,1.3667) -- (7.9569,1.3555)--cycle;%
+\pgfsetstrokecolor{black!32.95!black}%
+\pgfsetfillcolor{black!32.95!black}%
+\draw[fill] (7.9569,1.3555) -- (7.9039,1.4138) -- (7.8906,1.4318)--cycle;%
+\pgfsetstrokecolor{black!92.28!black}%
+\pgfsetfillcolor{black!92.28!black}%
+\draw[fill] (7.8641,1.4172) -- (7.9569,1.3555) -- (7.8906,1.4318)--cycle;%
+\pgfsetstrokecolor{black!95.63!black}%
+\pgfsetfillcolor{black!95.63!black}%
+\draw[fill] (7.8641,1.4172) -- (7.8508,1.3847) -- (7.9569,1.3555)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (8.1001,1.2768) node[] {\footnotesize $y$};%
+\draw[] (5.1727,1.3993) -- (5.0931,1.3555);%
+\pgfsetstrokecolor{black!54.07!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{black!54.07!black}%
+\draw[fill] (5.1859,1.3667) -- (5.1992,1.3847) -- (5.0931,1.3555)--cycle;%
+\pgfsetstrokecolor{black!95.63!black}%
+\pgfsetfillcolor{black!95.63!black}%
+\draw[fill] (5.0931,1.3555) -- (5.1992,1.3847) -- (5.1859,1.4172)--cycle;%
+\pgfsetstrokecolor{black!92.28!black}%
+\pgfsetfillcolor{black!92.28!black}%
+\draw[fill] (5.1594,1.4318) -- (5.0931,1.3555) -- (5.1859,1.4172)--cycle;%
+\pgfsetstrokecolor{black!32.95!black}%
+\pgfsetfillcolor{black!32.95!black}%
+\draw[fill] (5.1594,1.4318) -- (5.1461,1.4138) -- (5.0931,1.3555)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetfillcolor{black}%
+\draw[-,color=black] (4.9499,1.2768) node[] {\footnotesize $x$};%
+\end{scope}%
+\draw[] (7.6273,2.1429) .. controls (7.6273,2.7255) and (7.1368,3.1926) .. (6.525,3.1926) .. controls (5.9132,3.1926) and (5.4227,2.7255) .. (5.4227,2.1429) .. controls (5.4227,1.5602) and (5.9132,1.0931) .. (6.525,1.0931) .. controls (7.1368,1.0931) and (7.6273,1.5602) .. (7.6273,2.1429);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(5.5704,1.618)} plot coordinates {(7.4796,1.618)} plot coordinates {(6.525,3.1926)};%
+\draw[-] (6.525,3.1926) node[above left] {\footnotesize $z=1$} (5.5704,1.618) node[above left] {\footnotesize $x=1$} (7.4796,1.618) node[above right] {\footnotesize $y=1$};%
+\draw[-] (6.75,0) node[above,fill=white] {\footnotesize isometric perspective};%
+\end{scope}%
+\end{scope}%
+\end{tikzpicture}%

@@ -11,14 +11,15 @@ french,%
 \usepackage{amsmath,amssymb,marvosym,stmaryrd,calrsfs,minted,setspace,array,caption,fvextra}%
 \usepackage[math-style=french]{unicode-math}
 \usepackage[math-style=french]{fourier-otf}%
-\usepackage[svgnames]{xcolor}\usepackage[margin=1.5cm,top=1cm,bottom=1.5cm,headheight=5mm,headsep=2mm]{geometry}
+\usepackage[svgnames]{xcolor}
+\usepackage[margin=1.5cm,top=1cm,bottom=1.5cm,headheight=5mm,headsep=2mm]{geometry}
 \usepackage[unicode,pdfstartview = FitH, colorlinks, linkcolor=blue]{hyperref}
 \usepackage{babel,microtype,multicol}%
 %\usepackage{minitoc}
 \usepackage[Lenny]{fncychap}
 
 \usepackage[noexec,3d,cachedir=tkz]{luadraw}
-\def\version{2.2}
+\def\version{2.3}
 
 \hypersetup{
   pdfauthor={P. Fradin},
@@ -34,17 +35,9 @@ french,%
 
 \begin{minipage}{16cm}
 \small
-\selectlanguage{english}
-
-\hfil\textbf{Abstract}\hfil
-
-The \emph{luadraw} package defines the environment of the same name, which lets you create mathematical graphs using the Lua language. These graphs are ultimately drawn by tikz (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language with good computational capabilities.
-
-\vspace{1cm}
 
 \hfil\textbf{Résumé}\hfil
 
-\selectlanguage{french}
 Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet de créer des graphiques mathématiques en utilisant le langage Lua. Ces graphiques sont dessinés au final par tikz (et automatiquement sauvegardés), alors pourquoi les faire en Lua ? Parce que celui-ci apporte toute la puissance d'un langage de programmation simple, efficace, capable de faire des calculs, tout en utilisant les possibilités graphiques de tikz.
 \end{minipage}
 }

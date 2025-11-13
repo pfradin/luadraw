@@ -1,6 +1,6 @@
 -- luadraw__matrix3d.lua (chargé par luadraw__graph3d)
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -64,8 +64,9 @@ function mLtransform3d(L,M) -- applique la partie linéaire de la matrice M à L
             table.insert(res, applyLmatrix3d(A,M) )
         end
     else  -- L est une liste de listes
-        local aux = {}
+        local aux
         for _,cp in ipairs(L) do
+            aux = {}
             for _,A in ipairs(cp) do
                 table.insert(aux, applyLmatrix3d(A,M) )
             end

@@ -34,7 +34,7 @@ Les graphiques sont créés dans un environnement \emph{luadraw}, celui-ci appel
 \begin{TeXcode}
 \begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
 -- création d'un nouveau graphique en lui donnant un nom local
-local g = graph:new{ window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom},
+local g = graph:new{ window={x1,x2,y1,y2,xscale,yscale}, margin={top,right,bottom,left},
                      size={largeur,hauteur,ratio}, bg="color", border=true/false }
 -- construction du graphique g
     instructions graphiques en langage Lua ...
@@ -69,6 +69,7 @@ Elle est automatiquement chargée par le module \emph{luadraw\_graph2d} et donc 
   \begin{itemize}
   \item le module : \textbf{cpx.abs(z)},
   \item le module au carré: \textbf{cpx.abs2(z)},
+  \item la normalisation : \textbf{cpx.normalize(z)} (renvoie \emph{nil} si $z$ est nul),
   \item la norme 1 : \textbf{cpx.N1(z)},
   \item l'argument principal : \textbf{cpx.arg(z)},
   \item le conjugué : \textbf{cpx.bar(z)},
@@ -93,6 +94,10 @@ local A = 2+3*i
 \end{Luacode}
 
 Le symbole de multiplication est obligatoire.
+
+\subsection{Afficher une variable dans le terminal}
+
+L'instruction \textbf{whatis(variable, msg)} affiche dans le terminal lors de la compilation, le type de la \emph{variable} ainsi que son contenu. Les types reconnus sont, les types prédéfinis plus : \emph{complex number}, \emph{list of (complex) numbers}, \emph{list of lists of (complex) numbers}.  L'argument \emph{msg} est une chaîne optionnelle (vide par défaut) qui est affichée avec le type pour repérer la variable dans le terminal.
 
 \subsection{Création d'un graphe}
 
@@ -166,4 +171,3 @@ Dans une présentation beamer, cela peut aussi être utilisé pour insérer des 
 \begin{Luacode}
 g:Writeln("\\pause")
 \end{Luacode}  
-

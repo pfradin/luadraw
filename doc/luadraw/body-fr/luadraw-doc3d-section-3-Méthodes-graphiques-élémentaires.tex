@@ -6,6 +6,8 @@ Les méthodes graphiques 3d vont calculer automatiquement la projection sur le p
 
 La méthode qui applique la matrice 3d et fait la projection sur l'écran (plan passant par l'origine et normal au vecteur unitaire dirigé vers l'observateur et défini par les angles de vue), est : \textbf{g:Proj3d(L)} où $L$ est soit un point 3d, soit une liste de points 3d, soit une liste de listes de points 3d. Cette fonction renvoie des complexes (affixes des projetés sur l'écran).
 
+\textbf{Attention} : lorsque la matrice 3d du graphe n'est pas une transformation linéaire, le projeté sur l'écran d'un vecteur $u$ de l'espace n'est pas \textbf{g:Proj3d(u)}, mais \textbf{g:Proj3d(A+u)-\textbf{g:Proj3d(A)}} où $A$ désigne un point quelconque de l'espace. Pour éviter ces calculs, la méthode \textbf{g:Proj3dV()} a été  introduite, elle fait la projection des \textbf{vecteurs} sur l'écran, et renvoie des complexes (affixes des projetés sur l'écran).
+
 \subsection{Dessin aux traits}
 
 \subsubsection{Ligne polygonale : Dpolyline3d}
@@ -368,14 +370,11 @@ local dessin = function(args)
 end
 -- en haut à gauche, options par défaut
 g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-5,5,-5,5,true); dessin(); g:Restoreattr()
--- en haut à droite
-g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-5,5,-5,5,true)
+g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-5,5,-5,5,true) -- en haut à droite
 dessin({mode=mGrid, hiddenstyle="solid", hiddencolor="LightGray"}); g:Restoreattr()
--- en bas à gauche
-g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-5,5,-5,5,true)
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-5,5,-5,5,true) -- en bas à gauche
 dessin({mode=Border, color="orange"}); g:Restoreattr()
--- en bas à droite
-g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-5,5,-5,5,true)
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-5,5,-5,5,true) -- en bas à droite
 dessin({mode=mGrid,opacity=0.8,hiddenstyle="noline",color="LightBlue"}); g:Restoreattr()
 g:Show()            
 \end{luadraw}

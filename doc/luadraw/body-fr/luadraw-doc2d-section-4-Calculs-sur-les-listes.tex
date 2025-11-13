@@ -129,6 +129,10 @@ La fonction \textbf{map(f,list)} applique la fonction \emph{f} à chaque éléme
 \subsection{merge}
 La fonction \textbf{merge(L)} recolle si c'est possible, les composantes connexes de \emph{L} qui doit être une liste de listes de complexes, la fonction renvoie le résultat.
 
+\subsection{polyline2path}
+
+La fonction \textbf{polyline2path(L)} où \emph{L} est une liste de nombres complexes ou une liste de listes de nombres complexes, renvoie \emph{L} sous la forme d'un chemin (que l'on peut dessiner avec la méthode \emph{g:Dpath()}).
+
 \subsection{range}
 La fonction \textbf{range(a,b,step)} renvoie la liste des nombres de \emph{a} jusqu'à \emph{b} avec un pas égal à \emph{step}, celui-ci vaut 1 par défaut.
 
@@ -254,5 +258,3 @@ g:Show()
 \end{demo}
 
 On voit que les deux courbes se superposent bien, cependant la première méthode (courbe implicite) est beaucoup plus gourmande en calculs, la méthode 2 est donc préférable.
-
-

@@ -4,7 +4,9 @@ All 2D graphics methods apply. Added to this is the ability to draw polygonal li
 
 3D graphics methods will automatically calculate the projection onto the screen plane. After applying the 3D transformation matrix associated with the graphic (which is the default identity) to the objects, the 2D graphics methods will then take over.
 
-The method that applies the 3D matrix and performs the projection onto the screen (plane passing through the origin and normal to the unit vector directed towards the observer and defined by the viewing angles) is: \textbf{g:Proj3d(L)} where $L$ is either a 3D point, a list of 3D points, or a list of lists of 3D points. This function returns complexes (affixes of the lines projected onto the screen).
+The method that applies the 3D matrix and performs the projection onto the screen (plane passing through the origin and normal to the unit vector directed towards the observer and defined by the viewing angles) is: \textbf{g:Proj3d(L)} where $L$ is either a 3D point, a list of 3D points, or a list of lists of 3D points. This function returns complex numbers (affixes of the projected points onto the screen).
+
+\textbf{Warning}: when the 3d matrix of the graph is not a linear transformation, the projection onto the screen of a vector $u$ in space is not \textbf{g:Proj3d(u)}, but \textbf{g:Proj3d(A+u)-\textbf{g:Proj3d(A)}} where $A$ denotes any point in space. To avoid these calculations, the method \textbf{g:Proj3dV()} has been introduced, it projects the \textbf{vectors} onto the screen, and returns complex numbers (affixes of the projected vectors onto the screen).
 
 \subsection{Line Drawing}
 

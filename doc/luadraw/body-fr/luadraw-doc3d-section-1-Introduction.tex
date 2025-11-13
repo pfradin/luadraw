@@ -23,8 +23,8 @@
         \end{itemize}
     \item Les graphiques sont créés dans un environnement \emph{luadraw}, celui-ci appelle \emph{luacode}, c'est donc du \textbf{langage Lua} qu'il faut utiliser dans cet environnement.
 
-    \item Sauvegarde du fichier \emph{.tkz} : le graphique est exporté au format tikz dans un fichier (avec l'extension \emph{tkz}), par défaut celui-ci est sauvegardé dans le dossier courant. Mais il est possible d'imposer un chemin spécifique en définissant dans le document, la commande \verb|\luadrawTkzDir|, par exemple : \verb|\def\luadrawTkzDir{tikz/}|, ce qui permettra d'enregistrer les fichiers \emph{*.tkz} dans le sous-dossier \emph{tikz} du dossier courant, à condition toutefois que ce sous-dossier existe !
-
+    \item Sauvegarde du fichier \emph{.tkz} : le graphique est exporté au format tikz dans un fichier (avec l'extension \emph{tkz}), par défaut celui-ci est sauvegardé dans le dossier \emph{\_luadraw} qui est un sous-dossier du dossier courant (contenant le document maître), mais il est possible d'imposer un chemin vers un autre sous-dossier avec l'option globale \emph{cachedir=}.
+    
     \item Les options de l'environnement sont :
     \begin{itemize}
     \item \emph{name = \ldots{}} : permet de donner un nom au fichier tikz produit, on donne un nom sans extension (celle-ci sera automatiquement ajoutée, c'est \emph{.tkz}). Si cette option est omise, alors il y a un nom par défaut, qui est le nom du fichier maître suivi d'un numéro.
@@ -39,7 +39,7 @@
 \begin{TeXcode}
 \begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
 -- création d'un nouveau graphique en lui donnant un nom local
-local g = graph3d:new{ window3d={x1,x2,y1,y2,z1,z2}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,bottom}, size={largeur,hauteur,ratio}, bg="color", border=true/false }
+local g = graph3d:new{ window3d={x1,x2,y1,y2,z1,z2}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2,xscale,yscale}, margin={top,right,bottom,left}, size={largeur,hauteur,ratio}, bg="color", border=true/false }
 -- construction du graphique g
     instructions graphiques en langage Lua ...
 -- affichage du graphique g et sauvegarde dans le fichier <filename>.tkz
@@ -61,12 +61,11 @@ La classe \emph{graph3d} est définie dans le paquet \emph{luadraw} grâce à l'
  \item Le paramètre (facultatif) \emph{window3d} définit le pavé de $\mathbf R^3$ correspondant au graphique : c'est $[x_1,x_2]\times[y_1,y_2]\times[z_1,z_2]$. Par défaut c'est $[-5,5]\times[-5,5]\times[-5,5]$.
  \item Le paramètre (facultatif) \emph{adjust2d} indique si la fenêtre 2d qui va contenir la projection orthographique du dessin 3d, doit être déterminée automatiquement (false par défaut). Cette fenêtre 2d correspond à l'argument \emph{window}.
  
- \item Le paramètre (facultatif) \emph{viewdir} est une table qui définit les deux angles de vue (en degrés) pour la projection orthographique. Par défaut c'est la table \{30,60\}.
+ \item Le paramètre (facultatif) \emph{viewdir} est une table qui définit les deux angles de vue (en degrés) utilisés pour la projection orthographique, qui est la projection par défaut (\emph{viewdir=\{30,60\}} par défaut). La figure suivante montre à quoi correspondent ces deux angles.
  
 \begin{center}
-\captionof{figure}{Angles de vue}\label{viewdir}
 \begin{luadraw}{name=viewdir}
-local g = graph3d:new{ size={8,8} }
+local g = graph3d:new{ size={8,8}, margin={0,0,0,0} }
 local i = cpx.I
 local O, A = Origin, M(4,4,4)
 local B, C, D, E = pxy(A), px(A), py(A), pz(A)
@@ -88,14 +87,99 @@ g:Dlabel3d(
 g:Dlabel("viewdir=\\{$\\theta,\\varphi$\\} (en degrés)",-5*i,{pos="N"})
 g:Show()            
 \end{luadraw}
+\captionof{figure}{Angles de vue}\label{viewdir}
 \end{center}
 
 \item Les autres paramètres sont ceux de la classe \emph{graph}, ils ont été décrits dans le chapitre 1.
 \end{itemize}
 
+
+
 \paragraph{Construction du graphique.}
 
 \begin{itemize}
-    \item L'objet instancié (\emph{g} ici dans l'exemple) possède toutes les méthodes de la classe \emph{graph}, plus des méthodes spécifiques à la 3d.
+    \item L'objet instancié possède toutes les méthodes de la classe \emph{graph}, plus des méthodes spécifiques à la 3d.
     \item La classe \emph{graph3d} amène aussi un certain nombre de fonctions mathématiques propres à la 3d.
 \end{itemize}
+
+
+\subsection{Modes de projection}
+
+Par défaut \emph{luadraw} utilise la projection orthographique (projection orthogonale l'écran), celle-ci est définie par deux angles qui dont donnés à l'option \emph{viewdir} lors de la création, ou bien à la méthode \emph{g:Setviewdir()}.
+
+Il y a trois autres modes de projection possible, mais qui ne sont pas des projections orthogonales:
+\begin{itemize}
+    \item trois perspectives cavalières : sur le plan $yz$, ou sur le plan $xz$, ou sur le plan $xy$. Celles-ci sont définies à l'aide de deux paramètres : un nombre positif $k$ et un angle en degré \emph{alpha}, qui sont mis en évidence dans la figure suivante.
+    \item une perspective isométrique.
+\end{itemize}
+
+\begin{center}
+\begin{luadraw}{name=perpectives}
+local k = 0.65
+local alpha = 60
+local r = 3
+local g = graph3d:new{
+    window3d = {-4.5,4.5,-4.5,4.5,-4.5,4.5},
+    window ={-5,5,-5,5},
+    viewdir = perspective("yz",k,alpha),
+    size={10,10},
+    --bbox = false
+}
+g:Labelsize("footnotesize")
+local draw = function()
+    g:Dscene3d( g:addAxes(Origin, {arrows=1}) )
+    g:Darc(1,0,Zp(1,alpha*deg),(r+0.5)*k,1,"->"); g:Ddots(r*k)
+    g:Dlabel("$\\alpha$",Zp((r+1)*k,30*deg),{pos="NE"}, "$k$", r*k,{pos="SE"})
+    g:Dcircle(0,r*k)
+end
+g:Dline(0,1); g:Dline(0,cpx.I)
+-- top left
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-4.5,5.5,-5,5)
+draw()
+g:Ddots3d(r*vecI); g:Dlabel3d("$x=1$",r*vecI,{pos="W",dist=0.1}); 
+g:Dlabel("perspective on yz plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+
+-- top right
+g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-4.75,5.5,-5,5)
+g:Setviewdir(perspective("xz",k,alpha))
+draw()
+g:Ddots3d(r*vecJ); g:Dlabel3d("$y=1$",r*vecJ,{pos="NW"}); 
+g:Dlabel("perspective on xz plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+
+-- bottom left
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-4.5,5.5,-5,5.5)
+g:Setviewdir(perspective("xy",k,alpha))
+draw()
+g:Ddots3d(r*vecK); g:Dlabel3d("$z=1$",r*vecK,{pos="W"}); 
+g:Dlabel("perspective on xy plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+
+-- bottom right
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-4.5,5.5,-5,5.5)
+g:Setviewdir(perspective("iso"))
+g:Dscene3d( g:addAxes(Origin, {arrows=1}) ); g:Dcircle(0, cpx.abs(g:Proj3d(r*vecI)))
+g:Ddots3d({r*vecI,r*vecJ,r*vecK}); 
+g:Dlabel3d("$z=1$",r*vecK,{pos="NW"}, "$x=1$",r*vecI,{pos="NW"},"$y=1$",r*vecJ,{pos="NE"});
+g:Dlabel("isometric perspective",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\captionof{figure}{Modes de projection}
+\end{center}
+
+Ces modes de projection sont accessibles par la fonction \textbf{perspective(mode,k,alpha)}, où l'argument \emph{mode} peut valoir "yz", ou "xz" ou "xy" (pour les trois perspectives cavalières) ou "iso" pour la perspective isométrique, si \emph{mode} a une valeur non reconnue alors c'est la projection orthographique qui est sélectionnée. Pour les trois premiers modes, on donne également les valeurs des paramètres $k$ (0.5 par défaut) et \emph{alpha} (45 par défaut), ces valeurs sont inutiles pour le quatrième mode.
+
+Cette fonction s'utilise soit avec l'option \emph{viewdir} à la création de l'objet graphique, par exemple :
+
+\begin{Luacode}
+local g = graph3d:new{ viewdir = perspective("yz",0.65,60) }
+\end{Luacode}
+
+
+ou bien pendant la création du graphique avec la méthode \emph{g:Setviewdir()} :
+
+\begin{Luacode}
+g:Setviewdir(perspective("yz",0.65,60))
+\end{Luacode}

@@ -449,4 +449,130 @@ g:Show()
 
 \subsection{The \emph{luadraw\_palettes} Module}
 
-The \emph{luadraw\_palettes} Module\footnote{This module is a contribution of \href{https://github.com/projetmbc/for-writing/tree/main/palcol}{Christphe BAL}.} defines $88$ color palettes, each with a name. A palette is a list (table) of colors, which are themselves lists of three numerical values ​​between $0$ and $1$ (red, green, and blue components). The names of these palettes, as well as their rendering, can be viewed in this \href{luadraw_palettes_doc.pdf}{document}.
+The \emph{luadraw\_palettes} Module\footnote{This module is a contribution of \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christphe BAL}.} defines $128$ color palettes, each with a name. A palette is a list (table) of colors, which are themselves lists of three numerical values ​​between $0$ and $1$ (red, green, and blue components). The list of these palettes, as well as their rendering, can be viewed in this \href{luadraw_palettes_more.pdf}{document}. More informations in this  \href{luadraw_palettes_manual.pdf}{document} of Christophe BAL.
+
+
+\subsection{The \emph{luadraw\_compile\_tex} module}
+
+\textbf{Warning}: This module requires that the programs \emph{pdf2ps} and \emph{pstoedit} be installed on your system.
+
+This module allows you to:
+
+\begin{enumerate}
+\item compile a text fragment in TeX,
+\item convert the resulting file into an \emph{eps} file containing "flattened PostScript",
+\item read the content of the \emph{eps} file and return its content as a list of paths, with the line thickness at the beginning of each path, and the fill instruction at the end.
+\item The list thus obtained can be:
+    \begin{enumerate}
+    \item drawn on the screen,
+    \item converted into 3D paths in a given plane and drawn,
+    \item converted into 3D polygonal lines in a given plane (the thickness and fill command are then lost) and drawn.
+    \end{enumerate}
+\end{enumerate}
+
+\subsubsection{Part One: Compilation and Reading}
+
+\paragraph{Warning}: This step requires compiling the document with the \emph{-shell-escape} or \emph{-enable-write18} option.
+Without this option, the fragment will not be compiled, which is not a problem if the \emph{<filename>.eps} file already exists and you did not intend to modify it.
+
+The first step is handled by the \textbf{compile\_tex(text,filename)} function. The \emph{text} argument is a string; this is the fragment to be compiled. The optional \emph{filename} argument is also a string; this is the name of the file that will be created. This name must not contain \textbf{a path or an extension}. By default, this name is \emph{"tex2FlatPs"}. It is created in the current directory (but will then be deleted). The process unfolds in several steps:
+
+\begin{enumerate}
+    \item Creation of the TeX file. This uses two global variables:\par
+    \verb|preamble = "\\documentclass[12pt]{article}\n"|\par
+    \verb|usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fouriernc}\n"|\par
+    Compilation is performed with LualaTeX.
+    \item The resulting file is converted to PostScript using the \emph{pdf2ps} utility.
+    \item The resulting PS file is then converted using the \emph{pstoedit} utility into an EPS file in flattened PostScript (all content is in the form of paths).
+    \item The resulting file \emph{<filename>.eps} is copied to the working directory of \emph{luadraw} (the name of this directory is in the global variable \emph{cachedir}), and all compilation remnants are erased.
+    \item The contents of the file thus created are automatically read by the function \emph{read\_compiled\_tex(filename)}, which returns a list of paths. Each path is a list starting with the line thickness, followed by dots and instructions like a regular path, and ending with the fill command (\emph{"fill"}, \emph{"eofill"}, or \emph{"stroke"}).
+\end{enumerate}
+
+\subsubsection{Part Two: Using the Result}
+
+\paragraph{In 2D} The result can be drawn using the method \textbf{g:Dcompiled\_tex(anchor, L, options)} where \emph{L} is the result returned by the function \emph{compile\_tex()}. The \emph{anchor} argument is a complex number; it represents the center of the bounding box of the drawing contained in \emph{L}. The \emph{options} argument is a table whose fields are:
+\begin{itemize}
+    \item \opt{scale =} (1), allows you to adjust the size of the drawing, this option can be a number or a table of two numbers: \emph{\{scaleX, scaleY\}},
+    \item \opt{color =} (current default color),
+    \item \opt{dir =} (nil), a table consisting of two vectors \emph{\{v1, v2\}} indicating the writing direction (nil means the usual direction, which corresponds to the table \emph{\{1, cpx.I\}}),
+    \item \opt{hollow =} (false), enables or disables the filling of shapes. With the value \emph{true}, only the outlines are drawn. 
+    \item \opt{drawbox =} (false): allows you to draw or not draw the bounding box,
+    \item \opt{draw\_options =} (""): string containing the options that will be be passed directly to the \emph{\backslash draw} command.
+\end{itemize}
+
+
+The result can also be transformed into a polygonal line using the function \textbf{compiled\_tex2polyline(L,scale)} where \emph{L} is the result returned by the \emph{compile\_tex()} function. The optional argument \emph{scale} allows you to adjust the size; it can be a number or a table of two numbers: \emph{\{scaleX, scaleY\}}.
+
+\begin{demo}{Example with \emph{compile\_tex} in 2d}
+\begin{luadraw}{name=compile_tex2d}
+local g = graph:new{bbox=false}
+require 'luadraw_compile_tex'
+local i = cpx.I
+local text = "\\[\\int_0^{+\\infty} e^{-\\frac{x^2}2}dx = \\frac{\\sqrt{2\\pi}}2\\]" -- text to compile
+local L = compile_tex(text,"gauss_integral") -- compile with -shell-escape the first time to create the file
+g:Shift(2*i) -- a first drawing
+g:Dcompiled_tex(0,L,{scale=2,hollow=true, drawbox=true, draw_options="fill=pink", dir={1-i/4,i}}) -- we draw L
+
+g:Shift(-4*i) -- a second drawing
+L = compiled_tex2polyline(L,{3,3}) -- L is converted to a polygonal line
+local f = function(z) return Z(z.re,z.im+math.sin(z.re*1.5)) end  -- this function produces sinusoidal waves
+L = ftransform(L,f) -- we apply f to L
+g:Dpath( polyline2path(L), 'draw=none,fill=blue') -- we draw L as a path
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\paragraph{In 3D} The result can be converted to 3D using the method \textbf{g:Compiled\_tex2path3d(L,options)} where \emph{L} is the result returned by the function \emph{compile\_tex()}. The \emph{options} argument is a table whose fields are:
+\begin{itemize}
+    \item \opt{scale =} (1), allows you to adjust the size of the drawing, this option can be a number or a table of two numbers: \emph{\{scaleX, scaleY\}},
+    \item \opt{anchor =} (Origin), 3D point which represents the center of the bounding box of the drawing,
+    \item \opt{color =} (current default color),
+    \item \opt{dir =} (\{vecJ,vecK\}), basis of the plane in which the result will be located (this plane will also contain the \emph{anchor} point), these two vectors indicate the direction of writing,
+    \item \opt{polyline =} (false), with the value \emph{true} the returned result will be a list of lists of 3D points and can therefore be drawn with the method \emph{g:Dpolyline3d()}, however, the information: line thickness and fill command, are lost. With the value \emph{false} the result is a list of paths, each path is a list starting with the line thickness, followed by 3D points and instructions like an ordinary 3D path, and ending with the fill command (\emph{"fill"}, or \emph{"eofill"} or \emph{"stroke"}).
+\end{itemize}
+
+With the option \opt{polyline=false} (default value), the output can be drawn using the method \textbf{g:Dcompiled\_tex3d(L, options)} where \emph{L} is the result of the method \emph{g:Compiled\_tex2path3d()}. The argument \emph{options} is an array whose fields are:
+
+\begin{itemize}
+    \item \opt{color =} (default current color),
+    \item \opt{hollow =} (false), enables or disables shape fills. With the value \emph{true}, only outlines are drawn,
+    \item \opt{drawbox =} (false): allows you to draw or not draw the bounding box,
+    \item \opt{draw\_options =} (""): string containing the options that will be passed directly to the \emph{\backslash draw} command. 
+\end{itemize}
+
+\begin{demo}{Write on a cylinder}
+\begin{luadraw}{name=compile_tex3d}
+local g = graph3d:new{ window={-3,3,-4,4}, margin={0,0,0,0}, size={10,10}, viewdir={-50,60}}
+require 'luadraw_compile_tex'
+
+function curve_on_cylinder(curve,cylinder,screenNormal) 
+-- curve is a 3d polyline on a cylinder,
+-- cylinder = {A,r,B}
+-- this function separate the visible part from the hidden part of the curve
+    local A,r,B = table.unpack(cylinder)
+    local U = B-A
+    local visible_function = function(N)
+        local I = dproj3d(N,{A,U})
+        return (pt3d.dot(N-I,screenNormal) >= 0)
+    end
+    return split_points_by_visibility(curve,visible_function)
+end
+
+local A, r, B = -3*vecK, 2, 2.5*vecK -- the cylinder
+local text = "Euler theorem: \\par \\(e^{i\\pi}=-1\\)"
+local L = compile_tex(text, "essai") -- compile with shell-escape the first time to create "essai.eps" file 
+local C = g:Compiled_tex2path3d(L,{scale=3, anchor=M(r,0,0), dir={vecJ,vecK}, polyline=true})
+-- C is the text converted into 3d polylines, in the plane passing through anchor and basic direction dir, with a scale of 3.
+
+local f = function(A) return Mc(r,A.y/r,A.z) end -- returns the image of a point A on the cylinder by winding
+C = ftransform3d(C,f) -- plane curve -> cylindrical curve transformation
+local Cv, Ch = curve_on_cylinder(C, {A,r,B}, g.Normal) -- visible part and hidden part of C, this may take some time
+Ch = polyline2path(Ch) -- hidden part, conversion to path
+g:Dpath3d(Ch, "draw=none,fill=red!30") -- hidden part first
+g:Dcylinder(A,r,B,{color="blue",opacity=0.5}) -- cylinder
+Cv = polyline2path(Cv) -- visible part, conversion to path
+g:Dpath3d(Cv, "draw=none,fill=red")
+g:Show()
+\end{luadraw}
+\end{demo}

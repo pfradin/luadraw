@@ -56,5 +56,9 @@ Dans le fichier définissant la classe \emph{pt3d}, quelques fonctions mathémat
 \begin{itemize}
     \item \textbf{isobar3d(L)} : renvoie l'isobarycentre des points 3d de la liste (table) $L$ (les éléments de $L$ qui ne sont pas des points 3d sont ignorés).
     \item \textbf{insert3d(L,A,epsilon)} : cette fonction insère le point 3d $A$ dans la liste $L$ qui doit être une \textbf{variable} (et qui sera donc modifiée). Le point $A$ est inséré \textbf{sans doublon} et la fonction renvoie sa position (indice) dans la liste $L$ après insertion. L'argument (facultatif) \emph{epsilon} vaut $0$ par défaut, il indique à combien près se font les comparaisons.
+    \item \textbf{polyline2path3d(L)} : cette fonction renvoie \emph{L} qui est une liste de points 3d ou une liste de listes de points 3d, sous la forme d'un chemin (que l'on peut dessiner avec la méthode \emph{g:Dpath3d()}).
 \end{itemize}
 
+\subsection{Afficher une variable dans le terminal}
+
+L'instruction \textbf{whatis(variable,msg)} affiche dans le terminal lors de la compilation, le type de la \emph{variable} ainsi que son contenu. Les types reconnus sont, les types prédéfinis plus : \emph{complex number}, \emph{list of (complex) numbers}, \emph{list of lists of (complex) numbers}, \emph{3D point}, \emph{list of 3D points}, \emph{list of lists of 3D points}. L'argument \emph{msg} est une chaîne optionnelle (vide par défaut) qui est affichée avec le type pour repérer la variable dans le terminal.

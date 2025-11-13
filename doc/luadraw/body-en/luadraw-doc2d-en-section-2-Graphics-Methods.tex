@@ -811,7 +811,9 @@ The fields are identical to those of the \emph{Dlabel} method, plus the \emph{ma
 \subsection{Paths: Dpath, Dspline, and Dtcurve}
 
 \begin{itemize}
-    \item The \textbf{path( path )} function returns a polygonal line containing the points constituting the \emph{path}. This is a table of complex and string instructions, for example:
+    \item The \textbf{path( path )} function returns a polygonal line containing the points constituting the \emph{path}. The optional argument, \emph{nbdots}, is the minimum number of points calculated for each Bézier curve; its default value is the global variable \emph{bezier\_nbdots}, which is initialized to 8.
+    
+    The \emph{path} is a table of complex numbers and string instructions, for example:
 
 \begin{TeXcode}
 { Z(-3,2),-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" }

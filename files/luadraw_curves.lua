@@ -1,12 +1,13 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   http://www.latex-project.org/lppl.txt.
 
+bezier_nbdots = 8 -- Minimum number of points calculated when converting a Bézier curve into a polygonal line.
 function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
 -- le paramétrage p est une fonction : t (réel) -> p(t) (cpx)
     local saut = (discont or false)
@@ -592,7 +593,7 @@ function bezier(a,c1,c2,b,nbdots)
     local p = function(t)
             return a+t*(w+t*(v+t*u))
         end
-    return parametric(p,0,1,nbdots or 8,false,2)
+    return parametric(p,0,1,nbdots or bezier_nbdots,false,2)
 end
 
 function spline(liste,v1,v2)

@@ -357,8 +357,9 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
-\subsubsection{line2tube()}
-La fonction \textbf{line2tube(L,r,args)} construit (sous forme d'une liste de facettes) un tube centré sur $L$ qui doit être une ligne polygonale 3d, l'argument $r$ représente le rayon de ce tube. L'argument \emph{args} est une table pour définir les options, qui sont :
+\subsubsection{line2tube(); section2tube()}
+
+La fonction \textbf{line2tube(L,r,args)} construit (sous forme d'une liste de facettes) un tube centré sur \emph{L} qui doit être une ligne polygonale 3d (liste de points 3d ou liste de listes de points 3d), l'argument \emph{r} représente le rayon de ce tube. L'argument \emph{args} est une table pour définir les options, qui sont :
     \begin{itemize}
         \item \opt{nbfacet} : nombre indiquant le nombre de facettes latérales du tube (3 par défaut).
         \item \opt{close} : booléen indiquant si la ligne polygonale $L$ doit être refermée (false par défaut).
@@ -366,15 +367,25 @@ La fonction \textbf{line2tube(L,r,args)} construit (sous forme d'une liste de fa
         \item \opt{addwall} : nombre qui vaut 0 ou 1 (0 par défaut). Lorsque cette option vaut 1, la fonction renvoie, après la liste des facettes composant le tube, une liste de facettes séparatrices (murs) entre chaque "tronçon" du tube, ce qui peut être utile avec la méthode \textbf{g:Dscene3d} (uniquement).
     \end{itemize}
     
-\begin{demo}{Exemple avec line2tube}
-\begin{luadraw}{name=line2tube}
-local cos, sin, pi, i = math.cos, math.sin, math.pi, cpx.I
-local g = graph3d:new{window={-5,8,-4.5,4.5}, viewdir={45,60}, margin={0,0,0,0}, size={10,10}}
+La fonction \textbf{section2tube(section,L,args)} construit également un tube centré sur \emph{L} qui doit être une liste de points 3d, l'argument \emph{section} doit être une facette centrée sur le premier point de \emph{L}, elle représente une section du tube qui va être construit. L'argument \emph{args} est une table pour définir les options, qui sont :
+    \begin{itemize}
+        \item \opt{close} : booléen indiquant si la ligne polygonale $L$ doit être refermée (false par défaut).
+        \item \opt{hollow} : booléen indiquant si les deux extrémités du tube doivent être ouvertes ou non (false par défaut). Lorsque l'option \opt{close} vaut true, l'option \opt{hollow} prend automatiquement la valeur true.
+        \item \opt{addwall} : nombre qui vaut 0 ou 1 (0 par défaut). Lorsque cette option vaut 1, la fonction renvoie, après la liste des facettes composant le tube, une liste de facettes séparatrices (murs) entre chaque "tronçon" du tube, ce qui peut être utile avec la méthode \textbf{g:Dscene3d} (uniquement).
+    \end{itemize}
+    
+\begin{demo}{Exemple avec line2tube et section2tube}
+\begin{luadraw}{name=line2tube_section2tube}
+local g = graph3d:new{window={-5,6,-4.5,8}, viewdir={45,60}, margin={0,0,0,0}, size={10,10}}
 local L1 = map(toPoint3d,polyreg(0,3,6)) -- hexagone régulier dans le plan xOy, centre O de sommet M(3,0,0)
 local L2 = shift3d(rotate3d(L1,90,{Origin,vecJ}),3*vecJ)
+local L3 = shift3d(reverse(L1),6*vecK)
+L3[6] = L3[5]-2*vecK -- modification of the last point
+local section = shift3d({M(2,0,0.5),M(4,0,0.5),M(4,0,-0.5),M(2,0,-0.5)},6*vecK)
 local T1 = line2tube(L1,1,{nbfacet=8,close=true}) -- tube 1 refermé
 local T2 = line2tube(L2,1,{nbfacet=8})  -- tube 2 non refermé
-g:Dmixfacet( T1, {color="Crimson",opacity=0.8}, T2, {color="SteelBlue"} )
+local T3 = section2tube(section, L3,{hollow=true})
+g:Dmixfacet( T1, {color="Crimson",opacity=0.8}, T2, {color="SteelBlue"}, T3, {color="ForestGreen"} )
 g:Show()
 \end{luadraw}
 \end{demo}

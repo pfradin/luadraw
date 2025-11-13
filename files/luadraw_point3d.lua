@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -214,6 +214,50 @@ function insert3d(L,A,epsilon)
     table.insert(L,A)
     return n+1
 end
+
+function isListOfPt3d(S) -- tests if S is a list of 3d points
+    local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
+    while ret and (k<=#S) do ret = isPoint3d(S[k]); k = k+1 end
+    return ret
+end
+
+function isListOfListOfPt3d(S) -- tests if S is a list of lists 3d points
+    local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
+    while ret and (k<=#S) do ret = isListOfPt3d(S[k]); k = k+1 end
+    return ret
+end
+
+local var2string
+var2string = function(T)
+    if (type(T) ~= "table") or isComplex(T) or isPoint3d(T) then return tostring(T)
+    else
+        return "{ "..table.concat(map(var2string,T),", ").." }"
+    end
+end
+
+function whatis(x,msg)
+    msg = msg or "It"
+    msg = "\n"..msg.." "
+    if x == nil then print("\nnil")
+    elseif type(x) == "number" then  print(msg.."is a number =",x)
+    elseif type(x) == "boolean" then print(msg.."is a boolean =",x)
+    elseif type(x) == "string" then print(msg.."is a string =", x)
+    elseif type(x) == "function" then print(msg.."is a function")
+    elseif isComplex(x) then print(msg.."is a complex number =",x)
+    elseif isPoint3d(x) then print(msg.."is a 3d point =",x)
+    elseif isListOfCpx(x) then 
+        print(msg.."is a list of numbers/complex numbers\nvalue = "..var2string(x))
+    elseif isListOfListOfCpx(x) then 
+        print(msg.."is a list of lists of numbers/complex numbers\nvalue = "..var2string(x))
+    elseif isListOfPt3d(x) then 
+        print(msg.."is a list of 3d points\nvalue = "..var2string(x))
+    elseif isListOfListOfPt3d(x) then 
+        print(msg.."is a list of lists of 3d points\nvalue = "..var2string(x))
+    else
+        print(msg.."is a "..type(x).."\n value ="..var2string(x) )
+    end
+end
+
 
 -- constantes
 Origin = M(0,0,0)

@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -15,6 +15,13 @@ require 'luadraw_lines3d'
 require 'luadraw_build3d'
 local Tscene3d = require 'luadraw_scene3d'
 local Scene3d 
+local projection_mode = "ortho"
+local projection_msg = {["ortho"] = "orthographic", 
+    ["yz"] = "cavalier perspective on yz-plane", 
+    ["xz"] = "cavalier perspective on xz-plane", 
+    ["xy"] = "cavalier perspective on xy-plane", 
+    ["iso"] = "isometric"
+    }
 
 Hiddenlines = false
 Hiddenlinestyle = "dotted"
@@ -57,7 +64,6 @@ function luadraw_graph3d:new(args) -- argument de la forme :
     graph3d.matrix3d = ID3d
     if args.adjust2d  then 
         local x1,x2,y1,y2,z1,z2 = table.unpack(graph3d.param.viewport3d)
-        local lg, ht = (graph3d.Xmax-graph3d.Xmin)*graph3d.Xscale, (graph3d.Ymax-graph3d.Ymin)*graph3d.Yscale
         local box = parallelep( M(x1,y1,z1), (x2-x1)*vecI, (y2-y1)*vecJ, (z2-z1)*vecK ) -- boite 3d
         local L = {}
         for _, A in ipairs(box.vertices) do -- projection des sommets de la boite sur le plan 2d
@@ -73,6 +79,7 @@ function luadraw_graph3d:new(args) -- argument de la forme :
         graph3d.advancedparam = table.copy(graph3d.currentparam)
         graph3d.deferredparam = table.copy(graph3d.currentparam)
         graph3d.Xmin = x1; graph3d.Xmax = x2; graph3d.Ymin = y1; graph3d.Ymax = y2
+        local lg, ht = (x2-x1)*graph3d.Xscale, (y2-y1)*graph3d.Yscale
         local ratio
         if args.size ~= nil then ratio = args.size[3] end
         local Ratio = ratio or (graph3d.Xscale / graph3d.Yscale)
@@ -91,6 +98,7 @@ function luadraw_graph3d:new(args) -- argument de la forme :
     end
     -- infos sur le graphe
     print("3d window = ", table.unpack(graph3d.param.viewport3d))
+    print("projection mode = ", projection_msg[projection_mode])
     print("viewdir = ", table.unpack(graph3d.param.viewdir))
     print("2d window = ", table.unpack(graph3d.param.viewport))
     return graph3d
@@ -178,11 +186,78 @@ function luadraw_graph3d:Viewport3d(x1,x2,y1,y2,z1,z2)
     self.param.viewport3d = {x1,x2,y1,y2,z1,z2}
 end
 
+function perspective(mode,k,alpha) -- change the type of projection
+-- mode = "iso" (isometric projection) or 
+-- mode = "yz" or "xz" or "xy" (cavalier perspective)
+-- parameters for for cavalier perspective : k is a ratio and alpha is an angle in degrees 
+    mode = mode or "" -- default value
+    k = k or 0.5
+    alpha = alpha or 45
+    k = math.abs(k)
+    alpha = alpha*deg -- conversion degrees -> radians (deg = pi/180)
+    local r = 1/math.sqrt(1+k^2)
+    local k_cos_alpha = k*math.cos(alpha) -- to calculate them only once
+    local k_sin_alpha = k*math.sin(alpha)
+    local theat, phi
+    local f = nil -- function 
+    if mode == "yz" then -- In this perspective, vecJ becomes 1 and vecK becomes i
+        phi = math.acos(k_sin_alpha*r)*rad -- angles in degrees for viewdir (rad = 180/pi)
+        theta = cpx.arg(Z(1,k_cos_alpha))*rad
+        projection_mode = "yz"
+        f = function(A)
+                if isPoint3d(A) then  -- We only transform the 3D points; the rest remains unchanged.
+                    return Z(A.y-k_cos_alpha*A.x, A.z-k_sin_alpha*A.x)
+                else return A end
+            end
+    elseif mode == "xz" then -- In this perspective, vecI becomes 1 and vecK becomes i
+        phi = math.acos(k_sin_alpha*r)*rad -- angles in degrees for viewdir (rad = 180/pi)
+        theta = cpx.arg(Z(k_cos_alpha,-1))*rad
+        projection_mode = "xz"
+        f = function(A)
+                if isPoint3d(A) then  -- We only transform the 3D points; the rest remains unchanged.
+                    return Z(A.x+k_cos_alpha*A.y, A.z+k_sin_alpha*A.y)
+                else return A end
+            end
+
+    elseif mode == "xy" then -- In this perspective, vecI becomes 1 and vecJ becomes i
+        phi = math.acos(r)*rad -- angles in degrees for viewdir (rad = 180/pi)
+        theta = alpha*rad
+        projection_mode = "xy"
+        f = function(A)
+                if isPoint3d(A) then  -- We only transform the 3D points; the rest remains unchanged.
+                    return Z(A.x-k_cos_alpha*A.z, A.y-k_sin_alpha*A.z)
+                else return A end
+            end
+    elseif mode == "iso" then  -- isometric perspective, one unit on each axe has the same length on screen
+        phi = 45 -- angles in degrees for viewdir 
+        theta = 45
+        projection_mode = "iso"
+        local a, b = math.sqrt(2)/2, 1/math.sqrt(6)
+        f = function(A)
+                if isPoint3d(A) then  -- We only transform the 3D points; the rest remains unchanged.
+                    return Z( a*(A.y-A.x), 2*b*A.z-b*(A.x+A.y) )
+                else return A end
+            end
+    else projection_mode = "ortho"
+        function luadraw_graph3d:Proj3d(L)
+            return self:orthographic_Proj3d(L) -- default projection
+        end
+    end
+    if f ~= nil then
+        function luadraw_graph3d:Proj3d(L) -- we redefine Proj3d
+            L = self:Mtransform3d(L) -- we apply the 3D matrix of the graph
+            return ftransform3d(L,f) -- we return the projection on screen
+        end  
+        return {theta,phi}
+    end
+end
+
 function luadraw_graph3d:Setviewdir(theta,phi) -- direction de l'observateur avec theta et phi en degrés
     if (theta == nil) then return end
     if theta == "xOy" then theta = -90; phi = 0
     elseif theta == "yOz" then theta = 0; phi = 90
     elseif theta == "xOz" then theta = -90; phi = 90
+    elseif type(theta) == "table" then theta, phi = table.unpack(theta)
     end
     self.param.viewdir = {theta,phi} 
     local a, b = theta*deg, phi*deg
@@ -199,14 +274,25 @@ end
 
 function luadraw_graph3d:ScreenX()
 -- renvoie les coordonnées spatiales du premier vecteur de base du plan de l'écran (affixe 1)
--- c'est l'image du vecteur vecJ par la rotation d'axe Oz et d'angle theta
-    return M(-self.sinTheta, self.cosTheta,0)
+    
+    if projection_mode == "ortho" then -- c'est l'image du vecteur vecJ par la rotation d'axe Oz et d'angle theta
+        return M(-self.sinTheta, self.cosTheta,0)
+    elseif projection_mode == "yz" then return vecJ
+    elseif projection_mode == "xz" then return vecI
+    elseif projection_mode == "xy" then return vecI
+    elseif projection_mode == "iso" then return M(-1/math.sqrt(2),1/math.sqrt(2),0)
+    end
 end
 
 function luadraw_graph3d:ScreenY()
 -- renvoie les coordonnées spatiales du deuxième vecteur de base du plan de l'écran (affixe i)
--- c'est le produit vectoriel entre les vecteurs self.Normal et self:ScreenX()
-    return M(-self.cosPhi*self.cosTheta, -self.cosPhi*self.sinTheta, self.sinPhi)
+    if projection_mode == "ortho" then -- c'est le produit vectoriel entre les vecteurs self.Normal et self:ScreenX()
+        return M(-self.cosPhi*self.cosTheta, -self.cosPhi*self.sinTheta, self.sinPhi)
+    elseif projection_mode == "yz" then return vecK
+    elseif projection_mode == "xz" then return vecK
+    elseif projection_mode == "xy" then return vecJ
+    elseif projection_mode == "iso" then return M(0,0,math.sqrt(6)/2)
+    end
 end
 
 function luadraw_graph3d:ScreenPos(z,d)
@@ -225,7 +311,7 @@ end
 
 -- projection sur l'écran
 
-function luadraw_graph3d:Proj3d(L) -- projection sur l'écran (plan passant par l'origine et normal au vecteur self.Normal
+function luadraw_graph3d:orthographic_Proj3d(L) -- projection de points sur l'écran (plan passant par l'origine et normal au vecteur self.Normal
 -- L est un point3d ou une liste de point3d ou une liste de listes de point3d
     local projAdot = function(A)
     -- le projeté d'un vecteur u sur le plan de l'écran est <u|ScreenX>.ScreenX + <u|ScreenY>.ScreenY
@@ -258,6 +344,23 @@ function luadraw_graph3d:Proj3d(L) -- projection sur l'écran (plan passant par 
             table.insert(rep, aux)
         end
     end
+   return rep 
+end
+
+function luadraw_graph3d:Proj3d(L)
+    return self:orthographic_Proj3d(L)
+end
+
+function luadraw_graph3d:Proj3dV(L) -- projection de vecteurs sur l'écran (plan passant par l'origine et normal au vecteur self.Normal
+-- L est un point3d ou une liste de point3d ou une liste de listes de point3d
+    if (L == nil) or (type(L) ~= "table") then return end
+    local oldmatrix3d = self.matrix3d
+    if not isID3d(self.matrix3d) then
+        L = mLtransform3d(L,self.matrix3d) --<- c'est ici que ce fait la différence avec les points
+    end
+    self.matrix3d = ID3d
+    local rep = self:Proj3d(L)
+    self.matrix3d = oldmatrix3d
    return rep 
 end
 
@@ -444,7 +547,7 @@ function luadraw_graph3d:Dlabel3d(...)
         if  k%3 == 2 then aux = self:Proj3d(aux) end
         if k%3 == 0 then --arguments
             if aux.dir ~= nil then
-                aux.dir = self:Proj3d(aux.dir)
+                aux.dir = self:Proj3dV(aux.dir) -- ce sont des vecteurs
             end
         end
         table.insert(args,aux)
@@ -453,6 +556,19 @@ function luadraw_graph3d:Dlabel3d(...)
 end
 
 ------- solides sans facettes (fil de fer)
+
+function luadraw_graph3d:define_temp_color(argsColor)
+    if type(argsColor) == "table" then 
+        argsColor = rgb(argsColor) 
+        argsColor = string.sub(argsColor,2,#argsColor-1) -- on retire les accolades
+    end
+    if (type(argsColor) == "string") and (string.find(argsColor,"%A")~=nil) 
+    then
+        self:Writeln("\\colorlet{tempColor}{"..argsColor.."}")
+        return "tempColor"
+    else return argsColor
+    end
+end
 
 function luadraw_graph3d:Dcylinder(A,r,V,B,args) 
 -- ou Dcylinder(A,r,B,args): cylindre droit de A vers B
@@ -473,6 +589,7 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
     end
     args = args or {}
     args.color = args.color or ""
+    args.color = self:define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
@@ -491,7 +608,7 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
     if pt3d.dot(self.Normal,self:MLtransform3d(V)) <= 0 then V = -V  end
     if pt3d.dot(self:MLtransform3d(V),self:MLtransform3d(B-A)) < 0 then A,B=B,A  end -- V et B-A dans le même sens
     local W = B-A
-    local angle = self:Arg(self:Proj3d(W))*rad
+    local angle = self:Arg(self:Proj3dV(W))*rad
     if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
     end
@@ -534,7 +651,7 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
             -- on voit la base circulaire en B, le vecteur I sort du cylindre en B et est dirigé vers l'observateur
             local sens = 1
             --if pt3d.det(W,A-M1,M2-M1)*pt3d.det(W,B-N1,N2-N1) < 0 then sens = -sens end
-            if cpx.det(self:Proj3d(B-A),self:Proj3d(B-N2))*self:Det3d() < 0 then sens = -sens end
+            if cpx.det(self:Proj3dV(B-A),self:Proj3dV(B-N2))*self:Det3d() < 0 then sens = -sens end
             --self:Dpath3d({M1,A,M2,r,sens,V,"ca",N2,"l",B,N1,r,sens,V,"ca","cl"})
             self:Dpath3d({M1,A,M2,r,sens,V,"ca",N2,"l",B,N1,r,-sens,V,"ca","cl"})
             dcircle(B)
@@ -567,7 +684,7 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
 -- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor= linecolor, color="", opacity=1}
 -- mode = 0 fil de fer
 -- mode = 1 grille
--- color = "" : pas de remplissage, color ~= "" remplissage avec ball color
+-- color = "" : pas de remplissage, color ~= "" remplissage avec gradient bi linéaire
     if isPoint3d(r) then -- ancien format : sommet, vecteur, rayon, args (cône droit)
         args = A; A = C
         r, V = V, r
@@ -577,6 +694,7 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
     end
     args = args or {}
     args.color = args.color or ""
+    args.color = self:define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
@@ -602,7 +720,7 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
     local K = pt3d.prod(I,J) -- base = {C+r.cos(t)J+r.sin(t)K / t in [-pi,pi]}
     local xn,yn, zn = pt3d.dot(N,I), pt3d.dot(N,J), pt3d.dot(N,K)
     local W = C-A
-    local angle = self:Arg(self:Proj3d(W))*rad
+    local angle = self:Arg(self:Proj3dV(W))*rad
     if angle < 0 then angle = angle+180
     elseif angle > 180 then angle = angle-180 
     end    
@@ -634,7 +752,7 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
             end
             if args.mode == 1 then self:Linestyle("noline") end
             local sens = 1
-            if cpx.det(self:Proj3d(C-M1),self:Proj3d(M2-M1))*cpx.det(self:Proj3d(A-M1),self:Proj3d(M2-M1)) < 0 then sens = -1 end
+            if cpx.det(self:Proj3dV(C-M1),self:Proj3dV(M2-M1))*cpx.det(self:Proj3dV(A-M1),self:Proj3dV(M2-M1)) < 0 then sens = -1 end
             if pt3d.dot(self.Normal,self:MLtransform3d(V)) <= 0 then -- on voit la base circulaire
                 self:Dpath3d({A,M1,"l",C,M2,r,-sens,V,"ca","cl"})
                 dcircle(C)
@@ -717,6 +835,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
     end
     args = args or {}
     args.color = args.color or ""
+    args.color = self:define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
@@ -755,7 +874,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
     if (t == nil) or (#t == 1) then
         dcircle()
     else
-        local angle = self:Arg(self:Proj3d(W))*rad
+        local angle = self:Arg(self:Proj3dV(W))*rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 end
         t1, t2 = table.unpack(t) 

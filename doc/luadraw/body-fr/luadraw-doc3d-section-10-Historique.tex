@@ -1,5 +1,23 @@
 \section{Historique}
 
+
+
+\subsection{Version 2.3}
+Liste non exhaustive :
+\begin{itemize}
+\item Ajout des projections en perspective cavalière: sur $yz$, sur $xz$ ou sur $xy$, ainsi que de la projection isométrique.
+\item Ajout de la fonction \emph{section2tube()}.
+\item Ajout du module \emph{luadraw\_compile\_tex}.
+\item Ajout de la méthode \emph{Proj3dV} pour le calcul de la projection des vecteurs de l'espace sur le plan de l'écran.
+\item Ajout des fonctions \emph{circumcircle()} et \emph{incircle()} en 2d, elles renvoient une séquence: centre et rayon.
+\item Ajout de la fonction \emph{line2strip()} qui renvoie un chemin représentant une "bande" centrée sur une ligne polygonale donnée.
+\item Ajout de la fonction \emph{delaunay()} qui fait une triangulation de Delaunay sur une liste de points et renvoie la liste des triangles obtenus.
+\item Ajout de la fonction \emph{cpx.normalize(z)} qui renvoie le complexe $z$ divisé par son module (ou \emph{nil} s'il est nul).
+\item Ajout de l'instruction \emph{whatis(variable, msg)} qui affiche dans le terminal le statut d'une \emph{variable} (accompagné du message \emph{msg}) et son contenu.
+\item Correction de bug...    
+\end{itemize}
+
+
 \subsection{Version 2.2}
 Liste non exhaustive :
 \begin{itemize}

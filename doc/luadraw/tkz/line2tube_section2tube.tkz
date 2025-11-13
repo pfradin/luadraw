@@ -1,0 +1,223 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (0,0) rectangle (8.8,10.0);%
+\pgfsetfillopacity{0.8}%
+\pgfsetfillcolor{Crimson!50!white!98.55!black}%
+\draw[fill] (6.3503,4.7751) -- (6.1589,4.1896) -- (3.2098,4.5847) -- (3.1397,5.2053)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!90.64!black}%
+\draw[fill] (6.1589,4.1896) -- (5.6971,3.7557) -- (3.3788,4.0663) -- (3.2098,4.5847)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!80.5!black}%
+\draw[fill] (6.1589,5.1694) -- (6.3503,4.7751) -- (3.1397,5.2053) -- (3.2098,5.5645)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!45.78!black}%
+\draw[fill] (5.6971,3.7557) -- (5.2352,3.7277) -- (3.5479,3.9537) -- (3.3788,4.0663)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!89.47!black}%
+\draw[fill] (3.1397,5.2053) -- (3.2098,4.5847) -- (1.0508,3.5052) -- (0.7895,4.0301)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!86.52!black}%
+\draw[fill] (3.2098,4.5847) -- (3.3788,4.0663) -- (1.6818,3.2178) -- (1.0508,3.5052)--cycle;%
+\pgfsetfillcolor{Crimson!45.78!black}%
+\draw[fill] (5.6971,5.1413) -- (6.1589,5.1694) -- (3.2098,5.5645) -- (3.3788,5.4519)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!67.51!black}%
+\draw[fill] (3.2098,5.5645) -- (3.1397,5.2053) -- (0.7895,4.0301) -- (1.0508,4.485)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!55.32!black}%
+\draw[fill] (3.3788,4.0663) -- (3.5479,3.9537) -- (2.3127,3.3362) -- (1.6818,3.2178)--cycle;%
+\pgfsetfillcolor{Crimson!80.5!black}%
+\draw[fill] (5.2352,3.7277) -- (5.0439,4.1219) -- (3.6179,4.313) -- (3.5479,3.9537)--cycle;%
+\pgfsetfillcolor{Crimson!90.64!black}%
+\draw[fill] (5.2352,4.7075) -- (5.6971,5.1413) -- (3.3788,5.4519) -- (3.5479,4.9335)--cycle;%
+\pgfsetfillcolor{Crimson!55.32!black}%
+\draw[fill] (3.3788,5.4519) -- (3.2098,5.5645) -- (1.0508,4.485) -- (1.6818,4.6034)--cycle;%
+\pgfsetfillcolor{Crimson!98.55!black}%
+\draw[fill] (5.0439,4.1219) -- (5.2352,4.7075) -- (3.5479,4.9335) -- (3.6179,4.313)--cycle;%
+\pgfsetfillcolor{Crimson!67.51!black}%
+\draw[fill] (3.5479,3.9537) -- (3.6179,4.313) -- (2.5741,3.791) -- (2.3127,3.3362)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!78.6!black}%
+\draw[fill] (6.9492,2.715) -- (6.3182,2.5966) -- (5.6971,3.7557) -- (6.1589,4.1896)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!96.61!black}%
+\draw[fill] (3.6617,2.3299) -- (4.2274,2.5642) -- (5.8971,0.5487) -- (5.4142,0.2144)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!69.21!black}%
+\draw[fill] (7.2105,3.1699) -- (6.9492,2.715) -- (6.1589,4.1896) -- (6.3503,4.7751)--cycle;%
+\pgfsetfillcolor{Crimson!86.52!black}%
+\draw[fill] (3.5479,4.9335) -- (3.3788,5.4519) -- (1.6818,4.6034) -- (2.3127,4.316)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!67.63!black}%
+\draw[fill] (6.3182,2.5966) -- (5.6873,2.884) -- (5.2352,3.7277) -- (5.6971,3.7557)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!93.65!black}%
+\draw[fill] (4.2274,2.5642) -- (4.793,2.7299) -- (6.2627,0.9559) -- (5.8971,0.5487)--cycle;%
+\pgfsetfillcolor{Crimson!89.47!black}%
+\draw[fill] (3.6179,4.313) -- (3.5479,4.9335) -- (2.3127,4.316) -- (2.5741,3.791)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!19!black}%
+\draw[fill] (6.9492,3.6948) -- (7.2105,3.1699) -- (6.3503,4.7751) -- (6.1589,5.1694)--cycle;%
+\pgfsetfillcolor{Crimson!19!black}%
+\draw[fill] (5.6873,2.884) -- (5.4259,3.409) -- (5.0439,4.1219) -- (5.2352,3.7277)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!72.57!black}%
+\draw[fill] (3.4274,2.1642) -- (3.6617,2.3299) -- (5.4142,0.2144) -- (5.0971,0.1487)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!91.47!black}%
+\draw[fill] (4.2274,5.2084) -- (4.793,4.8084) -- (4.793,2.7299) -- (4.2274,2.5642)--cycle;%
+\draw[fill] (3.6617,5.2084) -- (4.2274,5.2084) -- (4.2274,2.5642) -- (3.6617,2.3299)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!60.34!black}%
+\draw[fill] (4.793,2.7299) -- (5.0274,2.7299) -- (6.2971,1.1973) -- (6.2627,0.9559)--cycle;%
+\pgfsetfillcolor{Crimson!67.63!black}%
+\draw[fill] (6.3182,3.9822) -- (6.9492,3.6948) -- (6.1589,5.1694) -- (5.6971,5.1413)--cycle;%
+\pgfsetfillcolor{Crimson!69.21!black}%
+\draw[fill] (5.4259,3.409) -- (5.6873,3.8638) -- (5.2352,4.7075) -- (5.0439,4.1219)--cycle;%
+\pgfsetfillcolor{Crimson!78.6!black}%
+\draw[fill] (5.6873,3.8638) -- (6.3182,3.9822) -- (5.6971,5.1413) -- (5.2352,4.7075)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!64.29!black}%
+\draw[fill] (4.793,4.8084) -- (5.0274,4.2427) -- (5.0274,2.7299) -- (4.793,2.7299)--cycle;%
+\draw[fill] (3.4274,4.8084) -- (3.6617,5.2084) -- (3.6617,2.3299) -- (3.4274,2.1642)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!78.6!black}%
+\draw[fill] (1.6818,3.2178) -- (2.3127,3.3362) -- (2.7648,2.4925) -- (2.3029,2.0587)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!93.11!black}%
+\draw[fill] (3.1718,8.956) -- (3.1718,9.6488) -- (6.2627,9.2347) -- (6.2627,8.5419)--cycle;%
+\pgfsetfillcolor{SteelBlue!60.34!black}%
+\draw[fill] (3.6617,2.1642) -- (3.4274,2.1642) -- (5.0971,0.1487) -- (5.1314,0.3902)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!69.21!black}%
+\draw[fill] (2.3127,3.3362) -- (2.5741,3.791) -- (2.9561,3.0781) -- (2.7648,2.4925)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!67.63!black}%
+\draw[fill] (1.0508,3.5052) -- (1.6818,3.2178) -- (2.3029,2.0587) -- (1.8411,2.0306)--cycle;%
+\pgfsetfillcolor{SteelBlue!60.13!black}%
+\draw[fill] (5.9799,1.1316) -- (5.4971,0.7973) -- (5.1314,0.3902) -- (5.0971,0.1487) -- (5.4142,0.2144) -- (5.8971,0.5487) -- (6.2627,0.9559) -- (6.2971,1.1973)--cycle;%
+\pgfsetfillcolor{SteelBlue!72.57!black}%
+\draw[fill] (5.0274,2.7299) -- (4.793,2.5642) -- (5.9799,1.1316) -- (6.2971,1.1973)--cycle;%
+\pgfsetfillcolor{SteelBlue!64.29!black}%
+\draw[fill] (5.0274,4.2427) -- (4.793,3.8427) -- (4.793,2.5642) -- (5.0274,2.7299)--cycle;%
+\draw[fill] (3.6617,4.2427) -- (3.4274,4.8084) -- (3.4274,2.1642) -- (3.6617,2.1642)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!19!black}%
+\draw[fill] (2.5741,3.791) -- (2.3127,4.316) -- (2.7648,3.4723) -- (2.9561,3.0781)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!75.79!black}%
+\draw[fill] (3.5859,8.1833) -- (3.1718,8.956) -- (6.2627,8.5419) -- (5.1314,7.9762)--cycle;%
+\pgfsetfillcolor{Crimson!19!black}%
+\draw[fill] (0.7895,4.0301) -- (1.0508,3.5052) -- (1.8411,2.0306) -- (1.6497,2.4249)--cycle;%
+\pgfsetfillcolor{SteelBlue!93.65!black}%
+\draw[fill] (4.2274,2.3299) -- (3.6617,2.1642) -- (5.1314,0.3902) -- (5.4971,0.7973)--cycle;%
+\pgfsetfillcolor{SteelBlue!96.61!black}%
+\draw[fill] (4.793,2.5642) -- (4.2274,2.3299) -- (5.4971,0.7973) -- (5.9799,1.1316)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!82.19!black}%
+\draw[fill] (0.909,7.8246) -- (0.909,8.5174) -- (3.1718,9.6488) -- (3.1718,8.956)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!89.47!black}%
+\draw[fill] (4.4521,2.2665) -- (4.3821,2.887) -- (5.4259,3.409) -- (5.6873,2.884)--cycle;%
+\pgfsetfillcolor{Crimson!67.63!black}%
+\draw[fill] (2.3127,4.316) -- (1.6818,4.6034) -- (2.3029,3.4443) -- (2.7648,3.4723)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!86.52!black}%
+\draw[fill] (4.6212,1.7481) -- (4.4521,2.2665) -- (5.6873,2.884) -- (6.3182,2.5966)--cycle;%
+\pgfsetfillcolor{Crimson!69.21!black}%
+\draw[fill] (1.0508,4.485) -- (0.7895,4.0301) -- (1.6497,2.4249) -- (1.8411,3.0104)--cycle;%
+\pgfsetfillcolor{SteelBlue!91.47!black}%
+\draw[fill] (4.2274,3.8427) -- (3.6617,4.2427) -- (3.6617,2.1642) -- (4.2274,2.3299)--cycle;%
+\draw[fill] (4.793,3.8427) -- (4.2274,3.8427) -- (4.2274,2.3299) -- (4.793,2.5642)--cycle;%
+\pgfsetfillcolor{ForestGreen!75.79!black}%
+\draw[fill] (3.1718,9.6488) -- (3.5859,8.8761) -- (5.1314,8.669) -- (6.2627,9.2347)--cycle;%
+\pgfsetfillcolor{Crimson!78.6!black}%
+\draw[fill] (1.6818,4.6034) -- (1.0508,4.485) -- (1.8411,3.0104) -- (2.3029,3.4443)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!75.79!black}%
+\draw[fill] (2.4545,7.6176) -- (0.909,7.8246) -- (3.1718,8.956) -- (3.5859,8.1833)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!67.51!black}%
+\draw[fill] (4.3821,2.887) -- (4.4521,3.2463) -- (5.6873,3.8638) -- (5.4259,3.409)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!98.55!black}%
+\draw[fill] (2.7648,2.4925) -- (2.9561,3.0781) -- (4.3821,2.887) -- (4.4521,2.2665)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!55.32!black}%
+\draw[fill] (4.7902,1.6355) -- (4.6212,1.7481) -- (6.3182,2.5966) -- (6.9492,2.715)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!90.64!black}%
+\draw[fill] (2.3029,2.0587) -- (2.7648,2.4925) -- (4.4521,2.2665) -- (4.6212,1.7481)--cycle;%
+\pgfsetfillcolor{ForestGreen!93.11!black}%
+\draw[fill] (3.5859,8.8761) -- (3.5859,8.1833) -- (5.1314,7.9762) -- (5.1314,8.669)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!82.29!black}%
+\draw[fill] (6.2627,5.1128) -- (6.0971,4.4642) -- (5.0274,4.2427) -- (4.793,4.8084)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!80.5!black}%
+\draw[fill] (2.9561,3.0781) -- (2.7648,3.4723) -- (4.4521,3.2463) -- (4.3821,2.887)--cycle;%
+\pgfsetfillcolor{ForestGreen!75.79!black}%
+\draw[fill] (0.909,8.5174) -- (2.4545,8.3104) -- (3.5859,8.8761) -- (3.1718,9.6488)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!76.82!black}%
+\draw[fill] (6.0971,5.5956) -- (6.2627,5.1128) -- (4.793,4.8084) -- (4.2274,5.2084)--cycle;%
+\pgfsetfillcolor{Crimson!55.32!black}%
+\draw[fill] (4.4521,3.2463) -- (4.6212,3.1337) -- (6.3182,3.9822) -- (5.6873,3.8638)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!65.82!black}%
+\draw[fill] (6.0971,4.4642) -- (5.6971,4.0299) -- (4.793,3.8427) -- (5.0274,4.2427)--cycle;%
+\pgfsetfillcolor{Crimson!67.51!black}%
+\draw[fill] (4.8603,1.9947) -- (4.7902,1.6355) -- (6.9492,2.715) -- (7.2105,3.1699)--cycle;%
+\pgfsetfillcolor{ForestGreen!82.19!black}%
+\draw[fill] (2.4545,8.3104) -- (2.4545,7.6176) -- (3.5859,8.1833) -- (3.5859,8.8761)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!75.79!black}%
+\draw[fill] (5.1314,7.9762) -- (6.2627,8.5419) -- (6.8839,7.3828) -- (5.5455,7.2035)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!54.98!black}%
+\draw[fill] (6.2627,8.5419) -- (6.2627,9.2347) -- (7.091,7.6892) -- (6.8839,7.3828)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!45.78!black}%
+\draw[fill] (1.8411,2.0306) -- (2.3029,2.0587) -- (4.6212,1.7481) -- (4.7902,1.6355)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!42.42!black}%
+\draw[fill] (5.6971,5.6299) -- (6.0971,5.5956) -- (4.2274,5.2084) -- (3.6617,5.2084)--cycle;%
+\pgfsetfillcolor{Crimson!86.52!black}%
+\draw[fill] (4.6212,3.1337) -- (4.7902,2.6153) -- (6.9492,3.6948) -- (6.3182,3.9822)--cycle;%
+\pgfsetfillcolor{SteelBlue!42.42!black}%
+\draw[fill] (5.6971,4.0299) -- (5.2971,4.0642) -- (4.2274,3.8427) -- (4.793,3.8427)--cycle;%
+\pgfsetfillcolor{Crimson!89.47!black}%
+\draw[fill] (4.7902,2.6153) -- (4.8603,1.9947) -- (7.2105,3.1699) -- (6.9492,3.6948)--cycle;%
+\pgfsetfillcolor{Crimson!45.78!black}%
+\draw[fill] (2.7648,3.4723) -- (2.3029,3.4443) -- (4.6212,3.1337) -- (4.4521,3.2463)--cycle;%
+\pgfsetfillcolor{SteelBlue!65.82!black}%
+\draw[fill] (5.2971,5.1956) -- (5.6971,5.6299) -- (3.6617,5.2084) -- (3.4274,4.8084)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!91.47!black}%
+\draw[fill] (7.1668,1.3774) -- (6.6011,1.2602) -- (6.6011,2.9387) -- (7.1668,3.173)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!93.11!black}%
+\draw[fill] (5.5455,7.2035) -- (6.8839,7.3828) -- (6.8839,6.3435) -- (5.5455,6.1642)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!91.47!black}%
+\draw[fill] (7.7324,1.2602) -- (7.1668,1.3774) -- (7.1668,3.173) -- (7.7324,3.3387)--cycle;%
+\pgfsetfillcolor{SteelBlue!76.82!black}%
+\draw[fill] (5.2971,4.0642) -- (5.1314,4.5471) -- (3.6617,4.2427) -- (4.2274,3.8427)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!75.79!black}%
+\draw[fill] (7.1668,1.3774) -- (7.7324,1.2602) -- (7.9668,0.9774) -- (7.7324,0.6946) -- (7.1668,0.5774) -- (6.6011,0.6946) -- (6.3668,0.9774) -- (6.6011,1.2602)--cycle;%
+\pgfsetfillcolor{Crimson!80.5!black}%
+\draw[fill] (1.6497,2.4249) -- (1.8411,2.0306) -- (4.7902,1.6355) -- (4.8603,1.9947)--cycle;%
+\pgfsetfillcolor{SteelBlue!82.29!black}%
+\draw[fill] (5.1314,4.5471) -- (5.2971,5.1956) -- (3.4274,4.8084) -- (3.6617,4.2427)--cycle;%
+\pgfsetfillcolor{ForestGreen!54.98!black}%
+\draw[fill] (5.1314,8.669) -- (5.1314,7.9762) -- (5.5455,7.2035) -- (5.7525,7.5099)--cycle;%
+\pgfsetfillcolor{ForestGreen!75.79!black}%
+\draw[fill] (6.2627,9.2347) -- (5.1314,8.669) -- (5.7525,7.5099) -- (7.091,7.6892)--cycle;%
+\pgfsetfillcolor{Crimson!90.64!black}%
+\draw[fill] (2.3029,3.4443) -- (1.8411,3.0104) -- (4.7902,2.6153) -- (4.6212,3.1337)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!96.61!black}%
+\draw[fill] (7.1668,3.173) -- (6.6011,2.9387) -- (5.6971,4.0299) -- (6.0971,4.4642)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!93.65!black}%
+\draw[fill] (7.7324,3.3387) -- (7.1668,3.173) -- (6.0971,4.4642) -- (6.2627,5.1128)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!54.98!black}%
+\draw[fill] (6.8839,7.3828) -- (7.091,7.6892) -- (7.091,5.9572) -- (6.8839,6.3435)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!64.29!black}%
+\draw[fill] (6.6011,1.2602) -- (6.3668,0.9774) -- (6.3668,2.773) -- (6.6011,2.9387)--cycle;%
+\pgfsetfillcolor{Crimson!98.55!black}%
+\draw[fill] (1.8411,3.0104) -- (1.6497,2.4249) -- (4.8603,1.9947) -- (4.7902,2.6153)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!64.29!black}%
+\draw[fill] (7.9668,0.9774) -- (7.7324,1.2602) -- (7.7324,3.3387) -- (7.9668,3.3387)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!75.79!black}%
+\draw[fill] (2.8686,6.8448) -- (1.7373,6.2791) -- (0.909,7.8246) -- (2.4545,7.6176)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!72.57!black}%
+\draw[fill] (6.6011,2.9387) -- (6.3668,2.773) -- (5.2971,4.0642) -- (5.6971,4.0299)--cycle;%
+\pgfsetfillcolor{ForestGreen!54.98!black}%
+\draw[fill] (5.7525,7.5099) -- (5.5455,7.2035) -- (5.5455,6.1642) -- (5.7525,5.7779)--cycle;%
+\pgfsetfillcolor{ForestGreen!50!white!54.98!black}%
+\draw[fill] (2.8686,7.5376) -- (2.8686,6.8448) -- (2.4545,7.6176) -- (2.4545,8.3104)--cycle;%
+\pgfsetfillcolor{SteelBlue!50!white!60.34!black}%
+\draw[fill] (7.9668,3.3387) -- (7.7324,3.3387) -- (6.2627,5.1128) -- (6.0971,5.5956)--cycle;%
+\pgfsetfillcolor{SteelBlue!64.29!black}%
+\draw[fill] (6.3668,0.9774) -- (6.6011,0.6946) -- (6.6011,2.773) -- (6.3668,2.773)--cycle;%
+\pgfsetfillcolor{ForestGreen!93.11!black}%
+\draw[fill] (7.091,7.6892) -- (5.7525,7.5099) -- (5.7525,5.7779) -- (7.091,5.9572)--cycle;%
+\pgfsetfillcolor{ForestGreen!54.98!black}%
+\draw[fill] (1.7373,6.2791) -- (1.7373,6.972) -- (0.909,8.5174) -- (0.909,7.8246)--cycle;%
+\pgfsetfillcolor{ForestGreen!75.79!black}%
+\draw[fill] (1.7373,6.972) -- (2.8686,7.5376) -- (2.4545,8.3104) -- (0.909,8.5174)--cycle;%
+\pgfsetfillcolor{SteelBlue!64.29!black}%
+\draw[fill] (7.7324,0.6946) -- (7.9668,0.9774) -- (7.9668,3.3387) -- (7.7324,3.173)--cycle;%
+\pgfsetfillcolor{SteelBlue!60.34!black}%
+\draw[fill] (6.3668,2.773) -- (6.6011,2.773) -- (5.1314,4.5471) -- (5.2971,4.0642)--cycle;%
+\pgfsetfillcolor{SteelBlue!72.57!black}%
+\draw[fill] (7.7324,3.173) -- (7.9668,3.3387) -- (6.0971,5.5956) -- (5.6971,5.6299)--cycle;%
+\pgfsetfillcolor{SteelBlue!91.47!black}%
+\draw[fill] (6.6011,0.6946) -- (7.1668,0.5774) -- (7.1668,2.9387) -- (6.6011,2.773)--cycle;%
+\draw[fill] (7.1668,0.5774) -- (7.7324,0.6946) -- (7.7324,3.173) -- (7.1668,2.9387)--cycle;%
+\pgfsetfillcolor{SteelBlue!93.65!black}%
+\draw[fill] (6.6011,2.773) -- (7.1668,2.9387) -- (5.2971,5.1956) -- (5.1314,4.5471)--cycle;%
+\pgfsetfillcolor{SteelBlue!96.61!black}%
+\draw[fill] (7.1668,2.9387) -- (7.7324,3.173) -- (5.6971,5.6299) -- (5.2971,5.1956)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{black}%
+\end{scope}%
+\end{tikzpicture}%

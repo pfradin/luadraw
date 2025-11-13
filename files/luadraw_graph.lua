@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -59,7 +59,7 @@ function luadraw_graph:new(args) -- argument de la forme :
     graph.param = graph.currentparam
     graph.tikzpictureoptions = "line join=round"
     if graph.border or (graph.bg ~= "") then
-        graph.tikzpictureoptions = "background rectangle/.style={"
+        graph.tikzpictureoptions = graph.tikzpictureoptions..",background rectangle/.style={"
         if graph.border then 
             graph.tikzpictureoptions = graph.tikzpictureoptions..",draw=black"
         end
@@ -1237,6 +1237,9 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
             u = toComplex(u); v = toComplex(v)
             if dep == nil then dep = 0 end
             dep = toComplex(dep)
+            if not isID(self.matrix) then
+                u, v = table.unpack( self:MLtransform({u,v}) )
+            end
             u, v = u/cpx.abs(u), v/cpx.abs(v)
             dir_str = "cm={"..strReal(u.re)..","..strReal(u.im)..","..strReal(v.re)..","..strReal(v.im)..",("..strReal(dep.re)..","..strReal(dep.im)..")}"
         end

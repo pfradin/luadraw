@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -156,6 +156,12 @@ function complex.round(u, nbDeci)
     return complex:new( round(u.re,nbDeci), round(u.im,nbDeci) )
 end
 
+-- normaliser
+function complex.normalize(z)
+    z = toComplex(z)
+    if not complex.isNul(z) then return z/complex.abs(z) end
+end
+
 -- norme 1
 function complex.N1(u)
     u = toComplex(u)
@@ -305,6 +311,48 @@ function evalf(f,...)
 -- cette fonction évalue f(...) et renvoie le résultat si pas d'erreur d'exécution, nil sinon.
     local success, result = pcall(f,...)
     if success then return result end
+end
+
+
+function isListOfCpx(S) -- tests if S is a list of complex numbers
+    local ok = function(z)
+        return (type(z)=="number") or isComplex(z)
+    end
+    local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
+    while ret and (k<=#S) do ret = ok(S[k]); k = k+1 end
+    return ret
+end
+
+function isListOfListOfCpx(S) -- tests if S is a list of lists complex numbers
+    local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
+    while ret and (k<=#S) do ret = isListOfCpx(S[k]); k = k+1 end
+    return ret
+end
+
+local var2string
+var2string = function(T)
+    if (type(T) ~= "table") or isComplex(T) then return tostring(T)
+    else
+        return "{ "..table.concat(map(var2string,T),", ").." }"
+    end
+end
+
+function whatis(x,msg)
+    msg = msg or "It"
+    msg = "\n"..msg.." "
+    if x == nil then print("\nnil")
+    elseif type(x) == "number" then  print(msg.."is a number =",x)
+    elseif type(x) == "boolean" then print(msg.."is a boolean =",x)
+    elseif type(x) == "string" then print(msg.."is a string =", x)
+    elseif type(x) == "function" then print(msg.."is a function")
+    elseif isComplex(x) then print(msg.."is a complex number =",x)
+    elseif isListOfCpx(x) then 
+        print(msg.."is a list of numbers/complex numbers\nvalue = "..var2string(x))
+    elseif isListOfListOfCpx(x) then 
+        print(msg.."is a list of lists of numbers/complex numbers\nvalue = "..var2string(x))
+    else
+        print(msg.."is a "..type(x).."\n value ="..var2string(x) )
+    end
 end
 
 return complex

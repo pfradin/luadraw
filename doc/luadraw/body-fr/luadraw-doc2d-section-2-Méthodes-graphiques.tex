@@ -841,7 +841,9 @@ Options globales pour les labels :
 \subsection{Chemins : Dpath, Dspline et Dtcurve}
 
 \begin{itemize}
-\item La fonction \textbf{path( chemin )} renvoie une ligne polygonale contenant les points constituant le \emph{chemin}. Celui-ci est une table de complexes et d'instructions (sous forme de chaînes) par exemple:
+\item La fonction \textbf{path(chemin,nbdots)} renvoie une ligne polygonale contenant les points constituant le \emph{chemin}. L'argument facultatif, \emph{nbdots} est le nombre minimal de points calculés pour chaque courbe de Bézier, sa valeur par défaut est la variable globale \emph{bezier\_nbdots} qui est initialisée à $8$.
+
+Le \emph{chemin} est une table de complexes et d'instructions (sous forme de chaînes) par exemple:
 
 \begin{TeXcode}
   { Z(-3,2),-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" } 
@@ -1300,4 +1302,3 @@ Dpalette(palRainbow,A,h,L,N,"palRainbow")
 g:Show()
 \end{luadraw}
 \end{demo}
-

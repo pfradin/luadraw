@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2025/10/18
--- version 2.2
+-- date 2025/11/13
+-- version 2.3
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -676,6 +676,21 @@ function path3d(chemin)
     end
     if #crt > 0 then table.insert(res, crt) end    
     if #res > 0 then return  res end
+end
+
+
+function polyline2path3d(L) -- conversion list of 3d poiçnts or list of lists of 3d points (L) -> path
+    if (L==nil) or (type(L) ~= "table") or (#L == 0) then return end
+    if (type(L[1]) == "number") or isPoint3d(L[1]) then L = {L} end
+    local ret = {} 
+    local aux
+    for _, cp in ipairs(L) do
+        aux = table.copy(cp)
+        table.insert(aux,2,"m") -- move
+        table.insert(aux,"l")  -- lineto
+        insert(ret,aux)
+    end
+    return ret
 end
 
 

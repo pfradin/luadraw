@@ -1,18 +1,18 @@
 \begin{tikzpicture}[line join=round]%
 \begin{scope}%
-\clip (-0.5,-0.5) rectangle (7.5,7.5);%
-\draw[->] (3.5,3.5) -- (4.5249,4.0124);%
-\draw[->] (5.25,5.0155) -- (1.75,1.9845);%
-\draw[->] (0.4689,4.375) -- (6.5311,2.625);%
-\draw[->] (3.5,0.4689) -- (3.5,6.5311);%
-\draw[dashed] (3.5,5.9249) -- (4.5249,4.0124) -- (4.5249,1.5876) -- (3.5,3.5);%
-\draw[dashed] (2.1,2.2876) -- (4.5249,1.5876) -- (5.9249,2.8);%
-\draw[draw=none,fill=cyan,fill opacity=0.8] (2.625,2.7422) .. controls (3.029,2.6256) and (3.5024,2.5945) .. (3.9529,2.6548) -- (3.5,3.5)--cycle;%
-\draw[->] (2.625,2.7422) .. controls (3.029,2.6256) and (3.5024,2.5945) .. (3.9529,2.6548);%
-\draw[draw=none,fill=cyan,fill opacity=0.8] (3.5,5.0155) .. controls (3.6478,4.7398) and (3.7845,4.2478) .. (3.8698,3.6849) -- (3.5,3.5)--cycle;%
-\draw[->] (3.5,5.0155) .. controls (3.6478,4.7398) and (3.7845,4.2478) .. (3.8698,3.6849);%
-\fill[opacity=1,ball color=black] (3.5,3.5) circle [radius=0.075cm];%
-\draw[-] (1.6625,1.9087) node[] {\footnotesize $x$} (6.6826,2.5812) node[] {\footnotesize $y$} (3.5,6.6826) node[] {\footnotesize $z$} (4.5249,4.0124) node[right] {\footnotesize vers observateur} (3.5,3.5) node[above left] {\footnotesize $O$} (3.3124,1.9376) node[above=0.15cm] {\footnotesize $\theta$} (4.0124,4.9687) node[below=0.25cm] {\footnotesize $\varphi$};%
-\draw[-] (3.5,0) node[above] {\footnotesize viewdir=\{$\theta,\varphi$\} (en degrés)};%
+\clip (0,0) rectangle (8.0,8.0);%
+\draw[->] (4,4) -- (5.1713,4.5856);%
+\draw[->] (6,5.7321) -- (2,2.2679);%
+\draw[->] (0.5359,5) -- (7.4641,3);%
+\draw[->] (4,0.5359) -- (4,7.4641);%
+\draw[dashed] (4,6.7713) -- (5.1713,4.5856) -- (5.1713,1.8144) -- (4,4);%
+\draw[dashed] (2.4,2.6144) -- (5.1713,1.8144) -- (6.7713,3.2);%
+\draw[draw=none,fill=cyan,fill opacity=0.8] (3,3.134) .. controls (3.4617,3.0007) and (4.0027,2.9651) .. (4.5176,3.0341) -- (4,4)--cycle;%
+\draw[->] (3,3.134) .. controls (3.4617,3.0007) and (4.0027,2.9651) .. (4.5176,3.0341);%
+\draw[draw=none,fill=cyan,fill opacity=0.8] (4,5.7321) .. controls (4.1689,5.4169) and (4.3251,4.8547) .. (4.4226,4.2113) -- (4,4)--cycle;%
+\draw[->] (4,5.7321) .. controls (4.1689,5.4169) and (4.3251,4.8547) .. (4.4226,4.2113);%
+\fill[opacity=1,ball color=black] (4,4) circle [radius=0.075cm];%
+\draw[-] (1.9,2.1813) node[] {\footnotesize $x$} (7.6373,2.95) node[] {\footnotesize $y$} (4,7.6373) node[] {\footnotesize $z$} (5.1713,4.5856) node[right] {\footnotesize vers observateur} (4,4) node[above left] {\footnotesize $O$} (3.7856,2.2144) node[above=0.15cm] {\footnotesize $\theta$} (4.5856,5.6785) node[below=0.25cm] {\footnotesize $\varphi$};%
+\draw[-] (4,0) node[above] {\footnotesize viewdir=\{$\theta,\varphi$\} (en degrés)};%
 \end{scope}%
 \end{tikzpicture}%
