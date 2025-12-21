@@ -26,6 +26,8 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
+\paragraph{Cas particulier}: lorsque tous les points de $L$ sont dans un même plan, on peut utiliser la fonction \textbf{cvx\_hull3dcoplanar(L,n)} où $n$ est un vecteur orthogonal au plan. Cette fonction renvoie une facette (liste de points 3d).
+
 \subsection{Plans : plane(), planeEq(), orthoframe(), plane2ABC()}
 
 Un plan de l'espace est une table de la forme $\{A,n\}$ où $A$ est un point du plan (point 3d) et $n$ un vecteur normal au plan (point 3d non nul).
@@ -38,7 +40,7 @@ Un plan de l'espace est une table de la forme $\{A,n\}$ où $A$ est un point du 
 
 \begin{demo}{Faces d'un cube trouées avec un hexagone régulier}
 \begin{luadraw}{name=plans}
-local g = graph3d:new{window={-3,3,-3.25,3.25},margin={0,0,0,0},viewdir={20,60},bg="LightGray",size={10,10}}
+local g = graph3d:new{window={-3,3,-3.25,3.25}, margin={0,0,0,0}, viewdir=perspective("central",20,60), bg="LightGray", size={10,10}}
 Hiddenlines = true; Hiddenlinestyle = "dashed"
 local p = polyreg(0,1,6)
 local P = parallelep(M(-2,-2,-2),4*vecI,4*vecJ,4*vecK)
@@ -99,4 +101,3 @@ Ces fonctions sont la version 3d des fonctions  sss\_triangle(), sas\_triangle()
     \item La fonction \textbf{sas\_triangle3d(ab,alpha,ca)} où \emph{ab} et \emph{ca} sont deux longueurs, \emph{alpha} un angle en degrés, calcule et renvoie une liste de trois points 3d $\{A,B,C\}$ formant les sommets d'un triangle dans le plan $xOy$ tel que $AB=ab$, $CA=ca$, et tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, lorsque cela est possible. Le sommet $A$ est toujours le point $M(0,0,0)$ (\emph{Origin}) et le sommet $B$ est toujours le point \emph{ab*vecI}. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline3d}.
     \item La fonction \textbf{asa\_triangle3d(alpha,ab,beta)} où \emph{ab} est une longueur, \emph{alpha} et \emph{beta} deux angles en degrés, calcule et renvoie une liste de trois points 3d $\{A,B,C\}$ formant les sommets d'un triangle dans le plan $xOy$ tel que $AB=ab$, tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \emph{alpha}, et tel que l'angle $(\vec{BA},\vec{BC})$ a pour mesure \emph{beta}, lorsque cela est possible. Le sommet $A$ est toujours le point $M(0,0,0)$ (\emph{Origin}) et le sommet $B$ est toujours le point \emph{ab*vecI}. Ce triangle peut être dessiné avec la méthode \textbf{g:Dpolyline3d}.
 \end{itemize}
-

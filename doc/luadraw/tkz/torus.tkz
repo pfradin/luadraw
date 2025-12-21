@@ -2196,10 +2196,11 @@
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
 \draw[] (7.4976,0.1654) -- (6.5,0.4534);%
-\draw[] (6.5,6.9486) -- (7.4976,6.6606);%
 \draw[] (7.4976,6.6606) -- (7.4976,0.1654);%
+\draw[] (6.5,6.9486) -- (7.4976,6.6606);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (6.5,6.9486) -- (6.5,0.4534) -- (5.7981,0.656) -- (5.7981,7.1512)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2212,6 +2213,7 @@
 \draw[] (5.7981,7.1512) -- (6.5,6.9486);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (5.7981,0.656) -- (5.34,0.7882) -- (5.34,7.2834) -- (5.7981,7.1512)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2224,6 +2226,7 @@
 \draw[] (5.34,7.2834) -- (5.7981,7.1512);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (5.34,7.2834) -- (5.34,0.7882) -- (5,0.8864) -- (5,7.3816)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2236,6 +2239,7 @@
 \draw[] (5,7.3816) -- (5.34,7.2834);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (1.0024,2.0404) -- (1.0024,8.5356) -- (2,8.2476) -- (2,1.7524)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2244,11 +2248,12 @@
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (2,1.7524) -- (1.0024,2.0404);%
 \draw[] (1.0024,2.0404) -- (1.0024,8.5356);%
+\draw[] (2,1.7524) -- (1.0024,2.0404);%
 \draw[] (1.0024,8.5356) -- (2,8.2476);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (2,8.2476) -- (2.7019,8.045) -- (2.7019,1.5498) -- (2,1.7524)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2261,6 +2266,7 @@
 \draw[] (2,8.2476) -- (2.7019,8.045);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (3.16,7.9127) -- (3.16,1.4175) -- (2.7019,1.5498) -- (2.7019,8.045)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2273,6 +2279,7 @@
 \draw[] (2.7019,8.045) -- (3.16,7.9127);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (3.5,7.8146) -- (3.5,1.3194) -- (3.16,1.4175) -- (3.16,7.9127)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2285,6 +2292,7 @@
 \draw[] (3.16,7.9127) -- (3.5,7.8146);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (3.7772,7.7346) -- (3.7772,1.2394) -- (3.5,1.3194) -- (3.5,7.8146)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2297,6 +2305,7 @@
 \draw[] (3.5,7.8146) -- (3.7772,7.7346);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (4.0209,7.6642) -- (4.0209,1.169) -- (3.7772,1.2394) -- (3.7772,7.7346)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2309,6 +2318,7 @@
 \draw[] (3.7772,7.7346) -- (4.0209,7.6642);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (4.25,7.5981) -- (4.25,1.1029) -- (4.0209,1.169) -- (4.0209,7.6642)--cycle;%
 \pgfsetstrokecolor{black}%
@@ -2374,6 +2384,7 @@
 \draw[] (4.4791,7.532) -- (4.7228,7.4616);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%
+\pgfsetfillcolor{Pink!50!white!89.13!black}%
 \pgfsetstrokeopacity{0.4}%
 \fill[] (5,7.3816) -- (5,0.8864) -- (4.7228,0.9664) -- (4.7228,7.4616)--cycle;%
 \pgfsetstrokecolor{black}%

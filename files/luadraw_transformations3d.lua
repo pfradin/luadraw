@@ -1,6 +1,6 @@
 -- luadraw_transformations3d.lua (chargé par luadraw_graph3d.lua)
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -58,22 +58,25 @@ function proj3d(L,P)
     return ftransform3d(L,proj1)
 end
 
-function pxy(L)
--- projection sur le plan xOy
+function pxy(L,z0)
+-- projection sur le plan z=z0
 -- L est un point3d ou une liste de points 3d ou une liste de listes de points 3d
-    return proj3d(L,{Origin,vecK})
+    z0 = z0 or 0
+    return proj3d(L,{M(0,0,z0),vecK})
 end 
 
-function pyz(L)
--- projection sur le plan yOz
+function pyz(L,x0)
+-- projection sur le plan x=x0
 -- L est un point3d ou une liste de points 3d ou une liste de listes de points 3d
-    return proj3d(L,{Origin,vecI})
+    x0 = x0 or 0
+    return proj3d(L,{M(x0,0,0),vecI})
 end 
 
-function pxz(L)
--- projection sur le plan xOz
+function pxz(L,y0)
+-- projection sur le plan y=y0
 -- L est un point3d ou une liste de points 3d ou une liste de listes de points 3d
-    return proj3d(L,{Origin,vecJ})
+    y0 = y0 or 0
+    return proj3d(L,{M(0,y0,0),vecJ})
 end 
 
 

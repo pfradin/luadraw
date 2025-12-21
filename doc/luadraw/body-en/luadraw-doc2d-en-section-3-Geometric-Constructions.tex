@@ -36,6 +36,29 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
+\subsection{voronoi()}
+
+The function \textbf{voronoi(L, window)}, where \emph{L} is a list of distinct complex numbers, determines the Voronoi diagram of the points in the list $L$. This function returns a list of elements of the form \emph{\{A,polygon\}}, where \emph{A} is a point in the list $L$, and \emph{polygon} is a list of complex numbers representing the vertices of the cell associated with \emph{A}. Thus, there is one cell for each point in $L$. The cell for point $A$ contains the points in the plane that are closer to $A$ than to other points in $L$. This function uses Delaunay triangulation. The optional argument \emph{window}, which defaults to \emph{\{-5,5,-5,5\}}, is used to clip Voronoi cells that are unbounded; this window is automatically enlarged if necessary to contain all the points of $L$ as well as all the centers of the circles circumscribed about the Delaunay triangles (note: this does not change the 2d window of the current graph).
+
+\begin{demo}{Voronoï diagram}
+\begin{luadraw}{name=voronoi}
+local g = graph:new{ bbox=true, margin={0,0,0,0}, size={10,10}}
+local i = cpx.I
+local S = {0.285+1.46*i,1.556-0.142*i,2.344+1.313*i,-2.38+1.218*i,1.548-0.624*i,
+    0.969+1.819*i,-0.086-2.191*i,-0.477+1.834*i,-0.904+1.322*i,-2.892+0.025*i}
+local V = voronoi(S)
+local colors = getpalette(rainbow,#V)
+for k,T in ipairs(V) do
+    local A, polygon = table.unpack(T)
+    g:Dpolyline(polygon,true,"color=white, line width=1.2pt,fill="..colors[k])
+    g:Ddots(A,"mark=x,white,scale=2,line width=1.2pt")-- A is one of the points of S
+end
+g:Dpolyline(delaunay(S),true,"dotted,line width=0.6pt") -- Delaunay triangles
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
 \subsection{line2strip()}
 
 The function \textbf{line2strip(L,width,close,ends)} where \emph{L} is a list of complex numbers, or a list of lists of complex numbers, returns a path representing a "strip" centered on \emph{L} and of width \emph{width}. The optional argument \emph{close} is a boolean that indicates whether \emph{L} should be closed (\emph{false} by default). The optional argument \emph{ends} is a boolean that indicates whether both ends of the strip should be drawn (\emph{true} by default, except when the argument \emph{close} is \emph{true}).
@@ -60,6 +83,10 @@ g:Dlabel("close=false",1.5*i,{}); g:Dlabel("ends=false",0.5*i,{})
 g:Show()
 \end{luadraw}
 \end{demo}
+
+\subsection{parallel\_polyline()}
+
+The function \textbf{parallel\_polyline(L,width,close)} where \emph{L} is a list of complex numbers, or a list of lists of complex numbers, returns a polygonal line parallel to \emph{L} and located at a "distance" equal to \emph{width}. The argument \emph{width} can be positive or negative to be on one side or the other of \emph{L} (this depends on the direction of traversal of \emph{L}). The optional argument \emph{close} is a boolean that indicates whether \emph{L} should be closed (\emph{false} by default).
 
 
 \subsection{sss\_triangle()}

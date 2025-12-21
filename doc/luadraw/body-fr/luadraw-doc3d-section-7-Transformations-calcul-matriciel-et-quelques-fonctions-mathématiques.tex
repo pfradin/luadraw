@@ -25,9 +25,9 @@ La fonction \textbf{ftransform3d(L,f)} renvoie l'image de \emph{L} par la foncti
 \subsubsection{Projections sur les axes ou les plans liés aux axes}
 
 \begin{itemize}
-    \item La fonction \textbf{pxy(L)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $xOy$.
-    \item La fonction \textbf{pyz(L)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $yOz$.
-    \item La fonction \textbf{pxz(L)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $xOz$.
+    \item La fonction \textbf{pxy(L,z0)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $z=z0$ (par défaut $z0=0$).
+    \item La fonction \textbf{pyz(L,x0)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $x=x0$ (par défaut $x0=0$).
+    \item La fonction \textbf{pxz(L,y0)} renvoie l'mage de $L$ par la projection orthogonale sur le plan $y=y0$ (par défaut $y0=0$).
 \item La fonction \textbf{px(L)} renvoie l'mage de $L$ par la projection orthogonale sur l'axe $Ox$.
 \item La fonction \textbf{py(L)} renvoie l'mage de $L$ par la projection orthogonale sur l'axe $Oy$.
 \item La fonction \textbf{pz(L)} renvoie l'mage de $L$ par la projection orthogonale sur l'axe $Oz$.
@@ -187,6 +187,9 @@ La fonction \textbf{interPP(P1,P2)} calcule et renvoie (si elle existe) l'inters
 \subsubsection{interDD()}
 La fonction \textbf{interDD(D1,D2,epsilon)} calcule et renvoie (si elle existe) l'intersection entre les droites $D_1$ et $D_2$. L'argument \emph{epsilon} vaut $10^{-10}$ par défaut (sert à tester si un certain flottant est nul).
 
+\subsubsection{interCS()}
+La fonction \textbf{interCS(C,S)} calcule et renvoie (si elle existe) l'intersection entre le cercle $C=\{A,r,n\}$ ($A$ est le centre du cercle, $r$ le rayon et $n$ un vecteur normal au plan du cercle), et la sphère $S=\{B,R\}$ ($B$ est le centre de la sphère et $R$ le rayon). La fonction renvoie soit \emph{nil} (intersection vide), soit un seul point, soit deux points (séquence).
+
 \subsubsection{interDS()}
 La fonction \textbf{interDS(d,S)} calcule et renvoie (si elle existe) l'intersection entre la droite $d$ et la sphère $S$ où $S$ est une table $S=\{C,r\}$ avec $C$ le centre (point 3d) et $r$ le rayon. La fonction renvoie soit \emph{nil} (intersection vide), soit un seul point, soit deux points.
 
@@ -194,7 +197,11 @@ La fonction \textbf{interDS(d,S)} calcule et renvoie (si elle existe) l'intersec
 La fonction \textbf{interPS(P,S)} calcule et renvoie (si elle existe) l'intersection entre le plan $P$ et la sphère $S$ où $S$ est une table $S=\{C,r\}$ avec $C$ le centre (point 3d) et $r$ le rayon. La fonction renvoie soit \emph{nil} (intersection vide), soit une séquence de la forme $I,r,n$, où I est un point 3d représentant le centre d'un cercle, $r$ son rayon et $n$ un vecteur normal au plan du cercle, ce cercle est l'intersection cherchée. 
 
 \subsubsection{interSS()}
-La fonction \textbf{interPS(S1,S2)} calcule et renvoie (si elle existe) l'intersection entre la sphère $S1=\{C1,r1\}$ et $S2=\{C2,r2\}$. La fonction renvoie soit \emph{nil} (intersection vide), ou bien une séquence de la forme $I,r,n$, où I est un point 3d représentant le centre d'un cercle, $r$ son rayon et $n$ un vecteur normal au plan du cercle, ce cercle est l'intersection cherchée. 
+La fonction \textbf{interSS(S1,S2)} calcule et renvoie (si elle existe) l'intersection entre la sphère $S1=\{C1,r1\}$ et $S2=\{C2,r2\}$. La fonction renvoie soit \emph{nil} (intersection vide), ou bien une séquence de la forme $I,r,n$, où I est un point 3d représentant le centre d'un cercle, $r$ son rayon et $n$ un vecteur normal au plan du cercle, ce cercle est l'intersection cherchée. 
+
+\subsubsection{interSSS()}
+La fonction \textbf{interSSS(S1,S2,S3)} calcule et renvoie (si elle existe) l'intersection entre les sphères $S1=\{C1,r1\}$, $S2=\{C2,r2\}$ et $S3=\{C3,r3\}$. La fonction renvoie soit \emph{nil} (intersection vide), soit un seul point, soit deux points (séquence).
+
 
 \subsubsection{merge3d()}
 La fonction \textbf{merge3d(L)} recolle si c'est possible, les composantes connexes de \emph{L} qui doit être une liste de listes de points 3d, la fonction renvoie le résultat.
@@ -204,19 +211,28 @@ La fonction \textbf{split\_points\_by\_visibility(L, visible\_function)} où $L$
 
 \begin{demo}{Une courbe sur un cylindre}
 \begin{luadraw}{name=curve_on_cylinder}
-local g = graph3d:new{adjust2d=true,bbox=false,size={10,10}};
+local g = graph3d:new{adjust2d=true,bbox=false,size={10,10}, viewdir=perspective("central")}
 g:Labelsize("footnotesize")
 Hiddenlines = true; Hiddenlinestyle = "dashed"
-
-local curve_on_cylinder = function(curve,cylinder) 
--- curve is a 3d polyline on a cylinder, 
--- cylinder = {A,r,V,B}
-    local  A,r,V,B = table.unpack(cylinder)
+local curve_on_cylinder = function(curve,cylinder)
+    -- curve is a 3d polyline on a cylinder,
+    -- cylinder = {A,r,V,B}
+    local A,r,V,B = table.unpack(cylinder)
     if B == nil then B = V; V = B-A end
     local U = B-A
-    local visible_function = function(N)
-        local I = dproj3d(N,{A,U})
-        return (pt3d.dot(N-I,g.Normal) >= 0)
+    local visible_function
+    if projection_mode == "central" then
+        visible_function = function(N)
+            local I = dproj3d(N,{A,U})
+            local M1, M2 = interCS({I,r,U},{ (I+camera)/2, pt3d.abs(I-camera)/2})
+            local alpha = angle3d(M1-I,camera-I)
+            return angle3d(N-I,camera-I) <= alpha
+        end
+    else
+        visible_function = function(N)
+            local I = dproj3d(N,{A,U})
+            return (pt3d.dot(N-I,g.Normal) >= 0)
+        end
     end
     return split_points_by_visibility(curve,visible_function)
 end
@@ -233,4 +249,3 @@ g:Dpolyline3d(Hi,curve_color..","..Hiddenlinestyle)
 g:Show()
 \end{luadraw}
 \end{demo}
-

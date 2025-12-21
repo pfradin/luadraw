@@ -30,21 +30,21 @@ The \textbf{g:Dscene3d(...)} method allows this construction. It takes as argume
 
 \begin{demo}[planes]{First example with Dscene3d: intersection of two planes}
 \begin{luadraw}{name=intersection_plans}
-local g = graph3d:new{viewdir={-10,60}, window={-5,5.5,-5.5,5.5},bg="gray", size={10,10}}
-local P1 = planeEq(1,1,1,-2) -- plane of equation x+y+z-2=0
-local P2 = {Origin, vecK-vecJ} -- plane passing through O and normal to (1,1,1)
-local D = interPP(P1,P2) -- line of intersection between P1 and P2 (D = {A,u})
-local posD = D[1]+1.85*D[2] -- to place the label
-Hiddenlines = true; Hiddenlinestyle = "dotted" -- display hidden dotted lines
+local g = graph3d:new{viewdir=perspective("central",-10,60), window={-5,6.5,-6.5,6},bg="gray", size={10,10}}
+local P1 = planeEq(1,1,1,-2) -- plan d'équation x+y+z-2=0
+local P2 = {Origin, vecK-vecJ} -- plan passant par O et normal à (1,1,1)
+local D = interPP(P1,P2) -- droite d'intersection entre P1 et P2 (D = {A,u})
+local posD = D[1]+1.85*D[2] -- pour placer le label
+Hiddenlines = true; Hiddenlinestyle = "dotted" -- affichage des lignes cachées en pointillées
 g:Dscene3d(
-    g:addPlane(P1, {color="Crimson",edge=true,edgecolor="Pink",edgewidth=8}), -- plane P1
-    g:addPlane(P2, {color="ForestGreen",edge=true,edgecolor="Pink",edgewidth=8}),  -- plane P2
-    g:addLine(D, {color="Navy",edgewidth=12}),  -- line D
-    g:addAxes(Origin, {arrows=1, color="Gold",width=8}),  -- added arrow axes
-    g:addLabel( -- added labels, these could have been added over the scene
+    g:addPlane(P1, {color="Crimson",edge=true,edgecolor="Pink",edgewidth=8}), -- ajout du plan P1
+    g:addPlane(P2, {color="ForestGreen",edge=true,edgecolor="Pink",edgewidth=8}),  -- ajout du plan P2
+    g:addLine(D, {color="Navy",edgewidth=12}),  -- ajout de la droite D
+    g:addAxes(Origin, {arrows=1, color="Gold",width=8}),  -- ajout des axes fléchés
+    g:addLabel( -- ajout de labels, ceux-ci auraient pu être ajoutés par dessus la scène
         "$D=P_1\\cap P_2$",posD,{color="Navy"},
-        "$P_2$", M(3,0,0)+3.5*M(0,1,1),{color="white",dir={vecI,vecJ+vecK}},
-        "$P_1$",M(2,0,0)+1.8*M(-1,-1,2), {dir={M(-1,1,0),M(-1,-1,2),1.125*M(1,-1,0)}}
+        "$P_2$", M(3,0,0)+3.5*M(0,1,1)+0.2*vecI,{color="white",dir={vecI,vecJ+vecK}},
+        "$P_1$",M(2,0,0)+1.85*M(-1,-1,2)-1.5*M(-1,1,0), {dir={M(-1,1,0),M(-1,-1,2)}}
         )
     )
 g:Show()
@@ -124,37 +124,40 @@ The \textbf{g:addCircle(A,r,normal,options)} method adds the circle with center 
 
 \begin{demo}{Solid cylinder immersed in water}
 \begin{luadraw}{name=cylindres_imbriques}
-local g = graph3d:new{window={-5,5,-6,5}, viewdir={30,75},size={10,10},margin={0,0,0,0}}
+local g = graph3d:new{window={-5,5,-7,5}, viewdir=perspective("central",30,65,20),size={10,10},margin={0,0,0,0}}
 Hiddenlines = false
 local R, r, A, B = 3, 1.5
-local C1 = cylinder(M(0,0,-5),5*vecK,R)  -- to model water
-local C2 = cylinder(Origin,2*vecK,R,35,true) -- part of the container above the water (open cylinder)
-local C3 = cylinder(M(0,0,-3),7*vecK,r) -- small cylinder immersed in water
+local C1 = cylinder(M(0,0,-5),5*vecK,R)  -- pour modéliser l'eau
+local C2 = cylinder(Origin,2*vecK,R,35,true) -- partie du contenant au dessus de l'eau (cylindre ouvert)
+local C3 = cylinder(M(0,0,-3),7*vecK,r) -- petit cylindre plongé dans l'eau
 -- sous la scène 3d
 g:Lineoptions(nil,"gray",12)
-g:Dcylinder(M(0,0,-5),7*vecK,R,{hiddenstyle="noline"}) -- container outline (large cylinder)
+g:Dcylinder(M(0,0,-5),7*vecK,R,{hiddenstyle="noline"}) -- contour du contenant (grand cylindre)
 -- scène 3d
 g:Dscene3d(
-        g:addPoly(C1,{contrast=0.125,color="cyan",opacity=0.5}), 
-        g:addPoly(C2,{contrast=0.125,color="WhiteSmoke", opacity=0.5}), 
-        g:addPoly(C3,{contrast=0.25,color="Salmon",backcull=true}), 
-        g:addCircle(M(0,0,2),R,vecK,{color="gray"}), -- upper edge of the container
-        g:addCircle(M(0,0,-5),R,vecK,{color="gray"}), -- lower edge of the container
-        g:addCircle(Origin,R-0.025,vecK, {width=2,color="cyan"}) -- upper edge water
+        g:addPoly(C1,{contrast=0.125,color="cyan",opacity=0.5}), -- eau
+        g:addPoly(C2,{contrast=0.125,color="WhiteSmoke", opacity=0.5}), -- partie du contenant au-dessus de l'eau
+        g:addPoly(C3,{contrast=0.25,color="Salmon",backcull=true}), -- petit cylindre dans l'eau
+        g:addCircle(M(0,0,2),R,vecK,{color="gray"}), -- bord supérieur du contenant
+        g:addCircle(M(0,0,-5),R,vecK,{color="gray"}), -- bord inférieur du contenant        
+        g:addCircle(Origin,R-0.025,vecK, {width=2,color="cyan"}) -- bord supérieur eau
         )
--- over the 3d scene
+-- par dessus la scène 3d
 g:Lineoptions(nil,"black",8); A = 4*vecK; B = A+r*g:ScreenX()
 g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$3\\,$cm",(A+B)/2,{pos="N",dist=0.25})
-A = Origin+(r+1)*g:ScreenX(); B = A-3*vecK
+A = Origin+(r+1)*g:ScreenX(); A = rotate3d(A,-10,{Origin,vecK})
+B = A-3*vecK
 g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("h",(A+B)/2,{pos="E"})
 g:Lineoptions("dashed")
 g:Dpolyline3d({{A,A-g:ScreenX()},{B,B-g:ScreenX()}})
-A = Origin-(R+1)*g:ScreenX(); B = A-vecK
+A = Origin-(R+1)*g:ScreenX(); A = rotate3d(A,10,{Origin,vecK})
+B = A-vecK
 g:Dpolyline3d({{A,A+g:ScreenX()},{B,B+g:ScreenX()}})
 g:Linestyle("solid")
 g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$2$\\,cm",(A+B)/2,{pos="W"})
 g:Show()
 \end{luadraw}
+
 \end{demo}
 
 \paragraph{Notes}:
@@ -177,7 +180,8 @@ The \textbf{g:addDots(dots,options)} method allows you to add 3D points to the s
 
 The \textbf{g:addLabel(text1, anchor1, options1, text2, anchor2, options2, ...)} method allows you to add the labels \emph{text1}, \emph{text2}, etc. The (required) arguments \emph{anchor1}, \emph{anchor2}, etc., are 3D points representing the anchor points of the labels. The (required) arguments \emph{options1}, \emph{options2}, etc., are 7-field tables. These options are:
 \begin{itemize}
-    \item \opt{color}: String defining the label color, initialized to the current label color.     \item \opt{style}: String defining the label style (as in 2D: "N", "NW", "W", ...), initialized to the current label style.
+    \item \opt{color}: String defining the label color, initialized to the current label color.
+    \item \opt{pos}: A string defining the position of the label relative to the anchor point (as in 2d: "N", "NW", "W", ...), initialized to the current style of the labels.
     \item \opt{dist=0}: Expresses the distance between the label and its anchor point (in the screen plane).
     \item \opt{size}: String defining the label size, initialized to the current label size.
     \item \opt{dir=\{\}}: Table defining the writing direction in space (usual direction by default).

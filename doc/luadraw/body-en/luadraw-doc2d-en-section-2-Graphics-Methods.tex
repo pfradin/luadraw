@@ -156,10 +156,10 @@ Variant: the \textbf{g:Dline(A,B,draw\_options)} method draws the line passing t
     \item The \textbf{lineEq(a,b,c)} function returns the line with the equation \(ax+by+c=0\) as a list \emph{\{A,u\}} where \emph{A} is a point on the line and \emph{u} is a direction vector. \end{itemize}
 
 \subsubsection{Dmarkarc}
-The method \textbf{g:Dmarkarc(b,a,c,r,n,long,space)} marks the arc of a circle with center \emph{a}, radius \emph{r}, extending from \emph{b} to \emph{c}, with \emph{n} small segments. By default, the length (argument \emph{long}) is 0.25, and the spacing (argument \emph{space}) is 0.0625.
+The method \textbf{g:Dmarkarc(b,a,c,r,n,long,space,draw\_options)} marks the arc of a circle with center \emph{a}, radius \emph{r}, extending from \emph{b} to \emph{c}, with \emph{n} small segments. By default, the length (argument \emph{long}) is 0.25, and the spacing (argument \emph{space}) is 0.0625. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
 
 \subsubsection{Dmarkseg}
-The method \textbf{g:Dmarkseg(a,b,n,long,space,angle)} marks the segment defined by \emph{a} and \emph{b} with \emph{n} small segments inclined at \emph{angle} degrees (45° by default). By default, the length (argument \emph{long}) is 0.25, and the spacing (argument \emph{space}) is 0.125.
+The method \textbf{g:Dmarkseg(a,b,n,long,space,angle,draw\_options)} marks the segment defined by \emph{a} and \emph{b} with \emph{n} small segments inclined at \emph{angle} degrees (45° by default). By default, the length (argument \emph{long}) is 0.25, and the spacing (argument \emph{space}) is 0.125. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
 
 \subsubsection{Dmed}
 \begin{itemize}
@@ -197,6 +197,40 @@ The \textbf{g:Dseg(seg,scale,draw\_options)} method draws the segment defined by
     \item The method \textbf{g:DtangentI(f,x0,y0,long,draw\_options)} draws the tangent to the implicit curve with equation \(f(x,y)=0\), at the assumed point \emph{(x0,y0)} on the curve. If the argument \emph{long} is \emph{nil} (the default value), then the entire line is drawn; otherwise, it is a segment of length \emph{long}. The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}.
     \item The function \textbf{tangentI(f,x0,y0,long)} returns either the line or a segment (depending on whether \emph{long} is \emph{nil} or not).
 \end{itemize}
+
+
+\subsubsection{ Dtangent\_from}
+
+\begin{itemize}
+    \item The method \textbf{g:Dtangent\_from(A,p,t1,t2,dp,draw\_options,out)} draws the tangent(s) to the curve parameterized by \(p: t \mapsto p(t)\) (with complex values) originating from the point $A$ (a complex number). The arguments \emph{t1} and \emph{t2} represent the bounds of the search interval. The optional argument \emph{dp} is a function representing the derivative of the function $p$; by default, this argument is \emph{nil}, and the derivative of $p$ is replaced by an approximation. The optional argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction. The optional argument \emph{out}, if used, must be the name of a variable. This variable must be an array, and at the end of execution, it will contain the points on the curve for which the tangent passes through $A$.
+
+    \item The function \textbf{tangent\_from(A,p,t1,t2,dp)} returns the list of points on the curve parameterized by $p$, on the interval \emph{[t1;t2]}, for which the tangent passes through $A$ (a complex number). If there are no points, the function returns an empty list.
+\end{itemize}
+
+\begin{demo}{Tangents from a point}
+\begin{luadraw}{name=tangent_from}
+local i, cos, sin, pi = cpx.I, math.cos, math.sin, math.pi
+local g = graph:new{window={-5,5,-5,5}, size={10,10}}
+local p1 = function(t) return t+i*(t^2/4-1) end -- parabola
+local p2 = function(t) return 1/2+i+rotate(2*cos(t)+i*sin(t),15) end -- ellipse
+local p3 = function(t) return math.sinh(t)+i*math.cosh(t)-i*2 end -- branch of a hyperbola
+local p4 = function(t) return 2*cos(3*t)*cpx.exp(i*t) end -- other
+local P = 0.5-1.25*i
+local draw = function(p,t1,t2)
+    local axis_style = { arrows='-Stealth', legend={'$x$','$y$'} }
+    local S = {}
+    g:Daxes({0, 1, 1}, axis_style)
+    g:Dparametric(p,{t={t1,t2}, draw_options="line width=0.8pt, Crimson"})
+    g:Dtangent_from(P,p,t1,t2,"blue",S)
+    g:Ddots(S,"Crimson"); g:Ddots(P); g:Dlabel("$A$",P,{pos="S"})
+end
+g:Saveattr(); g:Viewport(-5,-0.25,0.25,5); g:Coordsystem(-3,4,-3,4); draw(p1,-4,4); g:Restoreattr()
+g:Saveattr(); g:Viewport(0.25,5,0.25,5); g:Coordsystem(-3,3,-3,3); draw(p2,-pi,pi); g:Restoreattr()
+g:Saveattr(); g:Viewport(-5,-0.25,-5,-0.25); g:Coordsystem(-3,4,-3,3); draw(p3,-4,4); g:Restoreattr()
+g:Saveattr(); g:Viewport(0.25,5,-5,-0.25); g:Coordsystem(-3,3,-3,3); draw(p4,-pi,pi); g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
 
 \subsubsection{Dnormal}
 \begin{itemize}
@@ -776,7 +810,10 @@ g:Show()
 \begin{itemize}
     \item The \emph{pos} field indicates the position of the label relative to the anchor point. It can be \emph{"N"} for north, \emph{"NE"} for northeast, \emph{"NW"} for northwest, or \emph{"S"}, \emph{"SE"}, \emph{"SW"}. By default, it is set to \emph{center}, and in this case the label is centered on the anchor point.
     \item The \emph{dist} field is a distance in cm that defaults to $0$. It is the distance between the label and its anchor point when \emph{pos} is not equal to \emph{center}.
-    \item \emph{dir=\{dirX,dirY,dep\}} is the writing direction (\emph{nil}, the default value, for the default direction). The three values ​​\emph{dirX}, \emph{dirY}, and \emph{dep} are three complex vectors representing three vectors: the first two indicate the writing direction, and the third a displacement (translation) of the label relative to the anchor point.     \item The \emph{node\_options} argument is a string (empty by default) intended to receive options that will be passed directly to tikz in the \emph{node{[}{]}} instruction.
+    
+    \item \emph{dir=\{dirX,dirY,dep\}} is the writing direction. The three values ​​\emph{dirX}, \emph{dirY}, and \emph{dep} are three complex numbers representing three vectors. The first two indicate the writing direction, and the third indicates a translation of the label relative to the anchor point. The vector \emph{dep} is zero by default, and the vector \emph{dirY}, if absent, is equal to the vector \emph{dirX} rotated 90 degrees in the clockwise direction. By default, the \emph{dir} option is equal to the current value of the writing direction.
+    
+    \item The \emph{node\_options} argument is a string (empty by default) intended to receive options that will be passed directly to tikz in the \emph{node{[}{]}} instruction.
     \item The labels are drawn in the current color of the document text, but the color can be changed with the \emph{node\_options} argument, for example, by setting: \emph{node\_options="color=blue"}.
 
 \textbf{Warning}: The options chosen for a label also apply to subsequent labels if they are unchanged.
@@ -786,11 +823,15 @@ g:Show()
 Global options for labels:
 
 \begin{itemize}
-    \item The \textbf{g:Labelstyle(position)} method allows you to specify the position of the labels relative to the anchor points. The \emph{position} argument is a string that can be: \emph{"N"} for north, \emph{"NE"} for northeast, \emph{"NW"} for northwest, or \emph{"S"}, \emph{"SE"}, \emph{"SW"}. By default, it
-is set to \emph{center}, in which case the label is centered on the anchor point.
+    \item The \textbf{g:Labelstyle(position)} method allows you to specify the position of the labels relative to the anchor points. The \emph{position} argument is a string that can be: \emph{"N"} for north, \emph{"NE"} for northeast, \emph{"NW"} for northwest, or \emph{"S"}, \emph{"SE"}, \emph{"SW"}. By default, it is set to \emph{center}, in which case the label is centered on the anchor point.
+    
     \item The \textbf{g:Labelcolor(color)} method allows you to set the color of the labels. The \emph{color} argument is a string representing a color for tikz. By default, the argument is an empty string, which represents the current color of the document.
+    
     \item The \textbf{g:Labelangle(angle)} method allows you to specify an angle (in degrees) for rotating the labels around the anchor point. This angle is zero by default.
+    
     \item The \textbf{g:Labelsize(size)} method allows you to manage the size of the labels. The \emph{size} argument is a string that can be: \emph{"tiny"}, or \emph{"scriptsize"}, or \emph{"footnotesize"}, etc. By default, the argument is an empty string, which represents the \emph{"normalsize"} size.
+    
+    \item The \textbf{g:Labeldir(dir)} method allows you to manage the writing direction. The argument \emph{dir} is an table of the form \emph{dir=\{dirX, dirY, dep\}}. The three values ​​\emph{dirX}, \emph{dirY}, and \emph{dep} are three complex numbers representing three vectors. The first two indicate the writing direction, and the third indicates a translation of the label relative to the anchor point. The vector \emph{dep} is zero by default, and the vector \emph{dirY}, if absent, is equal to the vector \emph{dirX} rotated 90 degrees in the clockwise direction. When \emph{dir=\{\}}, this represents the usual writing direction.    
 \end{itemize}
 
     \item The \textbf{g:Dlabeldot(text,anchor,args)} method allows you to place a label and draw the anchor point at the same time.
@@ -978,6 +1019,7 @@ The formula that defines the label at tick mark number $n$ is: \textbf{(originnu
     \item \opt{legendpos=\{0.975,0.975\}}. This option specifies the position (between $0$ and $1$) of the legend relative to each axis.
     \item \opt{legendsep=\{0.2,0.2\} }. This option specifies the distance between the legend and the axis. The legend is on the other side of the axis from the graduations.
     \item \opt{legendangle=\{"auto","auto"\}}. This option specifies the angle (in degrees) that the legend should make for the axis. The default value "auto" means that the legend must be parallel to the axis if the \emph{labelstyle} option is also set to "auto", otherwise the legend is horizontal.
+    \item \opt{legendstyle=\{"auto","auto"\}}. Specifies the label style for the legends; with the value \emph{"auto"}, it is determined automatically; otherwise, the following values ​​can be used: "N", "NW", "W", "SW", "S", "SE", "E", "NE".
     \item \opt{labelpos=\{"bottom","left"\}}. This option specifies the position of the labels relative to the axis. For the $Ox$ axis, the possible values ​​are: "none", "bottom", or "top", for the $Oy$ axis it is: "none", "right", or "left".
     \item \opt{labelden=\{1,1\}}. ​​This option specifies the denominator of the labels (integer) for the axis. The formula that defines the label at graduation number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
     \item \opt{labeltext=\{"",""\}}. This option defines the text that will be added to the numerator of the labels for the axis.
@@ -1036,6 +1078,7 @@ The formula that defines the label at tick mark number $n$ is: \textbf{(originnu
     \item \opt{legendpos=0.975}. This option specifies the position (between $0$ and $1$) of the legend relative to the axis.
     \item \opt{legendsep=0.2}. This option specifies the distance between the legend and the axis. The legend is on the other side of the axis from the graduations.
     \item \opt{legendangle="auto"}. This option specifies the angle (in degrees) that the legend should make for the axis. The default value "auto" means that the legend must be parallel to the axis if the \emph{labelstyle} option is also set to "auto", otherwise the legend is horizontal.
+    \item \opt{legendstyle="auto"}. Specifies the label style for the legend. With the value \emph{"auto"}, the style is determined automatically; otherwise, the following values ​​can be used: "N", "NW", "W", "SW", "S", "SE", "E", "NE".
     \item \opt{labelpos="bottom"} for $Ox$ and \opt{labelpos="left"} for $Oy$. This option specifies the position of the labels relative to the axis. For the $Ox$ axis, the possible values ​​are: "none", "bottom", or "top", for the $Oy$ axis it is: "none", "right", or "left".
     \item \opt{labelden=1}. This option specifies the denominator of the labels (integer) for the axis. The formula that defines the label at graduation number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
     \item \opt{labeltext=""}. This option defines the text that will be added to the numerator of the labels.
@@ -1071,8 +1114,8 @@ The formula that defines the label at graduation number $n$ (at point $A+nu$) is
     \item \opt{legendpos=0.975}. This option specifies the position (between $0$ and $1$) of the legend relative to the axis.
     \item \opt{legendsep=defaultlegendsep}. This option specifies the distance between the legend and the axis. The legend is on the other side of the axis from the graduations; \emph{defaultlegendsep} is a global variable that defaults to 0.2.
     \item \opt{legendangle="auto"}. This option specifies the angle (in degrees) that the legend should form for the axis. The default value "auto" means that the legend must be parallel to the axis if the \emph{labelstyle} option is also set to "auto", otherwise the legend is horizontal.
-    \item \opt{legendstyle="auto"}. Specifies the position of the legend relative to the axis. Possible values ​​are: "auto", "top", or "bottom".
-    \item \opt{labelpos="bottom"}. This option specifies the position of the labels relative to the axis. Possible values ​​are: "none", "bottom", or "top".
+    \item \opt{legendstyle="auto"}. Specifies the label style for the legend. With the value \emph{"auto"}, the style is determined automatically; otherwise, the following values ​​can be used: "N", "NW", "W", "SW", "S", "SE", "E", "NE".
+    \item \opt{labelpos="bottom"}. This option specifies the position of the labels relative to the axis. The possible values ​​are: "none", "bottom", or "top". This position also determines the position of the legend: on the opposite side of the axis.
     \item \opt{labelden=1}. This option specifies the denominator of the labels (integer) for the axis. The formula that defines the label at graduation number $n$ is: \textbf{(originnum + unit*n)"labeltext"/labelden}.
     \item \opt{labeltext=""}. This option defines the text that will be added to the numerator of the labels.     \item \opt{labelstyle="auto"}. This option defines the label style. Possible values ​​are "auto", "N", "NW", "W", "SW", "S", "SE", "E".
     \item \opt{labelangle=0}. This option defines the angle of the labels in degrees from the horizontal.

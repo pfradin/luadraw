@@ -118,18 +118,18 @@ g:Show()
 
 \begin{demo}{Hyperbole : intersection cône - plan}
 \begin{luadraw}{name=hyperbole}
-local g = graph3d:new{window={-6,6,-8,6}, viewdir={45,60}, size={10,10}}
-Hiddenlinestyle = "dashed"
+local g = graph3d:new{window={-8,6,-9,9},bbox=false, viewdir=perspective("central",45,65), size={10,10}}
+Hiddenlinestyle = "dashed"; Hiddenlines = true
 local C1 = cone(Origin,4*vecK,3,35,true)
 local C2 = cone(Origin, -4*vecK,3,35,true)
-local P = {M(1,0,-1),vecI} -- plan de coupe
-local I1 = g:Intersection3d(C1,P) -- intersection entre le cône C1 et le plan P
-local I2 = g:Intersection3d(C2,P) -- intersection entre le cône C2 et le plan P
+local P = {M(1,-1,-2),vecI} -- sectional plan
+local I1 = g:Intersection3d(C1,P) -- intersection between cone C1 and plane P
+local I2 = g:Intersection3d(C2,P) -- intersection between cone C2 and plane P
 -- I1 et I2 sont de type Edges (arêtes)
 g:Dcone(Origin,4*vecK,3,{color="orange"}); g:Dcone(Origin,-4*vecK,3,{color="orange"})
 g:Lineoptions("solid","Navy",8)
-g:Dedges(I1,{hidden=true}); g:Dedges(I2,{hidden=true}) -- dessin des arêtes I1 et I2
-g:Dplane(P, vecK,12,8)
+g:Dedges(I1); g:Dedges(I2) -- drawing of edges I1 and I2
+g:Dplane(P, vecK,14,9)
 g:Show()
 \end{luadraw}
 \end{demo}
@@ -144,18 +144,18 @@ local y0, R = 1, 2.5
 local C = cone(M(0,0,3),-6*vecK,R,35,true) -- cone ouvert
 local P1 = {M(0,0,0),vecK+vecJ} -- 1er plan de coupe
 local P2 = {M(0,y0,0),vecJ} -- 2ieme plan de coupe
-local I, I2 
+local I, I2
 local dessin = function() -- un dessin par vue
-    g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
-    I1 = g:Intersection3d(C,P1) -- intersection entre le cône C et les plans P1 et P2
-    I2 = g:Intersection3d(C,P2) -- I1 et I2 sont de type Edges
-    g:Dpolyline3d( {{M(0,-3,3),M(0,0,3),M(0,0,-3),M(3,0,-3)}, {M(0,0,-3),M(0,3,-3)}},"red,line width=0.4pt" )
-    g:Dcone( M(0,0,3),-6*vecK,R, {color="cyan"})
-    g:Dedges(I1, {hidden=true,color="Navy", width=8})
-    g:Dedges(I2, {hidden=true,color="DarkGreen", width=8})
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+I1 = g:Intersection3d(C,P1) -- intersection entre le cône C et les plans P1 et P2
+I2 = g:Intersection3d(C,P2) -- I1 et I2 sont de type Edges
+g:Dpolyline3d( {{M(0,-3,3),M(0,0,3),M(0,0,-3),M(3,0,-3)}, {M(0,0,-3),M(0,3,-3)}},"red,line width=0.4pt" )
+g:Dcone( M(0,0,3),-6*vecK,R, {color="cyan"})
+g:Dedges(I1, {hidden=true,color="Navy", width=8})
+g:Dedges(I2, {hidden=true,color="DarkGreen", width=8})
 end
 -- en haut à gauche, vue dans l'espace, on ajoute les plans au dessin
-g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-7,6,-6,5,1); g:Setviewdir(30,60); dessin()
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-7,6,-6,5,1); g:Setviewdir(perspective("central")); dessin()
 g:Dpolyline3d( {M(-3,-3,3),M(3,-3,3),M(3,3,-3),M(-3,3,-3)},"Navy,line width=0.8pt")
 g:Dpolyline3d( {M(-3,y0,3),M(3,y0,3),M(3,y0,-3)},"DarkGreen,line width=0.8pt")
 g:Dlabel3d( "$P_1$",M(3,-3,3),{pos="SE",dir={-vecI,-vecJ+vecK},node_options="Navy, draw"})
@@ -181,7 +181,7 @@ La fonction \textbf{red\_obj\_file(file)}\footnote{Cette fonction est une contri
 \begin{demo}{Masque de Nefertiti}
 \begin{luadraw}{name=lecture_obj}
 local P,bbox = read_obj_file("obj/nefertiti.obj")
-local g = graph3d:new{window3d=bbox,window={-7,5,-8,5},viewdir={35,60},
+local g = graph3d:new{window3d=bbox,window={-6,5,-7,7},viewdir=perspective("central",35,65,20),
     margin={0,0,0,0}, size={10,10}, bg="LightGray"}
 g:Dpoly(P, {usepalette={palAutumn,"z"},mode=mShadedOnly})
 g:Show() 
@@ -227,7 +227,7 @@ Il y a deux méthodes possibles :
 \begin{demo}[courbeniv]{Exemple de courbes de niveaux sur une surface}
 \begin{luadraw}{name=courbes_niv}
 local cos, sin = math.cos, math.sin, math.pi
-local g = graph3d:new{window3d={0,5,0,10,0,11}, adjust2d=true, size={10,10}, viewdir={220,60}}
+local g = graph3d:new{window3d={0,5,0,10,0,11}, adjust2d=true, size={10,10}, viewdir=perspective("central",220,60,15,M(2.5,5,5.5))}
 g:Labelsize("footnotesize")
 local S = cartesian3d(function(u,v) return (u+v)/(2+cos(u)*sin(v)) end,0,5,0,10,{30,30})
 local n = 10 -- nombre de niveaux
@@ -320,7 +320,7 @@ La fonction \textbf{curve2cone(f,t1,t2,S,args)} construit un cône de sommet $S$
 \begin{demo}{Exemple de cône elliptique}
 \begin{luadraw}{name=curve2cone}
 local cos, sin, pi = math.cos, math.sin, math.pi
-local g = graph3d:new{ window3d={-2,2,-4,4,-3,3},window={-5.5,5,-5,5},size={10,10}}
+local g = graph3d:new{ window3d={-2,2,-4,4,-3,3},window={-5.5,5.5,-5.5,5},size={10,10},viewdir=perspective("central")}
 local f = function(t) return M(2*cos(t),4*sin(t),-3) end -- ellipse dans le plan z=-3
 local C, bord = curve2cone(f,-pi,pi,Origin,{nbdiv=2, ratio=-1})
 g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
@@ -342,7 +342,7 @@ La fonction \textbf{curve2cylinder(f,t1,t2,V,args)} construit un cylindre d'axe 
 \begin{demo}{Section d'un cylindre non circulaire}
 \begin{luadraw}{name=curve2cylinder}
 local cos, sin, pi = math.cos, math.sin, math.pi
-local g = graph3d:new{ window3d={-5,5,-5,5,-4,4},window={-9,8,-7,7},viewdir={39,70},size={10,10}}
+local g = graph3d:new{ window3d={-5,5,-5,5,-4,4},window={-9,8,-10.5,5.5},viewdir=perspective("central",39,64),size={10,10}}
 local f = function(t) return M(4*cos(t)-cos(4*t),4*sin(t)-sin(4*t),-4) end -- courbe dans le plan z=-3
 local V = 8*vecK
 local C = curve2cylinder(f,-pi,pi,V,{nbdots=25,nbdiv=2})
@@ -554,7 +554,7 @@ En effet, la méthode \textbf{g:Box3d()} renvoie la fenêtre 3d courante sous fo
 
 \begin{demo}[clip3d]{Exemple avec clip3d : construction d'un dé à partir d'un cube et d'une sphère}
 \begin{luadraw}{name=clip3d}
-local g = graph3d:new{window={-3,3,-3,3},size={10,10}}
+local g = graph3d:new{window={-3,3,-3,3},size={10,10},viewdir=perspective("central")}
 local S = sphere(Origin,3)
 local C = parallelep(M(-2,-2,-2),4*vecI,4*vecJ,4*vecK)
 local C1 = clip3d(S,C) -- sphère clippée par le cube

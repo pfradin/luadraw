@@ -1,0 +1,36 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (0,0) rectangle (10.0,10.0);%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,0.502;green,0;blue,0.502}] (0.4176,0) -- (3.9146,4.428) -- (3.4361,5.1614) -- (0,6.6361) -- (0,0)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(2.108,5.025)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,0.3634;green,0;blue,0.5072}] (2.447,10) -- (3.2755,7.4403) -- (3.4361,5.1614) -- (0,6.6361) -- (0,10)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(2.62,6.218)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,0.1961;green,0;blue,0.6732}] (4.7646,4.6467) -- (4.872,4.8271) -- (4.7073,6.2462) -- (3.2755,7.4403) -- (3.4361,5.1614) -- (3.9146,4.428) -- (4.7444,4.6213)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(4.096,6.322)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,0;green,0;blue,1}] (2.447,10) -- (3.2755,7.4403) -- (4.7073,6.2462) -- (5.2515,7.355) -- (5.2789,10)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(4.523,6.834)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,0;green,0.6667;blue,0.3333}] (0.4176,0) -- (3.9146,4.428) -- (4.7444,4.6213) -- (9.1762,0)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(4.914,2.809)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,0.3333;green,1;blue,0}] (5.2515,7.355) -- (4.7073,6.2462) -- (4.872,4.8271) -- (6.0766,5.7829)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(5.285,6.46)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,1;green,1;blue,0}] (5.2789,10) -- (5.2515,7.355) -- (6.0766,5.7829) -- (6.4044,5.881) -- (7.9202,10)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(5.969,6.819)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,1;green,0.7647;blue,0}] (9.1762,0) -- (4.7444,4.6213) -- (4.7646,4.6467) -- (8.8074,4.5796) -- (10,4.0895) -- (10,0)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(6.548,4.376)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,1;green,0.4314;blue,0}] (6.4044,5.881) -- (8.8074,4.5796) -- (4.7646,4.6467) -- (4.872,4.8271) -- (6.0766,5.7829)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(6.556,4.858)};%
+\draw[color=white, line width=1.2pt,fill={rgb,1:red,1;green,0;blue,0}] (7.9202,10) -- (6.4044,5.881) -- (8.8074,4.5796) -- (10,4.0895) -- (10,10)--cycle;%
+\draw[mark=*,mark size=1.4pt,mark options={mark=x,white,scale=2,line width=1.2pt}] plot coordinates {(7.344,6.313)};%
+\draw[dotted,line width=0.6pt] (2.62,6.218) -- (2.108,5.025) -- (4.096,6.322)--cycle;%
+\draw[dotted,line width=0.6pt] (2.62,6.218) -- (4.096,6.322) -- (4.523,6.834)--cycle;%
+\draw[dotted,line width=0.6pt] (4.096,6.322) -- (2.108,5.025) -- (4.914,2.809)--cycle;%
+\draw[dotted,line width=0.6pt] (4.523,6.834) -- (4.096,6.322) -- (5.285,6.46)--cycle;%
+\draw[dotted,line width=0.6pt] (4.523,6.834) -- (5.285,6.46) -- (5.969,6.819)--cycle;%
+\draw[dotted,line width=0.6pt] (4.096,6.322) -- (4.914,2.809) -- (6.548,4.376)--cycle;%
+\draw[dotted,line width=0.6pt] (5.285,6.46) -- (4.096,6.322) -- (6.556,4.858)--cycle;%
+\draw[dotted,line width=0.6pt] (4.096,6.322) -- (6.548,4.376) -- (6.556,4.858)--cycle;%
+\draw[dotted,line width=0.6pt] (5.969,6.819) -- (5.285,6.46) -- (6.556,4.858)--cycle;%
+\draw[dotted,line width=0.6pt] (5.969,6.819) -- (6.556,4.858) -- (7.344,6.313)--cycle;%
+\draw[dotted,line width=0.6pt] (6.556,4.858) -- (6.548,4.376) -- (7.344,6.313)--cycle;%
+\end{scope}%
+\end{tikzpicture}%

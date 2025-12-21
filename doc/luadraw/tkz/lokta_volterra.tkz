@@ -1,4 +1,4 @@
-\begin{tikzpicture}[background rectangle/.style={,draw=black},show background rectangle]%
+\begin{tikzpicture}[line join=round,background rectangle/.style={,draw=black},show background rectangle]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,9.5);%
 \draw[-] (0.8182,0.8182) -- (9,0.8182);%
@@ -22,11 +22,17 @@
 \begin{scope}%
 \draw[->] (4.0909,6.1636) -- (9,6.1636);%
 \draw[-] (8.8868,6.3636) node[above] {\footnotesize $x$};%
-\draw[-] (4.7455,6.0636) -- (4.7455,6.2636) (6.0545,6.0636) -- (6.0545,6.2636) (7.3636,6.0636) -- (7.3636,6.2636) (8.6727,6.0636) -- (8.6727,6.2636);%
+\begin{scope}%
+\clip (4.0909,5.7273) rectangle (9,9);%
+\draw[-] (3.4364,6.0636) -- (3.4364,6.2636) (4.7455,6.0636) -- (4.7455,6.2636) (6.0545,6.0636) -- (6.0545,6.2636) (7.3636,6.0636) -- (7.3636,6.2636) (8.6727,6.0636) -- (8.6727,6.2636);%
+\end{scope}%
 \draw[-] (4.933,6.0636) node[below] {\footnotesize $0$} (6.0545,6.0636) node[below] {\footnotesize $1$} (7.3636,6.0636) node[below] {\footnotesize $2$} (8.6727,6.0636) node[below] {\footnotesize $3$};%
 \draw[->] (4.7455,5.7273) -- (4.7455,9);%
 \draw[-] (4.9455,8.9277) node[right] {\footnotesize $y$};%
-\draw[-] (4.8455,6.1636) -- (4.6455,6.1636) (4.8455,7.0364) -- (4.6455,7.0364) (4.8455,7.9091) -- (4.6455,7.9091) (4.8455,8.7818) -- (4.6455,8.7818);%
+\begin{scope}%
+\clip (4.0909,5.7273) rectangle (9,9);%
+\draw[-] (4.8455,5.2909) -- (4.6455,5.2909) (4.8455,6.1636) -- (4.6455,6.1636) (4.8455,7.0364) -- (4.6455,7.0364) (4.8455,7.9091) -- (4.6455,7.9091) (4.8455,8.7818) -- (4.6455,8.7818);%
+\end{scope}%
 \draw[-] (4.6455,6.3511) node[left] {\footnotesize $0$} (4.6455,7.0364) node[left] {\footnotesize $1$} (4.6455,7.9091) node[left] {\footnotesize $2$} (4.6455,8.7818) node[left] {\footnotesize $3$};%
 \pgfsetstrokecolor{ForestGreen}%
 \pgfsetlinewidth{0.8pt}%

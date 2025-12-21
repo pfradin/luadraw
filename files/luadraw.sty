@@ -1,4 +1,4 @@
-% luadraw.sty version 2.3 du 13/11/2025%
+% luadraw.sty version 2.4 du 21/12/2025%
 %% ---------------------------------------%
 %% Copyright (C) 2025 Patrick Fradin%
 %% ---------------------------------------%
@@ -31,7 +31,7 @@
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2025/11/13 version 2.3, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2025/12/21 version 2.4, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%
@@ -133,9 +133,10 @@ function graph:Save() -- on écrit la méthode Save pour faire une sauvegarde du
 end
 \end{luacode*}
 \ifluaDraw@DefaultThreeD%
-\directlua{%
+\begin{luacode*}
 graph3d = require 'luadraw_graph3d' -- définition de la classe graph3d
-}%
+require 'luadraw_central_perspective' -- chargement de la perspective centrale
+\end{luacode*}
 \fi%
 %
 \endinput%%

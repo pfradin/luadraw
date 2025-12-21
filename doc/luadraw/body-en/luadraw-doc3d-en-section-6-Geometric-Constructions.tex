@@ -25,6 +25,8 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
+\paragraph{Special case}: when all points of $L$ are in the same plane, we can use the function \textbf{cvx\_hull3dcoplanar(L,n)} where $n$ is a vector orthogonal to the plane. This function returns a facet (list of 3d points).
+
 \subsection{Planes: plane(), planeEq(), orthoframe(), plane2ABC()}
 
 A plane in space is a table of the form $\{A,n\}$ where $A$ is a point in the plane (3d point) and $n$ is a normal vector to the plane (non-zero 3d point).
@@ -37,7 +39,7 @@ A plane in space is a table of the form $\{A,n\}$ where $A$ is a point in the pl
 
 \begin{demo}{Faces of a cube with holes in it and a regular hexagon}
 \begin{luadraw}{name=plans}
-local g = graph3d:new{window={-3,3,-3.25,3.25},margin={0,0,0,0},viewdir={20,60},bg="LightGray",size={10,10}}
+local g = graph3d:new{window={-3,3,-3.25,3.25}, margin={0,0,0,0}, viewdir=perspective("central",20,60), bg="LightGray", size={10,10}}
 Hiddenlines = true; Hiddenlinestyle = "dashed"
 local p = polyreg(0,1,6)
 local P = parallelep(M(-2,-2,-2),4*vecI,4*vecJ,4*vecK)

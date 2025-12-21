@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -10,7 +10,6 @@
 -- Tout ce qui touche au dessin de base, sans les axes
 
 local luadraw_calc = require 'luadraw_calc'
-
 
 local luadraw_graph = {}
 setmetatable(luadraw_graph, {__index = luadraw_calc}) -- obligatoire pour l'héritage
@@ -52,6 +51,7 @@ function luadraw_graph:new(args) -- argument de la forme :
             ["labelstyle"] = "center", -- position du label "center" ou "N" ou "S", ou "E", etc...
             ["labelcolor"] = "", -- couleur du  document  par défaut
             ["labelsize"] = "", --taille normale par défaut, ou "tiny", ou "small" ou ...
+            ["labeldir"] = {}, -- direction de l'écriture (la table vide correspond au sens usuel)
             ["labelangle"] = 0 -- orientation du label
             }
     graph.advancedparam = table.copy(graph.currentparam)
@@ -457,7 +457,7 @@ function luadraw_graph:Filloptions(style,strCoul,opacity,evenOdd)
     --if (style == "none") then self.param.fillstyle = style; return end    
     if (style == "none") or (style == "full") then 
         self.param.fillstyle = style 
-        if not ok then self:Writeln("\\pgfsetfillcolor{"..self.param.fillcolor.."}") end
+        if (not ok) or (style == "full") then self:Writeln("\\pgfsetfillcolor{"..self.param.fillcolor.."}") end
         return 
     end
     if style == "bdiag" then self.param.fillstyle = style; self:Writeln("\\pgfsetfillpattern{north east lines}{"..self.param.fillcolor.."}"); return end
@@ -514,6 +514,12 @@ function luadraw_graph:Labelangle(angle)
 -- angle est en degré, rotation du label autour du point d'ancrage
     angle = angle or 0
     self.param.labelangle = angle
+end
+
+function luadraw_graph:Labeldir(dir)
+-- dir est une table {dirX, dirY, dep} iniquant e sens de l'écriture, table vide par défaut
+    dir = dir or {}
+    self.param.labeldir = dir
 end
 
 function luadraw_graph:Gradstyle(chaine)
@@ -873,7 +879,7 @@ function luadraw_graph:Dseg(segm,scale,draw_options) -- Dseg({a,b}, scale, draw_
     end
 end
 
-function luadraw_graph:Dmarkseg(a,b,n,long,espace,angle)
+function luadraw_graph:Dmarkseg(a,b,n,long,espace,angle,draw_options)
 -- marque le segment [a,b] avec n petits segments penchés de angle degrés (45° par défaut), 
 -- l'espacement est en unité graphique et la longueur en cm.}
     a = toComplex(a); b = toComplex(b)
@@ -882,6 +888,7 @@ function luadraw_graph:Dmarkseg(a,b,n,long,espace,angle)
     long = long or 0.25
     espace = espace or 0.125
     angle = (angle or 45)*math.pi/180
+    draw_options = draw_options or ""
     local l = cpx.abs(b-a)
     local v = (b-a)/l
     local u = long/2*cpx.exp(cpx.I*angle)*v 
@@ -892,10 +899,10 @@ function luadraw_graph:Dmarkseg(a,b,n,long,espace,angle)
         table.insert(res, {c-u, c+u})
         c = c + pas
     end
-    self:Dpolyline(res)
+    self:Dpolyline(res,false,draw_options)
 end
 
-function luadraw_graph:Dmarkarc(b,a,c,r,n,long,espace)
+function luadraw_graph:Dmarkarc(b,a,c,r,n,long,espace,draw_options)
 -- marque l'arc de cercle BAC de n segments
 -- l'espacement est en unité graphique et la longueur en cm.}
     a = toComplex(a); b = toComplex(b); c = toComplex(c)
@@ -904,6 +911,7 @@ function luadraw_graph:Dmarkarc(b,a,c,r,n,long,espace)
     n = n or 1
     long = (long or 0.25)/2
     espace = (espace or 0.0625)/r
+    draw_options = draw_options or ""
     local dep = cpx.arg(b-a) + (cpx.arg((c-a)/(b-a))-(n-1)*espace)/2 
     local res = {}
     for k = 0, n-1 do 
@@ -911,7 +919,7 @@ function luadraw_graph:Dmarkarc(b,a,c,r,n,long,espace)
         local v = p/cpx.abs(p)
         table.insert(res, { a+r*p+long*v, a+r*p-long*v})
     end
-    self:Dpolyline(res)
+    self:Dpolyline(res,false,draw_options)
 end
     
 -- polygone régulier
@@ -1168,6 +1176,20 @@ function luadraw_graph:DtangentI(f,x0,y0,long,draw_options)
     end
 end
 
+function luadraw_graph:Dtangent_from(A,p,t1,t2,dp,draw_options,out)
+-- dessin des tangentes à la courbe paramétrée par p:t ->p(t), issues du point from A (nombre complexe)
+-- t1,t2 :bornes d el'intervalle de recherche
+-- dp (optionnel) fonction dérivée de p
+-- out doit être une table, elle permet de récupérer les points de contacts
+    if type(dp) == "string" then out = draw_options; draw_options = dp; dp = nil end
+    out = out or {}
+    local S = tangent_from(A,p,t1,t2,dp)
+    for _,B in ipairs(S) do
+        table.insert(out,B)
+        self:Dline(A,B,draw_options)
+    end
+end
+
 function luadraw_graph:Dnormal(p,t0,long,draw_options)
 -- dessin de la normale à la courbe paramétrée par t->p(t) (à valeurs complexes)
 -- au point de paramètre t0. 
@@ -1215,7 +1237,7 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
     local options, first, sep = "", true, ""
     if self.param.labelcolor ~= "" then options = "color="..self.param.labelcolor; sep = "," end
     local commande = "\\draw[-"..sep..options.."]"
-    local texte, anchor, pos, dist, dir = "", nil, self.param.labelstyle, 0, nil
+    local texte, anchor, pos, dist, dir = "", nil, self.param.labelstyle, 0, self.param.labeldir
     local node_options = ""
     local args = {}
     local x1,x2,y1,y2 = table.unpack(self:Getview())
@@ -1232,15 +1254,16 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
         anchor = toComplex(anchor)
         if (anchor == nil) then return end
         local dir_str = ""
-        if dir ~= nil then -- changement de direction de l'écriture
+        if (type(dir) == "table") and (#dir > 0) then -- changement de direction de l'écriture
             local u, v, dep = table.unpack(dir)
-            u = toComplex(u); v = toComplex(v)
+            u = toComplex(u); 
+            if v == nil then v = cpx.I*u else v = toComplex(v) end
             if dep == nil then dep = 0 end
             dep = toComplex(dep)
             if not isID(self.matrix) then
                 u, v = table.unpack( self:MLtransform({u,v}) )
             end
-            u, v = u/cpx.abs(u), v/cpx.abs(v)
+            u, v = cpx.normalize(u), cpx.normalize(v)
             dir_str = "cm={"..strReal(u.re)..","..strReal(u.im)..","..strReal(v.re)..","..strReal(v.im)..",("..strReal(dep.re)..","..strReal(dep.im)..")}"
         end
         local tikz_pos = style[pos]
@@ -1622,7 +1645,7 @@ function luadraw_graph:Dellipticarc(B, A, C, rx, ry, sens, inclin,draw_options)
 -- dessine un arc d'ellipse de centre A, et de AB vers AC
 -- rx et ry sont en cm
 -- sens = +/-1 (1 pour le sens trigo), inclin est l'inclinaison en degrés par rapport à l'horizontale
-    if type(inclin) == "string" then draw_otions = inclin; inclin = nil end
+    if type(inclin) == "string" then draw_options = inclin; inclin = nil end
     local S = ellipticarcb(B, A, C, rx, ry, sens or 1, inclin or 0)
     self:Dpath(S,draw_options) -- arc d'ellipse en courbes de Bézier
 end   

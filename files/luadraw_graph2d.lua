@@ -1,6 +1,6 @@
 -- luadraw_graph2d.lua
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -101,7 +101,7 @@ function luadraw_graph2d:Poslab(dir,alpha)
 -- en faisant un angle de alpha degrés par rapport à Ox
     dir = toComplex(dir)
     dir = applyLmatrix(dir,self.matrix)
-    local angle = self:Arg(dir)*180/math.pi - alpha -- angle entre -180 et 180
+    local angle = self:Arg(dir)*180/math.pi - alpha -- angle entre -180 et 180 -- self:Arg
     if angle > 180 then angle = angle -360 end
     if angle < -180 then angle = angle + 360 end
     if (-22.5 < angle) and (angle <= 22.5) then return "E" end
@@ -178,7 +178,8 @@ function luadraw_graph2d:Dgradline(d, options)
     else
         if cpx.dot(u,L[1]-A) < 0 then k1 = -k1 end
     end
-    k1 = math.ceil(k1);  k2 = math.floor(k2)
+    --k1 = math.ceil(k1);  k2 = math.floor(k2)
+    k1 = nearest(k1);  k2 = nearest(k2)
     if gradlimits ~= "auto" then 
         local q1 = math.floor(gradlimits[1])*(nbsubdiv+1)
         local q2 = math.floor(gradlimits[2])*(nbsubdiv+1)
@@ -235,7 +236,6 @@ function luadraw_graph2d:Dgradline(d, options)
         else
             self:Dlabel(legend,lpos, {pos = legendstyle})
         end
-
     end
     -- graduations
     local O = A+(k1-1)*pas
@@ -386,6 +386,7 @@ function luadraw_graph2d:DaxeX(d, options)
     options.legendpos = options.legendpos or 0.975 -- nombre entre 0 et 1
     options.legendsep = options.legendsep or defaultlegendsep 
     options.legendangle = options.legendangle or "auto" 
+    options.legendstyle = options.legendstyle or "auto" 
 
     options.labelpos = options.labelpos or "bottom" -- "none" or "top" or "bottom"
     options.labelden = options.labelden or 1 -- dénominateur (entier)
@@ -404,11 +405,13 @@ function luadraw_graph2d:DaxeX(d, options)
     end
     if options.limits ~= "auto" then 
         local x1, x2 = options.limits[1], options.limits[2]
-        options.limits = { math.ceil( (x1-A.re)/xpas ), math.floor( (x2-A.re)/xpas) }
+        --options.limits = { math.ceil( (x1-A.re)/xpas ), math.floor( (x2-A.re)/xpas) }
+        options.limits = { (x1-A.re)/xpas, (x2-A.re)/xpas }
     end
     if options.gradlimits ~= "auto" then 
         local x1, x2 = options.gradlimits[1], options.gradlimits[2]
-        options.gradlimits = { math.ceil( (x1-A.re)/xpas ), math.floor( (x2-A.re)/xpas) }
+        --options.gradlimits = { math.ceil( (x1-A.re)/xpas ), math.floor( (x2-A.re)/xpas) }
+        options.gradlimits = { nearest( (x1-A.re)/xpas ), nearest( (x2-A.re)/xpas) }
     end
     if (xpas < 0) and (options.labelpos ~= "none") then 
             if options.labelpos == "top" then options.labelpos = "bottom" else options.labelpos = "top" end
@@ -451,6 +454,7 @@ function luadraw_graph2d:DaxeY(d, options)
     options.legendpos = options.legendpos or 0.975 -- nombre entre 0 et 1
     options.legendsep = options.legendsep or defaultlegendsep 
     options.legendangle = options.legendangle or "auto" 
+    options.legendstyle = options.legendstyle or "auto" 
 
     options.labelpos = options.labelpos or "left" -- "none" or "right" or "left"
     options.labelden = options.labelden or 1 -- dénominateur (entier)
@@ -469,11 +473,13 @@ function luadraw_graph2d:DaxeY(d, options)
     end
     if options.limits ~= "auto" then 
         local x1, x2 = options.limits[1], options.limits[2]
-        options.limits = { math.ceil( (x1-A.im)/ypas ), math.floor( (x2-A.im)/ypas) }
+        --options.limits = { math.ceil( (x1-A.im)/ypas ), math.floor( (x2-A.im)/ypas) }
+        options.limits = { (x1-A.im)/ypas, (x2-A.im)/ypas }
     end
     if options.gradlimits ~= "auto" then 
         local x1, x2 = options.gradlimits[1], options.gradlimits[2]
-        options.gradlimits = { math.ceil( (x1-A.im)/ypas ), math.floor( (x2-A.im)/ypas) }
+        --options.gradlimits = { math.ceil( (x1-A.im)/ypas ), math.floor( (x2-A.im)/ypas) }
+        options.gradlimits = { nearest( (x1-A.im)/ypas ), nearest( (x2-A.im)/ypas) }
     end
     if (options.originpos ~= "none") and (options.originpos ~= "center") then 
         if options.originpos == "top" then options.originpos = "right" else options.originpos = "left" end
@@ -526,6 +532,7 @@ function luadraw_graph2d:Daxes(d, options)
     options.legendpos = options.legendpos or {0.975,0.975} -- nombre entre 0 et 1
     options.legendsep = options.legendsep or {defaultlegendsep,defaultlegendsep} 
     options.legendangle = options.legendangle or {"auto" ,"auto"}
+    options.legendstyle = options.legendstyle or {"auto" ,"auto"}
 
     options.labelpos = options.labelpos or {"bottom","left"} -- "none" or "right" or "left"
     options.labelden = options.labelden or {1,1} -- dénominateur (entier)
@@ -613,6 +620,7 @@ function luadraw_graph2d:Daxes(d, options)
              tickdir = options.tickdir[1],
              numericFormat = options.numericFormat[1],
              legendangle = options.legendangle[1],
+             legendstyle = options.legendstyle[1],
              labelshift = options.labelshift[1],
              mylabels = options.myxlabels})
              
@@ -641,6 +649,7 @@ function luadraw_graph2d:Daxes(d, options)
              tickdir = options.tickdir[2],
              numericFormat = options.numericFormat[2],
              legendangle = options.legendangle[2],
+             legendstyle = options.legendstyle[2],
              labelshift = options.labelshift[2],
              mylabels = options.myylabels})             
     end
@@ -674,13 +683,13 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     xpas = math.abs(xpas); ypas = math.abs(ypas)
     originloc = toComplex(originloc)
     local x1, y1 = originloc.re, originloc.im
-    local k = math.floor( (x1-xdep)/xpas )
+    local k = nearest( (x1-xdep)/xpas ) -- math.floor( (x1-xdep)/xpas )
     local xmin = x1-k*xpas
-    k = math.floor( (xfin-x1)/xpas )
+    k = nearest( (xfin-x1)/xpas ) -- math.floor( (xfin-x1)/xpas )
     local xmax = x1+k*xpas
-    k = math.floor( (y1-ydep)/ypas )
+    k = nearest( (y1-ydep)/ypas ) -- math.floor( (y1-ydep)/ypas )
     local ymin = y1-k*ypas
-    k = math.floor( (yfin-y1)/ypas )
+    k = nearest( (yfin-y1)/ypas ) --math.floor( (yfin-y1)/ypas )
     local ymax = y1+k*ypas
     local xdiv = (xmax-xmin)//xpas
     local ydiv = (ymax-ymin)//ypas
@@ -690,12 +699,12 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     local subgridpasy = ypas/ynbsubdiv
     local grille = {}
     local x = xmin
-    for k = 1, math.floor((xmax-xmin)*xnbsubdiv/xpas) do
+    for k = 1, nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas)
         if (k-1)%xnbsubdiv ~= 0 then insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) end
         x = x + subgridpasx
     end
     local y = ymin
-    for k = 1, math.floor((ymax-ymin)*ynbsubdiv/ypas) do
+    for k = 1, nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas)
         if (k-1)%ynbsubdiv ~= 0 then  insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) end
         y = y + subgridpasy
     end

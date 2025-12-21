@@ -1,13 +1,13 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   http://www.latex-project.org/lppl.txt.
 
-bezier_nbdots = 8 -- Minimum number of points calculated when converting a Bézier curve into a polygonal line.
+bezier_nbdots = 12 -- Minimum number of points calculated when converting a Bézier curve into a polygonal line.
 function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
 -- le paramétrage p est une fonction : t (réel) -> p(t) (cpx)
     local saut = (discont or false)
@@ -203,6 +203,7 @@ function periodic(f,period,x1,x2,nbdots,discont,nbdiv)
             table.insert(rep, aux)
         end
     end
+    rep = cutpolyline(rep,{x1,-cpx.I}); rep = cutpolyline(rep,{x2,cpx.I})
     return rep
 end
 

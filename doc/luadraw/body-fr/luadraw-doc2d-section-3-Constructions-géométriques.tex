@@ -22,7 +22,7 @@ La fonction \textbf{delaunay(L)} où \emph{L} est une liste de nombres complexes
 local g = graph3d:new{bbox=false, pictureoptions="scale=2"}
 local i = cpx.I; g:Linewidth(6)
 local L = {0.285+1.46*i,1.556-0.142*i,2.344+1.313*i,-2.38+1.218*i,1.548-0.624*i,0.969+1.819*i, -0.086-2.191*i,-0.477+1.834*i,-0.904+1.322*i,-2.892+0.025*i}
-local T = delaunay(L)
+local T = delaunay(L) -- list of triangles
 local n = #T
 local num = 7 -- we choose a triangle
 local colors = getpalette(palGasFlame,n)
@@ -32,6 +32,28 @@ end
 g:Ddots(L)
 g:Dcircle( {circumcircle(T[num])}, "line width=0.4pt,gray,dashed" )
 g:Ddots(T[num],"gray")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{voronoi()}
+
+La fonction \textbf{voronoi(L,window)} où \emph{L} est une liste de nombres complexes \textbf{distincts}, détermine le diagramme de Voronoï des points de la liste $L$. Cette fonction renvoie une liste d'éléments de la forme \emph{\{A,polygone\}}  où\emph{A} est un point la liste $L$, et \emph{polygone} une liste de nombres complexes représentant les sommets de la cellule associée à \emph{A}. Il y a ainsi une cellule par point de $L$. La cellule du point $A$ contient les points du plan qui sont plus proches de $A$ que des autres points de $L$. Cette fonction utilise la triangulation de Delaunay. L'argument optionnel \emph{window}, qui vaut par défaut \emph{\{-5,5,-5,5\}}, est utilisée pour clipper les cellules de Voronoï qui sont non bornées, cette fenêtre est automatiquement agrandie si nécessaire, pour contenir tous les points de $L$ ainsi que tous les centes des cercles circonscrits au triangles de Delaunay (attention: cela ne change pas la fenêtre 2d du graphique en cours).
+
+\begin{demo}{Diagramme de Voronoï}
+\begin{luadraw}{name=voronoi}
+local g = graph:new{ bbox=true, margin={0,0,0,0}, size={10,10}}
+local i = cpx.I
+local S = {0.285+1.46*i,1.556-0.142*i,2.344+1.313*i,-2.38+1.218*i,1.548-0.624*i,
+    0.969+1.819*i,-0.086-2.191*i,-0.477+1.834*i,-0.904+1.322*i,-2.892+0.025*i}
+local V = voronoi(S)
+local colors = getpalette(rainbow,#V)
+for k,T in ipairs(V) do
+    local A, polygon = table.unpack(T)
+    g:Dpolyline(polygon,true,"color=white, line width=1.2pt,fill="..colors[k])
+    g:Ddots(A,"mark=x,white,scale=2,line width=1.2pt")-- A is one of the points of S
+end
+g:Dpolyline(delaunay(S),true,"dotted,line width=0.6pt") -- Delaunay triangles
 g:Show()
 \end{luadraw}
 \end{demo}
@@ -60,6 +82,11 @@ g:Dlabel("close=false",1.5*i,{}); g:Dlabel("ends=false",0.5*i,{})
 g:Show()
 \end{luadraw}
 \end{demo}
+
+\subsection{parallel\_polyline()}
+
+La fonction \textbf{parallel\_polyline(L,width,close)} où \emph{L} est une liste de nombres complexes, ou une liste de listes de nombres complexes, renvoie une ligne polygonale parallèle à \emph{L} et située à une "distance" égale à \emph{width}. L'argument \emph{width} peut être positif ou négatif pour être d'un coté ou de l'autre de \emph{L} (cela dépend du sens de parcours de \emph{L}). L'argument optionnel \emph{close} est un booléen qui indique si \emph{L} doit être refermée (\emph{false} par défaut).
+
 
 \subsection{sss\_triangle()}
 

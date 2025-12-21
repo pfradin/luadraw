@@ -29,7 +29,7 @@ La méthode \textbf{g:Dscene3d(...)} permet cette construction. Elle prend en ar
 
 \begin{demo}[plans]{Premier exemple avec Dscene3d : intersection de deux plans}
 \begin{luadraw}{name=intersection_plans}
-local g = graph3d:new{viewdir={-10,60}, window={-5,5.5,-5.5,5.5},bg="gray", size={10,10}}
+local g = graph3d:new{viewdir=perspective("central",-10,60), window={-5,6.5,-6.5,6},bg="gray", size={10,10}}
 local P1 = planeEq(1,1,1,-2) -- plan d'équation x+y+z-2=0
 local P2 = {Origin, vecK-vecJ} -- plan passant par O et normal à (1,1,1)
 local D = interPP(P1,P2) -- droite d'intersection entre P1 et P2 (D = {A,u})
@@ -42,8 +42,8 @@ g:Dscene3d(
     g:addAxes(Origin, {arrows=1, color="Gold",width=8}),  -- ajout des axes fléchés
     g:addLabel( -- ajout de labels, ceux-ci auraient pu être ajoutés par dessus la scène
         "$D=P_1\\cap P_2$",posD,{color="Navy"},
-        "$P_2$", M(3,0,0)+3.5*M(0,1,1),{color="white",dir={vecI,vecJ+vecK}},
-        "$P_1$",M(2,0,0)+1.8*M(-1,-1,2), {dir={M(-1,1,0),M(-1,-1,2),1.125*M(1,-1,0)}}
+        "$P_2$", M(3,0,0)+3.5*M(0,1,1)+0.2*vecI,{color="white",dir={vecI,vecJ+vecK}},
+        "$P_1$",M(2,0,0)+1.85*M(-1,-1,2)-1.5*M(-1,1,0), {dir={M(-1,1,0),M(-1,-1,2)}}
         )
     )
 g:Show()
@@ -127,7 +127,7 @@ La méthode \textbf{g:addCircle(A,r,normal,options)} permet d'ajouter le cercle 
 
 \begin{demo}{Cylindre plein plongé dans de l'eau}
 \begin{luadraw}{name=cylindres_imbriques}
-local g = graph3d:new{window={-5,5,-6,5}, viewdir={30,75},size={10,10},margin={0,0,0,0}}
+local g = graph3d:new{window={-5,5,-7,5}, viewdir=perspective("central",30,65,20),size={10,10},margin={0,0,0,0}}
 Hiddenlines = false
 local R, r, A, B = 3, 1.5
 local C1 = cylinder(M(0,0,-5),5*vecK,R)  -- pour modéliser l'eau
@@ -148,16 +148,19 @@ g:Dscene3d(
 -- par dessus la scène 3d
 g:Lineoptions(nil,"black",8); A = 4*vecK; B = A+r*g:ScreenX()
 g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$3\\,$cm",(A+B)/2,{pos="N",dist=0.25})
-A = Origin+(r+1)*g:ScreenX(); B = A-3*vecK
+A = Origin+(r+1)*g:ScreenX(); A = rotate3d(A,-10,{Origin,vecK})
+B = A-3*vecK
 g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("h",(A+B)/2,{pos="E"})
 g:Lineoptions("dashed")
 g:Dpolyline3d({{A,A-g:ScreenX()},{B,B-g:ScreenX()}})
-A = Origin-(R+1)*g:ScreenX(); B = A-vecK
+A = Origin-(R+1)*g:ScreenX(); A = rotate3d(A,10,{Origin,vecK})
+B = A-vecK
 g:Dpolyline3d({{A,A+g:ScreenX()},{B,B+g:ScreenX()}})
 g:Linestyle("solid")
 g:Dpolyline3d( {A,B}, "<->"); g:Dlabel3d("$2$\\,cm",(A+B)/2,{pos="W"})
 g:Show()
 \end{luadraw}
+
 \end{demo}
 
 \paragraph{Remarques} : 
@@ -181,11 +184,11 @@ La méthode \textbf{g:addDots(dots,options)} permet d'ajouter des points 3d à l
 La méthode \textbf{g:addLabel(text1,anchor1,options1, text2,anchor2,options2, ...)} permet d'ajouter les labels \emph{text1}, \emph{text2}, etc. Les arguments (obligatoires) \emph{anchor1}, \emph{anchor2}, etc, sont des points 3d représentant les points d'ancrage des labels. Les arguments (obligatoires) \emph{options1}, \emph{options2}, etc, sont des tables à 7 champs. Ces options sont :
 \begin{itemize}
     \item \opt{color} : chaîne définissant la couleur du label, initialisée à la couleur en cours des labels.
-    \item \opt{style} : chaîne définissant le style de label (comme en 2d : "N", "NW", "W", ...),  initialisée au style en cours des labels.
+    \item \opt{pos} : chaîne définissant la position du label par rapport au point d'ancrage (comme en 2d : "N", "NW", "W", ...),  initialisée au style en cours des labels.
     \item \opt{dist=0} : exprime la distance entre le label et son point d'ancrage (dans le plan de l'écran).
     \item \opt{size} : chaîne définissant la taille du label,  initialisée à la taille en cours des labels.
     \item \opt{dir=\{\}} : table définissant le sens de l'écriture dans l'espace (sens usuel par défaut).
-    En général, \emph{dir=\{dirX,dirY,dep\}}, et les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois points 3d représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage.
+    En général, \emph{dir=\{dirX,dirY,dep\}}, et les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois points 3d représentant 3 vecteurs, les deux premiers (obligatoires) indiquent le sens de l'écriture, le troisième (facultatif) indique un déplacement (translation) du label par rapport au point d'ancrage.
     \item \opt{showdot=false} : booléen qui indique si un point (2d) doit être dessiné au point d'ancrage.
     \item \opt{matrix=ID3d} : matrice 3d de transformation, par défaut celle-ci est la matrice 3d de l'identité, c'est à dire la table \{M(0,0,0),vecI,vecJ,vecK\}.
 \end{itemize}
@@ -323,5 +326,3 @@ g:Dlabel3d("$A$", A, {pos="NW"}, "$I$", I, {}, "$B$", B, {pos="E"}, "$J$", J, {p
 g:Show()            
 \end{luadraw}
 \end{demo}
-
-

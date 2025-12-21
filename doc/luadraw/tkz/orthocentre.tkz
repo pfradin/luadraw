@@ -1,4 +1,4 @@
-\begin{tikzpicture}[background rectangle/.style={,fill=cyan!30},show background rectangle]%
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=cyan!30},show background rectangle]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,9.5);%
 \draw[draw=none,fill=Maroon,fill opacity=0.3] (4.5,8.1) -- (2.7,2.7) -- (7.65,4.5)--cycle;%
@@ -45,6 +45,7 @@
 \draw[] (6.1758,3.2587) -- (6.3797,3.1636);%
 \draw[-,color=blue] (4.5,8.1) node[above left=0.1cm] {$A$} (2.7,2.7) node[below left=0.1cm] {$B$} (6.493,2.6192) node[right=0.1cm] {$A_2$} (7.65,4.5) node[below=0.1cm] {$C$} (5.5552,5.1983) node[above right=0.1cm] {$H$} (6.0241,3.9088) node[below left=0.1cm] {$A_1$};%
 \pgfsetstrokecolor{black}%
+\pgfsetfillcolor{black}%
 \draw[mark=*,mark size=1.8pt] plot coordinates {(4.5,8.1)} plot coordinates {(2.7,2.7)} plot coordinates {(7.65,4.5)} plot coordinates {(5.5552,5.1983)} plot coordinates {(6.0241,3.9088)} plot coordinates {(6.493,2.6192)};%
 \pgfsetlinewidth{0.4pt}%
 \end{scope}%

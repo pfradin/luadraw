@@ -1,4 +1,4 @@
-\begin{tikzpicture}[background rectangle/.style={,fill=gray!30},show background rectangle]%
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=gray!30},show background rectangle]%
 \begin{scope}%
 \pgfsetstrokecolor{white}%
 \pgfsetlinewidth{0.8pt}%

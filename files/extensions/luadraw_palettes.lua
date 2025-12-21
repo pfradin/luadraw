@@ -1,6 +1,6 @@
 -- luadraw_palettes.lua 
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- This file is a contribution of Christophe Bal: 
 -----------------------------------------------------------------
 -- File created by the ''@prism'' project, version 1.2.1,      --

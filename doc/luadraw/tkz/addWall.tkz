@@ -118,14 +118,14 @@
 \pgfsetfillopacity{0.3}%
 \pgfsetfillcolor{Pink!71.55!black}%
 \pgfsetstrokeopacity{0.3}%
-\fill[] (5.6289,0) -- (6.7578,0.9777) -- (6.7578,7.0669) -- (5,5.5446) -- (5,0)--cycle;%
+\fill[] (5.6289,0) -- (6.7578,0.9777) -- (6.7578,7.0669) -- (5,5.5446) -- (5,0) -- (5.6289,0)--cycle;%
 \pgfsetstrokecolor{black}%
 \pgfsetdash{}{0pt}%
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (6.7578,0.9777) -- (6.7578,3.7517);%
 \draw[] (5.6289,0) -- (6.7578,0.9777);%
+\draw[] (6.7578,0.9777) -- (6.7578,3.7517);%
 \pgfsetstrokecolor{ForestGreen!50!white!75.79!black}%
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillopacity{1}%
@@ -252,15 +252,15 @@
 \pgfsetfillopacity{0.3}%
 \pgfsetfillcolor{Pink!89.13!black}%
 \pgfsetstrokeopacity{0.3}%
-\fill[] (5,0) -- (5,5.5446) -- (1.9554,6.4235) -- (1.9554,0.3343) -- (3.1134,0)--cycle;%
+\fill[] (5,0) -- (5,5.5446) -- (1.9554,6.4235) -- (1.9554,0.3343) -- (3.1134,0) -- (5,0)--cycle;%
 \pgfsetstrokecolor{black}%
 \pgfsetbuttcap%
 \pgfsetdash{}{0pt}%
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (1.9554,0.3343) -- (3.1134,0);%
 \draw[] (1.9554,2.567) -- (1.9554,0.3343);%
+\draw[] (1.9554,0.3343) -- (3.1134,0);%
 \pgfsetstrokecolor{Crimson!50!white!75.79!black}%
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillopacity{1}%
@@ -387,7 +387,7 @@
 \pgfsetfillopacity{0.3}%
 \pgfsetfillcolor{Pink!89.13!black}%
 \pgfsetstrokeopacity{0.3}%
-\fill[] (8.0446,0) -- (8.0446,4.6657) -- (5,5.5446) -- (5,0)--cycle;%
+\fill[] (8.0446,0) -- (8.0446,4.6657) -- (5,5.5446) -- (5,0) -- (8.0446,0)--cycle;%
 \pgfsetstrokecolor{Pink!71.55!black}%
 \pgfsetfillcolor{Pink!71.55!black}%
 \fill[] (5,5.5446) -- (3.2422,4.0223) -- (3.2422,0) -- (5,0) -- (5,5.5446)--cycle;%
@@ -397,11 +397,10 @@
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (8.0446,4.6657) -- (5,5.5446);%
-\draw[] (5,5.5446) -- (3.9851,4.6657);%
 \draw[] (8.0446,0) -- (8.0446,4.6657);%
+\draw[] (8.0446,4.6657) -- (5,5.5446);%
+\draw[] (5,5.5446) -- (3.2422,4.0223);%
 \draw[] (3.2422,4.0223) -- (3.2422,0);%
-\draw[] (3.9851,4.6657) -- (3.2422,4.0223);%
 \end{scope}%
 \end{scope}%
 \end{tikzpicture}%

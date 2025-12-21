@@ -2,11 +2,13 @@
 \begin{scope}%
 \clip (0,0) rectangle (10.0,10.0);%
 \pgfsetstrokecolor{LightGray}%
+\pgfsetlinewidth{0.4pt}%
 \begin{scope}%
 \clip (0,0) rectangle (10,10);%
 \draw[fill,ball color=orange] (8.8373,8.2055) .. controls (7.0582,10.3352) and (3.9241,10.6163) .. (1.7945,8.8373) .. controls (-0.3352,7.0582) and (-0.6163,3.9241) .. (1.1627,1.7945) .. controls (2.9418,-0.3352) and (6.0759,-0.6163) .. (8.2055,1.1627) .. controls (10.3352,2.9418) and (10.6163,6.0759) .. (8.8373,8.2055);%
 \end{scope}%
 \pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
 \pgfsetstrokecolor{DarkGreen}%
 \pgfsetroundcap%
 \draw[] (7.8679,3.2691) -- (7.8679,3.2691);%
@@ -26,7 +28,7 @@
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
-\draw[] (5.2516,7.4846) -- (7.8679,3.2691);%
+\draw[] (5.2516,7.4846) -- (2.8869,3.0849);%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
@@ -34,7 +36,7 @@
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
-\draw[] (5.2516,7.4846) -- (2.8869,3.0849);%
+\draw[] (5.2516,7.4846) -- (7.8679,3.2691);%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%

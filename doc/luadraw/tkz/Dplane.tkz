@@ -1,4 +1,4 @@
-\begin{tikzpicture}[background rectangle/.style={,draw=black},show background rectangle]%
+\begin{tikzpicture}[line join=round,background rectangle/.style={,draw=black},show background rectangle]%
 \begin{scope}%
 \clip (0,0) rectangle (8.0,4.8484848484848);%
 \draw[] (4.0261,4.4112) -- (1.117,1.8918) -- (6.1557,0.4373);%

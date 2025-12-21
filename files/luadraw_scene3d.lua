@@ -1,6 +1,6 @@
 --- luadraw_scene3d.lua
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -24,7 +24,7 @@ function Tscene3d:new()
     scene3d.opacity = 1  -- opacité
     scene3d.coef = 1 -- éclairage pour facettes, épaisseur pour lignes, hauteur pour wall
     scene3d.dist = 0 -- pour les labels
-    scene3d.dir = nil -- pour les labels
+    scene3d.dir = {} -- pour les labels
     scene3d.angle = 0 -- pour les labels
     scene3d.style = "solid" -- pour les lignes
     scene3d.dev = nil -- éléments de la scène situés devant
@@ -325,11 +325,11 @@ function Tscene3d:Display(g) -- g est un graphe 3d
         g:Labelsize(self.opacity); g:Labelstyle(self.style)
         g:Labelcolor(self.color); g:Labelangle(self.angle)
         if self.plane then g:Ddots3d(self.data) end --showdot=true
-        if #self.dir ~= 0 then
+        --if #self.dir ~= 0 then
             g:Dlabel3d(self.coef,self.data,{dist=self.dist, dir=self.dir})
-        else
-            g:Dlabel3d(self.coef,self.data,{dist=self.dist})
-        end
+        --else
+            --g:Dlabel3d(self.coef,self.data,{dist=self.dist})
+        --end
         if self.dev ~= nil then self.dev:Display(g) end        
     end
 end

@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -255,7 +255,7 @@ end
         fin = 2*math.pi-alpha; W = -W
     end
     if alpha == 0 then fin = 2*math.pi end
-    local L = parametric3d( function(t) return A+math.cos(t)*V+math.sin(t)*W end, 0,fin, math.max(2,math.floor(13*fin/math.pi)) )
+    local L = parametric3d( function(t) return A+math.cos(t)*V+math.sin(t)*W end, 0,fin, math.max(2,math.floor(20*fin/math.pi)) )
     return L
 end
 
@@ -291,7 +291,7 @@ function circle3d(A,r,normal)
         u = pt3d.prod(vecJ,normal)
         if pt3d.isNul(u) then return end
     end
-    return arc3d(A+u,A,A+u,r,1,normal, args )
+    return arc3d(A+u,A,A+u,r,1,normal)
 end
 
 -- cercles de l'espace, ou sphères, circonscrits ou inscrits 
@@ -433,11 +433,12 @@ function interDS(D,S) -- intersection of line D={A,u} with sphere S={C,r}, retur
     end
 end
 
-function interSSS(S1,S2,S3)-- intersection of 3 sphere S1={C1,R1}  S2={C2,R2} and S3= {C3,R3}
-    local I1,r1,n1 = interSS(S1,S2) -- nil or circle
-    if I1 == nil then return end
-    local I2, r2, n2 = interPS({I1,n1},S3)
-    if I2 == nil then return end
+function interCS(C,S)
+-- intersection of  the circle C={I1,r1,n1} and the sphère S = {O,R)
+    local I1, r1, n1 = table.unpack(C)
+    local  I2, r2, n2 = interPS({I1,n1},S) -- intersection of the plane of the circle and the sphere
+    if I2 == nil then return end -- empty intersection 
+    -- in P plane P we calculate  the intersection of two circles
     local d = pt3d.abs(I2-I1)
     if (d > r1+r2) or (d < math.abs(r2-r1)) then return end
     local k = (d^2+r1^2-r2^2)/(r1*d*2)
@@ -446,6 +447,12 @@ function interSSS(S1,S2,S3)-- intersection of 3 sphere S1={C1,R1}  S2={C2,R2} an
     local I3 = I1 + r1*(I2-I1)/d
     local A, B = rotate3d(I3,alpha,{I1,n1}), rotate3d(I3,-alpha,{I1,n1})
     if A == B then return A else return A, B end
+end
+
+function interSSS(S1,S2,S3)-- intersection of 3 sphere S1={C1,R1}  S2={C2,R2} and S3= {C3,R3}
+    local I1,r1,n1 = interSS(S1,S2) -- nil or a circle
+    if I1 == nil then return end
+    return interCS({I1,r1,n1},S3)
 end
 
 
@@ -679,7 +686,7 @@ function path3d(chemin)
 end
 
 
-function polyline2path3d(L) -- conversion list of 3d poiçnts or list of lists of 3d points (L) -> path
+function polyline2path3d(L) -- conversion list of 3d points or list of lists of 3d points (L) -> path
     if (L==nil) or (type(L) ~= "table") or (#L == 0) then return end
     if (type(L[1]) == "number") or isPoint3d(L[1]) then L = {L} end
     local ret = {} 
@@ -736,8 +743,8 @@ end
 
 -- enveloppe convexe 3d
 
-local cvx_hull3dAux = function(L,n)
--- cvx_hull3dAux( liste de points 3D coplanaires, vecteur normal): renvoie l'enveloppe convexe plane de la liste de points}
+function cvx_hull3dcoplanar(L,n)
+-- cvx_hull3dcoplanar( liste de points 3D coplanaires, vecteur normal): renvoie l'enveloppe convexe plane de la liste de points}
     if (L == nil) or (type(L) ~= "table") or (n == nil) then return end
     local O, O1 = L[1], L[2]
     local I = pt3d.normalize(O1-O)
@@ -763,7 +770,7 @@ function cvx_hull3d(L)
 -- L is a list of 3d points
 -- returns convex hull of L as a list of facets
     if (L == nil) or (type(L) ~= "table") or (#L < 2) then return end
-    if #L == 2 then return L end
+    if #L == 2 then return {L} end
     local epsilon= 1e-10
     local G = isobar3d(L)
     local P1 = L[1]
@@ -778,9 +785,10 @@ function cvx_hull3d(L)
         local d = pt3d.abs(B)
         if d > epsilon then
             local x = B.z/d
-            if x < cosmin then cosmin = x; P2 = A end 
+            if (x < cosmin) and (pt3d.abs(pt3d.prod(G-P1,G-A)) > epsilon) then cosmin = x; P2 = A end 
         end
     end
+    if P2 == nil then return {L} end -- points alignés
     -- recherche d'une première facette triangulaire de l'enveloppe
     cosmin = 1.001; P3 = nil
     local n1 = pt3d.normalize(pt3d.prod(P2-G,P1-G))
@@ -794,7 +802,7 @@ function cvx_hull3d(L)
             if x < cosmin then cosmin = x; P3 = A end
         end
     end
-    if P3 == nil  then return {P1,P2} end
+    if P3 == nil  then return {{P1,P2}} end
     -- recherche de l'enveloppe convexe de tous les points dans le plan de cette première facette
     n1 = pt3d.normalize(pt3d.prod(P2-P3,P1-P3))
     if pt3d.dot(n1,G-P1) > 0 then n1 = -n1 end
@@ -803,15 +811,15 @@ function cvx_hull3d(L)
         local B = P2-A
         if math.abs(pt3d.dot(B,n1)) < epsilon then table.insert(facette,A) end
     end
-    facette = cvx_hull3dAux(facette,n1)
+    facette = cvx_hull3dcoplanar(facette,n1)
     local rep = {}  --contiendra l'enveloppe convexe
     table.insert(rep, facette) --insertion première facette de l'enveloppe
     -- on initialise la liste des <bords> avec la première facette: { {A1,A2, vecteur normal},...]
     local B = facette[1]
-    table.insert(facette, B)
+    local nb = #facette
     local bords = {}
-    for k = 2, #facette do
-        local A = B; B = facette[k]
+    for k = 1, nb do
+        local A = B; B = facette[k%nb+1]
         table.insert(bords,{A,B,n1})
     end
     while #bords ~= 0 do
@@ -830,20 +838,20 @@ function cvx_hull3d(L)
         if P3 == nil  then return rep end
         --recherche de l'enveloppe convexe de tous les points dans le plan de cette facette
         local n2 = pt3d.normalize(pt3d.prod(P2-P3,P1-P3))
-        local facette = {}
+        facette = {}
         for  _, A in ipairs(L) do
             local B = P2-A
             if math.abs(pt3d.dot(B,n2)) < epsilon then table.insert(facette,A) end
         end
-        facette = cvx_hull3dAux(facette,n2)
+        facette = cvx_hull3dcoplanar(facette,n2)
         table.insert(rep, facette) -- on ajoute cette facette à l'enveloppe
         -- mise à jour de la liste des bords
-        local B = facette[1]
-        table.insert(facette, B)
-        for k = 2, #facette do
-            local A = B; B = facette[k]
+        B = facette[1]
+        nb = #facette
+        for k = 1, nb do
+            local A = B; B = facette[k%nb+1]
             update_edges(bords,A,B,n2)
-        end 
+        end
     end
     return rep
 end

@@ -7,11 +7,11 @@
 \draw[] (1.6965,5.8205) .. controls (1.8738,6.194) and (2.6149,6.4224) .. (3.3619,6.3338) .. controls (3.8731,6.2731) and (4.2671,6.0761) .. (4.3884,5.8205);%
 \pgfsetbuttcap%
 \pgfsetdash{}{0pt}%
-\draw[fill,left color=orange!50,right color = orange,middle color=orange!10, shading angle=109.7275] (6.0211,5.2562) .. controls (6.1114,5.0043) and (6.5878,4.8385) .. (7.0916,4.8837) .. controls (7.5955,4.9289) and (7.9269,5.167) .. (7.8366,5.4189) -- (7.0379,7.6462) -- (7.0379,7.6462) .. controls (7.1283,7.3943) and (6.7967,7.1561) .. (6.2929,7.1109) .. controls (5.7891,7.0658) and (5.3128,7.2315) .. (5.2224,7.4834)--cycle;%
+\draw[fill,left color=orange!50,right color = orange,middle color=orange!10, shading angle=109.7275] (6.0211,5.2562) .. controls (6.1114,5.0043) and (6.5878,4.8385) .. (7.0916,4.8837) .. controls (7.5954,4.9288) and (7.9269,5.167) .. (7.8366,5.4189) -- (7.0379,7.6462) -- (7.0379,7.6462) .. controls (7.1283,7.3943) and (6.7967,7.1561) .. (6.2929,7.1109) .. controls (5.7891,7.0658) and (5.3128,7.2315) .. (5.2224,7.4834)--cycle;%
 \draw[fill,left color=orange!25,right color = orange!50,middle color=orange!18, shading angle=109.7275] (6.3689,7.1194) .. controls (6.8633,7.1856) and (7.1535,7.437) .. (7.021,7.6842) .. controls (6.8885,7.9314) and (6.3859,8.0764) .. (5.8915,8.0102) .. controls (5.3971,7.944) and (5.1069,7.6927) .. (5.2394,7.4455) .. controls (5.3718,7.1983) and (5.8745,7.0532) .. (6.3689,7.1194);%
 \pgfsetroundcap%
 \pgfsetdash{{0pt}{3pt}}{0pt}%
-\draw[] (6.0211,5.2562) .. controls (5.9308,5.5081) and (6.2623,5.7463) .. (6.7661,5.7914) .. controls (7.2699,5.8366) and (7.7463,5.6708) .. (7.8366,5.4189) .. controls (7.8366,5.4189) and (7.8366,5.4189) .. (7.8366,5.4189);%
+\draw[] (6.0211,5.2562) .. controls (5.9308,5.5081) and (6.2623,5.7463) .. (6.7661,5.7914) .. controls (7.2699,5.8366) and (7.7463,5.6708) .. (7.8366,5.4189);%
 \pgfsetbuttcap%
 \pgfsetdash{}{0pt}%
 \pgfsetfillcolor{Crimson!50!white!90.92!black}%

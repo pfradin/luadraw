@@ -43,7 +43,7 @@ The \textbf{g:Line3d2seg(d,scale)} method returns a table consisting of two 3D p
 \subsubsection{Circle: Dcircle3d}
 
 \begin{itemize}
-    \item The method \textbf{g:Dcircle3d(I,R,normal,draw\_options,clip)} draws the circle with center $I$ (3D point) and radius $R$, in the plane containing $I$ and normal to the vector defined by the argument \emph{normal} (non-zero 3D point). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}. The argument \emph{clip} is set to \emph{false} by default; it indicates whether the plot should be clipped to the current 3D window. Another possible syntax: \textbf{g:Dcircle(C,draw\_options,clip)} where \emph{C=\{I,R,normal\}}.
+    \item The method \textbf{g:Dcircle3d(I,R,normal,draw\_options,clip)} draws the circle with center $I$ (3D point) and radius $R$, in the plane containing $I$ and normal to the vector defined by the argument \emph{normal} (non-zero 3D point). The argument \emph{draw\_options} is a string (empty by default) that will be passed as is to the instruction \emph{\textbackslash draw}. The argument \emph{clip} is set to \emph{false} by default; it indicates whether the plot should be clipped to the current 3D window. Another possible syntax: \textbf{g:Dcircle3d(C,draw\_options,clip)} where \emph{C=\{I,R,normal\}}.
 
     \item The \textbf{circle3d(I,R,normal)} function returns the list of points on this circle (3D polygonal line).
 
@@ -349,7 +349,6 @@ The \textbf{g:Dsphere(A,r,args)} method draws a sphere.
     \item \emph{mode=mWireframe or mGrid or mBorder} (\emph{mWireframe} by default). In \emph{mWireframe} mode, the outline (circle) and the equator are drawn; in \emph{mGrid} mode, the outline with meridians and spindles (grid) is drawn; and in \emph{mBorder} mode, the outline only is drawn.
     \item \emph{hiddenstyle}, defines the line style for hidden areas (set it to "noline" to hide them). By default, this option has the value of the global variable \emph{Hiddenlinestyle}, which is itself initialized with the value \emph{"dotted"}.
     \item \emph{hiddencolor}, defines the color of hidden lines (equal to edgecolor by default).
-    \item \emph{edgecolor}, defines the color of lines (current color by default).
     \item \emph{color=""}, when this option is an empty string (the default value), there is no fill; when it is a color (as a string), there is a fill with a "ball color".
     \item \emph{opacity=1}, defines the transparency of the drawing.
     \item \emph{edgestyle}, defines the line style for visible edges; by default, it is the current style.

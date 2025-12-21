@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -489,6 +489,33 @@ function tangentI(f,x0,y0,long)
     end
 end
 
+function tangent_from(from,p,t1,t2,dp)
+-- from : point on the plane from which the tangents will originate
+-- p: t -> p(t) parameterization of the curve (p(t) is a complex number)
+-- t1, t2 : interval boundaries
+-- dp (optionnal) derivative function of the function p
+-- returns a list of points (points on the curve whose tangent passes through from point)
+    local h = 1e-6
+    if dp == nil then
+        dp = function(t) -- approximate derivative function
+            return (p(t+h)-p(t))/h
+        end
+    end
+    local f = function(t) -- function that must be zero
+        return cpx.det(p(t)-from,dp(t))
+    end
+    local n = math.max(25, math.floor((t2-t1)*2.5))
+    local S = solve(f,t1,t2-2*h,n) --<< here we use the solve function to solve f(t)=0
+    if S ~= nil then 
+        local rep = {}
+        for _,t in ipairs(S) do
+            if cpx.abs(dp(t))>1e-8 then table.insert(rep,p(t)) end -- to avoid singular points
+        end
+        return rep 
+    else return {} -- empty list if no solution is found
+    end
+end
+
 -- normales
 
 function normal(p,t0,long)
@@ -497,8 +524,8 @@ function normal(p,t0,long)
 -- si long vaut nil on renvoie une droite, sinon un segment
     if (p == nil) or (t0 == nil) then return end
     local A = p(t0)
-    if (A == nil) then print("erruer!!!");  return end
-    local v = (p(t0+1E-6)-p(t0))*1E6 -- vecteur tangent
+    if (A == nil) then return end
+    local v = (p(t0+1E-6)-p(t0))*1e6 -- vecteur tangent
     if (v == nil) or cpx.isNul(v) then return end
     v = cpx.I*v
     if long == nil then return {A,v} -- on renvoie une droite
@@ -559,8 +586,8 @@ function interL(L1, L2)
         -- if (C == nil) or (v == nil) then return end
         local E = interD({A,u}, {C,v})
         if E ~= nil then
-            local t1 = cpx.dot(E-A,u) / cpx.abs(u)^2
-            local t2 = cpx.dot(E-C,v) / cpx.abs(v)^2
+            local t1 = round(cpx.dot(E-A,u) / cpx.abs2(u),12)
+            local t2 = round(cpx.dot(E-C,v) / cpx.abs2(v),12)
             if (t1 ~= nil) and ( (firstA and (0 <= t1)) or ( (not firstA) and (0 < t1) ) ) and (t1 <= 1) and
             (t2 ~= nil) and ( (firstC and (0 <= t2)) or ( (not firstC) and (0 < t2) ) ) and (t2 <= 1) then
                 return E
@@ -819,6 +846,7 @@ function clippolyline(L,xmin,xmax,ymin,ymax,close)
         local lastin, lastout, last, r
         local sortie
         for i = 1, 4 do -- on clippe avec les 4 côtés
+            if close and (cp[1]~=cp[#cp]) then table.insert(cp,cp[1]) end
             last, lastin, lastout, sortie = nil, nil, nil, {}
             for _,z in ipairs(cp) do
                 z = toComplex(z)
@@ -855,8 +883,7 @@ function clippolyline(L,xmin,xmax,ymin,ymax,close)
     local res, aux = {}
     for _,cp in ipairs(L) do
         if #cp > 1 then 
-            if close then cp = table.copy(cp); table.insert(cp,cp[1]) end
-            aux = clipcp(cp) -- on clippe chaque composante connexe
+            aux = clipcp(table.copy(cp)) -- on clippe chaque composante connexe
             if (aux ~= nil) and (#aux > 1) then table.insert(res,aux) end
         end
     end
@@ -932,34 +959,38 @@ end
 
 
 -- recoller des composantes connexes, utilisé par les courbes implicites
-function merge(L)
+function merge(List)
 -- L est une liste de liste de complexes
 -- on essaie de recoller au mieux les composantes connexes de L si possible
 -- la fonction renvoie le résultat
     local res = {}
+    local L = table.copy(List)
+    local equal = function(z1,z2)
+        return z1==z2 --cpx.abs(z1-z2) < 1e-12
+    end
     local test = function(t1,t2)
         -- on teste si t1 se recolle à t2, si oui on modifie t1 et on renvoie true, sinon on ne range rien et on renvoie false
         local a1, b1 = t1[1], t1[#t1]
         local a2, b2 = t2[1], t2[#t2]
-        if b1 == a2 then --fin de t1 égal début de t2
+        if equal(b1,a2) then --fin de t1 égal début de t2
             for k = 2, #t2 do
                 table.insert(t1,t2[k])
             end
             return true
         end
-        if b1 == b2 then -- fin de t1 égal fin de t2
+        if equal(b1,b2) then -- fin de t1 égal fin de t2
             for k = #t2-1, 1, -1 do
                 table.insert(t1,t2[k])
             end
             return true
         end
-        if a1 == b2 then -- début de t1 égal fin de t2
+        if equal(a1,b2) then -- début de t1 égal fin de t2
             for k = #t2-1,1,-1 do
                 table.insert(t1,1,t2[k])
             end
             return true
         end
-        if a1 == a2 then -- début de t1 égal au début de t2
+        if equal(a1,a2) then -- début de t1 égal au début de t2
             for k = 2, #t2 do
                 table.insert(t1,1,t2[k])
             end
@@ -977,7 +1008,7 @@ function merge(L)
             else k = k+1
             end
         end
-        table.insert(res,t1) -- on a fait pour les test pour t1,on le range dans res
+        table.insert(res,t1) -- on a fait les test pour t1,on le range dans res
     end
     return(res)
 end
@@ -1464,10 +1495,11 @@ function cap(C1, C2) -- contour de l'intersection de C1 et C2
     -- on parcourt L par paire (L1,L2)
     local L2 = table.remove(L,1)
     table.insert(L,L1)
-    local aux, aux2 = {}, {}
-    for _, z in ipairs(L)  do
+    local aux, aux2, A, k = {}, {}
+    for j, z in ipairs(L)  do
         L1 = L2; L2 = z
-        local A = cpx.round(C1[2],12) -- point suivant L1
+        k = 1; A = C1[2]
+        while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1
         if inside(A,C2) then -- on prend la partie [L1,L2] de C1
             aux = cut(C1,L2)
         else -- on prend la partie [L1,L2] de C2
@@ -1477,6 +1509,7 @@ function cap(C1, C2) -- contour de l'intersection de C1 et C2
                 table.remove(aux2)
                 aux = concat(aux2, cut(C2,L2))
             end
+            
         end
         table.remove(aux); C1 = cut(C1,L2,true) -- on coupe C1 avant L2
         insert(rep,aux)
@@ -1505,10 +1538,12 @@ function cup(C1, C2)
     -- on parcourt L par paire (L1,L2)
     local L2 = table.remove(L,1)
     table.insert(L,L1)
-    local aux, aux2 = {}, {}
+    local aux, aux2, A, k = {}, {}
     for _, z in ipairs(L)  do
         L1 = L2; L2 = z
-        local A = cpx.round(C1[2],12) -- point suivant L1, est-il dans C2 ?
+        k = 1; A = C1[2]
+        while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1
+        --local A = C1[2] -- point suivant L1, est-il dans C2 ?
         if inside(A,C2) then -- on prend la partie [L1,L2] de C2
             aux = cut( cut(C2,L1,true), L2)
             if aux == nil then
@@ -1547,10 +1582,11 @@ function setminus(C1, C2)
     -- on parcourt L par paire (L1,L2)
     local L2 = table.remove(L,1)
     table.insert(L,L1)
-    local aux, aux2 = {}, {}
+    local aux, aux2, A, k = {}, {}
     for _, z in ipairs(L)  do
         L1 = L2; L2 = z
-        local A = cpx.round(C1[2],12) -- point suivant L1, est-il dans C2 ?
+        k = 1; A = C1[2]
+        while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1
         if inside(A,C2) then -- on prend la partie [L2,L1] de C2
             aux = cut( cut(C2,L2,true), L1)
             if aux == nil then
@@ -1578,9 +1614,10 @@ function cvx_hull2d(L)
     L = map(toComplex,L)
     -- on élimine les doublons
     table.sort(L, function(e1,e2) return (e1.re < e2.re) or ((e1.re == e2.re) and (e1.im < e2.im)) end)
-    local old, S = nil,{}
-    for _,z in ipairs(L) do
-        if z ~= old then table.insert(S,z); old = z end
+    local old, S = L[1],{L[1]}
+    for k = 2, #L do -- on élimine les doublons
+        local z = L[k]
+        if not cpx.isNul(z-old) then table.insert(S,z); old = z end
     end
     local Min = S[1]
     local N  = #S 
@@ -1602,7 +1639,7 @@ function cvx_hull2d(L)
         for k = 1, #S do
             local z = S[k]
             local theta = cpx.arg(z-Min)
-            if z ~= Min then table.insert(aux, {theta,k}) end -- angle et index dans la liste S, saud Min
+            if not cpx.isNul(z-Min) then table.insert(aux, {theta,k}) end -- angle et index dans la liste S, sauf Min
         end 
         table.sort(aux,function(e1,e2) return (e1[1] < e2[1]) or ((e1[1]==e2[1]) and (e1[2]<e2[2])) end)
         local S1 = {Min}
@@ -1615,9 +1652,12 @@ function cvx_hull2d(L)
         local fin = false 
         local A, B, C, kb = S1[1], S1[2], S1[3], 2 -- kb = index de B
         while not fin  do
-            if cpx.det(B-A,C-B) < 0 then -- virage à droite 
+            if cpx.det(B-A,C-A) < 1e-12 then -- virage à droite 
                 table.remove(S1,kb); kb = kb -1  -- on exclut B de l'enveloppe
-                B = A; A = S1[kb-1] -- on recule d'un cran
+                B = A; 
+                if kb > 1 then A = S1[kb-1] -- on recule d'un cran
+                else fin = true
+                end
             else A = B; B = C; kb = kb +1 
                 if kb+1 > #S1 then fin = true
                 else C = S1[kb+1] --on avance
@@ -1635,7 +1675,7 @@ function line2strip(L,wd,closed,ends)
 -- wd is the width of the strip (cm)
 -- closed boolean indicating whether the line should be closed
 -- ends boolean indicating whether the two end segments should be drawn
--- retrns apath
+-- retrns a path
     if (L == nil) or (type(L) ~= "table") then return end
     local ep = wd/2
     local i = cpx.I
@@ -1650,9 +1690,11 @@ function line2strip(L,wd,closed,ends)
         local cp = table.copy(cp1)
         a, b = cp[1], cp[2]
         while a == b do table.remove(cp,1); b = cp[2] end
+        local cycle = (a==cp[#cp])
+        local close = closed or cycle
         table.remove(cp,1); table.remove(cp,1)
-        if closed then
-            if a ~= cp[#cp] then table.insert(cp,a) end
+        if close then
+            if not cycle then table.insert(cp,a) end
             a = (a+b)/2
             table.insert(cp,a)
         end
@@ -1685,10 +1727,60 @@ function line2strip(L,wd,closed,ends)
     return ret
 end
 
+-- construire une ligne polygonale parallèle
+function parallel_polyline(L,wd,closed)
+-- L is a list of complex numbers or a list of list od complex numbers
+-- wd is the distance between the two lines
+-- closed boolean indicating whether the line should be closed
+-- returns a polyline
+    if (L == nil) or (type(L) ~= "table") then return end
+    local ep = wd
+    local i = cpx.I
+    closed = closed or false
+    if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
+    local ret, aux = {}
+    local bord, dessus, first, a, b, c, u, v, w
+    for _, cp1 in ipairs(L) do
+        aux = {}
+        local cp = table.copy(cp1)
+        a, b = cp[1], cp[2]
+        while a == b do table.remove(cp,1); b = cp[2] end
+        local cycle = (a==cp[#cp])
+        local close = closed or cycle
+        table.remove(cp,1); table.remove(cp,1)
+        if close then
+            if not cycle then table.insert(cp,a) end
+            a = (a+b)/2
+            table.insert(cp,a)
+        end
+        v = i*(b-a)/cpx.abs(b-a)
+            bord = a+ep*v; dessus= {bord}
+        c = b; b = a; v = v/i
+        for _, z in ipairs(cp) do
+            a = b; b = c; c = z; u  =-v; v = cpx.normalize(c-b)
+            if v == nil then
+                c = b; b = a; v = -u
+            else
+                w = cpx.normalize(u+v)
+                if w == nil then
+                    bord = b-ep*i*u
+                else
+                    bord = projO( bord,{b,w},u)
+                end
+                table.insert(dessus,bord)
+            end
+        end
+        table.insert(dessus,c+ep*i*v)
+        table.insert(ret,dessus)
+    end
+    return ret
+end
+
 
 -- triangulation de Delaunay, algorithme de Bowyer-Watson
-function delaunay(points)  -- points is a list of distinct complex numbers
+function delaunay(points, out)  -- points is a list of distinct complex numbers
 -- renvoie une liste de triangles { {u,v,w}, ... }
+-- out doit être une variable égale à une table vide,  elle recevra les données pour Voronoi (liste de triangles avec centre du cercle circoncrit)
     local superTri = function(points)
         --superTri(points) : renvoie un triangle contenant la liste de points
         local x1,x2,y1,y2 = getbounds(points)
@@ -1763,7 +1855,124 @@ function delaunay(points)  -- points is a list of distinct complex numbers
         local t = z[1]
         if not  (contains(t,T[1]) or contains(t,T[2]) or contains(t,T[3])) then
            table.insert(rep,t) --on insert un triangle de Delaunay
+           if out ~= nil then table.insert(out,{z[1],z[2]}) end -- triangle et centre du cercle circonscrit
         end
     end
     return rep
+end
+
+function voronoi(points,window)
+-- renvoie une liste de {centre, cellule de Voronoi (polygone)} correspondant aux points de la liste.
+    local L, polyList = {}, {}
+    local aux = delaunay(points,L)
+    window = window or {-5,5,-5,5}
+    local x1,x2,y1,y2 = table.unpack(window)
+    local contour = {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2)}
+    -- il faut que la boite [x1;x2]x[y1;y2] contienne les triangles, et les centres des cercles circonscrits
+    x1,x2,y1,y2 = getbounds(concat(points,contour,map(function(Z) return Z[2] end, L))) 
+    local ep = 1 -- il ne faut pas de centre de cercle circonscrit sur le contour
+    contour = {Z(x1-ep,y1-ep),Z(x2+ep,y1-ep),Z(x2+ep,y2+ep),Z(x1-ep,y2+ep),Z(x1-ep,y1-ep)}
+    local diam = cpx.abs(Z(x2-x1,y2-y1))
+    
+    local Sort = function(edge)
+        table.sort(edge,function(z1,z2) return (z1.re<z2.re) or ((z1.re==z2.re) and (z1.im<z2.im)) end)
+    end 
+      
+    local equal = function(e1,e2) -- égalié d'arêtes triées
+        --return (cpx.abs(e1[1]-e2[1])<1e-8) and (cpx.abs(e1[2]-e2[2])<1e-8)
+        return (e1[1]==e2[1]) and (e1[2]==e2[2])
+    end  
+      
+    local inTri = function(edge,triangle)
+    -- renvoie true si on a une arête du triangle
+        local a, b, c = table.unpack(triangle)
+        local e1,e2,e3 = {a,b},{a,c},{b,c}
+        Sort(e1); Sort(e2); Sort(e3)
+        return equal(edge,e1) or equal(edge,e2) or equal(edge,e3)
+    end
+    
+    local close_cell = function(cell)
+        --fermer une cellule non bornée de Voronoi en fonction de la fenetre window.
+        local deb, fin = cell[1], cell[#cell]
+        local d = 2*diam
+        local u = deb-cell[2]; u = d*cpx.normalize(u)
+        local v = fin-cell[#cell-1]; v = d*cpx.normalize(v)
+        local x = sym(cell,{deb+u,fin+v-deb-u})
+        local aux = concat(deb+u,cell,fin+v,reverse(x))
+        return clippolyline(aux,x1,x2,y1,y2,true)[1]
+    end
+    
+    local classify = function(sommet,edge,out)
+    --pour obtenir à la fin une liste de cellules de Voronoi autour de chaque sommet. out doit être une variable table, elle est mise à jour.
+        local edgeIn = function(edge, edge_list)
+        --si edge est dans edge_list
+            for _,elt in ipairs(edge_list) do
+                if equal(edge,elt) then return true end
+            end
+            return false
+        end
+        
+        local present = false
+        for _,cp in ipairs(out) do -- cp={sommet, liste d'arêtes}
+            if (not present) and (cp[1]==sommet) then -- sommet déjà dans la liste
+                present = true
+                if not edgeIn(edge,cp[2]) then -- arête non présente dans la liste
+                    table.insert(cp[2],edge)
+                end
+            end
+        end
+        if not present then --sommet non present dans la liste
+            table.insert(out,{sommet,{edge}})
+        end
+    end
+    
+    --corps de la fonction voronoi
+    for num,z in ipairs(L) do
+        local T = z[1] -- triangle de Delaunay
+        insert(T,table.copy(T))
+        local C = z[2] -- centre du cercle ciconscrit
+        for j = 1, 3 do -- parcours par arête
+            local A = {T[j],T[j+1]}; Sort(A)
+            local op = T[j+2] -- sommet opposé à A
+            local ok, tri, seg = false
+            for k, t in ipairs(L) do
+                if (k ~= num) and inTri(A,t[1]) then -- il ne faut pas prendre le triangle en cours
+                    ok = true; tri = t; break
+                end
+            end
+            if ok then -- arete commune avec le triangle tri
+                -- le segment joignant les deux centres est une arête commune aux cellule de A[1] et de A[2]
+                seg = {C, tri[2]}; Sort(seg)
+                classify(A[1],seg,polyList) --arête de la cellule correspondant au point A[1]
+                classify(A[2],seg,polyList) --arête de la cellule correspondant au point A[2]
+            else -- arête A non commune avec un autre triangle, on a une cellule non bornée
+                local V = A[1]
+                local n = cpx.I*(A[2]-V) -- vecteur normal à l'arête A
+                local mil = (V+A[2])/2
+                local U, B = mil-C
+                if cpx.abs(U) < 1e-8 then 
+                    U = n; if cpx.dot(op-V,n)>0 then U = -U end
+                end
+                U = diam*cpx.normalize(U)                
+                if cpx.dot(op-V,n)*cpx.dot(C-V,n) >= 0 then -- C et op du même côté de l'arête A
+                    B = interL({C,C+U}, contour)[1]
+                else
+                    B = interL({C,C-U}, contour)[1]
+                end
+                seg = {C,B}; Sort(seg)
+                classify(A[1],seg,polyList)
+                classify(A[2],seg,polyList)
+            end
+        end
+    end
+    local ret, poly = {}
+    for k,Z in ipairs(polyList) do
+        poly = merge(Z[2])[1] -- on fusionne la liste d'arêtes en un polygone
+        if poly[1] ~= poly[#poly] then -- polygone non fermé, la cellule est non bornée
+            poly = close_cell(poly)
+        else table.remove(poly)
+        end
+        table.insert(ret, {Z[1], poly}) -- on insère le point et sa cellule de Voronoi
+    end
+    return ret
 end

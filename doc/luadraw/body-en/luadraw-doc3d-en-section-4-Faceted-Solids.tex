@@ -109,18 +109,18 @@ g:Show()
 
 \begin{demo}{Hyperbola: cone-plane intersection}
 \begin{luadraw}{name=hyperbole}
-local g = graph3d:new{window={-6,6,-8,6}, viewdir={45,60}, size={10,10}}
-Hiddenlinestyle = "dashed"
+local g = graph3d:new{window={-8,6,-9,9},bbox=false, viewdir=perspective("central",45,65), size={10,10}}
+Hiddenlinestyle = "dashed"; Hiddenlines = true
 local C1 = cone(Origin,4*vecK,3,35,true)
 local C2 = cone(Origin, -4*vecK,3,35,true)
-local P = {M(1,0,-1),vecI} -- sectional plan
+local P = {M(1,-1,-2),vecI} -- sectional plan
 local I1 = g:Intersection3d(C1,P) -- intersection between cone C1 and plane P
 local I2 = g:Intersection3d(C2,P) -- intersection between cone C2 and plane P
 -- I1 et I2 sont de type Edges (arêtes)
 g:Dcone(Origin,4*vecK,3,{color="orange"}); g:Dcone(Origin,-4*vecK,3,{color="orange"})
 g:Lineoptions("solid","Navy",8)
-g:Dedges(I1,{hidden=true}); g:Dedges(I2,{hidden=true}) -- drawing of edges I1 and I2
-g:Dplane(P, vecK,12,8)
+g:Dedges(I1); g:Dedges(I2) -- drawing of edges I1 and I2
+g:Dplane(P, vecK,14,9)
 g:Show()
 \end{luadraw}
 \end{demo}
@@ -132,33 +132,33 @@ In this example, cones $C_1$ and $C_2$ are defined as polyhedra to determine the
 local g = graph3d:new{window3d={-3,3,-3,3,-3,3}, size={10,10}, margin={0,0,0,0}}
 g:Labelsize("footnotesize")
 local y0, R = 1, 2.5
-local C = cone(M(0,0,3),-6*vecK,R,35,true) -- open cone
-local P1 = {M(0,0,0),vecK+vecJ} -- 1st section plan
-local P2 = {M(0,y0,0),vecJ} -- 2nd section plan
-local I, I2 
-local dessin = function() -- one drawing per view
-    g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
-    I1 = g:Intersection3d(C,P1) -- intersection entre le cône C et les plans P1 et P2
-    I2 = g:Intersection3d(C,P2) -- I1 et I2 sont de type Edges
-    g:Dpolyline3d( {{M(0,-3,3),M(0,0,3),M(0,0,-3),M(3,0,-3)}, {M(0,0,-3),M(0,3,-3)}},"red,line width=0.4pt" )
-    g:Dcone( M(0,0,3),-6*vecK,R, {color="cyan"})
-    g:Dedges(I1, {hidden=true,color="Navy", width=8})
-    g:Dedges(I2, {hidden=true,color="DarkGreen", width=8})
+local C = cone(M(0,0,3),-6*vecK,R,35,true) -- cone ouvert
+local P1 = {M(0,0,0),vecK+vecJ} -- 1er plan de coupe
+local P2 = {M(0,y0,0),vecJ} -- 2ieme plan de coupe
+local I, I2
+local dessin = function() -- un dessin par vue
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+I1 = g:Intersection3d(C,P1) -- intersection entre le cône C et les plans P1 et P2
+I2 = g:Intersection3d(C,P2) -- I1 et I2 sont de type Edges
+g:Dpolyline3d( {{M(0,-3,3),M(0,0,3),M(0,0,-3),M(3,0,-3)}, {M(0,0,-3),M(0,3,-3)}},"red,line width=0.4pt" )
+g:Dcone( M(0,0,3),-6*vecK,R, {color="cyan"})
+g:Dedges(I1, {hidden=true,color="Navy", width=8})
+g:Dedges(I2, {hidden=true,color="DarkGreen", width=8})
 end
--- top left, view in space, we add the plans to the drawing
-g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-7,6,-6,5,1); g:Setviewdir(30,60); dessin()
+-- en haut à gauche, vue dans l'espace, on ajoute les plans au dessin
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-7,6,-6,5,1); g:Setviewdir(perspective("central")); dessin()
 g:Dpolyline3d( {M(-3,-3,3),M(3,-3,3),M(3,3,-3),M(-3,3,-3)},"Navy,line width=0.8pt")
 g:Dpolyline3d( {M(-3,y0,3),M(3,y0,3),M(3,y0,-3)},"DarkGreen,line width=0.8pt")
 g:Dlabel3d( "$P_1$",M(3,-3,3),{pos="SE",dir={-vecI,-vecJ+vecK},node_options="Navy, draw"})
 g:Dlabel3d( "$P_2$",M(-3,y0,3),{pos="SW",dir={-vecI,vecK},node_options="DarkGreen,draw"})
 g:Restoreattr()
--- top right, projection onto the xOy plane
+-- en haut à droite, projection sur le plan xOy
 g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("xOy"); dessin()
 g:Restoreattr()
--- bottom left, projection onto the xOz plane
+-- en bas à gauche, projection sur le plan xOz
 g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("xOz"); dessin()
 g:Restoreattr()
--- bottom right, projection onto the yOz plane
+-- en bas à droite, projection sur le plan yOz
 g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("yOz"); dessin()
 g:Restoreattr()
 g:Show()
@@ -172,7 +172,7 @@ The function \textbf{red\_obj\_file(file)}\footnote{This function is a contribut
 \begin{demo}{Mask of Nefertiti}
 \begin{luadraw}{name=lecture_obj}
 local P,bbox = read_obj_file("obj/nefertiti.obj")
-local g = graph3d:new{window3d=bbox,window={-7,5,-8,5},viewdir={35,60},
+local g = graph3d:new{window3d=bbox,window={-6,5,-7,7},viewdir=perspective("central",35,65,20),
     margin={0,0,0,0}, size={10,10}, bg="LightGray"}
 g:Dpoly(P, {usepalette={palAutumn,"z"},mode=mShadedOnly})
 g:Show() 
@@ -216,17 +216,17 @@ This method is useful for drawing multiple solids together, provided there are n
 \begin{demo}[courbeniv]{Example of contour lines on a surface}
 \begin{luadraw}{name=courbes_niv}
 local cos, sin = math.cos, math.sin, math.pi
-local g = graph3d:new{window3d={0,5,0,10,0,11}, adjust2d=true, size={10,10}, viewdir={220,60}}
+local g = graph3d:new{window3d={0,5,0,10,0,11}, adjust2d=true, size={10,10}, viewdir=perspective("central",220,60,15,M(2.5,5,5.5))}
 g:Labelsize("footnotesize")
 local S = cartesian3d(function(u,v) return (u+v)/(2+cos(u)*sin(v)) end,0,5,0,10,{30,30})
 local n = 10 -- nombre de niveaux
-local Colors = getpalette(palGasFlame,n,true) -- list of 10 colors in table format
+local Colors = getpalette(palGasFlame,n,true) -- liste de 10 couleurs au format table
 local niv, S1 = {}
 for k = 1, n do
     S1, S = cutfacet(S,{M(0,0,k),-vecK}) -- section de S avec le plan z=k
-    insert(niv,{S1, {color=Colors[k],mode=mShaded,edgewidth=0.5}}) -- S1 is the part below the plane and S above
+    insert(niv,{S1, {color=Colors[k],mode=mShaded,edgewidth=0.5}}) -- S1 est la partie sous le plan et S au dessus
 end
-insert(niv,{S, {color=Colors[n+1]}}) -- insert last level
+insert(niv,{S, {color=Colors[n+1]}}) -- insertion du dernier niveau
 -- niv est une liste du type {facettes1, options1, facettes2, options2, ...}
 g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="lightgray"})
 g:Dmixfacet(table.unpack(niv))
@@ -310,7 +310,7 @@ This function returns a list of facets, followed by a 3D polygonal line represen
 \begin{demo}{Elliptical Cone Example}
 \begin{luadraw}{name=curve2cone}
 local cos, sin, pi = math.cos, math.sin, math.pi
-local g = graph3d:new{ window3d={-2,2,-4,4,-3,3},window={-5.5,5,-5,5},size={10,10}}
+local g = graph3d:new{ window3d={-2,2,-4,4,-3,3},window={-5.5,5.5,-5.5,5},size={10,10},viewdir=perspective("central")}
 local f = function(t) return M(2*cos(t),4*sin(t),-3) end -- ellipse dans le plan z=-3
 local C, bord = curve2cone(f,-pi,pi,Origin,{nbdiv=2, ratio=-1})
 g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
@@ -331,17 +331,17 @@ This function returns a list of facets, followed by a 3D polygonal line represen
 \begin{demo}{Section of a non-circular cylinder}
 \begin{luadraw}{name=curve2cylinder}
 local cos, sin, pi = math.cos, math.sin, math.pi
-local g = graph3d:new{ window3d={-5,5,-5,5,-4,4},window={-9,8,-7,7},viewdir={39,70},size={10,10}}
-local f = function(t) return M(4*cos(t)-cos(4*t),4*sin(t)-sin(4*t),-4) end -- curve in the plane z=-3
+local g = graph3d:new{ window3d={-5,5,-5,5,-4,4},window={-9,8,-10.5,5.5},viewdir=perspective("central",39,64),size={10,10}}
+local f = function(t) return M(4*cos(t)-cos(4*t),4*sin(t)-sin(4*t),-4) end -- courbe dans le plan z=-3
 local V = 8*vecK
 local C = curve2cylinder(f,-pi,pi,V,{nbdots=25,nbdiv=2})
-local plan = {M(0,0,2), -vecK} -- section plan z=2
+local plan = {M(0,0,2), -vecK} -- plan de coupe z=2
 local C1, C2, section = cutfacet(C,plan)
 g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
-g:Dfacet(C1, {mode=mShaded,color="LightBlue"})  -- part under the plan
-g:Dfacet(g:Plane2facet(plan), {opacity=0.3,color="Chocolate"}) -- drawing of the plan in the form of a facet
-g:Filloptions("fdiag","red"); g:Dpolyline3d(section) -- section drawing
-g:Dfacet(C2, {mode=3,color="LightBlue"})  -- part of the cylinder above the plane
+g:Dfacet(C1, {mode=mShaded,color="LightBlue"})  -- partie sous le plan
+g:Dfacet(g:Plane2facet(plan), {opacity=0.3,color="Chocolate"}) -- dessin du plan sous forme d'une facette
+g:Filloptions("fdiag","red"); g:Dpolyline3d(section) -- dessin de la section
+g:Dfacet(C2, {mode=3,color="LightBlue"})  -- partie du cylindre au dessus du plan
 g:Show()
 \end{luadraw}
 \end{demo}
@@ -540,7 +540,7 @@ Indeed, the \textbf{g:Box3d()} method returns the current 3D window as a paralle
 
 \begin{demo}[clip3d]{Example with clip3d: constructing a die from a cube and a sphere}
 \begin{luadraw}{name=clip3d}
-local g = graph3d:new{window={-3,3,-3,3},size={10,10}}
+local g = graph3d:new{window={-3,3,-3,3},size={10,10},viewdir=perspective("central")}
 local S = sphere(Origin,3)
 local C = parallelep(M(-2,-2,-2),4*vecI,4*vecJ,4*vecK)
 local C1 = clip3d(S,C) -- sphere clipped by the cube

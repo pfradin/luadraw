@@ -103,11 +103,11 @@ g:Show()
 \end{itemize}
 
 
-\subsection{Modes de projection}
+\subsection{Modes de projection affine}
 
-Par défaut \emph{luadraw} utilise la projection orthographique (projection orthogonale l'écran), celle-ci est définie par deux angles qui dont donnés à l'option \emph{viewdir} lors de la création, ou bien à la méthode \emph{g:Setviewdir()}.
+Par défaut \emph{luadraw} utilise la projection orthographique (projection orthogonale sur l'écran), celle-ci est définie par deux angles qui dont donnés à l'option \emph{viewdir} lors de la création, ou bien à la méthode \emph{g:Setviewdir()}.
 
-Il y a trois autres modes de projection possible, mais qui ne sont pas des projections orthogonales:
+Il y a trois autres modes de projection affine possible, mais qui ne sont pas des projections orthogonales:
 \begin{itemize}
     \item trois perspectives cavalières : sur le plan $yz$, ou sur le plan $xz$, ou sur le plan $xy$. Celles-ci sont définies à l'aide de deux paramètres : un nombre positif $k$ et un angle en degré \emph{alpha}, qui sont mis en évidence dans la figure suivante.
     \item une perspective isométrique.
@@ -166,20 +166,96 @@ g:Dlabel("isometric perspective",Z(0.5,-5),{pos="N",node_options="fill=white"})
 g:Restoreattr()
 g:Show()
 \end{luadraw}
-\captionof{figure}{Modes de projection}
+\captionof{figure}{Modes de projection affine}
 \end{center}
 
 Ces modes de projection sont accessibles par la fonction \textbf{perspective(mode,k,alpha)}, où l'argument \emph{mode} peut valoir "yz", ou "xz" ou "xy" (pour les trois perspectives cavalières) ou "iso" pour la perspective isométrique, si \emph{mode} a une valeur non reconnue alors c'est la projection orthographique qui est sélectionnée. Pour les trois premiers modes, on donne également les valeurs des paramètres $k$ (0.5 par défaut) et \emph{alpha} (45 par défaut), ces valeurs sont inutiles pour le quatrième mode.
 
 Cette fonction s'utilise soit avec l'option \emph{viewdir} à la création de l'objet graphique, par exemple :
-
 \begin{Luacode}
 local g = graph3d:new{ viewdir = perspective("yz",0.65,60) }
 \end{Luacode}
-
-
 ou bien pendant la création du graphique avec la méthode \emph{g:Setviewdir()} :
-
 \begin{Luacode}
 g:Setviewdir(perspective("yz",0.65,60))
+\end{Luacode}
+
+\subsection{Projection centrale}
+
+Depuis la version 2.4, \emph{luadraw} propose également la projection centrale. À la différence des modes précédents, \textbf{cette projection n'est pas affine}, et d'autre part elle n'est pas définie pour tous les points de l'espace, ce qui peut conduire à des erreurs, cela demande donc de la réflexion et des ajustements. Cette projection est définie par :
+\begin{itemize}
+    \item Une camera, qui est un point de l'espace mémorisé dans une variable appelée \emph{camera} et qui ne  doit pas être modifiée directement.
+    \item Une cible, qui est un point de l'espace mémorisé dans une variable appelée \emph{target} et qui ne  doit pas être modifiée directement.
+\end{itemize}
+Le plan passant par la \emph{target} et orthogonal à l'axe \emph{target} - \emph{camera} est le plan de la projection, il représente l'écran. Comme pour les modes précédents, la projection centrale est accessible par la fonction \emph{perspective} :\par
+\hfil\textbf{perspective("central",camera,target)},\hfil\par
+ou bien \par
+\hfil\textbf{perspective("central",theta,phi,d,target)},\hfil\par
+dans le premier cas on donne les valeurs de \emph{camera} et \emph{target} (points 3d, par défaut \emph{target} est l'origine). Dans le second cas, les trois arguments \emph{theta}, \emph{phi} et \emph{d} servent à positionner la caméra conformément au schéma suivant :
+
+\begin{center}
+\begin{luadraw}{name=central_perspective}
+local g = graph3d:new{window3d={-5,3,-5,3,-5,5}, window={-5,10,-7,7}, size={12,12}, margin={0,0,0,0}, bbox=false, viewdir=perspective("central",-60,65,35)}
+g:Writeln("\\tikzset{->-/.style= {decoration={markings, mark=at position #1 with {\\arrow{stealth}}}, postaction={decorate}}}")
+g:Labelsize("footnotesize")
+local dcamera = function(pos,dir)
+    local a, b, c, d, e = 0.25, 0.25, 0.1, 0.2, 0.1
+    local u = cpx.normalize(dir)
+    local v = cpx.I*u
+    local chem, dep = {}, pos+e*u-b*v
+    chem = {dep,dep+2*a*u,dep+2*a*u+2*b*v,dep+2*b*v,0.15,"cla", dep+(b-c)*v,"m",pos-d*v,pos+d*v,dep+(b+c)*v,"l"}
+    g:Dpath(chem)
+end
+local d = 10
+local N = pt3d.normalize(M(2,1,1.5))
+local v = pt3d.normalize(pt3d.prod(N,vecJ))
+local u = pt3d.prod(v,N)
+local Cam = d*N
+local A = pxy(Cam)
+local B, C = M(0,2,2.5), M(3,-1,4)
+local E = (B+C)/2+vecK
+local F = isobar3d({B,C,E})+1.51*vecJ
+local T = tetra(B,E-B,C-B,F-B)
+local B1, C1, E1, F1 = proj3dO(B, {Origin,N}, Cam-B), proj3dO(C, {Origin,N}, Cam-C), proj3dO(E, {Origin,N}, Cam-E), proj3dO(F, {Origin,N}, Cam-F)
+local x, y = 12,8
+local D = Origin -x*u/2-y*v/2.5
+local plan = {D,D+x*u,D+x*u+y*v,D+y*v}  
+g:Dscene3d(
+    g:addFacet(plan, {color="white", contrast=0.125, edge=true}),
+    g:addPoly(T, {color="white", contrast=0.25, edge=true, hidden=true, hiddenstyle="dashed"}),
+    g:addPolyline( {{(Cam+B)/2,B1},{C,C1},{E,E1},{F,F1}}, {width=2,color="gray", hidden=true}),
+    g:addPolyline({{-5*vecK,5*vecK},{-5*vecI,4*vecI}}, {arrows=1, hidden=true})
+)
+g:Dballdots3d(Origin,nil,1.5)
+g:Ddots3d({B1,C1, E1, F1},"gray")
+g:Dpolyline3d({Origin, A, Cam},true,"dashed")
+g:Dangle3d(Cam,A,Origin)
+g:Dangle3d(Cam,Origin,v,0.3,"line width=0.8pt")
+g:Darc3d(vecI,Origin,A,2.25,1,'-stealth'); g:Darc3d(vecK,Origin,Cam,2.25,1,'-stealth')
+g:Dpolyline3d({{Cam,(B+Cam)/2},{Cam,C},{Cam,E},{Cam,F}},true,"->-=0.35,line width=0.1pt,gray")
+g:Dpolyline3d({{B1,C1,E1,F1},{C1,F1}},true,"gray")
+g:Dpolyline3d({B1,E1},true,"dotted,gray")
+g:Ddots3d({B, C, E, F})
+g:Dlabel3d("screen plane",D,{pos="NE",dir={u,v}})
+g:Dlabel3d("target",Origin, {pos="S",dist=0.1}, "camera",Cam,{pos="SE"}, "$A$",B,{pos="N"},"$B$",C,{pos="S"},"$C$",E,{pos="N"},
+"$D$",F,{},"$A'$",B1,{node_options="gray",dist=0}, "$B'$",C1,{pos="NW"}, "$C'$",E1,{pos="N"},"$D'$",F1,{}, "$\\theta$", 2.75*vecI,{pos="N",node_options="black"},"$\\varphi$", 1.3*(vecK+N), {}, "$z$",5*vecK,{},"$x$",4.5*vecI,{pos="center"})
+local O = M(-3,-2,-4)
+g:Ddots3d(O); g:Dpolyline3d({{O,O+vecI},{O,O+vecJ},{O,O+vecK}},'->')
+g:Dlabel3d("$x$",O+1.25*vecI,{},"$y$",O+1.25*vecJ,{},"$z$",O+1.25*vecK,{},"Origin",O,{pos="S"})
+u = g:Proj3dV(Cam)
+g:Dpolyline3d( {Cam/2-0.4*vecK-Cam/3.5, Cam/2-0.4*vecK+Cam/3.5}, 'stealth-stealth')
+g:Dlabel("$d$ = distance target - camera", g:Proj3d(Cam/2-0.4*vecK),{dir={u, cpx.I*u}, node_options="fill=white"})
+dcamera(u,u)
+g:Show()
+\end{luadraw}
+\captionof{figure}{Projection centrale}
+\end{center}
+
+Les valeurs par défaut sont : \emph{theta=30} (degrés),  \emph{phi=60},  \emph{d=15},  \emph{target=Origin}. Cette fonction s'utilise soit avec l'option \emph{viewdir} à la création de l'objet graphique, par exemple :
+\begin{Luacode}
+local g = graph3d:new{ viewdir = perspective("central",40,60) }
+\end{Luacode}
+ou bien pendant la création du graphique avec la méthode \emph{g:Setviewdir()} :
+\begin{Luacode}
+g:Setviewdir(perspective("central",40,60))
 \end{Luacode}

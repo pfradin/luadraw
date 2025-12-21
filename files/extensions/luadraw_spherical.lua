@@ -1,6 +1,6 @@
 -- luadraw_spherical.lua 
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -21,7 +21,8 @@ local sphere = {["C"]=Origin, ["R"]=3,
     ["edgewidth"] = "4",
     ["hiddenstyle"] = Hiddenlinestyle,
     ["hiddencolor"] = "gray",
-    ["show"] = true
+    ["show"] = true,
+    ["horizon"] = nil
     } -- sphere definition
     
 local before_sphere = {}
@@ -41,7 +42,8 @@ function clear_spherical()
     ["edgewidth"] = "4",
     ["hiddenstyle"] = Hiddenlinestyle,
     ["hiddencolor"] = "gray",
-    ["show"] = true
+    ["show"] = true,
+    ["horizon"] = nil
     } -- sphere definition
     Insidelabelcolor = "DarkGray"
     arrowBstyle = "->"
@@ -53,6 +55,7 @@ function graph3d:Define_sphere( args )
     args = args or {}
     if args.center ~= nil then sphere.C = args.center end
     if args.radius ~= nil then sphere.R = args.radius end
+    local Ct, R = sphere.C, sphere.R
     if args.color ~= nil then  sphere.color = args.color end
     if args.opacity ~= nil then sphere.opacity = args.opacity end
     if args.mode ~= nil then sphere.mode = args.mode end
@@ -62,6 +65,11 @@ function graph3d:Define_sphere( args )
     if args.hiddencolor ~= nil then sphere.hiddencolor = args.hiddencolor end
     if args.edgewidth ~= nil then sphere.edgewidth = args.edgewidth end
     if args.show ~= nil then sphere.show = args.show end
+    if projection_mode == "central" then
+        sphere.horizon = { interSS({Ct,R}, {(Ct+camera)/2,pt3d.abs(Ct-camera)/2}) }
+    else
+        sphere.horizon = {Ct, R, self.Normal}
+    end
 end
 
 function sM(x,y,z) -- or sM(theta,phi) (theta, phi degrees), define a spherical dot in (C,vecI,vecJ,vecK)
@@ -78,6 +86,12 @@ function toSphere(A)
     local u = A-C
     if pt3d.N1(u)< 1e-12 then return end
     return C+R*pt3d.normalize(u)
+end
+
+local visibledot = function(A)
+    if sphere.horizon == nil then print("Please define sphere first"); return end
+    local I, r, n = table.unpack(sphere.horizon)
+    return pt3d.dot(A-I,n) >= 0
 end
 
 function graph3d:Dspherical()
@@ -158,7 +172,7 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
         local w = pt3d.prod(u,vecI)
         if pt3d.N1(w) < 1e-12 then w =pt3d.prod(u,vecJ) end
         local J = I+r*pt3d.normalize(w) -- a point of the circle
-        if (angle == 0) or (pt3d.dot(v,N) > 0) then -- visible
+        if  visibledot(I) then --(pt3d.dot(v,N) > 0) then -- visible
             table.insert(after_sphere, {{J,I,u,"c"},style,color,width,opacity})
         elseif hidden and (style ~= "noline") then
             table.insert(hidden_part, {{J,I,u,"c"},Hiddenlinestyle,color,width,opacity})
@@ -178,21 +192,26 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
         A, u = table.unpack(P)
     end
     local I = proj3d(C,P) -- center 
+    if projection_mode == "central" then N = camera-I end
     if pt3d.dot(u,I-C) < 0 then u = -u end
     local d = pt3d.abs(C-I)
     if d >= R then  return end -- no circle
     local v, r = I-C
     if pt3d.N1(v) < 1e-12 then -- C is on P (big circle)
-        v = u; r = R; angle = 0
+        v = Origin; r = R; --angle = 0
     else
         r = math.sqrt(R^2- pt3d.abs2(v))
     end
-    if pt3d.N1(pt3d.prod(u,N))< 1e-12 then -- P has the same direction than screen 
-        acircle(I,r,v,u,angle)
+    if pt3d.N1(pt3d.prod(u,self.Normal))< 1e-12 then -- P has the same direction than screen 
+        acircle(I,r,v,u)
     else
-        local n2 = pt3d.normalize(pt3d.prod(N,v))
-        local n1 = pt3d.normalize(pt3d.prod(v,n2))
-        if angle == nil then angle = -pt3d.dot(v,N)/(r*pt3d.dot(n1,N)) end
+        local n2 = pt3d.normalize(pt3d.prod(N,u))
+        local n1 = pt3d.normalize(pt3d.prod(u,n2))
+        if projection_mode == "central" then 
+            angle = (r*r-pt3d.dot(v,N))/(r*pt3d.dot(n1,N))
+        else
+            angle = -pt3d.dot(v,N)/(r*pt3d.dot(n1,N)) 
+        end
         if math.abs(angle) > 1+1e-6 then acircle(I,r,v,u,angle)
         elseif (1<angle) and (angle<1+1e-6) then angle = 1 
         elseif (angle <-1) and (1-1e-6<angle) then angle = -1 
@@ -249,9 +268,9 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
     if arrows == 1 then arrowB = 1
     elseif arrows == 2 then arrowA = 1; arrowB = 1
     end
-    
+    local I, r, n = table.unpack( sphere.horizon )
     local add_seg_out = function(U,V,arrow)
-        local dev, der = splitseg({U,V},{C,self.Normal})
+        local dev, der = splitseg({U,V},{I,n})
         if #der ~= 0 then 
             table.insert(der,"l"); 
             --self:Beginadvanced()
@@ -272,9 +291,10 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
         --self:Endadvanced()
     end
     local I = dproj3d(C,{A,B-A})
-    if pt3d.abs(C-I) >= R then 
+    if pt3d.abs(C-I) >= (R-1e-12) then 
         add_seg_out(A,B,arrows) -- no intersection with sphere
     else
+
         local u, v, ell = pt3d.normalize(B-A), A-C, pt3d.abs(B-A)
         local b, c = pt3d.dot(u,v), pt3d.abs2(v)-R^2
         local D = math.sqrt(b^2-c)
@@ -356,6 +376,7 @@ function graph3d:DSarc(AB,sens,options)
 -- options = {style=, color=, width=, opacity=, arrows=, normal=}
     options = options or {}
     local A, B = table.unpack(AB)
+    if pt3d.abs(A-B)<1e-12 then return end
     local style = options.style or self.param.linestyle
     local color = options.color or self.param.linecolor
     local width = options.width or self.param.linewidth
@@ -372,22 +393,29 @@ function graph3d:DSarc(AB,sens,options)
     local N = self.Normal
     local A, B = toSphere(A), toSphere(B) -- to have points on sphere
     local u = pt3d.prod(A-C,B-C)
-    if pt3d.N1(u) < 1e-12 then 
+    if pt3d.N1(u) < 1e-12 then  -- points alignés avec le centre !
         if normal ~= nil then 
             u = normal 
         else
             u = pt3d.prod(B-A,vecI)
             if pt3d.N1(u) < 1e-12 then u = pt3d.prod(B-A,vecJ) end
         end
-    end -- points alignés avec le centre !
-    if pt3d.N1(pt3d.prod(u,N))< 1e-12 then -- P est le plan de l'écran
+    end 
+    if (projection_mode ~= "central") and (pt3d.N1(pt3d.prod(u,N))< 1e-12) then -- P est le plan de l'écran
         table.insert(after_sphere, {{A,C,B,R,sens,n,"ca"},style,color,width,opacity,arrows} )
     else
-        local n2 = pt3d.normalize(pt3d.prod(N,u))
-        local n1 = pt3d.normalize(pt3d.prod(n2,u))
-        local M1, M2, M = C+R*n2, C-R*n2
-        local xa = pt3d.dot(A-C,n1) -- abscisse de A dans (C,n1,n2)
-        if (pt3d.dot(A-C,N) >= 0) and (pt3d.dot(B-C,N) >= 0) then -- A et B sont visibles
+        local M1, M2
+        if projection_mode == "central" then
+            M2, M1 = interCS({C,R,u}, {(C+camera)/2, pt3d.abs(C-camera)/2} )
+            if (M2 ~= nil) and (M1 ~= nil) and (pt3d.det(camera-C,u,M1-C) < 0) then 
+                M1, M2 = M2, M1 
+            end
+        else
+            local n2 = pt3d.normalize(pt3d.prod(N,u))
+            local n1 = pt3d.normalize(pt3d.prod(n2,u))
+            M1, M2 = C+R*n2, C-R*n2
+        end
+        if visibledot(A) and visibledot(B) then -- A et B sont visibles
             if sens == 1 then
                 table.insert(after_sphere, {{A,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB})
             else
@@ -401,7 +429,7 @@ function graph3d:DSarc(AB,sens,options)
                     --self:Endadvanced()
                 end
             end
-        elseif (pt3d.dot(A-C,N) < 0) and (pt3d.dot(B-C,N) < 0) then -- A et B sont cachés
+        elseif (not visibledot(A)) and (not visibledot(B)) then -- A et B sont cachés
             if sens == 1 then
                 if hidden  and (style ~= "noline") then
                     table.insert(hidden_part, {{A,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
@@ -424,7 +452,7 @@ function graph3d:DSarc(AB,sens,options)
             end
         else
             -- un des points est visible, l'autre non
-            if pt3d.dot(B-C,N) <= 0 then -- A est visible, B non
+            if visibledot(A) then -- A est visible, B non
                 if sens == 1 then
                    table.insert(after_sphere, {{A,C,M2,R,sens,u,"ca"},style,color,width,opacity,-arrowA}) 
                    if hidden  and (style ~= "noline") then 
@@ -493,7 +521,7 @@ function graph3d:DSstars(dots,options)
         local B1, C1 = rotate3d(A,dphi,{Ct,n1}), rotate3d(A,-dphi,{Ct,n1})
         local B2, C2 = rotate3d(B1,60,{Ct,A-Ct}), rotate3d(C1,60,{Ct,A-Ct})
         local B3, C3 = rotate3d(B1,120,{Ct,A-Ct}), rotate3d(C1,120,{Ct,A-Ct})
-        if pt3d.dot(A-Ct,self.Normal) >= 0 then --visible
+        if visibledot(A) then -- A est visible
             if fill ~= "" then
                 self:DSfacet({B1,B2,B3,C1,C2,C3},{style="noline",fill=fill, width=1, fillopacity=0.5, hidden=hidden})
                 self:DScircle(plane(B1,C1,B2),{color=color, width=1, hidden=hidden}) 
@@ -510,6 +538,7 @@ function graph3d:DSstars(dots,options)
                 --self:DSfacet({B1,B2,B3,C1,C2,C3},{style="noline",fill=Insidelabelcolor, width=1, fillopacity=0.5, hidden=hidden})
                 self:DScircle(plane(B1,C1,B2),{color=Insidelabelcolor, width=width, hidden=hidden})
             else
+                --print(B1,C1,B2,C2,B3,C3)
                 self:DSarc({B1,C1},1,{color=Insidelabelcolor, width=width, hidden=hidden})
                 self:DSarc({B2,C2},1,{color=Insidelabelcolor, width=width, hidden=hidden})
                 self:DSarc({B3,C3},1,{color=Insidelabelcolor, width=width, hidden=hidden})
@@ -537,24 +566,76 @@ function graph3d:DSfacet(facet, options)
     local fillopacity = options.fillopacity or 0.3
     local fill = options.fill or ""
     local Ct, R = sphere.C, sphere.R
-    local dev, der = splitfacet(facet, {Ct, self.Normal})
-    local chem, U, V = {}
-    if dev ~= nil then
-        V, U = dev[1]
-        chem = {V}; table.insert(dev,V)
-        for k = 2, #dev do
-            U = V; V = dev[k]
-            insert(chem,{Ct,V,R,1,"ca"})
+    local I,r,n = table.unpack(sphere.horizon)
+    local P = {I, n}
+    local chemV, chemH,M1,M2 = {}, {}
+    local visiblelast, pred, M1, M2 = false
+    facet = table.copy(facet)
+    table.insert(facet,facet[1])
+    for _,A in ipairs(facet) do
+        if visibledot(A) then
+            if visiblelast or (pred == nil) then 
+                table.insert(chemV,{A,false})
+            else -- pred is not visible
+                local u =  pt3d.prod(pred-Ct,A-Ct)
+                if pt3d.N1(u) < 1e-12 then u = vecK end
+                if projection_mode == "central" then
+                    M2, M1 = interCS({Ct,R,u}, {(Ct+camera)/2, pt3d.abs(Ct-camera)/2} )
+                else
+                    local n1 = pt3d.normalize( pt3d.prod(u,self.Normal) )
+                    M1, M2 = Ct+R*n1, Ct-R*n1
+                end
+                if pt3d.det(pred-Ct,M1-Ct,u) < 0 then M1 = M2 end
+                table.insert(chemH, {M1,true})                
+                table.insert(chemV, {M1,true})
+                table.insert(chemV, {A,false})
+            end
+            visiblelast = true
+        else -- A not visible
+            if (not visiblelast) or (pred == nil) then 
+                table.insert(chemH,{A,false})
+            else -- pred is visible
+                local u =  pt3d.prod(pred-Ct,A-Ct)
+                if pt3d.N1(u) < 1e-12 then u = vecK end
+                if projection_mode == "central" then
+                    M2, M1 = interCS({Ct,R,u}, {(Ct+camera)/2, pt3d.abs(Ct-camera)/2} )
+                else
+                    local n1 = pt3d.normalize( pt3d.prod(u,self.Normal) )
+                    M1, M2 = Ct+R*n1, Ct-R*n1
+                end
+                if pt3d.det(pred-Ct,M1-Ct,u) < 0 then M1 = M2 end
+                
+                table.insert(chemV, {M1,true})
+                table.insert(chemH, {M1,true})
+                table.insert(chemH, {A,false})
+            end
+            visiblelast = false
+        end
+        pred = A
+    end
+   local V, U
+    if #chemV > 0 then
+        if chemV[1][1] ~= chemV[#chemV][1] then table.insert(chemV, chemV[1]) end
+        V, U = chemV[1]
+        local chem = {V[1]}
+        for k = 2, #chemV do
+            U = V; V = chemV[k]
+            if pt3d.abs(U[1]-V[1]) > 1e-8 then
+                if U[2] and V[2] then insert(chem,{I,V[1],r,1,"ca"}) else insert(chem,{Ct,V[1],R,1,"ca"}) end
+            end
         end
         table.insert(after_sphere, {chem,style,color,width,opacity,0,fill,fillopacity})
-    end    
-    if der ~= nil then
-        V, U = der[1]
-        chem = {V}; table.insert(der,V)
-        for k = 2, #der do
-            U = V; V = der[k]
-            insert(chem,{Ct,V,R,1,"ca"})
-        end
+    end
+    if #chemH > 0 then
+        if chemH[1][1] ~= chemH[#chemH][1] then table.insert(chemH, chemH[1]) end
+        V, U = chemH[1]
+        chem = {V[1]}
+        for k = 2, #chemH do
+            U = V; V = chemH[k]
+            if pt3d.abs(U[1]-V[1]) > 1e-8 then
+                if U[2] and V[2] then insert(chem,{I,V[1],r,1,"ca"}) else insert(chem,{Ct,V[1],R,1,"ca"}) end
+            end
+        end    
         if hidden  and (style ~= "noline") then
             table.insert(hidden_part, {chem,Hiddenlinestyle,color,width,opacity})
         else
@@ -564,6 +645,7 @@ function graph3d:DSfacet(facet, options)
         end
     end
 end
+
 
 -- angle sphérique
 function graph3d:DSangle(B,A,C,r,sens,options)
@@ -605,7 +687,7 @@ function graph3d:DSlabel(...)
                 --self:Endadvanced()
             end
         else -- anchor est à l'extérieur de la sphère
-            if pt3d.dot(N,u) >= 0 then -- anchor est visible
+            if visibledot(anchor) then -- anchor est visible
                 table.insert(after_sphere, {text,anchor,options})
             else
                 --self:Beginadvanced()
@@ -640,8 +722,7 @@ function graph3d:DSdots(dots,options)
     local add_adot = function(A)
         local u = A-C
         local d = pt3d.abs(u)
-        local pscal = pt3d.dot(N,u)
-        if (d < R) or ((math.abs(d-R)<1e-8) and (pscal<=0)) then --A est dans la sphère ou caché sur la sphère
+        if (d < R) or ((math.abs(d-R)<1e-8) and (not visibledot(A))) then --A est dans la sphère ou caché sur la sphère
             if hidden then
                 table.insert(hidden_part, {A,mark_options..sep..Insidelabelcolor})
             else
@@ -650,7 +731,7 @@ function graph3d:DSdots(dots,options)
                 --self:Endadvanced()
             end
         else -- A est à l'extérieur de la sphère ou dessus mais visible
-            if pscal >= 0 then -- A est visible
+            if visibledot(A) then -- A est visible
                 table.insert(after_sphere, {A,mark_options})
             else
                 --self:Beginadvanced()
@@ -681,7 +762,7 @@ function graph3d:DScurve(L,options)
     local Visible, Hidden = {},{}
     local visible, hidden, etat, Avisible = {}, {}
     local visible_function = function(A)
-        return (pt3d.dot(A-C,N) >= 0)
+        return visibledot(A)
     end
     Visible, Hidden =  split_points_by_visibility(L,visible_function)
     if out ~= nil then

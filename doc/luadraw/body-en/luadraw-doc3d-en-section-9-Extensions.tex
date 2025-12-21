@@ -120,9 +120,9 @@ Of course, all 2D and 3D drawing methods remain usable.
     \item \textbf{arrowABstyle} = "<->": Very rarely used because most of the time the lines drawn on the sphere must be cut. \end{itemize}
     \item Functions:
 \begin{itemize}
-    \item \textbf{sM(x,y,z)}: returns a point on the sphere, point $I$ of the sphere such that the half-line $[O,I)$ ($O$ being the center of the sphere) passes through point $A$ with Cartesian coordinates $(x,y,z)$. The numbers $x$, $y$, and $z$ must not be zero simultaneously.
-    \item \textbf{sM(theta,phi)}: where \emph{theta} and \emph{phi} are angles in degrees, returns a point on the sphere, whose spherical coordinates are \emph{(R,theta,phi)} where $R$ is the radius of the sphere.     \item \textbf{toSphere(A)}: Returns the same point on the sphere as \emph{Ms(A.x,A.y,A.z)}.
-    \item \textbf{clear\_spherical()}: Removes objects that have been added to the scene, and resets the values ​​to their default values.
+    \item \textbf{sM(x,y,z)}: returns a point on the sphere; this is the point $I$ on the sphere such that the half-line $[O,I)$ ($O$ being the center of the sphere) passes through the point $A$ with Cartesian coordinates $(x,y,z)$. It is the projection of the point $(Mx,y,z)$ onto the sphere from the center.
+    \item \textbf{sM(theta,phi)}: where \emph{theta} and \emph{phi} are angles in degrees, returns a point on the sphere, whose spherical coordinates are \emph{(R,theta,phi)} where $R$ is the radius of the sphere.     \item \textbf{toSphere(A)}: returns the projection of point $A$ onto the sphere from the center.
+    \item \textbf{clear\_spherical()}: removes objects that have been added to the scene, and resets the values ​​to their default values.
 \end{itemize}
 \end{itemize}
 
@@ -270,7 +270,7 @@ The \textbf{g:DSplane(P,options)} method allows you to add the contour of a plan
 
 \subsubsection{Add a label: g:DSlabel}
 
-The \textbf{g:DSlabel(text1,anchor1,options1,text2,anchor2,options2,...)} method allows you to add one or more labels using the same principle as the \emph{g:Dlabel3d} method, except that here the function handles cases where the anchor point is inside the sphere, behind the sphere, or in front of the sphere. When it is inside, the label color is given by the global variable \textbf{Insidelabelcolor}, which defaults to \emph{"DrakGray"}.
+The \textbf{g:DSlabel(text1,anchor1,options1,text2,anchor2,options2,...)} method allows you to add one or more labels using the same principle as the \emph{g:Dlabel3d} method, except that here the function handles cases where the anchor point is inside the sphere, behind the sphere, or in front of the sphere. When it is inside, the label color is given by the global variable \textbf{Insidelabelcolor}, which defaults to \emph{"DarkGray"}.
 
 \subsubsection{Add points: g:DSdots and g:DSstars}
 
@@ -279,7 +279,7 @@ The \textbf{g:DSdots(dots,options)} method allows you to add points to the scene
     \item \opt{hidden =} (value of \emph{Hiddenlines}),
     \item \opt{mark\_options =} (""), a string that will be passed directly to the \emph{\textbackslash draw} instruction.
 \end{itemize}
-If a point is inside the sphere, or on the hidden face, the point's color is given by the global variable \textbf{Insidelabelcolor}, which defaults to \emph{"DrakGray"}.
+If a point is inside the sphere, or on the hidden face, the point's color is given by the global variable \textbf{Insidelabelcolor}, which defaults to \emph{"DarkGray"}.
 
 The \textbf{g:DSstars(dots,options)} method allows you to add points to the sphere. The \emph{dots} argument is a list of 3D points that will be projected onto the sphere. The function draws these points as an asterisk. The \emph{options} argument is a two-field table, which are:
 \begin{itemize}
@@ -291,7 +291,7 @@ The \textbf{g:DSstars(dots,options)} method allows you to add points to the sphe
     \item \opt{scale =} (1), allows you to change the size of the parallelogram,
     \item \opt{circled =} (false), allows you to add a circle around the star,
     \item \opt{fill =} (""), string representing a color. When not empty, the asterisk is replaced by a circled hexagonal facet and filled with the color specified by this option. \end{itemize}
-The points on the hidden face of the sphere have the color given by the global variable \textbf{Insidelabelcolor}, which defaults to \emph{"DrakGray"}.
+The points on the hidden face of the sphere have the color given by the global variable \textbf{Insidelabelcolor}, which defaults to \emph{"DarkGray"}.
 
 \subsubsection{Inverse Stereography: g:DSinvstereo\_curve and g:DSinvstereo\_polyline}
 
@@ -354,6 +354,7 @@ g:Linewidth(6); Hiddenlinestyle = "dotted"
 Hiddenlines = false; 
 local C = cylinder(M(1.5,0,-3.5),1.5,M(1.5,0,3.5),35,true)
 local L = parametric3d( function(t) return Ms(3,t-math.pi/2,t) end, -math.pi,math.pi) -- la courbe
+g:Define_sphere()
 g:DSpolyline(facetedges(C),{color="gray"}) -- affichage cylindre
 g:DSpolyline({{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}},{arrows=1}) --axes
 Hiddenlines=true; g:DScurve(L,{width=12,color="blue"}) -- courbe avec partie cachée
@@ -374,6 +375,7 @@ require "luadraw_polyhedrons"
 g:Linewidth(6); Hiddenlines = true; Hiddenlinestyle = "dotted"
 local P = poly2facet( octahedron(Origin,sM(30,10)) )
 local colors = {"Crimson","ForestGreen","Gold","SteelBlue","SlateGray","Brown","Orange","Navy"}
+g:Define_sphere()
 for k,F in ipairs(P) do
     g:DSfacet(F,{fill=colors[k],style="noline",fillopacity=0.7})  -- facettes sans les bords
 end

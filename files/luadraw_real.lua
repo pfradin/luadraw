@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,7 +8,7 @@
 --   http://www.latex-project.org/lppl.txt.
 
 digits = 4 -- nombre de décimales dans les exports
-epsilon = 1e-16
+epsilon = 1e-12
 mm = math.floor(7227/254) -- conversion en dixième de point, ex: Linewidth(2*mm) pour une épaisseur de 2 millimètres
 pt = 254/7227  -- conversion en cm, ex : 2*pt pour une longueur en cm équivalente à 2 points
 deg = math.pi/180 -- conversion en radians, ex 180*deg = pi
@@ -40,7 +40,7 @@ function isInf(reel) -- reel est supposée être un nombre
 end
 
 function notDef(reel) -- reel est supposée être un nombre
-    return isNaN(reel) or isInf(reel)
+    return (reel==nil) or isNaN(reel) or isInf(reel)
 end 
 
 function isNul(reel)
@@ -50,6 +50,11 @@ end
 function round(num, nbDeci)
   local mult = 10^(nbDeci or 0)
   return math.floor(num * mult + 0.5) / mult
+end
+
+function nearest(x) -- nearest integer
+    local a, b = math.floor(x), math.ceil(x)
+    if x <= (a+b)/2 then return a else return b end
 end
 
 function range(a, b, step)
@@ -98,18 +103,24 @@ function lcm(a,b)
     return math.abs(a*b) // gcd(a,b)
 end
 
-function solve(f,a,b,n)
--- résout numériquement f(x)=0 dans l'intervalle [a,b], celui-ci est divisé en n morceaux.
--- f doit être une fonction, a et b deux réels.
-    if (f == nil) or (a == nil) or (type(a) ~= "number") or (b == nil) or (type(b) ~= "number") then return end
+function solve(f,a,b,n,df) -- version 2.4 of luadraw
     n = n or 25
     if a > b then a, b = b, a end
     local x, delta, S = a, (b-a)/n, {}
     local fin, h, r = x+delta, 1e-6, nil
+    if df == nil then
+        df = function(x)
+            return (f(x+h)-f(x))/h
+        end
+    end
+    local iter = function(x)
+        return x-f(x)/df(x)
+    end
     while x < b do
         r = x+delta/2
         for i = 1,5 do
-            if r ~= nil then r = r - f(r)*h/(f(r+h)-f(r)) end
+            if r ~= nil then r = evalf(iter,r) end
+            if (r==nil) then break end
         end
         if (r ~= nil) and (r >= x) and (r < fin) and (math.abs(f(r)) < 1e-6) then
             table.insert(S,r) -- on considère que r est une solution

@@ -158,10 +158,10 @@ Variante : la méthode \textbf{g:Dline(A,B,draw\_options)} trace la droite passa
 \end{itemize}
 
 \subsubsection{Dmarkarc}
-La méthode \textbf{g:Dmarkarc(b,a,c,r,n,long,espace)} permet de marquer l'arc de cercle de centre \emph{a}, de rayon \emph{r}, allant de \emph{b} à \emph{c}, avec \emph{n} petits segments. Par défaut la longueur (argument \emph{long}) est de 0.25, et l'espacement (argument \emph{espace}) et de 0.0625.
+La méthode \textbf{g:Dmarkarc(b,a,c,r,n,long,espace,draw\_options)} permet de marquer l'arc de cercle de centre \emph{a}, de rayon \emph{r}, allant de \emph{b} à \emph{c}, avec \emph{n} petits segments. Par défaut la longueur (argument \emph{long}) est de 0.25, et l'espacement (argument \emph{espace}) et de 0.0625. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
 
 \subsubsection{Dmarkseg}
-La méthode \textbf{g:Dmarkseg(a,b,n,long,espace,angle)} permet de marquer le segment défini par \emph{a} et \emph{b} avec \emph{n} petits segments penchés de \emph{angle} degrés (45° par défaut). Par défaut la longueur (argument \emph{long}) est de 0.25, et l'espacement (argument \emph{espace}) et de 0.125.
+La méthode \textbf{g:Dmarkseg(a,b,n,long,espace,angle,draw\_options)} permet de marquer le segment défini par \emph{a} et \emph{b} avec \emph{n} petits segments penchés de \emph{angle} degrés (45° par défaut). Par défaut la longueur (argument \emph{long}) est de 0.25, et l'espacement (argument \emph{espace}) et de 0.125. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
 
 \subsubsection{Dmed}
 \begin{itemize}
@@ -203,6 +203,37 @@ La méthode \textbf{g:Dseg(seg,scale,draw\_options)} dessine le segment défini 
     \item La méthode \textbf{g:DtangentI(f,x0,y0,long,draw\_options)} dessine la tangente à la courbe implicite d'équation \(f(x,y)=0\), au point \emph{(x0,y0)} supposé sur la courbe. Si l'argument \emph{long} vaut \emph{nil} (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \emph{long}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
     \item La fonction \textbf{tangentI(f,x0,y0,long)} renvoie soit la droite, soit un segment (suivant que \emph{long} vaut \emph{nil} ou pas).
 \end{itemize}
+
+\subsubsection{ Dtangent\_from}
+\begin{itemize}
+    \item La méthode \textbf{g:Dtangent\_from(A,p,t1,t2,dp,draw\_options,out)} dessine la ou les tangentes à la courbe paramétrée par \(p: t \mapsto p(t)\) (à valeurs complexes) issue(s) du point $A$ (nombre complexe). Les arguments \emph{t1} et \emph{t2} représentent les bornes de l'intervalle de recherche. L'argument optionnel \emph{dp} est une fonction représentant la dérivée de la fonction $p$, par défaut cet argument vaut \emph{nil} et lé dérivée de $p$ est remplacée par une approximation. L'argument optionnel \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. L'argument optionnel \emph{out}, s'il est utilisé, doit être le nom d'une variable, celle-ci doit être une table, elle contiendra à la fin de l'exécution les points de la courbe pour lesquels la tangente passe par $A$.
+    \item La fonction \textbf{tangent\_from(A,p,t1,t2,dp)} renvoie la liste les points de la courbe paramétrée par $p$, sur l'intervalle\emph{[t1;t2]} pour lesquels la tangente passe par $A$ (nombre complexe). S'il n'y en a pas, la fonction renvoie une liste vide.
+\end{itemize}
+
+\begin{demo}{Tangentes issues d'un point}
+\begin{luadraw}{name=tangent_from}
+local i, cos, sin, pi = cpx.I, math.cos, math.sin, math.pi
+local g = graph:new{window={-5,5,-5,5}, size={10,10}}
+local p1 = function(t) return t+i*(t^2/4-1) end -- parabola
+local p2 = function(t) return 1/2+i+rotate(2*cos(t)+i*sin(t),15) end -- ellipse
+local p3 = function(t) return math.sinh(t)+i*math.cosh(t)-i*2 end -- branch of a hyperbola
+local p4 = function(t) return 2*cos(3*t)*cpx.exp(i*t) end -- other
+local P = 0.5-1.25*i
+local draw = function(p,t1,t2)
+    local axis_style = { arrows='-Stealth', legend={'$x$','$y$'} }
+    local S = {}
+    g:Daxes({0, 1, 1}, axis_style)
+    g:Dparametric(p,{t={t1,t2}, draw_options="line width=0.8pt, Crimson"})
+    g:Dtangent_from(P,p,t1,t2,"blue",S)
+    g:Ddots(S,"Crimson"); g:Ddots(P); g:Dlabel("$A$",P,{pos="S"})
+end
+g:Saveattr(); g:Viewport(-5,-0.25,0.25,5); g:Coordsystem(-3,4,-3,4); draw(p1,-4,4); g:Restoreattr()
+g:Saveattr(); g:Viewport(0.25,5,0.25,5); g:Coordsystem(-3,3,-3,3); draw(p2,-pi,pi); g:Restoreattr()
+g:Saveattr(); g:Viewport(-5,-0.25,-5,-0.25); g:Coordsystem(-3,4,-3,3); draw(p3,-4,4); g:Restoreattr()
+g:Saveattr(); g:Viewport(0.25,5,-5,-0.25); g:Coordsystem(-3,3,-3,3); draw(p4,-pi,pi); g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
 
 \subsubsection{Dnormal}
 \begin{itemize}
@@ -804,7 +835,8 @@ g:Show()
         \begin{itemize}
             \item Le champ \emph{pos} indique la position du label par rapport au point d'ancrage, il peut valoir \emph{"N"} pour nord, \emph{"NE"} pour nord-est, \emph{"NW"} pour nord-ouest, ou encore \emph{"S"}, \emph{"SE"}, \emph{"SW"}. Par défaut, il vaut \emph{center}, et dans ce cas le label est centré sur le point  d'ancrage.
             \item Le champ \emph{dist} est une distance en cm qui vaut $0$ par défaut, c'est la distance entre le label et son point d'ancrage lorsque \emph{pos} n'est pas égal a \emph{center}.
-            \item \emph{dir=\{dirX,dirY,dep\}} est la direction de l'écriture (\emph{nil}, valeur par défaut, pour le sens par défaut). Les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois complexes représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage.
+            \item \emph{dir=\{dirX,dirY,dep\}} est la direction de l'écriture. Les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois complexes représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage. Le vecteur \emph{dep} est nul par défaut, et le vecteur \emph{dirY}, s'il est absent, est égal au vecteur \emph{dirX} tourné de 90 degrés dans le sens direct.
+            Par défaut l'option \emph{dir} est égale à la valeur courante de la direction de l'écriture.
             \item L'argument \emph{node\_options} est une chaîne (vide par défaut) destinée à recevoir des options qui seront directement passées à tikz dans l'instruction \emph{node{[}{]}}.
             \item Les labels sont dessinés dans la couleur courante du texte du document, mais on peut changer de couleur avec l'argument \emph{node\_options} en mettant par exemple : \emph{node\_options="color=blue"}.
             
@@ -817,9 +849,14 @@ Options globales pour les labels :
     \begin{itemize}
         \item la méthode \textbf{g:Labelstyle(position)} permet de préciser la position des labels par rapport aux points d'ancrage. L'argument \emph{position} est une chaîne qui peut valoir : \emph{"N"} pour  nord, \emph{"NE"} pour nord-est, \emph{"NW"} pour nord-ouest, ou  encore \emph{"S"}, \emph{"SE"}, \emph{"SW"}. Par défaut, il
   vaut \emph{center}, et dans ce cas le label est centré sur le point  d'ancrage.
+  
     \item La méthode \textbf{g:Labelcolor(color)} permet de définir la couleur des labels. L'argument \emph{color} est une chaîne représentant une couleur pour tikz. Par défaut l'argument est une chaîne vide ce qui représente la couleur courante du document.
+    
     \item La méthode \textbf{g:Labelangle(angle)} permet de préciser un angle (en degrés) de rotation des labels autour du point d'ancrage, cet angle est nul par défaut.
+    
     \item La méthode \textbf{g:Labelsize(size)} permet de gérer la taille des labels. L'argument \emph{size} est une chaîne qui peut valoir : \emph{"tiny"}, ou \emph{"scriptsize"} ou \emph{"footnotesize"}, etc. Par défaut l'argument est une chaîne vide, ce qui représente la taille \emph{"normalsize"}.
+    
+    \item La méthode \textbf{g:Labeldir(dir)} permet de gérer la direction l'écriture. l'argument \emph{dir} est une table de la forme \emph{dir=\{dirX, dirY, dep\}}, les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois complexes représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage. Le vecteur \emph{dep} est nul par défaut, et le vecteur \emph{dirY}, s'il est absent, est égal au vecteur \emph{dirX} tourné de 90 degrés dans le sens direct. Lorsque \emph{dir=\{\}}, cela représente le sens usuel de l'écriture.
   \end{itemize}
   
   
@@ -1005,7 +1042,8 @@ Le tracé des axes s'obtient avec la méthode \textbf{g:Daxes( \{A,xpas,ypas\}, 
             \item \opt{legendpos=\{0.975,0.975\}}. Cette option précise la position (entre $0$ et $1$) de la légende par rapport à chaque axe.
             \item \opt{legendsep=\{0.2,0.2\} }. Cette option précise la distance entre la légende et l'axe. La légende est de l'autre côté de l'axe par rapport aux graduations.
             \item \opt{legendangle=\{"auto","auto"\}}. Cette option précise l'angle (en degrés) que doit faire la légende pour l'axe. La valeur "auto" par défaut signifie que la légende doit être parallèle à l'axe si l'option \emph{labelstyle} est aussi à "auto", sinon la légende est horizontale.
-            \item \opt{labelpos=\{"bottom","left"\}}.Cette option précise la position des labels par rapport à l'axe. Pour l'axe $Ox$, les valeurs possibles sont : "none", "bottom" ou "top", pour l'axe $Oy$ c'est :  "none", "right" ou "left".
+            \item \opt{legendstyle=\{"auto","auto"\}}. Précise le style de label pour les légendes, avec la valeur \emph{"auto"} celui-ci est déterminé automatiquement, sinon on peut utiliser les valeurs: "N", "NW", "W", "SW", "S", "SE", "E", "NE".
+            \item \opt{labelpos=\{"bottom","left"\}}. Cette option précise la position des labels par rapport à l'axe. Pour l'axe $Ox$, les valeurs possibles sont : "none", "bottom" ou "top", pour l'axe $Oy$ c'est :  "none", "right" ou "left".
             \item \opt{labelden=\{1,1\}}. Cette option précise le dénominateur des labels (entier) pour l'axe. La formule qui définit le label à la graduation numéro $n$ est : \textbf{(originnum + unit*n)"labeltext"/labelden}.
             \item \opt{labeltext=\{"",""\}}. Cette option définit le texte qui sera ajouté au numérateur des labels pour l'axe.
             \item \opt{labelstyle=\{"S","W"\}}. Cette option définit le style des labels pour chaque axe. Les valeurs possibles sont "auto","N", "NW", "W", "SW", "S", "SE", "E".
@@ -1065,6 +1103,7 @@ Les méthodes \textbf{g:DaxeX(\{A,xpas\}, options)} et \textbf{g:DaxeY(\{A,ypas\
             \item \opt{legendpos=0.975}. Cette option précise la position (entre $0$ et $1$) de la légende par rapport à l'axe.
             \item \opt{legendsep=0.2}. Cette option précise la distance entre la légende et l'axe. La légende est de l'autre côté de l'axe par rapport aux graduations.
             \item \opt{legendangle="auto"}. Cette option précise l'angle (en degrés) que doit faire la légende pour l'axe. La valeur "auto" par défaut signifie que la légende doit être parallèle à l'axe si l'option \emph{labelstyle} est aussi à "auto", sinon la légende est horizontale.
+            \item \opt{legendstyle="auto"}. Précise le style de label pour la légende, avec la valeur \emph{"auto"} celui-ci est déterminé automatiquement, sinon on peut utiliser les valeurs: "N", "NW", "W", "SW", "S", "SE", "E", "NE".
             \item \opt{labelpos="bottom"} pour $Ox$ et \opt{labelpos="left"} pour $Oy$. Cette option précise la position des labels par rapport à l'axe. Pour l'axe $Ox$, les valeurs possibles sont : "none", "bottom" ou "top", pour l'axe $Oy$ c'est :  "none", "right" ou "left".
             \item \opt{labelden=1}. Cette option précise le dénominateur des labels (entier) pour l'axe. La formule qui définit le label à la graduation numéro $n$ est : \textbf{(originnum + unit*n)"labeltext"/labelden}.
             \item \opt{labeltext=""}. Cette option définit le texte qui sera ajouté au numérateur des labels.
@@ -1101,8 +1140,8 @@ Les méthodes de tracé des axes s'appuient sur la méthode \textbf{g:Dgradline(
     \item \opt{legendpos=0.975}. Cette option précise la position (entre $0$ et $1$) de la légende par rapport à l'axe.
     \item \opt{legendsep=defaultlegendsep}. Cette option précise la distance entre la légende et l'axe. La légende est de l'autre côté de l'axe par rapport aux graduations, \emph{defaultlegendsep} est une variable globale qui vaut 0.2 par défaut.
     \item \opt{legendangle="auto"}. Cette option précise l'angle (en degrés) que doit faire la légende pour l'axe. La valeur "auto" par défaut signifie que la légende doit être parallèle à l'axe si l'option \emph{labelstyle} est aussi à "auto", sinon la légende est horizontale.
-    \item \opt{legendstyle="auto"}. Précise la position de la légende par rapport à l'axe, les valeurs possibles sont : "auto", "top" ou "bottom".
-    \item \opt{labelpos="bottom"}. Cette option précise la position des labels par rapport à l'axe, les valeurs possibles sont : "none", "bottom" ou "top".
+    \item \opt{legendstyle="auto"}. Précise le style de label pour la légende, avec la valeur \emph{"auto"} celui-ci est déterminé automatiquement, sinon on peut utiliser les valeurs: "N", "NW", "W", "SW", "S", "SE", "E", "NE".
+    \item \opt{labelpos="bottom"}. Cette option précise la position des labels par rapport à l'axe, les valeurs possibles sont : "none", "bottom" ou "top". Cette position détermine en même temps celle de la légende : de l'autre côté de l'axe.
     \item \opt{labelden=1}. Cette option précise le dénominateur des labels (entier) pour l'axe. La formule qui définit le label à la graduation numéro $n$ est : \textbf{(originnum + unit*n)"labeltext"/labelden}.
     \item \opt{labeltext=""}. Cette option définit le texte qui sera ajouté au numérateur des labels.
     \item \opt{labelstyle="auto"}. Cette option définit le style des labels. Les valeurs possibles sont "auto","N", "NW", "W", "SW", "S", "SE", "E".

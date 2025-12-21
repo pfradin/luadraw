@@ -1,4 +1,4 @@
-\begin{tikzpicture}[background rectangle/.style={,fill=Beige},show background rectangle]%
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=Beige},show background rectangle]%
 \begin{scope}%
 \clip (-0.5,-0.5) rectangle (9.5,9.5);%
 \draw[-] (0,4.5) -- (9,4.5);%

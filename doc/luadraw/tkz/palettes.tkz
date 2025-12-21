@@ -1,4 +1,4 @@
-\begin{tikzpicture}[background rectangle/.style={,draw=black},show background rectangle]%
+\begin{tikzpicture}[line join=round,background rectangle/.style={,draw=black},show background rectangle]%
 \begin{scope}%
 \pgfsetlinewidth{0.1pt}%
 \draw[color={rgb,1:red,0.502;green,0;blue,0.502},fill={rgb,1:red,0.502;green,0;blue,0.502}] (0,9) -- (0,8) -- (0.05,8) -- (0.05,9)--cycle;%

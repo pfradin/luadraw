@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2025/11/13
--- version 2.3
+-- date 2025/12/21
+-- version 2.4
 -- Copyright 2025 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -81,7 +81,8 @@ function complex.__eq(u,v)
     u = toComplex(u)
     v = toComplex(v)
     if (u == nil) or (v == nil) then return end
-    return (u.re == v.re) and (u.im == v.im)
+    --return (u.re == v.re) and (u.im == v.im)
+    return complex.isNul(u-v) -- égalité à epsilon près
 end
 
 -- opposé (surcharge de l'opérateur '-c')
@@ -340,7 +341,7 @@ end
 function whatis(x,msg)
     msg = msg or "It"
     msg = "\n"..msg.." "
-    if x == nil then print("\nnil")
+    if x == nil then print(msg.."is nil")
     elseif type(x) == "number" then  print(msg.."is a number =",x)
     elseif type(x) == "boolean" then print(msg.."is a boolean =",x)
     elseif type(x) == "string" then print(msg.."is a string =", x)

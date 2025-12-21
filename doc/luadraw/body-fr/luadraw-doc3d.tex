@@ -3,7 +3,7 @@
 \begin{center}
 \captionof{figure}{Point col en $M(0,0,0)$ ($z=x^2-y^2$)}\label{pointcol}\par
 \begin{luadraw}{name=point_col}
-local g = graph3d:new{window3d={-2,2,-2,2,-4,4}, window={-4,3.5,-5,5}, size={8,9,0}, viewdir={120,60}}
+local g = graph3d:new{window3d={-2,2,-2,2,-4,4}, window={-4,3.5,-5.5,5}, size={8,9,0}, viewdir=perspective("central",120,60)}
 local S = cartesian3d(function(u,v) return u^2-v^2 end, -2,2,-2,2,{20,20})
 local P = facet2poly(S) -- conversion en polyèdre
 local Tx = g:Intersection3d(P, {Origin,vecI}) --intersection de P avec le plan yOz

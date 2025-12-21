@@ -221,8 +221,9 @@ local Fy1 = concat({pxy(p(x1,y1)), pxy(p(x2,y1))}, parametric3d(function(t) retu
 local Fy2 = concat({pxy(p(x2,y2)), pxy(p(x1,y2))}, parametric3d(function(t) return p(t,y2) end,x1,x2,25,false,0)[1])
 g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="LightGray",labels=false})
 g:Filloptions("fdiag","black"); g:Dpolyline3d( {M(x1,y1,0),M(x1,y2,0),M(x2,y2,0),M(x2,y1,0)}) -- dessous
-g:Dfacet( {Fx1,Fx2,Fy1,Fy2},{mode=mShaded,opacity=0.7,color="Crimson"} )
+g:Dfacet( {Fx1,Fy1},{mode=mShaded,opacity=0.7,color="Crimson"} )
 g:Dfacet(surface(p,x1,x2,y1,y2), {mode=mShadedOnly,color="cyan"})
+g:Dfacet( {Fx2,Fy2},{mode=mShaded,opacity=0.7,color="Crimson"} )
 g:Dlabel3d("$x_1$", M(x1,4.75,0),{}, "$x_2$", M(x2,4.75,0),{}, "$y_1$", M(4.75,y1,0),{}, "$y_2$", M(4.75,y2,0),{}, "$0$",M(4,-4.75,0),{})  
 g:Show()  
 \end{luadraw}
@@ -269,4 +270,3 @@ On pourrait ne pas construire à la main la surface (appelée \emph{dessus} dans
 g:Dfacet( surface(function(u,v) return M(u,v*u^2,v^2*u^4) end, 0,1,0,1), {mode=mShadedOnly, color="cyan"})
 \end{Luacode}
 mais elle comporte bien plus de facettes (25*25) que la construction sous forme de cylindre (21 facettes), ce qui est moins intéressant.
-

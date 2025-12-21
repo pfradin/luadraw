@@ -25,9 +25,9 @@ The function \textbf{ftransform3d(L,f)} returns the image of \emph{L} by the fun
 \subsubsection{Projections onto axes or planes related to axes}
 
 \begin{itemize}
-\item The function \textbf{pxy(L)} returns the image of $L$ by the orthogonal projection onto the $xOy$ plane.
-\item The function \textbf{pyz(L)} returns the image of $L$ by the orthogonal projection onto the $yOz$ plane.
-\item The function \textbf{pxz(L)} returns the image of $L$ by the orthogonal projection onto the $xOz$ plane.
+\item The function \textbf{pxy(L,z0)} returns the image of $L$ by the orthogonal projection onto the $z=z0$ plane (by default $z0=0$).
+\item The function \textbf{pyz(L,x0)} returns the image of $L$ by the orthogonal projection onto the $x=x0$ plane (by default $x0=0$).
+\item The function \textbf{pxz(L,y0)} returns the image of $L$ by the orthogonal projection onto the $y=y0$ plane (by default $y0=0$).
 \item The function \textbf{px(L)} returns the image of $L$ by the orthogonal projection onto the $Ox$ axis.
 \item The function \textbf{py(L)} returns the image of $L$ by the orthogonal projection onto the $Oy$ axis.
 \item The function \textbf{pz(L)} returns the image of $L$ by the orthogonal projection onto the $Oz$ axis.
@@ -184,6 +184,9 @@ The function \textbf{interPP(P1,P2)} calculates and returns (if it exists) the i
 \subsubsection{interDD()}
 The function \textbf{interDD(D1,D2,epsilon)} calculates and returns (if it exists) the intersection between lines $D_1$ and $D_2$. The argument \emph{epsilon} is $10^{-10}$ by default (used to test whether a given float is zero).
 
+\subsubsection{interCS()}
+The function \textbf{interCS(C,S)} calculates and returns (if it exists) the intersection between the circle $C=\{A,r,n\}$ ($A$ is the center of the circle, $r$ the radius, and $n$ a normal vector to the plane of the circle), and the sphere $S=\{B,R\}$ ($B$ is the center of the sphere and $R$ the radius). The function returns either \emph{nil} (empty intersection), a single point, or two points (sequence).
+
 \subsubsection{interDS()}
 The function \textbf{interDS(d,S)} calculates and returns (if it exists) the intersection between the line $d$ and the sphere $S$ where $S$ is a table $S=\{C,r\}$ with $C$ as the center (3d point) and $r$ as the radius. The function returns either \emph{nil} (empty intersection), a single point, or two points.
 
@@ -191,7 +194,10 @@ The function \textbf{interDS(d,S)} calculates and returns (if it exists) the int
 The function \textbf{interPS(P,S)} calculates and returns (if it exists) the intersection between the plane $P$ and the sphere $S$ where $S$ is a table $S=\{C,r\}$ with $C$ as the center (3d point) and $r$ as the radius. The function returns either \emph{nil} (empty intersection) or a sequence of the form $I,r,n$, where I is a 3D point representing the center of a circle, $r$ its radius, and $n$ a normal vector to the plane of the circle. This circle is the desired intersection.
 
 \subsubsection{interSS()}
-The function \textbf{interPS(S1,S2)} calculates and returns (if it exists) the intersection between the sphere $S1=\{C1,r1\}$ and $S2=\{C2,r2\}$. The function returns either \emph{nil} (empty intersection) or a sequence of the form $I,r,n$, where I is a 3D point representing the center of a circle, $r$ its radius, and $n$ a normal vector to the plane of the circle. This circle is the desired intersection.
+The function \textbf{interSS(S1,S2)} calculates and returns (if it exists) the intersection between the sphere $S1=\{C1,r1\}$ and $S2=\{C2,r2\}$. The function returns either \emph{nil} (empty intersection) or a sequence of the form $I,r,n$, where I is a 3D point representing the center of a circle, $r$ its radius, and $n$ a normal vector to the plane of the circle. This circle is the desired intersection.
+
+\subsubsection{interSSS()}
+The function \textbf{interSSS(S1,S2,S3)} calculates and returns (if it exists) the intersection between the spheres $S1=\{C1,r1\}$, $S2=\{C2,r2\}$ and $S3=\{C3,r3\}$. The function returns either \emph{nil} (empty intersection), a single point, or two points (sequence).
 
 \subsubsection{merge3d()}
 The function \textbf{merge3d(L)} combines, if possible, the connected components of \emph{L}, which must be a list of lists of 3D points. The function returns the result.
@@ -201,19 +207,28 @@ The function \textbf{split\_points\_by\_visibility(L, visible\_function)}, where
 
 \begin{demo}{A curve on a cylinder}
 \begin{luadraw}{name=curve_on_cylinder}
-local g = graph3d:new{adjust2d=true,bbox=false,size={10,10}};
+local g = graph3d:new{adjust2d=true,bbox=false,size={10,10}, viewdir=perspective("central")}
 g:Labelsize("footnotesize")
 Hiddenlines = true; Hiddenlinestyle = "dashed"
-
-local curve_on_cylinder = function(curve,cylinder) 
--- curve is a 3d polyline on a cylinder, 
--- cylinder = {A,r,V,B}
-    local  A,r,V,B = table.unpack(cylinder)
+local curve_on_cylinder = function(curve,cylinder)
+    -- curve is a 3d polyline on a cylinder,
+    -- cylinder = {A,r,V,B}
+    local A,r,V,B = table.unpack(cylinder)
     if B == nil then B = V; V = B-A end
     local U = B-A
-    local visible_function = function(N)
-        local I = dproj3d(N,{A,U})
-        return (pt3d.dot(N-I,g.Normal) >= 0)
+    local visible_function
+    if projection_mode == "central" then
+        visible_function = function(N)
+            local I = dproj3d(N,{A,U})
+            local M1, M2 = interCS({I,r,U},{ (I+camera)/2, pt3d.abs(I-camera)/2})
+            local alpha = angle3d(M1-I,camera-I)
+            return angle3d(N-I,camera-I) <= alpha
+        end
+    else
+        visible_function = function(N)
+            local I = dproj3d(N,{A,U})
+            return (pt3d.dot(N-I,g.Normal) >= 0)
+        end
     end
     return split_points_by_visibility(curve,visible_function)
 end

@@ -1,179 +1,181 @@
-\begin{tikzpicture}[background rectangle/.style={,fill=gray},show background rectangle]%
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=gray},show background rectangle]%
 \begin{scope}%
-\clip (-0.5,-0.5) rectangle (9.0909090909091,9.5);%
+\clip (-0.5,-0.5) rectangle (8.78,9.5);%
 \begin{scope}%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
 \pgfsetroundcap%
-\draw[] (7.9182,4.8374) -- (8.1197,4.8552);%
-\pgfsetstrokecolor{Gold!71.2!black}%
+\draw[] (6.8149,4.9634) -- (6.9761,4.9776);%
+\pgfsetstrokecolor{Gold!62.3!black}%
 \pgfsetlinewidth{0.1pt}%
-\pgfsetfillcolor{Gold!71.2!black}%
-\draw[fill] (8.1197,4.8552) -- (7.9301,4.8039) -- (7.9241,4.7695)--cycle;%
-\pgfsetstrokecolor{Gold!71.92!black}%
-\pgfsetfillcolor{Gold!71.92!black}%
-\draw[fill] (7.9241,4.8718) -- (8.1197,4.8552) -- (7.9123,4.9054)--cycle;%
-\pgfsetstrokecolor{Gold!96.22!black}%
-\pgfsetfillcolor{Gold!96.22!black}%
-\draw[fill] (7.9241,4.8718) -- (7.9301,4.8039) -- (8.1197,4.8552)--cycle;%
+\pgfsetfillcolor{Gold!62.3!black}%
+\draw[fill] (6.9761,4.9776) -- (6.8395,4.9364) -- (6.8198,4.9064)--cycle;%
+\pgfsetstrokecolor{Gold!63.11!black}%
+\pgfsetfillcolor{Gold!63.11!black}%
+\draw[fill] (6.8347,4.9937) -- (6.9761,4.9776) -- (6.8101,5.0205)--cycle;%
+\pgfsetstrokecolor{Gold!88.96!black}%
+\pgfsetfillcolor{Gold!88.96!black}%
+\draw[fill] (6.8347,4.9937) -- (6.8395,4.9364) -- (6.9761,4.9776)--cycle;%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.4pt}%
 \pgfsetfillcolor{Gold}%
-\draw[-,color=Gold] (8.5225,4.8907) node[] {$y$};%
+\draw[-,color=Gold] (7.296,5.0059) node[] {$y$};%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (4.0909,0.9572) -- (4.0909,4.5);%
-\draw[] (4.0909,4.5) -- (5.7024,4.6421);%
+\draw[] (3.6,2.0077) -- (3.6,4.68);%
+\draw[] (3.6,4.68) -- (4.9902,4.8026);%
 \pgfsetstrokecolor{ForestGreen!73.29!black}%
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillcolor{ForestGreen!73.29!black}%
-\draw[fill] (5.8747,8.2521) -- (0.5366,3.0873) -- (1.6021,0.0657) -- (3.9187,2.3071)--cycle;%
-\pgfsetstrokecolor{Pink}%
+\draw[fill] (4.9695,7.5607) -- (1.1951,3.7241) -- (1.0947,0.2162) -- (3.4122,2.2892)--cycle;%
+\pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (0.5366,3.0873) -- (1.6021,0.0657);%
-\pgfsetstrokecolor{Gold}%
-\draw[] (3.3805,6.5144) -- (3.5581,6.0108);%
+\draw[] (3.1132,6.0603) -- (3.2135,5.7758);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (5.8747,8.2521) -- (0.5366,3.0873);%
+\draw[] (4.9695,7.5607) -- (1.1951,3.7241);%
+\draw[] (1.1951,3.7241) -- (1.0947,0.2162);%
 \pgfsetstrokecolor{Gold}%
-\draw[] (3.5581,6.0108) -- (4.3751,3.6942);%
-\draw[] (0.0622,4.1448) -- (4.0909,4.5);%
-\draw[] (4.0909,4.5) -- (4.0909,5.9171);%
+\draw[] (3.2135,5.7758) -- (3.8821,3.88);%
+\draw[] (0,4.3626) -- (3.6,4.68);%
+\draw[] (3.6,4.68) -- (3.6,6.0162);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (1.6021,0.0657) -- (3.9187,2.3071);%
-\pgfsetstrokecolor{Crimson!86.42!black}%
+\draw[] (1.0947,0.2162) -- (3.4122,2.2892);%
+\pgfsetstrokecolor{Crimson!84.22!black}%
 \pgfsetlinewidth{0.1pt}%
-\pgfsetfillcolor{Crimson!86.42!black}%
-\draw[fill] (7.4836,1.5677) -- (6.7377,7.4028) -- (4.9247,8.8373) -- (1.4404,6.3492) -- (1.7601,3.8485) -- (5.9903,0.5014)--cycle;%
-\pgfsetstrokecolor{Gold!46.87!black}%
-\pgfsetfillcolor{Gold!46.87!black}%
-\draw[fill] (7.9123,4.8031) -- (7.9241,4.7695) -- (7.9301,4.8039) -- (7.9241,4.8718) -- (7.9123,4.9054) -- (7.9064,4.871)--cycle;%
+\pgfsetfillcolor{Crimson!84.22!black}%
+\draw[fill] (6.4061,2.2547) -- (5.5615,6.8312) -- (4.2732,8.182) -- (0.4428,6.8828) -- (0.6093,3.844) -- (5.4298,0.8279)--cycle;%
+\pgfsetstrokecolor{Gold!71.16!black}%
+\pgfsetfillcolor{Gold!71.16!black}%
+\draw[fill] (6.7954,4.9334) -- (6.8198,4.9064) -- (6.8395,4.9364) -- (6.8347,4.9937) -- (6.8101,5.0205) -- (6.7906,4.9902)--cycle;%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (7.4836,1.5677) -- (6.7377,7.4028);%
-\draw[] (6.7377,7.4028) -- (5.8312,8.12);%
-\draw[] (5.9903,0.5014) -- (7.4836,1.5677);%
+\draw[] (5.5615,6.8312) -- (4.9449,7.4777);%
+\draw[] (6.4061,2.2547) -- (5.5615,6.8312);%
+\draw[] (5.4298,0.8279) -- (6.4061,2.2547);%
 \pgfsetstrokecolor{Gold}%
-\draw[] (5.7024,4.6421) -- (7.9182,4.8374);%
+\draw[] (4.9902,4.8026) -- (6.8149,4.9634);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (3.8752,2.1749) -- (5.9903,0.5014);%
+\draw[] (3.3626,2.1213) -- (5.4298,0.8279);%
 \pgfsetstrokecolor{ForestGreen!73.29!black}%
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillcolor{ForestGreen!73.29!black}%
-\draw[fill] (5.8747,8.2521) -- (3.9187,2.3071) -- (7.6453,5.9127) -- (6.5797,8.9343)--cycle;%
+\draw[fill] (4.9695,7.5607) -- (3.4122,2.2892) -- (8.0723,6.4576) -- (5.5454,8.1461)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (6.1207,9) -- (5.8747,8.2521);%
+\draw[] (5.1437,8.1504) -- (4.9695,7.5607);%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (6.1351,8.5041) -- (5.8747,8.2521);%
+\draw[] (5.1798,7.7745) -- (4.9695,7.5607);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (5.8747,8.2521) -- (5.8312,8.12);%
+\draw[] (4.9695,7.5607) -- (4.9449,7.4777);%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (5.8312,8.12) -- (4.9247,8.8373);%
+\draw[] (4.9449,7.4777) -- (4.2732,8.182);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (5.8312,8.12) -- (3.9187,2.3071);%
+\draw[] (4.9449,7.4777) -- (3.4122,2.2892);%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (4.3751,3.6942) -- (4.5916,3.0803);%
-\draw[] (4.0909,5.9171) -- (4.0909,6.3212);%
+\draw[] (3.8821,3.88) -- (4.151,3.1177);%
+\draw[] (3.6,6.0162) -- (3.6,6.4328);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (3.9187,2.3071) -- (4.1791,2.5591);%
+\draw[] (3.4122,2.2892) -- (3.6971,2.544);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.9187,2.3071) -- (3.8752,2.1749);%
+\draw[] (3.4122,2.2892) -- (3.3626,2.1213);%
 \pgfsetstrokecolor{Pink}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (1.4404,6.3492) -- (1.7601,3.8485);%
-\draw[] (4.9247,8.8373) -- (1.4404,6.3492);%
-\draw[] (6.5797,8.9343) -- (6.1351,8.5041);%
+\draw[] (4.2732,8.182) -- (0.4428,6.8828);%
+\draw[] (5.5454,8.1461) -- (5.1798,7.7745);%
 \pgfsetstrokecolor{Gold}%
-\draw[] (4.0909,6.3212) -- (4.0909,6.3579);%
+\draw[] (3.6,6.4328) -- (3.6,6.4716);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (7.3947,6.6232) -- (6.5797,8.9343);%
+\draw[] (7.2358,7.0165) -- (5.5454,8.1461);%
 \pgfsetstrokecolor{Gold}%
-\draw[] (4.0909,6.3579) -- (4.0909,7.8657);%
+\draw[] (3.6,6.4716) -- (3.6,8.199);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (1.7601,3.8485) -- (3.8752,2.1749);%
+\draw[] (0.6093,3.844) -- (3.3626,2.1213);%
 \pgfsetstrokecolor{Gold}%
-\draw[] (4.5916,3.0803) -- (4.6237,2.9892);%
+\draw[] (4.151,3.1177) -- (4.1959,2.9902);%
 \pgfsetstrokecolor{Pink}%
-\draw[] (7.6453,5.9127) -- (7.3947,6.6232);%
-\draw[] (4.1791,2.5591) -- (7.6453,5.9127);%
+\draw[] (3.6971,2.544) -- (7.6493,6.0792);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.8752,2.1749) -- (3.6579,1.5144);%
+\draw[] (3.3626,2.1213) -- (3.0999,1.2319);%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (4.6237,2.9892) -- (4.7658,2.5863);%
+\draw[] (4.1959,2.9902) -- (4.4136,2.3729);%
+\pgfsetstrokecolor{Pink}%
+\draw[] (7.9205,6.559) -- (7.2358,7.0165);%
+\draw[] (0.4428,6.8828) -- (0.6093,3.844);%
+\draw[] (7.6493,6.0792) -- (8.0723,6.4576);%
+\draw[] (8.0723,6.4576) -- (7.9205,6.559);%
 \pgfsetstrokecolor{white}%
 \pgfsetlinewidth{0.4pt}%
 \pgfsetfillcolor{white}%
-\draw[-,color=white] (2.669,6.8424) node[cm={0.8138,0.5811,-0.4765,0.8792,(-0.9126,-0.6516)}] {$P_1$};%
-\draw[-,color=white] (7.3373,6.02) node[cm={0.3326,-0.9431,0.7187,0.6953,(0,0)}] {$P_2$};%
+\draw[-,color=white] (0.7051,6.6989) node[cm={0.9401,0.3409,-0.4916,0.8708,(0,0)}] {$P_1$};%
+\draw[-,color=white] (7.513,6.3999) node[cm={0.8043,-0.5942,0.7406,0.672,(0,0)}] {$P_2$};%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (4.0909,7.8657) -- (4.0909,8.0428);%
-\pgfsetstrokecolor{Gold!90.36!black}%
+\draw[] (3.6,8.199) -- (3.6,8.4212);%
+\pgfsetstrokecolor{Gold!90.32!black}%
 \pgfsetlinewidth{0.1pt}%
-\pgfsetfillcolor{Gold!90.36!black}%
-\draw[fill] (4.0909,8.0428) -- (4.1027,7.8321) -- (4.155,7.854)--cycle;%
-\pgfsetstrokecolor{Gold!60.37!black}%
-\pgfsetfillcolor{Gold!60.37!black}%
-\draw[fill] (4.0387,7.8438) -- (4.0909,8.0428) -- (4.0268,7.8773)--cycle;%
-\pgfsetstrokecolor{Gold!96.74!black}%
-\pgfsetfillcolor{Gold!96.74!black}%
-\draw[fill] (4.0387,7.8438) -- (4.1027,7.8321) -- (4.0909,8.0428)--cycle;%
+\pgfsetfillcolor{Gold!90.32!black}%
+\draw[fill] (3.6,8.4212) -- (3.6124,8.1836) -- (3.6671,8.1937)--cycle;%
+\pgfsetstrokecolor{Gold!54.16!black}%
+\pgfsetfillcolor{Gold!54.16!black}%
+\draw[fill] (3.5452,8.189) -- (3.6,8.4212) -- (3.5331,8.2043)--cycle;%
+\pgfsetstrokecolor{Gold!97.55!black}%
+\pgfsetfillcolor{Gold!97.55!black}%
+\draw[fill] (3.5452,8.189) -- (3.6124,8.1836) -- (3.6,8.4212)--cycle;%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.4pt}%
 \pgfsetfillcolor{Gold}%
-\draw[-,color=Gold] (4.0909,8.3971) node[] {$z$};%
+\draw[-,color=Gold] (3.6,8.8793) node[] {$z$};%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (4.7658,2.5863) -- (4.8013,2.4856);%
-\pgfsetstrokecolor{Gold!43.03!black}%
+\draw[] (4.4136,2.3729) -- (4.4734,2.2032);%
+\pgfsetstrokecolor{Gold!27.31!black}%
 \pgfsetlinewidth{0.1pt}%
-\pgfsetfillcolor{Gold!43.03!black}%
-\draw[fill] (4.6986,2.5804) -- (4.7322,2.5322) -- (4.8013,2.4856)--cycle;%
-\pgfsetstrokecolor{Gold!65.83!black}%
-\pgfsetfillcolor{Gold!65.83!black}%
-\draw[fill] (4.8013,2.4856) -- (4.8329,2.5923) -- (4.7993,2.6404)--cycle;%
-\pgfsetstrokecolor{Gold!87.54!black}%
-\pgfsetfillcolor{Gold!87.54!black}%
-\draw[fill] (4.7322,2.6345) -- (4.8013,2.4856) -- (4.7993,2.6404)--cycle;%
-\pgfsetstrokecolor{Gold!81.62!black}%
-\pgfsetfillcolor{Gold!81.62!black}%
-\draw[fill] (4.7322,2.6345) -- (4.6986,2.5804) -- (4.8013,2.4856)--cycle;%
+\pgfsetfillcolor{Gold!27.31!black}%
+\draw[fill] (4.3335,2.3631) -- (4.371,2.3141) -- (4.4734,2.2032)--cycle;%
+\pgfsetstrokecolor{Gold!65.59!black}%
+\pgfsetfillcolor{Gold!65.59!black}%
+\draw[fill] (4.4734,2.2032) -- (4.4935,2.3827) -- (4.4564,2.432)--cycle;%
+\pgfsetstrokecolor{Gold!93.32!black}%
+\pgfsetfillcolor{Gold!93.32!black}%
+\draw[fill] (4.3761,2.4222) -- (4.4734,2.2032) -- (4.4564,2.432)--cycle;%
+\pgfsetstrokecolor{Gold!86!black}%
+\pgfsetfillcolor{Gold!86!black}%
+\draw[fill] (4.3761,2.4222) -- (4.3335,2.3631) -- (4.4734,2.2032)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (3.6579,1.5144) -- (3.5927,1.3162);%
+\draw[] (3.0999,1.2319) -- (3.0159,0.9477);%
 \pgfsetfillcolor{Navy}%
-\draw[-,color=Navy] (3.4101,0.7613) node[] {$D=P_1\cap P_2$};%
+\draw[-,color=Navy] (2.7668,0.1044) node[] {$D=P_1\cap P_2$};%
 \pgfsetstrokecolor{Gold}%
 \pgfsetfillcolor{Gold}%
-\draw[-,color=Gold] (4.8723,2.2842) node[] {$x$};%
+\draw[-,color=Gold] (4.6005,1.8429) node[] {$x$};%
 \pgfsetstrokecolor{Pink}%
 \pgfsetdash{{0pt}{3pt}}{0pt}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (1.7601,3.8485) -- (5.9903,0.5014);%
-\draw[] (7.4836,1.5677) -- (6.7377,7.4028);%
-\draw[] (6.7377,7.4028) -- (4.9247,8.8373);%
-\draw[] (4.9247,8.8373) -- (1.4404,6.3492);%
-\draw[] (5.9903,0.5014) -- (7.4836,1.5677);%
-\draw[] (1.4404,6.3492) -- (1.7601,3.8485);%
-\draw[] (1.6021,0.0657) -- (7.6453,5.9127);%
-\draw[] (0.5366,3.0873) -- (1.6021,0.0657);%
-\draw[] (7.6453,5.9127) -- (6.5797,8.9343);%
-\draw[] (6.5797,8.9343) -- (0.5366,3.0873);%
+\draw[] (0.4428,6.8828) -- (0.6093,3.844);%
+\draw[] (0.6093,3.844) -- (5.4298,0.8279);%
+\draw[] (5.5615,6.8312) -- (4.2732,8.182);%
+\draw[] (4.2732,8.182) -- (0.4428,6.8828);%
+\draw[] (6.4061,2.2547) -- (5.5615,6.8312);%
+\draw[] (5.4298,0.8279) -- (6.4061,2.2547);%
+\draw[] (5.5454,8.1461) -- (1.1951,3.7241);%
+\draw[] (1.1951,3.7241) -- (1.0947,0.2162);%
+\draw[] (8.0723,6.4576) -- (5.5454,8.1461);%
+\draw[] (1.0947,0.2162) -- (8.0723,6.4576);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (6.1207,9) -- (3.5927,1.3162);%
+\draw[] (5.1437,8.1504) -- (3.0159,0.9477);%
 \pgfsetstrokecolor{Gold}%
 \pgfsetlinewidth{0.8pt}%
-\draw[] (3.3805,6.5144) -- (4.8013,2.4856);%
-\draw[] (0.0622,4.1448) -- (8.1197,4.8552);%
-\draw[] (4.0909,0.9572) -- (4.0909,8.0428);%
+\draw[] (3.1132,6.0603) -- (4.4734,2.2032);%
+\draw[] (0,4.3626) -- (6.9761,4.9776);%
+\draw[] (3.6,2.0077) -- (3.6,8.4212);%
 \end{scope}%
 \end{scope}%
 \end{tikzpicture}%

@@ -122,9 +122,9 @@ Bien sûr, toutes les méthodes de dessin 2d et 3d restent utilisables.
         \end{itemize}
     \item Fonctions :
         \begin{itemize}
-            \item \textbf{sM(x,y,z)}: renvoie un point de la sphère, c'est le point $I$ de la sphère tel que la demi-droite $[O,I)$ ($O$ étant le centre de la sphère) passe par le point $A$ de coordonnées cartésiennes $(x,y,z)$. Les nombres $x$, $y$ et $z$ ne doivent pas être nuls simultanément.
+            \item \textbf{sM(x,y,z)}: renvoie un point de la sphère, c'est le point $I$ de la sphère tel que la demi-droite $[O,I)$ ($O$ étant le centre de la sphère) passe par le point $A$ de coordonnées cartésiennes $(x,y,z)$. C'est le projeté du point $(Mx,y,z)$ sur la sphère partant du centre.
             \item \textbf{sM(theta,phi)}: où \emph{theta} et \emph{phi} sont des angles en degrés, renvoie un point de la sphère donc les coordonnées sphériques sont \emph{(R,theta,phi)} où $R$ est le rayon de la sphère.
-            \item \textbf{toSphere(A)}: renvoie le même point de la sphère que \emph{Ms(A.x,A.y,A.z)}.
+            \item \textbf{toSphere(A)}: renvoie le projeté du point $A$ sur la sphère partant du centre.
             \item \textbf{clear\_spherical()}: supprime les objets qui ont été ajoutés à la scène, et remet les valeurs par défaut.
         \end{itemize}
 \end{itemize}
@@ -278,7 +278,7 @@ La méthode \textbf{g:DSplane(P,options)} permet d'ajouter le contour d'un plan,
 
 \subsubsection{Ajouter un label : g:DSlabel}
 
-La méthode \textbf{g:DSlabel(text1,anchor1,options1, text2,anchor2,options2,...)} permet d'ajouter un ou plusieurs labels sur le même principe que la méthode \emph{g:Dlabel3d}, sauf qu'ici la fonction traite les cas où le point d'ancrage est à l'intérieur de la sphère, derrière la sphère ou devant la sphère. Dans le cas où il est à l'intérieur la couleur du label est donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DrakGray"} par défaut.
+La méthode \textbf{g:DSlabel(text1,anchor1,options1, text2,anchor2,options2,...)} permet d'ajouter un ou plusieurs labels sur le même principe que la méthode \emph{g:Dlabel3d}, sauf qu'ici la fonction traite les cas où le point d'ancrage est à l'intérieur de la sphère, derrière la sphère ou devant la sphère. Dans le cas où il est à l'intérieur la couleur du label est donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DarkGray"} par défaut.
 
 \subsubsection{Ajouter des points : g:DSdots et g:DSstars}
 
@@ -287,7 +287,7 @@ La méthode \textbf{g:DSdots(dots,options)} permet d'ajouter des points dans la 
         \item \opt{hidden =} (valeur de \emph{Hiddenlines}),
         \item \opt{mark\_options =} (""), chaîne qui sera passée directement à l'instruction \emph{\textbackslash draw}.
     \end{itemize}
-Dans le cas où un point est à l'intérieur de la sphère, ou sur la face cachée, la couleur du point est donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DrakGray"} par défaut.
+Dans le cas où un point est à l'intérieur de la sphère, ou sur la face cachée, la couleur du point est donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DarkGray"} par défaut.
 
 La méthode \textbf{g:DSstars(dots,options)} permet d'ajouter des points sur la sphère, l'argument \emph{dots} est une liste de points 3d qui seront projetés sur la sphère. La fonction dessine ces points en forme d'astérisque. L'argument \emph{options} est une table à 2 champs, qui sont :
    \begin{itemize}
@@ -300,7 +300,7 @@ La méthode \textbf{g:DSstars(dots,options)} permet d'ajouter des points sur la 
         \item \opt{circled =} (false), permet d'ajouter une cercle autour de l'étoile,
         \item \opt{fill =} (""), chaîne représentant une couleur, lorsqu'elle n'est pas vide, l'astérisque est remplacée par une facette hexagonale cerclée et remplie avec la couleur précise par cette option.
     \end{itemize}   
-Les points qui sont sur la face cachée de la sphère ont la couleur donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DrakGray"} par défaut.
+Les points qui sont sur la face cachée de la sphère ont la couleur donnée par la variable globale \textbf{Insidelabelcolor} qui vaut \emph{"DarkGray"} par défaut.
 
 \subsubsection{Stéréographie inverse : g:DSinvstereo\_curve et g:DSinvstereo\_polyline}
 
@@ -363,6 +363,7 @@ g:Linewidth(6); Hiddenlinestyle = "dotted"
 Hiddenlines = false; 
 local C = cylinder(M(1.5,0,-3.5),1.5,M(1.5,0,3.5),35,true)
 local L = parametric3d( function(t) return Ms(3,t-math.pi/2,t) end, -math.pi,math.pi) -- la courbe
+g:Define_sphere()
 g:DSpolyline(facetedges(C),{color="gray"}) -- affichage cylindre
 g:DSpolyline({{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}},{arrows=1}) --axes
 Hiddenlines=true; g:DScurve(L,{width=12,color="blue"}) -- courbe avec partie cachée
@@ -383,6 +384,7 @@ require "luadraw_polyhedrons"
 g:Linewidth(6); Hiddenlines = true; Hiddenlinestyle = "dotted"
 local P = poly2facet( octahedron(Origin,sM(30,10)) )
 local colors = {"Crimson","ForestGreen","Gold","SteelBlue","SlateGray","Brown","Orange","Navy"}
+g:Define_sphere()
 for k,F in ipairs(P) do
     g:DSfacet(F,{fill=colors[k],style="noline",fillopacity=0.7})  -- facettes sans les bords
 end
