@@ -1,7 +1,7 @@
 -- luadraw_graph3d.lua
--- date 2025/12/21
--- version 2.4
--- Copyright 2025 Patrick Fradin
+-- date 2026/01/15
+-- version 2.5
+-- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
@@ -198,7 +198,7 @@ function luadraw_graph3d:Viewport3d(x1,x2,y1,y2,z1,z2)
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
     if z1 > z2 then z1, z2 = z2, z1 end
-    self.param.matrix3d = ID3d -- ancienne matrice perdue donc il faut sauver avant
+    self.matrix3d = ID3d -- ancienne matrice perdue donc il faut sauver avant
     self.param.viewport3d = {x1,x2,y1,y2,z1,z2}
 end
 
@@ -1504,7 +1504,38 @@ function luadraw_graph3d:Dpoly(P,args)
     self.matrix3d = oldmatrix
 end
 
-
+function luadraw_graph3d:Dpolynames(P, option, opacity)
+-- P is a polyhedron, option = "facet" or "vertex" or "both" (default)
+-- P is drawn and the names of facets and/or vertices are shown
+    option = option or "both"
+    opacity = opacity or 0.6
+    local F = poly2facet(P)
+    local S = P.vertices
+    local facet = {}
+    local vertex = {}
+    local dot = {}
+    if (option=="facet") or (option=="both") then    
+        for k, f in ipairs(F)  do
+            local N = pt3d.prod(f[2]-f[1],f[3]-f[1])
+            if not self:Isvisible(f) then N = -N end
+            local G, u, v = orthoframe({isobar3d(f),N})
+            local u1 = self:Proj3dV(u,G)
+            if u1.re <= 0 then --u,v = -v,u
+                if u1.im > 0 then u,v = -v,u 
+                else u, v = v,-u
+                end
+            end
+            insert(facet, {"F"..k, G, {dir={u,v}, color="Crimson"}})
+        end
+    end
+    if (option=="vertex") or (option=="both") then
+        for k, s in ipairs(S)  do
+            insert(vertex, {"V"..k, s , {pos="N"}})
+            table.insert(dot,s)
+        end        
+    end
+    self:Dscene3d( self:addFacet(F,{contrast=0.1,opacity=opacity, edge=true}), self:addLabel(table.unpack(facet)),  self:addLabel(table.unpack(vertex)), self:addDots(dot, {scale=0.75}) )
+end
 
 function luadraw_graph3d:Dfacet(F,args)
 -- dessine une liste de facettes F (avec coordonnées 3d)

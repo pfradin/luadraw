@@ -4,6 +4,8 @@ Polygonal lines, curves, paths, points, and labels can be created.
 
 \subsection{Polygonal Lines}
 
+\subsubsection{Dpolyline}
+
 \textbf{A polygonal line is a list (table) of connected components, and a connected component is a list (table) of complex numbers that represent the affixes of the points}. For example, the instruction:
 \begin{Luacode}
 local L = { {Z(-4,0), Z(0,2), Z(1,3)}, {Z(0,0), Z(4,-2), Z(1,-1)} }
@@ -15,7 +17,7 @@ creates a polygonal line with two components in a variable \emph{L}.
 This is the \textbf{g:Dpolyline(L,close, draw\_options,clip)} method (where \emph{g} denotes the graphic being created), \emph{L} is a polygonal line, \emph{close} is an optional argument equal to \emph{true} or \emph{false} indicating whether the line should be closed or not (\emph{false} by default), and \emph{draw\_options} is a string that will be passed directly to the \emph{\textbackslash draw} instruction in the export. The argument \emph{clip} must contain either \emph{nil} (default value) or a table of the form \emph{\{x1,x2,y1,y2\}}, in the first case the line is clipped by the current 2d window \textbf{after} its transformation by the 2d matrix of the graph, in the second case the line is clipped by the window $[x_1,x_2]\times[y_1,y_2]$ \textbf{before} being transformed by the graph matrix.
 
 
-\paragraph{Choosing options for drawing a polygonal line.}
+\subsubsection{Options for drawing a polygonal line}
 
 Drawing options can be passed directly to the \emph{\textbackslash draw} instruction in the export, but they will have only a local effect. These options can be modified globally using the:
 \par\hfil\textbf{g:Lineoptions(style,color,width,arrows)}\hfil\par
@@ -851,31 +853,67 @@ The fields are identical to those of the \emph{Dlabel} method, plus the \emph{ma
 
 \subsection{Paths: Dpath, Dspline, and Dtcurve}
 
-\begin{itemize}
-    \item The \textbf{path( path )} function returns a polygonal line containing the points constituting the \emph{path}. The optional argument, \emph{nbdots}, is the minimum number of points calculated for each Bézier curve; its default value is the global variable \emph{bezier\_nbdots}, which is initialized to 8.
-    
-    The \emph{path} is a table of complex numbers and string instructions, for example:
+\subsubsection{What is a path}
 
-\begin{TeXcode}
-{ Z(-3,2),-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" }
-\end{TeXcode}
-with:
+A path is a table of complex numbers and instructions (in the form of strings). This table represents a succession of different "pieces", each piece being a sequence of data (2D points and sometimes numeric values) and ending with a string of characters that represents an instruction. The path is governed by the following rule: \par
+\hfil\textbf{ the last point of one piece is the first point of the next piece (it is therefore not repeated) }\hfil\par
+
+\paragraph{Example:}
+\begin{Luacode}
+local L = { Z(-3,2),"m",-3,-2,"l", 0,2,2,-1,"ca", 3,Z(3,3),0.5,"la", ,Z(-1,5),Z(-3,2),"b" }
+\end{Luacode}
+The path \emph{L} is composed of five pieces, which are:
+    \begin{enumerate}
+        \item \emph{\{Z(-3,2),"m"\}}: there is a data element and the instruction "m" which means \emph{moveto}. This instruction does not actually draw the path, but it allows a new component to begin, starting at the first point of the next piece. is $Z(-3,2)$ (the last point of the previous piece, if there is one, is not taken into account by this instruction; this is the only exception).
+
+        \item \emph{\{Z(-3,2),-3,-2,"l"\}}: the first point of the second piece is indeed $Z(-3,2)$ and not $-3$, because $Z(-3,2)$ is the last point of the previous piece. Therefore, there are three data points, and the instruction "l" which means \emph{lineto}, is like executing the instruction \verb|g:Dpolyline( {Z(-3,2),-3,-2} )|, so these three points are connected by a piece. The last point of this piece is \emph{-2}.
+
+        \item \emph{\{-2,0,2,2,-1,"ca"\}}: the first point of the third piece is indeed $-2$ and not $0$, because $-2$ is the last point of the previous piece. There are five data points, and the instruction "ca" stands for \emph{circle arc}. It's as if we were executing the instruction \verb|g:Darc(-2,0,2,2,-1)|, so the center is $0$, the arc goes from $-2$ to $2$ with a radius equal to $2$ and in a clockwise direction (last value $-1$). The last point of this piece is $2$.
+
+        \item \emph{\{2,3,Z(3,3),0.5,"la"\}}: The first point of the fourth piece is $2$ (not $3$). There are four data points, and the instruction "la" stands for \emph{line arc}. This is a polygonal line with rounded corners and a circular arc of radius $0.5$ (the value preceding the instruction). The points of this line are \emph{2, 3, Z(3,3)}, so there will be a rounding to $3$. The last point of this piece is $Z(3,3)$.
+
+        \item \emph{\{Z(3,3),1,Z(-1,5),Z(-3,2),"b"\}}: The first point of the fifth piece is $Z(3,3)$ (not $1$). The instruction "b" stands for \emph{Bezier}, so we draw a Bézier curve from $Z(3,3)$ to $Z(-3,2)$. The other two points, $1$ and $Z(-1,5)$, are the first and second control points of the curve.
+\end{enumerate}
+
+Here is what this path gives:
+\begin{demo}{Path example}
+\begin{luadraw}{name=path_example}
+local g = graph:new{window={-4,4,-0.5,3}, size={10,10}}
+local L = { Z(-3,2),"m", -3,-2,"l",0,2,2,-1,"ca", 3,Z(3,3),0.5,"la", 1,Z(-1,5),Z(-3,2),"b" }
+g:Dpath(L, "line width=0.8pt, blue")
+g:Ddots({Z(-3,2),-3,-2,0,2,3,Z(3,3)})
+g:Dlabel("$Z(-3,2)$",Z(-3,2),{pos="W"}, "$-3$",-3,{pos="S"}, "$-2$",-2,{}, "$0$",0,{}, "$2$",2,{}, "$3$",3,{}, "$Z(3,3)$",Z(3,3),{pos="E"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\noindent\textbf{Note}: In the example above, you can replace the part: \emph{Z(-3,2),"m", -3,-2,"l"}, with: \emph{Z(-3,2),-3,-2,"l"} because there is no other part before the \emph{moveto}.
+
+\noindent\textbf{Available commands and their syntax}, the word \emph{last} denotes the last point of the previous piece:
 \begin{itemize}
-    \item \emph{"m"} for moveto,
-    \item \emph{"l"} for lineto,
-    \item \emph{"b"} for Bezier (two control points are required),
-    \item \emph{"s"} for a natural cubic spline passing through the points listed,
-    \item \emph{"c"} for circle (one point and the center, or three points are required),
-    \item \emph{"ca"} for a circular arc (requires 3 points, a radius, and a direction),
-    \item \emph{"ea"} for an elliptical arc (requires 3 points, a radius rx, a radius ry, a direction, and possibly an inclination in degrees),
-    \item \emph{"e"} for an ellipse (requires a point, the center, a radius rx, a radius ry, and possibly an inclination in degrees),
-    \item \emph{"cl"} for close (closes the current component),
-    \item \emph{"la"} for a line arc, i.e., a line with rounded corners (the radius must be specified just before the \emph{"la"} instruction),
-    \item \emph{"cla"} for a closed line with rounded corners (the radius must be specified just before the \emph{"cla"} instruction). \end{itemize}
+  \item \emph{z1,"m"} (moveto) starts a new component of the path at the point with affix $z1$.
+  \item \emph{z1,...,zn,"l"} (lineto) draws the polyline \emph{\{last,z1,...,zn\}}.
+  \item \emph{c1,c2,z2,"b"} (bézier) draws the Bézier curve \emph{\{last,c1,c2,z2\}}, where $c1$ and $c2$ are the two control points.
+  \item \emph{z1,...,zn,"s"} (spline) draws the natural cubic spline through the points \emph{\{last,z1,...,zn\}}.
+  \item \emph{z1,"c"} (circle) draws the circle with center $z1$ passing through the point \emph{last}. There is another possible syntax for the circle: \emph{z1,z2,"c"}, in which case the circle passing through the points \emph{last}, $z1$, and $z2$ is drawn.
+  \item \emph{z1,z2,r,sens,"ca"} (circular arc) draws a circular arc with center $z1$ and radius $r$, going from \emph{last} to $z2$, counterclockwise when \emph{sens=1} (and therefore clockwise when \emph{sens=-1}).
+  \item \emph{z1,z2,rx,ry,inclinaison,"ea"} (elliptic arc) draws an elliptic arc with center $z1$ going from \emph{last} to $z2$; $rx$ and $ry$ are the two radii along the two axes of the ellipse; \emph{inclinaison} is the angle in degrees between the first axis of the ellipse (the one corresponding to $rx$) and the horizontal. The parameter \emph{inclinaison} is optional and defaults to $0$.
+  \item \emph{z1,rx,ry,inclinaison,"e"} (ellipse) draws the ellipse with center $z1$ passing through \emph{last}; $rx$ and $ry$ are the two radii along the two axes of the ellipse; \emph{inclinaison} is the angle in degrees between the first axis of the ellipse (the one corresponding to $rx$) and the horizontal. The parameter \emph{inclinaison} is optional and defaults to $0$. When the point \emph{last} is not on this ellipse, a segment is drawn between this point and a point on the ellipse.
+  \item \emph{z1,...,zn,r,"la"} (line arc) draws the polyline \emph{\{last,z1,...,zn\}} while replacing each “corner” by a circular arc of radius $r$.
+  \item \emph{z1,...,zn,r,"cla"} (closed line arc) same as the previous command, except that the polyline is closed.
+  \item \emph{"cl"} (closepath) this command is used alone; it closes the current component by drawing a segment joining the last point to the first point of the current component.
+\end{itemize}
+
+
+\subsubsection{Draw a Path}
+
+\begin{itemize}
+    \item The function \textbf{path(path,nbdots)} returns a polygonal line containing the points that make up the \emph{path}. The optional argument, \emph{nbdots}, is the minimum number of points calculated for each Bézier curve; its default value is the global variable \emph{bezier\_nbdots}, which is initialized to $8$.
 
     \item The \textbf{g:Dpath(path,draw\_options)} method draws the \emph{path} (using Bézier curves as much as possible, including arcs, ellipses, etc.). The \emph{draw\_options} argument is a string that will be passed directly to the \emph{\textbackslash draw} instruction.
 \begin{itemize}
     \item The \emph{path} argument was described above.
+    
     \item The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
 \end{itemize}
 
@@ -887,7 +925,7 @@ with:
 \begin{luadraw}{name=path_spline}
 local g = graph:new{window={-5,5,-5,5},size={10,10},bg="Beige"}
 local i = cpx.I
-local p = {-3+2*i,-3,-2,"l",0,2,2,1,"ca",3,3+3*i,0.5,"la",1,-1+5*i,-3+2*i,"b",-1,"m",0,"c"}
+local p = {-3+2*i,"m",-3,-2,"l",0,2,2,1,"ca",3,3+3*i,0.5,"la",1,-1+5*i,-3+2*i,"b",-1,"m",0,"c"}
 g:Daxes( {0,1,1} )
 g:Filloptions("full","blue!30",1,true); g:Dpath(p,"line width=0.8pt")
 g:Filloptions("none")
@@ -907,11 +945,11 @@ L = {point1,{t1,a1,t2,a2}, point2,{t1,a1,t2,a2}, ..., pointN,{t1,a1,t2,a2}}
 Two consecutive points will be connected by a Bézier curve; the function calculates the control points to obtain the desired tangent vectors.
 
     \item The method \textbf{g:Dtcurve(L,options)} draws the path obtained by \emph{tcurve} described above. The argument \emph{options} is a two-field table:
-\begin{itemize}
-    \item \emph{showdots=true/false} (false by default). This option allows you to draw the given interpolation points as well as the calculated control points, allowing for visualization of the constraints.
-    \item \emph{draw\_options=""}. This is a string that will be passed directly to the \emph{\textbackslash draw} instruction.
-\end{itemize}
-\end{itemize}
+    \begin{itemize}
+        \item \emph{showdots=true/false} (false by default). This option allows you to draw the given interpolation points as well as the calculated control points, allowing for visualization of the constraints.
+        \item \emph{draw\_options=""}. This is a string that will be passed directly to the \emph{\textbackslash draw} instruction.
+    \end{itemize}
+\end{itemize}    
 
 \begin{demo}{Interpolation curve with imposed tangent vectors}
 \begin{luadraw}{name=tcurve}
@@ -1253,9 +1291,11 @@ g:Show()
 
 \paragraph{NB}: The result is not always satisfactory when the contours become too complex, or when the contours share common sections.
 
-\subsection{Color Calculations}
+\subsection{Colors}
 
 In the \emph{luadraw} environment, colors are character strings that must correspond to colors known to tikz. The \emph{xcolor} package is strongly recommended so as not to be limited to basic colors.
+
+\subsubsection{Color Calculations}
 
 To be able to manipulate colors, they have been defined (in the \emph{luadraw\_colors.lua} module) as tables of three components: red, green, blue, each component being a number between $0$ and $1$, and with their names in the \emph{svgnames} format of the \emph{xcolor} package. For example, we find (among others) the declarations:
 
@@ -1315,6 +1355,50 @@ Dpalette(palAutumn,A,h,L,N,"palAutumn"); A = A+dh
 Dpalette(palGistGray,A,h,L,N,"palGistGray"); A = A+dh
 Dpalette(palGasFlame,A,h,L,N,"palGasFlame"); A = A+dh
 Dpalette(palRainbow,A,h,L,N,"palRainbow")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dshadedpolyline}
+
+The function \textbf{g:Dshadedpolyline(L, palette, options)} enables the rendering of a two-dimensional polygonal line (\emph{L}) with a continuous color gradient determined by the computational method and the selected \emph{palette}. The argument \emph{L} may be either a list of complex numbers or a list of lists of complex numbers. The \emph{palette} is a list of colors, each color being represented as a list of three real numbers between \(0\) and \(1\), corresponding respectively to the red, green, and blue components. The argument \emph{options} is a table whose fields define the parameters (with their default values) as follows:
+\begin{itemize}
+    \item \opt{values = "x"} — for each point in \emph{L}, a numerical value is computed, which determines the associated color according to the chosen palette. The \emph{values} option specifies the evaluation mode and may take one of the following forms:
+        \begin{itemize}
+            \item "x" (default): the value corresponds to the point’s abscissa;
+            \item "y": the value corresponds to the point’s ordinate;
+            \item a function \(f\colon(x,y)\mapsto f(x,y)\in\mathbf{R}\): the value for each point \((x,y)\) in \emph{L} is given by \(f(x,y)\).
+        \end{itemize}
+    \item \opt{width = current line width} — specifies the line thickness in tenths of a point (default: current line width).
+    \item \opt{close = false} — a Boolean value indicating whether the polygonal line should be closed.
+    \item \opt{clip = nil} — this option can be either \emph{nil} (default) or a table \emph{\{x1, x2, y1, y2\}}. In the former case, the line is clipped by the current two-dimensional window \textbf{after} applying the graph’s 2D transformation matrix; in the latter, the line is clipped by the window \([x_1, x_2]\times[y_1, y_2]\) \textbf{before} the transformation.
+\end{itemize}
+
+This procedure transforms \emph{L} into a sequence of trapezoids, which are subsequently filled using a smooth color gradient.
+
+\begin{demo}{Shading polyline}
+\begin{luadraw}{name=shading_polyline}
+local i = cpx.I
+local g = graph:new{size={10,10},bg="lightgray", margin={0,0,0,0}}
+-- first example diff. equation y'= x^2+y^2-1 (=f(x,y))
+local x1,x2,y1,y2 = -3,3,-3,3
+local A = Z(0,1/2) -- initial condition
+local f = function(x,y) 
+    return x^2+y^2-1
+end
+local S = odesolve(f, A.re, A.im, x1, x2, 150) -- S is a matrix {X,Y}
+local L = {} -- to convert {X,Y} into the complex numbers list L
+for k = 1, #S[1] do table.insert(L, Z(S[1][k],S[2][k])) end 
+L = clippolyline(L,-2.5,2.4,y1,y2)[1] -- L is the solution curve
+g:Dshadedpolyline(L, palRainbow, {values=f, width=12}) -- solution drawn with rainbow color map using function f
+-- second example
+L = polar(function(t) return 2*math.cos(3*t) end, -math.pi, math.pi)
+local f = function(x,y) return cpx.abs(Z(x,y)) end -- here the value will be the modulus
+g:Shift(2-2.5*i)
+g:Dshadedpolyline(L, palAutumn, {values=f, width=12})
+-- third example
+g:Shift(-4.5+5*i)
+g:Dshadedpolyline( polyreg(0,2,8), palGasFlame, {values="y", width=24, close=true})
 g:Show()
 \end{luadraw}
 \end{demo}

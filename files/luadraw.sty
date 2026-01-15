@@ -1,6 +1,6 @@
-% luadraw.sty version 2.4 du 21/12/2025%
+% luadraw.sty version 2.5 du 15/01/2026%
 %% ---------------------------------------%
-%% Copyright (C) 2025 Patrick Fradin%
+%% Copyright (C) 2026 Patrick Fradin%
 %% ---------------------------------------%
 % Ce package fournit un environnement de dessin avec lua%
 %%
@@ -26,12 +26,12 @@
 \ifluatex%
   % Rien à faire, tout va bien%
 \else%
-  \PackageError{luadraw}{Ce package nécessite LuaTeX (lualatex)}{}%
+  \PackageError{luadraw}{This package needs LuaTeX (lualatex)}{}%
   \expandafter\endinput%
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2025/12/21 version 2.4, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2026/01/15 version 2.5, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%

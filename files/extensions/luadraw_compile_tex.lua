@@ -1,7 +1,7 @@
 -- luadraw_compile_tex.lua
--- date 2025/12/21
--- version 2.4
--- Copyright 2025 Patrick Fradin
+-- date 2026/01/15
+-- version 2.5
+-- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
@@ -13,7 +13,7 @@
 
 
 preamble = "\\documentclass[12pt]{article}\n"
-usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fouriernc}\n"
+usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"
 
 function compile_tex(text,out)
 -- out est le nom du fichier crée, il ne doit comporter ni chemin, ni extension, il sera créé dans le dossier de travail de luadraw (nommé cachedir)
@@ -28,7 +28,7 @@ function compile_tex(text,out)
         f:write(text.."\n")
         f:write("\\end{document}\n")
         f:close()
-        os.execute("lualatex -interaction=nonstopmode "..name..".tex "..name..".pdf" )
+        os.execute("pdflatex -interaction=nonstopmode "..name..".tex "..name..".pdf" )
         os.execute("pdf2ps "..name..".pdf")
         os.execute("pstoedit -dt -pta -f ps -psarg  -r2400 "..name..".ps "..out..".eps")
         os.remove(name..".tex")
@@ -165,6 +165,7 @@ end
 
 local splitLongSeg = function(L) -- to divide segments that are too long
     -- L is a list of list of complex numbers
+    if L == nil then return end
     local ret, cp, B, A = {}
     for _, lg in ipairs(L) do
         B = lg[1]; cp = {}
@@ -271,6 +272,7 @@ end
 local splitLongSeg3d = function(L) -- to divide segments that are too long
     -- L is a list of list of 3d points
     local ret, cp, B, A = {}
+    if L == nil then return end
     for _, lg in ipairs(L) do
         B = lg[1]; cp = {}
         for k = 2, #lg do

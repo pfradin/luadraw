@@ -66,6 +66,22 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
+\subsection{Visualiser les numéros des facettes et/ou ceux des sommets d'un polyèdre} 
+
+La méthode \textbf{g:Dpolynames(P,option,opacity)} affiche le polyèdre \emph{P} avec la possibilité d'ajouter sur chaque face son numéro (qui est son rang d'apparition dans la liste \emph{P.facets}) précédé de la lettre \emph{F}, et éventuellement le numéro de chaque sommet (qui est son rang d'apparition dans la liste \emph{P.vertices}) précédé de la lettre \emph{V}. L'argument \emph{option} peut prendre les valeurs: \emph{"facet"} ou bien \emph{"vertex"} ou bien \emph{"both"} (qui est la valeur par défaut). L'argument \emph{opacity} est un nombre entre $0$ et $1$ qui vaut $0.6$ par défaut.
+
+\begin{demo}{Visualiser les faces et sommets d'un polyèdre}
+\begin{luadraw}{name=show_facet_number}
+local g = graph3d:new{viewdir={30,60}, window={-2.5,5,-3,3},size={10,10}}
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+local A, B, C = M(4,2.5,3), M(2,5,3), M(4,5,1.5)
+P = cutpoly(P, plane(A,B,C), true) -- we  cut P with the plane, and add a facet in place of the section
+g:Dpolynames(P) -- we want to see facets and vertices numbers of P
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
 \subsection{Fonctions de construction de polyèdres}
 
 Les fonctions suivantes renvoient un polyèdre, c'est à dire une table à deux champs, un premier champ appelé \emph{vertices} qui est la liste des sommets du polyèdre (points 3d), et un deuxième champ appelé \emph{facets} qui la liste des facettes, mais dans la définition des facettes, les sommets sont remplacés par leur indice dans la liste \emph{vertices}.

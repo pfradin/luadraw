@@ -1,7 +1,7 @@
 -- luadraw_spherical.lua 
--- date 2025/12/21
--- version 2.4
--- Copyright 2025 Patrick Fradin
+-- date 2026/01/15
+-- version 2.5
+-- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
@@ -65,10 +65,16 @@ function graph3d:Define_sphere( args )
     if args.hiddencolor ~= nil then sphere.hiddencolor = args.hiddencolor end
     if args.edgewidth ~= nil then sphere.edgewidth = args.edgewidth end
     if args.show ~= nil then sphere.show = args.show end
+    local mat = self.matrix3d
+    local N, cam = self.Normal, camera
+    if not isID3d(mat) then
+        mat = invmatrix3d(mat)
+        N = mLtransform3d(N,mat); cam = mtransform3d(cam,mat)
+    end
     if projection_mode == "central" then
-        sphere.horizon = { interSS({Ct,R}, {(Ct+camera)/2,pt3d.abs(Ct-camera)/2}) }
+        sphere.horizon = { interSS({Ct,R}, {(Ct+cam)/2,pt3d.abs(Ct-cam)/2}) }
     else
-        sphere.horizon = {Ct, R, self.Normal}
+        sphere.horizon = {Ct, R, N}
     end
 end
 
@@ -193,6 +199,8 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
     end
     local I = proj3d(C,P) -- center 
     if projection_mode == "central" then N = camera-I end
+    local mat = self.matrix3d
+    if not isID3d(mat) then mat = invmatrix3d(mat); N = mLtransform3d(N,mat) end
     if pt3d.dot(u,I-C) < 0 then u = -u end
     local d = pt3d.abs(C-I)
     if d >= R then  return end -- no circle
@@ -202,7 +210,7 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
     else
         r = math.sqrt(R^2- pt3d.abs2(v))
     end
-    if pt3d.N1(pt3d.prod(u,self.Normal))< 1e-12 then -- P has the same direction than screen 
+    if pt3d.N1(pt3d.prod(u,N))< 1e-12 then -- P has the same direction than screen 
         acircle(I,r,v,u)
     else
         local n2 = pt3d.normalize(pt3d.prod(N,u))
@@ -391,6 +399,12 @@ function graph3d:DSarc(AB,sens,options)
     end
     local C, R = sphere.C, sphere.R
     local N = self.Normal
+    local cam = camera
+    if projection_mode == "central" then N = camera-C end
+    local mat = self.matrix3d
+    if not isID3d(mat) then 
+        mat = invmatrix3d(mat); N = mLtransform3d(N,mat); cam = mtransform3d(camera,mat) 
+    end
     local A, B = toSphere(A), toSphere(B) -- to have points on sphere
     local u = pt3d.prod(A-C,B-C)
     if pt3d.N1(u) < 1e-12 then  -- points alignés avec le centre !
@@ -402,12 +416,12 @@ function graph3d:DSarc(AB,sens,options)
         end
     end 
     if (projection_mode ~= "central") and (pt3d.N1(pt3d.prod(u,N))< 1e-12) then -- P est le plan de l'écran
-        table.insert(after_sphere, {{A,C,B,R,sens,n,"ca"},style,color,width,opacity,arrows} )
+        table.insert(after_sphere, {{A,C,B,R,sens,u,"ca"},style,color,width,opacity,arrows} )
     else
         local M1, M2
         if projection_mode == "central" then
-            M2, M1 = interCS({C,R,u}, {(C+camera)/2, pt3d.abs(C-camera)/2} )
-            if (M2 ~= nil) and (M1 ~= nil) and (pt3d.det(camera-C,u,M1-C) < 0) then 
+            M2, M1 = interCS({C,R,u}, {(C+cam)/2, pt3d.abs(C-cam)/2} )
+            if (M2 ~= nil) and (M1 ~= nil) and (pt3d.det(cam-C,u,M1-C) < 0) then 
                 M1, M2 = M2, M1 
             end
         else
@@ -568,21 +582,26 @@ function graph3d:DSfacet(facet, options)
     local Ct, R = sphere.C, sphere.R
     local I,r,n = table.unpack(sphere.horizon)
     local P = {I, n}
+    local N = self.Normal
+    local cam = camera
+    if projection_mode == "central" then N = camera-Ct end
+    local mat = self.matrix3d
+    if not isID3d(mat) then mat = invmatrix3d(mat); N = mLtransform3d(N,mat); cam = mtransform3d(camera,mat) end
     local chemV, chemH,M1,M2 = {}, {}
     local visiblelast, pred, M1, M2 = false
     facet = table.copy(facet)
     table.insert(facet,facet[1])
     for _,A in ipairs(facet) do
-        if visibledot(A) then
+        if pt3d.dot(A-I,N) >=0 then --visibledot(A) then
             if visiblelast or (pred == nil) then 
                 table.insert(chemV,{A,false})
             else -- pred is not visible
                 local u =  pt3d.prod(pred-Ct,A-Ct)
                 if pt3d.N1(u) < 1e-12 then u = vecK end
                 if projection_mode == "central" then
-                    M2, M1 = interCS({Ct,R,u}, {(Ct+camera)/2, pt3d.abs(Ct-camera)/2} )
+                    M2, M1 = interCS({Ct,R,u}, {(Ct+cam)/2, pt3d.abs(Ct-cam)/2} )
                 else
-                    local n1 = pt3d.normalize( pt3d.prod(u,self.Normal) )
+                    local n1 = pt3d.normalize( pt3d.prod(u,N) )
                     M1, M2 = Ct+R*n1, Ct-R*n1
                 end
                 if pt3d.det(pred-Ct,M1-Ct,u) < 0 then M1 = M2 end
@@ -598,9 +617,9 @@ function graph3d:DSfacet(facet, options)
                 local u =  pt3d.prod(pred-Ct,A-Ct)
                 if pt3d.N1(u) < 1e-12 then u = vecK end
                 if projection_mode == "central" then
-                    M2, M1 = interCS({Ct,R,u}, {(Ct+camera)/2, pt3d.abs(Ct-camera)/2} )
+                    M2, M1 = interCS({Ct,R,u}, {(Ct+cam)/2, pt3d.abs(Ct-cam)/2} )
                 else
-                    local n1 = pt3d.normalize( pt3d.prod(u,self.Normal) )
+                    local n1 = pt3d.normalize( pt3d.prod(u,N) )
                     M1, M2 = Ct+R*n1, Ct-R*n1
                 end
                 if pt3d.det(pred-Ct,M1-Ct,u) < 0 then M1 = M2 end
@@ -621,7 +640,10 @@ function graph3d:DSfacet(facet, options)
         for k = 2, #chemV do
             U = V; V = chemV[k]
             if pt3d.abs(U[1]-V[1]) > 1e-8 then
-                if U[2] and V[2] then insert(chem,{I,V[1],r,1,"ca"}) else insert(chem,{Ct,V[1],R,1,"ca"}) end
+                if U[2] and V[2] then 
+                    insert(chem,{I,V[1],r,1,"ca"}) 
+                else insert(chem,{Ct,V[1],R,1,"ca"}) 
+                end
             end
         end
         table.insert(after_sphere, {chem,style,color,width,opacity,0,fill,fillopacity})

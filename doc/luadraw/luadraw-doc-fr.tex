@@ -17,9 +17,9 @@ french,%
 \usepackage{babel,microtype,multicol}%
 %\usepackage{minitoc}
 \usepackage[Lenny]{fncychap}
-
+\usepackage{animate}
 \usepackage[noexec,3d,cachedir=tkz]{luadraw}
-\def\version{2.4}
+\def\version{2.5}
 
 \hypersetup{
   pdfauthor={P. Fradin},
@@ -86,6 +86,8 @@ Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet 
 \begin{document}
 \maketitle
 
+%\include{body-fr/luadraw-doc-saisie.tex}% saisie d'une section ou sous-section seulement
+
 \setcounter{tocdepth}{3}%
 \setcounter{secnumdepth}{2}%
 
@@ -106,6 +108,7 @@ Le paquet \emph{luadraw} définit l'environnement du même nom, celui-ci permet 
 
 \include{body-fr/luadraw-doc2d.tex}
 \include{body-fr/luadraw-doc3d.tex}
+\include{body-fr/luadraw-doc-annexes.tex}
 
 
 \end{document}

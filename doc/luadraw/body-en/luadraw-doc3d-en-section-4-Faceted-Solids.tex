@@ -57,6 +57,21 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
+\subsection{Displaying the Face and/or Vertex Numbers of a Polyhedron}
+
+The method \textbf{g:Dpolynames(P,option, opacity)} displays the polyhedron \emph{P} with the option to add to each face its number (which is its position in the \emph{P.facets} list) preceded by the letter \emph{F}, and optionally the number of each vertex (which is its position in the \emph{P.vertices} list) preceded by the letter \emph{V}. The argument \emph{option} can take the values: \emph{"facet"}, \emph{"vertex"}, or \emph{"both"} (which is the default value). The argument \emph{opacity} is a number between $0$ and $1$ which defaults to $0.6$.
+
+\begin{demo}{Visualize the faces and vertices of a polyhedron}
+\begin{luadraw}{name=show_facet_number}
+local g = graph3d:new{viewdir={30,60}, window={-2.5,5,-3,3}, size={10,10}}
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+local A, B, C = M(4,2.5,3), M(2,5,3), M(4,5,1.5)
+P = cutpoly(P, plane(A,B,C), true) -- we cut P with the plane, and add a facet in place of the section
+g:Dpolynames(P) -- we want to see facets and vertices numbers of P
+g:Show()
+\end{luadraw}
+\end{demo}
+
 \subsection{Polyhedron Construction Functions}
 
 The following functions return a polyhedron, that is, a table with two fields: a first field called \emph{vertices}, which is the list of the polyhedron's vertices (3D points), and a second field called \emph{facets}, which is the list of facets. However, in the definition of facets, the vertices are replaced by their index in the \emph{vertices} list.

@@ -139,7 +139,9 @@ To return to the previous view with the previous matrix, simply restore the grap
 
 \paragraph{Warning: } Each \emph{Saveattr()} instruction must correspond to a \emph{Restoreattr()} instruction, otherwise a compilation error will occur.
 
-\paragraph{Changing the coordinate system: } The coordinate system of the current view can be changed with the \textbf{g:Coordsystem(x1,x2,y1,y2,ortho)} method. This method will modify the graph matrix so that everything occurs as if the current view corresponded to the $[x1,x2]\times[y1,y2]$ box. The optional Boolean argument \emph{ortho} indicates whether the new coordinate system should be orthonormal or not (false by default). Since the graph matrix is ​​modified, it is best to save the graphical parameters first and restore them later. This can be used, for example, to create multiple figures in the current graph.
+\paragraph{Changing the coordinate system: } The coordinate system of the current view can be changed with :\par
+\hfil\textbf{g:Coordsystem(x1,x2,y1,y2,ortho)}.\hfil\par
+ This method will modify the graph matrix so that everything occurs as if the current view corresponded to the $[x1,x2]\times[y1,y2]$ box. The optional Boolean argument \emph{ortho} indicates whether the new coordinate system should be orthonormal or not (false by default). Since the graph matrix is ​​modified, it is best to save the graphical parameters first and restore them later. This can be used, for example, to create multiple figures in the current graph.
 
 \begin{demo}{Classification of the points of a parametric curve}
 \begin{luadraw}{name=viewport_changewin}

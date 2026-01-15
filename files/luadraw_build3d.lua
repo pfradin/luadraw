@@ -1,7 +1,7 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2025/12/21
--- version 2.4
--- Copyright 2025 Patrick Fradin
+-- date 2026/01/15
+-- version 2.5
+-- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
@@ -18,10 +18,11 @@ function plane(A,B,C)
     end
 end
 
-function orthoframe(P) -- returns an orthonormal frame of the plane P={A,n}
+function orthoframe(P, u) -- returns an orthonormal frame of the plane P={A,n}
     local A, n = table.unpack(P)
     n = pt3d.normalize(n)
-    local u = pt3d.prod(n,vecI)
+    if u ~= nil then u = proj3d(u,{Origin,n}) end
+    if (u == nil) or (pt3d.N1(u) < 1e-12) then u = pt3d.prod(n,vecI) end
     if pt3d.N1(u) < 1e-12 then -- u = 0
         u = pt3d.prod(n,vecJ)
     end
@@ -1203,4 +1204,60 @@ function read_obj_file(file) -- Contribution de Christophe BAL 2025/09/02
     polyhedron.vertices = vertices
     polyhedron.facets   = facets
     return polyhedron, {xmin, xmax, ymin, ymax, zmin, zmax}  -- polyhedron first
+end
+
+function read_csv_file(file, options)
+-- file is the name of the csv file: "<name>.csv"
+-- options is a table with fields:
+    -- header = true (indcates if the first line is the column names)
+    -- dic = false (if true the output will be a list of dictionaries)
+    -- sep = "," (separator)
+    -- num = true (automatic conversion to numerical values)
+
+    options = options or {}
+    local header = options.header 
+    if header == nil then header = true end
+    local dic = options.dic or false  
+    if not header then dic = false end
+    local sep = options.sep or "," 
+    local num = true  
+    if options.num ~= nil then num = options.num end
+    
+    local trim = function(s) -- removes leading and trailing spaces
+        return s:match("^%s*(.-)%s*$")
+    end
+
+    local data = {}
+    local head_line
+    if header then head_line = {} end
+    local lg = 1
+    for line in io.lines(file) do
+        if (lg == 1) and header then
+            for part in string.gmatch(line, "([^"..sep.."]+)") do
+                table.insert(head_line, trim(part))
+            end
+        else
+            local result = {}
+            for part in string.gmatch(line, "([^"..sep.."]+)") do
+                if num then
+                    local x = tonumber(part)
+                    if x ~= nil then table.insert(result, x)
+                    else table.insert(result, trim(part))
+                    end
+                else table.insert(result, trim(part))
+                end
+            end
+            if dic then
+                local res = {}
+                for k, key in ipairs(head_line) do
+                    res[key] = result[k]
+                end
+                table.insert(data, res)
+            else
+                table.insert(data, result)
+            end
+        end
+        lg = lg + 1
+    end
+  return data, head_line
 end

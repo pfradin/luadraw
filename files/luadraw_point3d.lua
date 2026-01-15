@@ -1,7 +1,7 @@
 --- luadraw_point3d.lua
--- date 2025/12/21
--- version 2.4
--- Copyright 2025 Patrick Fradin
+-- date 2026/01/15
+-- version 2.5
+-- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in

@@ -1,7 +1,7 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2025/12/21
--- version 2.4
--- Copyright 2025 Patrick Fradin
+-- date 2026/01/15
+-- version 2.5
+-- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
@@ -22,7 +22,9 @@ function strReal(reel) -- convertit un réel en chaîne avec digits décimales
         n = n-1
     end
     if string.sub(str,n,n) == "." then n = n-1 end
-    return string.sub(str,1,n)
+    local rep = string.sub(str,1,n)
+    if rep == "-0" then rep = "0" end
+    return rep
 end
 
 function num(x) -- x is a real, returns a string

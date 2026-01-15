@@ -1,0 +1,150 @@
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=lightgray},show background rectangle]%
+\begin{scope}%
+\clip (0,0) rectangle (14.4,10.8);%
+\begin{scope}%
+\pgfsetstrokecolor{White!50!white!97.27!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.6}%
+\pgfsetfillcolor{White!50!white!97.27!black}%
+\pgfsetstrokeopacity{0.6}%
+\fill[] (5.9196,7.8481) -- (4.7196,6.8088) -- (2.1215,7.5588) -- (3.3215,8.5981)--cycle;%
+\pgfsetstrokecolor{White!50!white!96.71!black}%
+\pgfsetfillcolor{White!50!white!96.71!black}%
+\fill[] (3.3215,10.1569) -- (3.3215,8.5981) -- (2.1215,7.5588) -- (2.1215,9.1177)--cycle;%
+\pgfsetstrokecolor{White!50!white!98.86!black}%
+\pgfsetfillcolor{White!50!white!98.86!black}%
+\fill[] (3.3215,10.1569) -- (5.9196,9.4069) -- (5.9196,7.8481) -- (3.3215,8.5981)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (3.3215,8.5981) -- (3.3215,10.1569);%
+\draw[] (3.3215,8.5981) -- (2.1215,7.5588);%
+\draw[] (5.9196,7.8481) -- (3.3215,8.5981);%
+\pgfsetstrokecolor{Crimson}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{Crimson}%
+\draw[-,color=Crimson] (4.6206,9.0025) node[cm={0.9608,-0.2774,0,1,(0,0)}] {F5};%
+\draw[-,color=Crimson] (2.7215,8.8579) node[cm={0.7559,0.6547,0,1,(0,0)}] {F3};%
+\draw[-,color=Crimson] (4.0206,7.7035) node[cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {F1};%
+\pgfsetstrokecolor{White!99.81!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.6}%
+\pgfsetfillcolor{White!99.81!black}%
+\pgfsetstrokeopacity{0.6}%
+\fill[] (5.3196,8.8873) -- (3.4206,8.7427) -- (4.7196,7.5883)--cycle;%
+\pgfsetstrokecolor{Crimson}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{Crimson}%
+\draw[-,color=Crimson] (4.4866,8.4061) node[cm={0.7475,-0.6643,0.6888,0.725,(0,0)}] {F7};%
+\pgfsetstrokecolor{White!98.86!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.6}%
+\pgfsetfillcolor{White!98.86!black}%
+\pgfsetstrokeopacity{0.6}%
+\fill[] (2.1215,7.5588) -- (4.7196,6.8088) -- (4.7196,7.5883) -- (3.4206,8.7427) -- (2.1215,9.1177)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (2.1215,7.5588) -- (4.7196,6.8088);%
+\draw[] (2.1215,9.1177) -- (2.1215,7.5588);%
+\draw[] (3.4206,8.7427) -- (4.7196,7.5883);%
+\pgfsetstrokecolor{Crimson}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{Crimson}%
+\draw[-,color=Crimson] (3.4206,7.9633) node[cm={0.9608,-0.2774,0,1,(0,0)}] {F6};%
+\pgfsetstrokecolor{White!96.71!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.6}%
+\pgfsetfillcolor{White!96.71!black}%
+\pgfsetstrokeopacity{0.6}%
+\fill[] (5.9196,7.8481) -- (5.9196,9.4069) -- (5.3196,8.8873) -- (4.7196,7.5883) -- (4.7196,6.8088)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (5.9196,9.4069) -- (5.9196,7.8481);%
+\draw[] (4.7196,6.8088) -- (5.9196,7.8481);%
+\draw[] (4.7196,6.8088) -- (4.7196,7.5883);%
+\draw[] (4.7196,7.5883) -- (5.3196,8.8873);%
+\pgfsetstrokecolor{Crimson}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{Crimson}%
+\draw[-,color=Crimson] (5.3196,8.1079) node[cm={0.7559,0.6547,0,1,(0,0)}] {F4};%
+\pgfsetstrokecolor{White!97.27!black}%
+\pgfsetlinewidth{0.1pt}%
+\pgfsetfillopacity{0.6}%
+\pgfsetfillcolor{White!97.27!black}%
+\pgfsetstrokeopacity{0.6}%
+\fill[] (3.4206,8.7427) -- (5.3196,8.8873) -- (5.9196,9.4069) -- (3.3215,10.1569) -- (2.1215,9.1177)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetbuttcap%
+\pgfsetdash{}{0pt}%
+\pgfsetlinewidth{0.4pt}%
+\pgfsetstrokeopacity{1}%
+\pgfsetroundcap%
+\draw[] (3.3215,10.1569) -- (5.9196,9.4069);%
+\draw[] (2.1215,9.1177) -- (3.3215,10.1569);%
+\draw[] (3.4206,8.7427) -- (2.1215,9.1177);%
+\draw[] (5.3196,8.8873) -- (3.4206,8.7427);%
+\draw[] (5.9196,9.4069) -- (5.3196,8.8873);%
+\pgfsetstrokecolor{Crimson}%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{Crimson}%
+\draw[-,color=Crimson] (4.0206,9.2623) node[cm={0.9608,-0.2774,0.7559,0.6547,(0,0)}] {F2};%
+\end{scope}%
+\pgfsetstrokecolor{Gold}%
+\pgfsetlinewidth{0.8pt}%
+\pgfsetfillopacity{0.7}%
+\pgfsetfillcolor{Crimson!50!white!95.18!black}%
+\draw[fill] (3.9579,4.5357) -- (6.556,3.7857) -- (5.9196,2.1323) -- (3.3215,2.8823)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!84.67!black}%
+\draw[fill] (2.1215,1.8431) -- (1.0193,3.2635) -- (2.2193,4.3028) -- (3.3215,2.8823)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!75.79!black}%
+\draw[fill] (5.9196,2.1323) -- (4.7196,1.0931) -- (2.1215,1.8431) -- (3.3215,2.8823)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!71.55!black}%
+\draw[fill] (1.0193,3.2635) -- (1.0193,4.5626) -- (1.6193,6.3812) -- (2.2193,6.9009) -- (2.2193,4.3028)--cycle;%
+\pgfsetfillcolor{Crimson!50!white!29.53!black}%
+\draw[fill] (6.4219,2.3968) -- (5.2708,1.4851) -- (4.7196,1.0931) -- (5.9196,2.1323) -- (7.0219,2.9164)--cycle;%
+\pgfsetfillcolor{Crimson!50!black}%
+\draw[fill] (2.1215,1.8431) -- (4.7196,1.0931) -- (4.4014,1.3686) -- (2.7842,2.0192) -- (1.4851,2.3942)--cycle;%
+\pgfsetfillcolor{Crimson!74.6!black}%
+\draw[fill] (6.4219,2.3968) -- (5.4099,2.6375) -- (5.2708,1.4851)--cycle;%
+\pgfsetfillopacity{1}%
+\pgfsetfillcolor{black}%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\draw[] (10.2,8.0225) -- (12.6,8.0225) -- (12.6,5.0225) -- (10.2,5.0225)--cycle;%
+\draw[] (12.6,3.2225) -- (12.6,1.7225) -- (11.4,0.2225) -- (10.2,0.2225) -- (10.2,3.2225)--cycle;%
+\draw[] (12.6,5.0225) -- (12.6,3.2225) -- (10.2,3.2225) -- (10.2,5.0225)--cycle;%
+\draw[] (11.4,9.8225) -- (12.6,8.9225) -- (12.6,8.0225) -- (10.2,8.0225) -- (10.2,9.8225)--cycle;%
+\draw[] (8.4,5.0225) -- (8.4,8.0225) -- (10.2,8.0225) -- (10.2,5.0225)--cycle;%
+\draw[] (12.6,5.0225) -- (12.6,8.0225) -- (13.5,8.0225) -- (14.4,6.5225) -- (14.4,5.0225)--cycle;%
+\draw[] (11.4,9.8225) -- (13.1663,10.5775) -- (12.6,8.9225)--cycle;%
+\draw[pattern=north west lines, pattern color=gray] (13.5,8.0225) -- (13.8279,7.7092) -- (14.2779,6.9592) -- (14.4,6.5225);%
+\draw[pattern=north west lines, pattern color=gray] (10.2,0.2225) -- (10.08,0.9725) -- (10.08,2.4725) -- (10.2,3.2225);%
+\draw[pattern=north west lines, pattern color=gray] (11.4,0.2225) -- (11.1,0.1025) -- (10.5,0.1025) -- (10.2,0.2225);%
+\draw[pattern=north west lines, pattern color=gray] (10.2,3.2225) -- (10.08,3.6725) -- (10.08,4.5725) -- (10.2,5.0225);%
+\draw[pattern=north west lines, pattern color=gray] (12.6,5.0225) -- (12.72,4.5725) -- (12.72,3.6725) -- (12.6,3.2225);%
+\draw[pattern=north west lines, pattern color=gray] (10.2,8.0225) -- (10.08,8.4725) -- (10.08,9.3725) -- (10.2,9.8225);%
+\draw[pattern=north west lines, pattern color=gray] (12.6,8.9225) -- (12.72,8.6975) -- (12.72,8.2475) -- (12.6,8.0225);%
+\draw[pattern=north west lines, pattern color=gray] (12.6,1.7225) -- (12.3937,1.2725) -- (11.7937,0.5225) -- (11.4,0.2225);%
+\draw[pattern=north west lines, pattern color=gray] (12.6,3.2225) -- (12.72,2.8475) -- (12.72,2.0975) -- (12.6,1.7225);%
+\draw[-] (11.4,6.5225) node[font=\footnotesize] {F1};%
+\draw[-] (11.4,1.7225) node[font=\footnotesize] {F2};%
+\draw[-] (11.4,4.1225) node[font=\footnotesize] {F3};%
+\draw[-] (11.4,8.9225) node[font=\footnotesize] {F4};%
+\draw[-] (9.3,6.5225) node[font=\footnotesize] {F5};%
+\draw[-] (13.5,6.5225) node[font=\footnotesize] {F6};%
+\draw[-] (12.3888,9.7742) node[font=\footnotesize] {F7};%
+\end{scope}%
+\end{tikzpicture}%

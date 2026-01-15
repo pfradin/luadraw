@@ -136,6 +136,22 @@ La fonction \textbf{polyline2path(L)} où \emph{L} est une liste de nombres comp
 \subsection{range}
 La fonction \textbf{range(a,b,step)} renvoie la liste des nombres de \emph{a} jusqu'à \emph{b} avec un pas égal à \emph{step}, celui-ci vaut 1 par défaut.
 
+\subsection{read\_csv\_file}
+
+La fonction \textbf{read\_csv\_file(file, options)} permet la lecture d'un fichier \emph{csv}. L'argument \emph{file} est une chaîne de caractères représentant le fichier avec extension: \emph{"<name>.csv"}. L'argument \emph{options} est une table dont les champs représentent les paramètres de la fonction, ceux-ci sont (avec leur valeur par défaut):
+\begin{itemize}
+    \item \opt{header = true}, avec la valeur \emph{true} cela signifie que la première ligne du fichier contient les noms des colonnes.
+    \item \opt{dic = false}, avec la valeur \emph{true} cela signifie que le résultat renvoyé sera une liste de dictionnaires (un par ligne), les clés de ces dictionnaires étant les noms des colonnes. Avec la valeur \emph{false} (par défaut) le résultat est une liste de listes de valeurs (une liste de valeurs par ligne). Lorsque l'option \emph{header} a la valeur \emph{false}, l'option \emph{dic} reste automatiquement à \emph{false}.
+    \item \opt{sep = ","}, chaîne de caractères indiquant le séparateur des valeurs sur chaque ligne.
+    \item \opt{num = true}, booléen indiquant si les valeurs doivent automatiquement être converties en valeurs numériques (lorsque cette conversion échoue, la valeur reste une de chaîne de caractères).
+\end{itemize}
+Le résultat renvoyé par cette fonction est une séquence constituée dans cet ordre par:
+    \begin{enumerate}
+        \item Une liste de listes de résultats (une liste de résultats par ligne).
+        \item La liste des valeurs de la première ligne lorsque l'option \emph{header} a la valeur \emph{true}.
+    \end{enumerate}
+
+
 \subsection{Fonctions de clipping}
 
 \begin{itemize}

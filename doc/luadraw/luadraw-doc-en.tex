@@ -17,9 +17,9 @@ a4paper,%
 \usepackage{babel,microtype,multicol}%
 %\usepackage{minitoc}
 \usepackage[Lenny]{fncychap}
-
+\usepackage{animate}
 \usepackage[noexec,3d,cachedir=tkz]{luadraw}
-\def\version{2.4}
+\def\version{2.5}
 
 \hypersetup{
   pdfauthor={P. Fradin},
@@ -85,6 +85,10 @@ The \emph{luadraw} package defines the environment of the same name, which lets 
 
 \begin{document}
 \maketitle
+\newcommand{\og}{"}
+\newcommand{\fg}{"}
+
+%\include{body-fr/luadraw-doc-saisie.tex}% saisie d'une section ou sous-section seulement
 
 \setcounter{tocdepth}{3}%
 \setcounter{secnumdepth}{2}%
@@ -103,10 +107,10 @@ The \emph{luadraw} package defines the environment of the same name, which lets 
 \renewcommand{\thesubsection}{\arabic{subsection})}
 \renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
 \renewcommand{\thefigure}{\arabic{figure}}
-\newcommand{\og}{"}
-\newcommand{\fg}{"}
+
 
 \include{body-en/luadraw-doc2d-en.tex}
 \include{body-en/luadraw-doc3d-en.tex}
+\include{body-en/luadraw-doc-en-Appendices.tex}
 
 \end{document}

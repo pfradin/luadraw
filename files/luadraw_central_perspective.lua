@@ -1,7 +1,7 @@
 -- luadraw_central_perspective.lua 
--- date 2025/12/21
--- version 2.4
--- Copyright 2025 Patrick Fradin
+-- date 2026/01/15
+-- version 2.5
+-- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
@@ -430,12 +430,12 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             self:Filloptions("none")
         end
         local S = {A,r}
-        local S1 = { (camera+S[1])/2, pt3d.abs(S[1]-camera)/2}
-        local I,R,n = interSS(S,S1)
         local mat = invmatrix3d( self.matrix3d )
-        local N = mLtransform3d(n,mat)
+        local cam = mtransform3d(camera,mat)
+        local S1 = { (cam+S[1])/2, pt3d.abs(S[1]-cam)/2}
+        local I,R,n = interSS(S,S1)
         self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
-        self:Dcircle3d(I,R,N)
+        self:Dcircle3d(I,R,n)
         if  args.mode == 0 then -- équateur
             local M1, M2 = interCS({A,r,V},S1)
             local M3 = rotate3d(M1,90,{A,vecK})

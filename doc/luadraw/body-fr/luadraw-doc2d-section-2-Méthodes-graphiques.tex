@@ -5,6 +5,8 @@ On peut créer des lignes polygonales, des courbes, des chemins, des points, des
 
 \subsection{Lignes polygonales}
 
+\subsubsection{Dpolyline}
+
 \textbf{Une ligne polygonale est une liste (table) de composantes connexes, et une composante connexe est une liste (table) de complexes qui représentent les affixes des points}. Par exemple l'instruction :
 \begin{Luacode}
 local L = { {Z(-4,0), Z(0,2), Z(1,3)}, {Z(0,0), Z(4,-2), Z(1,-1)} }
@@ -15,7 +17,7 @@ crée une ligne polygonale à deux composantes dans une variable \emph{L}.
 
 C'est la méthode \textbf{g:Dpolyline(L,close, draw\_options,clip)} (où \emph{g} désigne le graphique en cours de création), \emph{L} est une ligne polygonale, \emph{close} un argument facultatif qui vaut \emph{true} ou \emph{false} indiquant si la ligne doit être refermée ou non (\emph{false} par défaut), \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw} dans l'export. L'argument \emph{clip} doit contenir ou bien \emph{nil} (valeur par défaut) ou bien une table de la forme \emph{\{x1,x2,y1,y2\}},  dans le premier cas la ligne est clippée par la fenêtre 2d courante \textbf{après} sa transformation par la matrice 2d du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1,x_2]\times[y_1,y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
 
-\paragraph{Choix des options de dessin d'une ligne polygonale.}
+\subsubsection{Options de dessin d'une ligne polygonale}
 
 On peut passer des options de dessin directement à l'instruction \emph{\textbackslash draw} dans l'export, mais elles auront un effet local uniquement. Il est possible de modifier ces options de manière globale avec la méthode \textbf{g:Lineoptions(style,color,width,arrows)} (lorsqu'un des arguments vaut \emph{nil}, c'est sa valeur par défaut qui est utilisée) :
 
@@ -877,29 +879,61 @@ Options globales pour les labels :
 
 \subsection{Chemins : Dpath, Dspline et Dtcurve}
 
+\subsubsection{Qu'est ce qu'un chemin}
+
+Un chemin est une table de nombres complexes et d'instructions (sous forme de chaînes), cette table représente une succession de différents "morceaux", chaque morceau est une succession de données (points 2d et parfois valeurs numériques) et se termine par une chaîne de caractères qui représente une instruction. Le chemin est régi par la règle suivante: \par
+\hfil\textbf{ le dernier point d'un morceau est le premier point du morceau suivant (il n'est donc pas répété) }\hfil\par
+
+\paragraph{Exemple:}
+\begin{Luacode}
+ local L = { Z(-3,2),"m",-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" } 
+\end{Luacode}
+Le chemin \emph{L} est composé de cinq morceaux, qui sont:
+    \begin{enumerate}
+        \item \emph{\{Z(-3,2),"m"\}}: il y a une donnée et l'instruction "m" qui signifie \emph{moveto}, cette instruction ne fait pas de dessin proprement dit, mais elle permet de commencer une nouvelle composante dont le premier point est $Z(-3,2)$ (le dernier point du morceau précédent, s'il y en a un, n'est pas pris en compte par cette instruction, c'est la seule exception).
+        
+        \item \emph{\{Z(-3,2),-3,-2,"l"\}}:  le premier point du deuxième morceau est bien $Z(-3,2)$ et non pas $-3$, car $Z(-3,2)$ est le dernier point du morceau précédent. Il y a donc trois données et l'instruction "l" qui signifie \emph{lineto}, c'est comme si on exécutait l'instruction \verb|g:Dpolyline( {Z(-3,2),-3,-2} )|, ces trois points sont donc reliés par un segment. Le dernier point de ce morceau est \emph{-2}.
+        
+        \item \emph{\{-2,0,2,2,-1,"ca"\}}: le premier point du troisième morceau est bien $-2$ et non pas $0$, car $-2$ est le dernier point du morceau précédent.  Il y a cinq données et l'instruction "ca" qui signifie \emph{circle arc}, c'est comme si on exécutait l'instruction \verb|g:Darc(-2,0,2,2,-1)|, donc le centre est $0$, l'arc va de $-2$ à $2$ avec un rayon égal à $2$ et dans le sens des aiguilles d'un montre (dernière valeur $-1$). Le dernier point de ce morceau est $2$.
+        \item \emph{\{2,3,Z(3,3),0.5,"la"\}}: le premier point du quatrième morceau est $2$ (et non pas $3$), il y a quatre données et l'instruction "la" qui signifie \emph{line arc}, c'est une ligne polygonale aux angles arrondis avec un arc de cercle de rayon $0.5$ (valeur qui précède l'instruction). Les points de cette ligne sont \emph{2, 3, Z(3,3)}, il y aura donc un arrondi en $3$. Le dernier point de ce morceau est $Z(3,3)$.
+        
+        \item \emph{\{Z(3,3),1,Z(-1,5),Z(-3,2),"b"\}}: le premier point du cinquième morceau est $Z(3,3)$ (et non pas $1$), l'instruction "b" signifie \emph{bezier}, on dessine donc une courbe de Bézier allant de $Z(3,3)$ jusqu'à $Z(-3,2)$, les deux autres points, $1$ et $Z(-1,5)$ sont le premier et le deuxième point de contrôle de la courbe.
+    \end{enumerate}
+
+Voici ce que donne ce chemin:
+\begin{demo}{Path example}
+\begin{luadraw}{name=path_example}
+local g = graph:new{window={-4,4,-0.5,3}, size={10,10}}
+local L = { Z(-3,2),"m",-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" } 
+g:Dpath(L, "line width=0.8pt, blue")
+g:Ddots({Z(-3,2),-3,-2,0,2,3,Z(3,3)})
+g:Dlabel("$Z(-3,2)$",Z(-3,2),{pos="W"}, "$-3$",-3,{pos="S"}, "$-2$",-2,{}, "$0$",0,{}, "$2$",2,{}, "$3$",3,{}, "$Z(3,3)$",Z(3,3),{pos="E"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\noindent\textbf{Remarque}: dans l'exemple ci-dessus, vous pouvez remplacer la partie: \emph{Z(-3,2),"m",-3,-2,"l"}, par: \emph{Z(-3,2),-3,-2,"l"} car il n'y a pas d'autre morceau avant le \emph{moveto}.
+
+\noindent\textbf{Instructions disponibles et leur syntaxe}, le mot \emph{last} représente le dernier point du morceau précédent:
+      \begin{itemize}
+      \item \emph{z1,"m"} (moveto), permet de commencer une nouvelle composante du chemin au point d'affixe $z1$.
+      \item \emph{z1,...,zn,"l"} (lineto), dessine la ligne polygonale \emph{\{last,z1,...,zn\}}.
+      \item \emph{c1,c2,z2,"b"} (bézier) dessine la courbe de Bézier \emph{\{last,c1,c2,z2\}}, où $c1$ et $c2$ sont les deux points de contrôle.
+      \item \emph{z1,...,zn,"s"} (spline), dessine la spline cubique naturelle passant par les points \emph{\{last,z1,...,zn\}}.
+      \item \emph{z1,"c"} (cercle), dessine le cercle de centre $z1$ et passant par le point \emph{last}. Il y a une autre syntaxe possible pour le cercle : \emph{z1,z2,"c"}, dans ce cas on dessine le cercle passant par les points \emph{last}, $z1$ et $z2$.
+      \item \emph{z1,z2,r,sens,"ca"} (arc de cercle), dessine un arc de cercle de centre $z1$, de rayon $r$, allant de \emph{last} vers $z2$, dans le sens trigonométrique lorsque \emph{sens=1} (et donc dans le sens inverse si \emph{sens=-1}).
+      \item \emph{z1,z2,rx,ry,inclinaison,"ea"} (arc d'ellipse), dessine un arc d'ellipse de centre $z1$ allant de \emph{last} vers $z2$, $rx$ et $ry$ sont les deux rayons suivant les deux axes de l'ellipse, \emph{inclinaison} est l'angle en degrés que fait le premier axe de l'ellipse (celui qui porte $rx$) avec l'horizontal. Le paramètre \emph{inclinaison} est facultatif, il vaut $0$ par défaut.
+      \item \emph{z1,rx,ry,inclinaison,"e"} (ellipse), dessine l'ellipse de centre $z1$, passant par \emph{last}, $rx$ et $ry$ sont les deux rayons suivant les deux axes de l'ellipse, \emph{inclinaison} est l'angle en degrés que fait le premier axe de l'ellipse (celui qui porte $rx$) avec l'horizontal. Le paramètre \emph{inclinaison} est facultatif, il vaut $0$ par défaut. Lorsque le point \emph{last} n'est pas sur cette ellipse, alors un segment est tracé entre ce point et un point de l'ellipse.
+      \item \emph{z1,...,zn,r,"la"} (line arc), dessine la ligne polygonale \emph{\{last,z1,...,zn\}} en remplaçant chaque "angle" par un arc de cercle de rayon $r$.
+      \item \emph{z1,...,zn,r,"cla"} (closed line arc), même chose que l'instruction précédente, sauf que la ligne est refermée. 
+      \item \emph{"cl"} (closepath), cette instruction s'utilise seule, elle permet de refermer la composante courante en traçant un segment reliant le dernier point au premier point (de la composante courante).
+      \end{itemize}
+  
+\subsubsection{Dessiner un chemin}
+
 \begin{itemize}
 \item La fonction \textbf{path(chemin,nbdots)} renvoie une ligne polygonale contenant les points constituant le \emph{chemin}. L'argument facultatif, \emph{nbdots} est le nombre minimal de points calculés pour chaque courbe de Bézier, sa valeur par défaut est la variable globale \emph{bezier\_nbdots} qui est initialisée à $8$.
 
-Le \emph{chemin} est une table de complexes et d'instructions (sous forme de chaînes) par exemple:
-
-\begin{TeXcode}
-  { Z(-3,2),-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" } 
-\end{TeXcode}  
-avec :
-      \begin{itemize}
-      \item \emph{"m"} pour moveto,
-      \item \emph{"l"} pour lineto,
-      \item \emph{"b"} pour bézier (il faut deux points de contrôles),
-      \item \emph{"s"} pour une spline cubique naturelle passant par les points cités,
-      \item \emph{"c"} pour cercle (il faut un point et le centre, ou alors trois points),
-      \item \emph{"ca"} pour arc de cercle (il faut 3 points, un rayon et un sens),
-      \item \emph{"ea"} arc d'ellipse (il faut 3 points, un rayon rx, un rayon ry, un sens, et éventuellement une inclinaison en degrés),
-      \item \emph{"e"} pour ellipse (il faut un point, le centre, un rayon rx, un rayon ry, et éventuellement une inclinaison en degrés),
-      \item \emph{"cl"} pour close (ferme la composante courante),
-      \item \emph{"la"} pour line arc, c'est à dire une ligne aux angles arrondis, (il faut indiquer le rayon juste avant l'instruction \emph{"la"}),
-      \item \emph{"cla"} ligne fermée aux angles arrondis (il faut indiquer le rayon juste avant l'instruction \emph{"cla"}).
-      \end{itemize}
-  
 \item La méthode \textbf{g:Dpath(chemin,draw\_options)} fait le dessin du \emph{chemin} (en utilisant au maximum les courbes de Bézier, y compris pour les arcs, les ellipses, etc). L'argument \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw}.
       \begin{itemize}
       \item L'argument \emph{chemin} a été décrit ci-dessus.
@@ -914,7 +948,7 @@ avec :
 \begin{luadraw}{name=path_spline}
 local g = graph:new{window={-5,5,-5,5},size={10,10},bg="Beige"}
 local i = cpx.I
-local p = {-3+2*i,-3,-2,"l",0,2,2,1,"ca",3,3+3*i,0.5,"la",1,-1+5*i,-3+2*i,"b",-1,"m",0,"c"}
+local p = {-3+2*i,"m",-3,-2,"l",0,2,2,1,"ca",3,3+3*i,0.5,"la",1,-1+5*i,-3+2*i,"b",-1,"m",0,"c"}
 g:Daxes( {0,1,1} )
 g:Filloptions("full","blue!30",1,true); g:Dpath(p,"line width=0.8pt")
 g:Filloptions("none")
@@ -1279,9 +1313,11 @@ g:Show()
 
 \paragraph{NB} : le résultat n'est pas toujours satisfaisant lorsque les contours deviennent trop complexes, ou lorsque les contours ont des tronçons en commun.
 
-\subsection{Calculs sur les couleurs}
+\subsection{Les couleurs}
 
 Dans l'environnement \emph{luadraw} les couleurs sont des chaînes de caractères qui doivent correspondre à des couleurs connues de tikz. Le package \emph{xcolor} est fortement conseillé pour ne pas être limité aux couleurs de bases.
+
+\subsubsection{Calculs sur les couleurs}
 
 Afin de pouvoir faire des manipulations sur les couleurs, celles-ci ont été définies (dans le module \emph{luadraw\_colors.lua}) sous la forme de tables de trois composantes : rouge, vert, bleu, chaque composante étant un nombre entre $0$ et $1$, et avec leur nom au format \emph{svgnames} du package \emph{xcolor}, par exemple on y trouve (entre autres) les déclarations :
 \begin{Luacode}
@@ -1338,6 +1374,50 @@ Dpalette(palAutumn,A,h,L,N,"palAutumn"); A = A+dh
 Dpalette(palGistGray,A,h,L,N,"palGistGray"); A = A+dh
 Dpalette(palGasFlame,A,h,L,N,"palGasFlame"); A = A+dh
 Dpalette(palRainbow,A,h,L,N,"palRainbow")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dshadedpolyline}
+
+La méthode \textbf{g:Dshadedpolyline(L, palette, options)} permet de dessiner une ligne polygonale 2d (\emph{L}) avec un dégradé de couleurs en fonction de la méthode de calcul et de la \emph{palette} choisies. \emph{L} est une liste de nombres complexes ou une liste de listes de nombres complexes, \emph{palette} est une liste de couleurs, chaque couleur est elle-même une liste de trois nombres entre $0$ et $1$ représentant les trois composantes: rouge, vert et bleu de la couleur. L'argument \emph{options} est une table dont les champs définissent les paramètres, qui sont (avec leur valeur par défaut):
+\begin{itemize}
+    \item \opt{values = "x"}, pour chaque point de \emph{L} on calcule une valeur numérique qui permettra de déterminer la couleur de ce point dans la palette choisie. C'est l'option \emph{values} qui détermine le mode de calcul, cette option peut être égale à : 
+        \begin{itemize}
+            \item "x" (valeur par défaut), dans ce cas pour chaque point de \emph{L} la valeur sera l'abscisse. 
+            \item "y", dans ce cas pour chaque point de \emph{L} la valeur sera l'ordonnée. 
+            \item une fonction $f\colon(x,y)\mapsto f(x,y)\in\mathbf R$, dans ce cas chaque point $(x,y)$ de \emph{L} la valeur sera donnée par $f(x,y)$.
+        \end{itemize}
+    \item \opt{width = current line width}, permet de définir l'épaisseur de ligne en dixième de point (épaisseur courante par défaut).
+    \item \opt{close= false}, booléen indiquant si la ligne polygonale doit être refermée ou non.
+    \item \opt{clip = nil}, cette option est soit \emph{nil} (valeur par défaut), soit une table \emph{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2d courante \textbf{après} sa transformation par la matrice 2d du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1,x_2]\times[y_1,y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+\end{itemize}
+
+Cette méthode convertit \emph{L} en une succession de trapèzes qui sont ensuite remplis avec un dégradé de couleur.
+
+\begin{demo}{Shading polyline}
+\begin{luadraw}{name=shading_polyline}
+local i = cpx.I
+local g = graph:new{size={10,10},bg="lightgray", margin={0,0,0,0}}
+-- first example diff. equation y'= x^2+y^2-1 (=f(x,y))
+local x1,x2,y1,y2 = -3,3,-3,3
+local A = Z(0,1/2) -- initial condition
+local f = function(x,y) 
+    return x^2+y^2-1
+end
+local S = odesolve(f, A.re, A.im, x1, x2, 150) -- S is a matrix {X,Y}
+local L = {} -- to convert {X,Y} into the complex numbers list L
+for k = 1, #S[1] do table.insert(L, Z(S[1][k],S[2][k])) end 
+L = clippolyline(L,-2.5,2.4,y1,y2)[1] -- L is the solution curve
+g:Dshadedpolyline(L, palRainbow, {values=f, width=12}) -- solution drawn with rainbow color map using function f
+-- second example
+L = polar(function(t) return 2*math.cos(3*t) end, -math.pi, math.pi)
+local f = function(x,y) return cpx.abs(Z(x,y)) end -- here the value will be the modulus
+g:Shift(2-2.5*i)
+g:Dshadedpolyline(L, palAutumn, {values=f, width=12})
+-- third example
+g:Shift(-4.5+5*i)
+g:Dshadedpolyline( polyreg(0,2,8), palGasFlame, {values="y", width=24, close=true})
 g:Show()
 \end{luadraw}
 \end{demo}

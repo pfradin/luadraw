@@ -1,0 +1,8 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,4.4375);%
+\draw[line width=0.8pt, blue] (1.125,2.8125) -- (1.125,0.5625) -- (2.25,0.5625) -- (2.25,0.5625) .. controls (2.25,1.8113) and (3.2512,2.8125) .. (4.5,2.8125) .. controls (5.7488,2.8125) and (6.75,1.8113) .. (6.75,0.5625) -- (7.3125,0.5625) .. controls (7.6247,0.5625) and (7.875,0.8128) .. (7.875,1.125) -- (7.875,3.9375) .. controls (5.625,0.5625) and (3.375,6.1875) .. (1.125,2.8125);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(1.125,2.8125)} plot coordinates {(1.125,0.5625)} plot coordinates {(2.25,0.5625)} plot coordinates {(4.5,0.5625)} plot coordinates {(6.75,0.5625)} plot coordinates {(7.875,0.5625)} plot coordinates {(7.875,3.9375)};%
+\draw[-] (1.125,2.8125) node[left] {$Z(-3,2)$} (1.125,0.5625) node[below] {$-3$} (2.25,0.5625) node[below] {$-2$} (4.5,0.5625) node[below] {$0$} (6.75,0.5625) node[below] {$2$} (7.875,0.5625) node[below] {$3$} (7.875,3.9375) node[right] {$Z(3,3)$};%
+\end{scope}%
+\end{tikzpicture}%

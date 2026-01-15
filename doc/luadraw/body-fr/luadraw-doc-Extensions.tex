@@ -9,7 +9,7 @@ Toutes les fonctions sont sur le même modèle : \textbf{<nom>(C,S,all)} où $C$
         \item $P$ est le solide en tant que polyèdre,
         \item $V$ la liste (table) des sommets,
         \item $E$ la liste (table) des arêtes (avec points 3d),
-        \item $F$ la liste des facettes (avec points 3d). Certains polyèdres ont plusieurs types de facettes, dans ce cas la résultat renvoyé est de la forme : \emph{P, V, E, F1, F2, ...}, où $F1$, $F2$ ..., sont des listes de facettes.Cela peut permettre de sles dessiner avec des couleurs différentes par exemple.
+        \item $F$ la liste des facettes (avec points 3d). Certains polyèdres ont plusieurs types de facettes, dans ce cas la résultat renvoyé est de la forme : \emph{P, V, E, F1, F2, ...}, où $F1$, $F2$ ..., sont des listes de facettes.Cela peut permettre de les dessiner avec des couleurs différentes par exemple.
         \end{itemize}
 L'argument \emph{all} la valeur \emph{false},qui est la valeur par défaut, la fonction ne renvoie que le polyèdre.
 
@@ -132,7 +132,7 @@ Bien sûr, toutes les méthodes de dessin 2d et 3d restent utilisables.
 Si la variable globale \textbf{Hiddenlines} a la valeur \emph{true}, alors les parties cachées seront dessinées dans le style défini par la variable globale \textbf{Hiddenlinestyle}, cependant on peut modifier ce comportement l'option locale \emph{hidden=true/false} .
 
 \subsubsection{Définition de la sphère}
-Par défaut, la sphère est centrée à l'origine, de rayon $3$ et de couleur orange, mais ceci peut être modifié avec la méthode \textbf{g:Define\_sphere( options )} où \emph{options} est une table permettant d'ajuster chaque paramètres. Ceux-ci sont les suivants (avec leur valeur par défaut entre parenthèses):
+Par défaut, la sphère est centrée à l'origine, de rayon $3$ et de couleur orange, mais ceci peut être modifié avec la méthode \textbf{g:Define\_sphere( options )} où \emph{options} est une table permettant d'ajuster chaque paramètre. Ceux-ci sont les suivants (avec leur valeur par défaut entre parenthèses):
 \begin{itemize}
     \item \opt{center =} (Origin),
     \item \opt{radius =} (3),
@@ -460,7 +460,17 @@ g:Show()
 
 \subsection{Le module \emph{luadraw\_palettes}}
 
-Le module \emph{luadraw\_palettes}\footnote{Ce module est une contribution de \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christphe BAL}.} définit $127$ palettes de couleurs portant chacune un nom. Une palette est une liste (table) de couleurs qui sont elles-mêmes des listes de trois valeurs numériques entre $0$ et $1$ (composantes rouge, verte et bleue). La liste de ces palettes ainsi que leur rendu, peuvent être visualisés dans ce \href{luadraw_palettes_list.pdf}{document}. Plus d'informations dans ce \href{luadraw_palettes_manual.pdf}{document} de Christophe BAL.
+Le module \emph{luadraw\_palettes}\footnote{Ce module est une contribution de \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christphe BAL}.} définit $261$ palettes de couleurs portant chacune un nom. Une palette est une liste (table) de couleurs qui sont elles-mêmes des listes de trois valeurs numériques entre $0$ et $1$ (composantes rouge, verte et bleue). Toutes les palettes ont pour préfixe "pal", la liste de ces palettes ainsi que leur rendu, peuvent être visualisés dans ce \href{luadraw_palettes_list.pdf}{document}. L'extension fournit également la fonction \emph{getPal(name,options)} dont voici un exemple d'utilisation:
+\begin{Luacode}
+BlackbodyTransformed = getPal(
+    "Blackbody", -- nom de la palette sans le préfixe pal
+    {
+    extract = {2, 5, 8, 9}, -- numéros des couleurs à extraire
+    shift = 1, -- décalage parmi les couleurs extraites, ce qui donne ici: 5,8,9,2
+    reverse = true -- inversion de l'ordre, ce qui donne ici: 2,9,8,5    
+    }
+)
+\end{Luacode}
 
 
 \subsection{Le module \emph{luadraw\_compile\_tex}}
@@ -491,8 +501,8 @@ La première étape est le rôle de la fonction \textbf{compile\_tex(text,filena
     \begin{enumerate}
         \item création du fichier tex. Celui-ci utilise deux variables globales qui sont :\par
             \verb|preamble = "\\documentclass[12pt]{article}\n"|\par
-            \verb|usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fouriernc}\n"|\par
-            La compilation se fait avec \emph{lualatex}.
+            \verb|usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"|\par
+            La compilation se fait avec \emph{pdflatex}.
         \item Le fichier obtenu est transformé en postscript avec l'utilitaire \emph{pdf2ps}.
         \item Le fichier \emph{ps} obtenu est à son tour transformé avec l'utilitaire \emph{pstoedit} en un fichier \emph{eps} en \emph{ flattened postscript} (tout le contenu est sous forme de chemins).
         \item Le fichier  \emph{<filename>.eps} ainsi obtenu est copié dans le dossier de travail de \emph{luadraw} (le nom de ce dossier est dans la variable globale \emph{cachedir}), et tous les résidus de la compilation sont effacés.
@@ -586,3 +596,207 @@ g:Dpath3d(Cv, "draw=none,fill=red")
 g:Show()
 \end{luadraw}
 \end{demo}
+
+\subsection{Le module \emph{luadraw\_cvx\_polyhedra\_nets}}
+
+\subsubsection{La fonction de base}
+
+Le module \emph{luadraw\_cvx\_polyhedra\_nets} permet de \og déplier\fg\ un polyèdre \textbf{convexe} afin d'en obtenir un patron. La fonction réalisant le dépliage est :\par
+\hfil \textbf{unfold\_polyhedron(P, options)}\hfil\par
+L'argument \emph{P} doit être un polyèdre convexe. L'argument \emph{options} est une table permettant d'ajuster certains paramètres. Ceux-ci sont les suivants (avec leur valeur par défaut entre parenthèses):
+\begin{itemize}
+    \item \opt{opening = 1}, valeur comprise entre $0$ et $1$ représentant le "taux" d'ouverture. Avec la valeur $1$ le polyèdre est totalement déplié, les facettes renvoyées par la fonction seront donc toutes dans un même plan. Avec la valeur $0$, la fonction renvoie les facettes du polyèdre sans modification.
+    
+    \item \opt{root = 1}, numéro de la facette du polyèdre qui servira de racine, car la fonction met le polyèdre sous la forme d'un arbre en déterminant pour chaque facette quelles sont les voisines (facettes adjacentes) ainsi que les arêtes communes et les angles.
+    Cette option permet de choisir la facette qui servira de point de départ.
+    
+    \item \opt{model = nil}, liste de listes de numéros de facettes pour imposer un modèle de patron, par exemple \emph{model=\{ \{1,6\},\{1,3\},\{1,4\},\{1,5,2\}\}}, la sous-liste  \emph{\{1,5,2\}} signifie que la facette $1$ est l'ancêtre de la facette $5$, et que la facette $5$ est l'ancêtre de la facette $2$, c'est à dire que les facettes $5$ et $1$  sont adjacentes, et la facette $5$ tournera autour de son arête commune avec la facette $1$ (même chose $5$ et $2$). Pour que le modèle soit cohérent, toutes les facettes du polyèdre SAUF une (qui sera la facette \emph{root}), doivent avoir un et un seul ancêtre; si dans le polyèdre les facettes $1$ et $5$ ne sont pas adjacentes, la fonction s'arrête et affiche une erreur dans le terminal. Lorsque l'option \emph{model} vaut \emph{nil} (valeur par défaut), l'algorithme calcule lui-même un modèle cohérent.
+    
+    \item \opt{to2d = false}, booléen qui permet d'obtenir une version 2d du patron dans le repère du plan de l'écran. Avec la valeur \emph{true}, l'option \emph{opening} prend automatiquement la valeur $1$ et les facettes renvoyées par la fonction auront des sommets exprimés en nombres complexes.
+    
+    \item \opt{tabs = false}, booléen qui permet d'ajouter ou non des languettes au patron dans la version 2d.  Avec la valeur \emph{true}, l'option \emph{to2d} prend automatiquement la valeur \emph{true} également, les facettes renvoyées par la fonction auront des sommets exprimés en nombres complexes dans le repère de l'écran, et la fonction renvoie en plus une ligne polygonale 2d représentant des languettes pour certaines arêtes (celles-ci sont déterminées automatiquement).
+    
+    \item \opt{tabs\_wd = 0.2}, valeur numérique représentant l'épaisseur des languettes lorsque l'option \emph{tabs} a la valeur \emph{true}.
+    
+    \item \opt{tabs\_lg = 0.5}, valeur numérique entre $0$ et $1$, permettant de déterminer la longueur du petit côté des languettes  celle-ci est égale à la longueur de l'arête (qui est le grand côté) multipliée par \emph{tabs\_lg} (lorsque l'option \emph{tabs} a la valeur \emph{true}).
+    
+    \item \opt{rotate = 0}, lorsque l'option \emph{to2d} a la valeur \emph{true}, le dessin est tourné d'un angle égal à \emph{rotate} (en degrés) autour de son centre. Dans la version 3d, le dessin est tourné le dessin est tourné d'un angle égal à \emph{rotate} (en degrés) autour de l'axe passant par le centre de gravité de la facette \emph{root} et orienté par un vecteur normal à cette facette dirigé vers l'extérieur du polyèdre.
+\end{itemize}
+
+La fonction renvoie en résultat une table constituée des champs suivants :
+    \begin{itemize}
+        \item Le champ \emph{facets} : qui contient la liste des facettes, avec les sommets en 2d (nombres complexes) si l'option \emph{to2d} vaut \emph{true}, ou sommets en 3d (points 3d) dans le cas contraire.
+        
+        \item Le champ \emph{tree} : qui est une liste de la forme : \par\hfil\emph{\{ \{ancestor,n1,n2,angle,vertices\}, ...\} }\hfil\par
+    chaque élément de cette liste représente une facette avec pour chacune d'elles les informations suivantes :
+            \begin{itemize}
+            \item \emph{ancestor} : numéro de la facette ancêtre, c'est son rang dans la liste \emph{tree} (la facette qui a servi de racine a pour ancêtre le numéro $0$ qui ne correspond à aucune facette).
+            
+            \item \emph{n1, n2} : numéro des sommets la facette ancêtre représentant l'arête commune.
+            
+            \item \emph{angle} : angle en degré avec la facette ancêtre.
+            
+            \item \emph{vertices} : liste des sommets (points 3d) de la facette.
+            \end{itemize}
+        
+        \item Le champ \emph{bounds} : qui contient sous la forme d'une liste, la bounding box des facettes (soit en 2d soit en 3d)
+        \item Lorsque l'option \emph{tabs} a la valeur \emph{true}, alors il y a deux champs supplémentaires dans le résultat :
+            \begin{itemize}
+                \item Le champ \emph{tabs} : qui contient une ligne polygonale 2d (liste de listes de nombres complexes) représentant les languettes, ceci uniquement lorsque l'option \emph{tabs} a la valeur \emph{true}.
+                \item Le champ \emph{twins} : qui contient une liste de la forme \emph{\{ \{\{a1,b1\},\{a2,b2\}\}, ... \}} représentant la liste des paires d'arêtes jumelles (les arêtes jumelles sont confondues lorsque le polyèdre est refermé), \emph{a1}, \emph{b1}, \emph{a2}, \emph{b2}, sont des nombres complexes représentant les extrémités des arêtes dans le patron du polyèdre version 2d. Cette liste est calculée uniquement lorsque l'option \emph{tabs} a la valeur \emph{true}.
+            \end{itemize}
+    \end{itemize}
+    
+\subsubsection{La méthode de dessin}
+
+Celle-ci est la méthode \textbf{g:Dpolyhedron\_net(P, options)} où \emph{P} désigne un polyèdre convexe. Les options sont celles de la fonction précédentes, à celles-ci s'ajoutent :
+    \begin{itemize}
+        \item Dans le cas d'un patron 2d (lorsque l'option \emph{to2d}, ou l'option \emph{tabs}, a la valeur \emph{true}):
+            \begin{itemize}
+                \item \opt{facet\_name = false}, avec la valeur \emph{true} le numéro des facettes (précédé de la lettre F) sera affiché au centre de chaque facette.
+                \item \opt{edge\_name = false},  avec la valeur \emph{true} le numéro des arêtes (précédé de la lettre e) sera affiché au centre de chaque arête, ce qui permet de repérer les arêtes jumelles et donc les facettes voisines.
+                \item \opt{tabs\_options = ""}, chaîne représentant des options de dessin tikz pour les languettes si l'option \emph{tabs} a la valeur \emph{true}.
+                \item \opt{facet\_options = ""}, chaîne représentant des options tikz de dessin pour la méthode \emph{g:Dpolyline()} qui dessinera les facettes.                
+            \end{itemize}
+        \item Dans le cas d'un patron 3D il y a uniquement en plus :
+            \begin{itemize}
+                \item \opt{facet\_options = \{\}}, liste d'options de dessin pour la méthode \emph{g:Dfacet()} qui dessinera les facettes. 
+            \end{itemize}
+    \end{itemize}
+
+Le dessin est accompagné d'un affichage dans le terminal de la bounding box 2d de celui-ci.
+
+
+\subsubsection{Exemples}
+
+Dans cet exemple, on affiche le patron par défaut, version 2d,  d'un parallélépipède $P$ avec les languettes hachurées, le numéro des facettes (ce numéro est le rang dans la liste \emph{P.facets}) ainsi que le numéro des arêtes afin de voir celles qui doivent être collées ensemble:
+
+\begin{demo}{Patron d'un parallélépipède}
+\begin{luadraw}{name=parallelep_net}
+local g = graph3d:new{viewdir={30,60},window={-8.5,8,-5,5},bbox=false, size={10,10}}
+require 'luadraw_cvx_polyhedra_nets'
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+g:Dpolyhedron_net(P, {tabs=true, tabs_options="pattern=north west lines, pattern color=gray", facet_options="fill=Orange!30", facet_name=true, edge_name=true})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Le patron par défaut ici correspondrait à l'option \emph{model=\{\{1,3\},\{1,4\},\{1,5\},\{1,6\},\{3,2\}\}}\footnote{L'algorithme prend la première facette, puis cherche ses voisines, puis les voisines de la première voisine, etc.}, mais on peut vouloir imposer un autre modèle, par exemple, avec le même parallélépipède:
+
+\begin{demo}{Patron imposé d'un parallélépipède}
+\begin{luadraw}{name=parallelep_net2}
+local g = graph3d:new{viewdir={30,60},window={-9,9,-5,5},bbox=false,size={10,10}}
+require 'luadraw_cvx_polyhedra_nets'
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+g:Dpolyhedron_net(P, {model={{4,6,1,3,2,5}},tabs=true, tabs_options="pattern=north west lines, pattern color=gray", facet_options="fill=Orange!30", facet_name=true, edge_name=true, rotate=-90})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Voici un exemple avec un parallélépipède tronqué qui l'on déplie à moitié:
+
+\begin{demo}{Parallélépipède tronqué à demi déplié}
+\begin{luadraw}{name=parallelep_net3}
+local g = graph3d:new{window={-9,15,-9,9,0.6,0.6},bg="lightgray", viewdir={30,60}, margin={0,0,0,0}} 
+require 'luadraw_cvx_polyhedra_nets'
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+local A, B, C = M(4,2.5,3), M(2,5,3), M(4,5,1.5)
+P = cutpoly(P, plane(A,B,C), true) -- P is truncated with a plane
+g:Shift3d(M(0,-4,5))
+g:Dpolynames(P,"facet") -- this function shows facet numbers of P
+-- half unfolded P
+g:Shift3d(M(0,0,-11))
+g:Dpolyhedron_net(P,{opening=0.5, facet_options={color="Crimson", opacity=0.7, edgecolor="Gold", edgewidth=8}})
+-- 2d net
+g:Shift(10)
+g:Dpolyhedron_net(P,{tabs=true, tabs_options="pattern=north west lines, pattern color=gray", facet_name=true, rotate=90})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{NB :} Les fonctions \textbf{unfold\_polyhedron} et \textbf{g:Dpolyhedron\_net} s'appliquent à tout polyèdre convexe, mais elles ne donneront pas le résultat escompté avec un polyèdre non convexe.
+
+\subsubsection{La fonction \emph{unfold\_tree()}}
+
+Il peut être utile de récupérer l'arbre fabriqué par la fonction \textbf{unfold\_polyhedron} afin d'éviter de recalculer celui-ci plusieurs fois, lors d'une animation par exemple. La fonction \textbf{unfold\_tree(tree,opening,num)} permet aussi de déplier le polyèdre. L'argument\emph{tree} est l'arbre fourni par la fonction \emph{unfold\_polyhedron}, l'argument optionnel \emph{opening} est un nombre entre $0$ et $1$ qui représente le taux d'ouverture ($1$ par défaut), l'argument optionnel \emph{num} est le numéro de la facette que l'on souhaite ouvrir (et toute la descendance de la facette tournera de la même façon), lorsque cet argument est omis, toutes les facettes tournent.
+
+\paragraph{Exemple d'animation :}
+
+\begin{Luacode}
+\begin{luacode*}
+nbimages = 70 -- must be global
+-- images creation
+local g = graph3d:new{ viewdir=perspective("central",30,60), bg="gray", size={10,10}, margin={0,0,0,0} }
+-- declarations
+require 'luadraw_polyhedrons'
+require 'luadraw_cvx_polyhedra_nets'
+local p = linspace(0,1,36)
+local T = linspace(0,360,nbimages+1)
+local P = dodecahedron(Origin, -2*vecI)
+local net = unfold_polyhedron(P)
+local tree = net.tree
+-- create the image number k, this function must be global
+function makeframe(k) 
+    local r = k
+    if k > 36 then r = 72-k end
+    local P1 = rotate3d( unfold_tree(tree,p[r]), T[k], {Origin,vecK})
+    g:Dfacet(P1, {color="Crimson", edgecolor="Gold", edgewidth=8})
+    -- send image number k
+    g:Sendtotex()  -- send the tikzpicture to TeX
+    g:Cleargraph()  
+end
+\end{luacode*}
+\end{Luacode}
+
+Le code \TeX\ (avec le paquet \emph{animate}) :
+
+\begin{TeXcode}
+\def\nb{\directlua{tex.print(nbimages)}}
+\def\makeframe#1{\directlua{makeframe(#1)}}%
+
+\begin{animateinline}[poster=first,controls,loop]{8}
+\multiframe{\nb}{ik=1+1}{%
+\makeframe{\ik}%
+}%
+\end{animateinline}
+\end{TeXcode}
+
+\begin{luacode*}
+nbimages = 70
+-- images creation
+local g = graph3d:new{ viewdir=perspective("central",30,60), bg="gray", size={10,10}, margin={0,0,0,0} }
+-- declarations
+require 'luadraw_polyhedrons'
+require 'luadraw_cvx_polyhedra_nets'
+local p = linspace(0,1,36)
+local T = linspace(0,360,nbimages+1)
+local P = dodecahedron(Origin, -2*vecI)
+local net = unfold_polyhedron(P)
+local tree = net.tree
+-- create the image number k, this function must be global
+function makeframe(k) -- do not modify this line
+    local r = k
+    if k > 36 then r = 72-k end
+    local P1 = rotate3d( unfold_tree(tree,p[r]), T[k],{Origin,vecK})
+    g:Dfacet(P1, {color="Crimson", edgecolor="Gold", edgewidth=8})
+    -- send image number k
+    g:Sendtotex()  -- do not modify
+    g:Cleargraph() -- do not modify
+end
+\end{luacode*}
+
+\def\nb{\directlua{tex.print(nbimages)}}%
+\def\makeframe#1{\directlua{makeframe(#1)}}%
+
+Le résultat :
+
+\begin{minipage}{0.9\textwidth}
+\begin{center}
+\captionof{figure}{Dépliage d'un dodécaèdre}
+\begin{animateinline}[poster=first,controls,loop]{8} %palindrome
+\multiframe{\nb}{ik=1+1}{%
+\makeframe{\ik}%
+}%
+\end{animateinline}
+\end{center}
+\end{minipage}

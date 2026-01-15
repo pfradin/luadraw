@@ -135,6 +135,27 @@ The function \textbf{polyline2path(L)} where \emph{L} is a list of complex numbe
 \subsection{range}
 The function \textbf{range(a,b,step)} returns the list of numbers from \emph{a} to \emph{b} with a step equal to \emph{step}, which is 1 by default.
 
+
+\subsection{read\_csv\_file}
+
+The function \textbf{read\_csv\_file(file, options)} reads a \emph{csv} file. The argument \emph{file} is a string representing the file with the extension: \emph{"<name>.csv"}. The argument \emph{options} is an table whose fields represent the function's parameters, which are (with their default values):
+\begin{itemize}
+    \item \opt{header = true}, with the value \emph{true} this means that the first line of the file contains the column names.
+
+    \item \opt{dic = false}, with the value \emph{true} this means that the returned result will be a list of dictionaries (one per line), the keys of these dictionaries being the column names. With the value \emph{false} (default), the result is a list of lists of values ​​(one list of values ​​per line). When the \emph{header} option is set to \emph{false}, the \emph{dic} option automatically remains \emph{false}.
+
+    \item \opt{sep = ","}, a string indicating the separator for the values ​​on each line.
+    
+    \item \opt{num = true}, a boolean indicating whether the values ​​should be automatically converted to numeric values ​​(when this conversion fails, the value remains a string).
+\end{itemize}
+
+The result returned by this function is a sequence consisting, in this order, of:
+\begin{enumerate}
+    \item A list of result lists (one result list per line).
+    \item The list of values ​​in the first line when the \emph{header} option is set to \emph{true}.
+\end{enumerate}
+
+
 \subsection{Clipping Functions}
 
 \begin{itemize}

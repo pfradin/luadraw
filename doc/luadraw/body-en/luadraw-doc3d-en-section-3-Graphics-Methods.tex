@@ -52,14 +52,15 @@ The \textbf{g:Line3d2seg(d,scale)} method returns a table consisting of two 3D p
 
 \subsubsection{3D Path: Dpath3d}
 
-The \textbf{g:Dpath3d(path,draw\_options,clip)} method draws the \emph{path}. The \emph{draw\_options} argument is a string that will be passed directly to the \emph{\textbackslash draw} instruction. The \emph{clip} argument is set to \emph{false} by default; it indicates whether the path should be clipped to the current 3D window. The argument \emph{path} is a list of 3D points followed by instructions (strings) that work on the same principle as in 2D. The instructions are:
+T\section{}
+The method \textbf{g:Dpath3d(path,draw\_options,clip)} draws the \emph{path}. The \emph{draw\_options} argument is a string that will be passed directly to the \emph{\textbackslash draw} instruction. The \emph{clip} argument is \emph{false} by default; it indicates whether the path should be clipped to the current 3D viewport. The \emph{path} argument is a list of 3D points followed by instructions (strings) that function \textbf{on the same principle as in 2D}. Instructions available and their syntax, the word \emph{last} represents the last point of the previous piece:
 \begin{itemize}
-    \item \emph{"m"} for moveto,
-    \item \emph{"l"} for lineto,
-    \item \emph{"b"} for Bezier (two control points are required),
-    \item \emph{"c"} for circle (one point on the circle, the center, and a normal vector are required),
-    \item \emph{"ca"} for arc (three points, a radius, a direction, and possibly a normal vector are required),
-    \item \emph{"cl"} for close (closes the current component).
+    \item \emph{p1,"m"} (moveto), which starts a new component of the path at the 3D point $p1$.
+    \item \emph{p1,...,pn,"l"} (lineto) draws the 3D polygonal line \emph{\{last,p1,...,pn\}}.
+    \item \emph{c1,c2,p2,"b"} (Bézier) draws the Bézier curve \emph{\{last,c1,c2,p2\}}, where $c1$ and $c2$ are the two control points (3D).
+    \item \emph{p1,n,"c"} (circle) draws the circle centered at $p1$ and passing through the point \emph{last}, and normal to the 3D vector \emph{n}. 
+    \item \emph{p1,p2,r,sens,n,"ca"} (circle arc) draws a circular arc centered at $p1$, with radius $r$, extending from \emph{last} to $p2$, in the clockwise direction when \emph{sens=1} (and therefore in the counterclockwise direction if \emph{sens=-1}). The 3D vector \emph{n} is optional; it indicates a normal vector to the plane of the circle when the points \emph{last}, \emph{p1}, and \emph{p2} are collinear (and in this case, the vector \emph{n} is mandatory).
+    \item \emph{"cl"} (closepath) is used alone; it closes the current component by drawing a line segment connecting the last point to the first point (of the current component).
 \end{itemize}
 
 Here, for example, is the code in figure \ref{viewdir}.

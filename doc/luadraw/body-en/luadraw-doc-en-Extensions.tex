@@ -451,7 +451,18 @@ g:Show()
 
 \subsection{The \emph{luadraw\_palettes} Module}
 
-The \emph{luadraw\_palettes} Module\footnote{This module is a contribution of \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christphe BAL}.} defines $128$ color palettes, each with a name. A palette is a list (table) of colors, which are themselves lists of three numerical values ​​between $0$ and $1$ (red, green, and blue components). The list of these palettes, as well as their rendering, can be viewed in this \href{luadraw_palettes_more.pdf}{document}. More informations in this  \href{luadraw_palettes_manual.pdf}{document} of Christophe BAL.
+The \emph{luadraw\_palettes} Module\footnote{This module is a contribution of \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christphe BAL}.} defines $261$ color palettes, each with a name. A palette is a list (table) of colors, which are themselves lists of three numerical values ​​between $0$ and $1$ (red, green, and blue components). All pallets have the prefix "pal", the list of these palettes, as well as their rendering, can be viewed in this \href{luadraw_palettes_more.pdf}{document}. The extension also provides the \emph{getPal(name,options)} function, an example of which is shown below:
+\begin{Luacode}
+BlackbodyTransformed = getPal(
+    "Blackbody", -- palette name without the prefix pal
+    {
+    extract = {2, 5, 8, 9}, -- color numbers to extract
+    shift = 1, -- offset among the extracted colors, which gives here: 5,8,9,2
+    reverse = true -- reversing the order, which gives here: 2,9,8,5
+    }
+)
+\end{Luacode}
+
 
 
 \subsection{The \emph{luadraw\_compile\_tex} module}
@@ -482,8 +493,8 @@ The first step is handled by the \textbf{compile\_tex(text,filename)} function. 
 \begin{enumerate}
     \item Creation of the TeX file. This uses two global variables:\par
     \verb|preamble = "\\documentclass[12pt]{article}\n"|\par
-    \verb|usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fouriernc}\n"|\par
-    Compilation is performed with LualaTeX.
+    \verb|usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"|\par
+    Compilation is performed with \emph{pdflatex}.
     \item The resulting file is converted to PostScript using the \emph{pdf2ps} utility.
     \item The resulting PS file is then converted using the \emph{pstoedit} utility into an EPS file in flattened PostScript (all content is in the form of paths).
     \item The resulting file \emph{<filename>.eps} is copied to the working directory of \emph{luadraw} (the name of this directory is in the global variable \emph{cachedir}), and all compilation remnants are erased.
@@ -578,3 +589,217 @@ g:Dpath3d(Cv, "draw=none,fill=red")
 g:Show()
 \end{luadraw}
 \end{demo}
+
+\subsection{The \emph{luadraw\_cvx\_polyhedra\_nets} module}
+
+\subsubsection{Basic Function}
+
+The module \emph{luadraw\_cvx\_polyhedra\_nets} allows you to \og unfold\fg\ a \textbf{convex} polyhedron to obtain a net. The function that performs the unfolding is:\par
+\hfil \textbf{unfold\_polyhedron(P, options)}\hfil\par
+The argument \emph{P} must be a convex polyhedron. The argument \emph{options} is a table allowing you to adjust certain parameters. These are as follows (with their default values ​​in parentheses):
+
+\begin{itemize}
+    \item \opt{opening = 1}, a value between $0$ and $1$ representing the "opening rate". With the value $1$, the polyhedron is fully unfolded; the facets returned by the function will therefore all be in the same plane. With the value $0$, the function returns the polyhedron's faces without modification.
+
+    \item \opt{root = 1}, the number of the polyhedron face that will serve as the root, because the function represents the polyhedron as a tree by determining, for each face, its neighbors (adjacent facets), as well as any shared edges and angles. This option allows you to choose the face that will serve as the starting point.
+
+    \item \opt{model = nil}, a list of facet number lists to impose a pattern model, for example \emph{model=\{ \{1,6\},\{1,3\},\{1,4\},\{1,5,2\}\}}, the sublist \emph{\{1,5,2\}} means that facet $1$ is the ancestor of facet $5$, and that facet $5$ is the ancestor of facet $2$, that is to say that facets $5$ and $1$ are adjacent, and facet $5$ will rotate around its common edge with facet $1$ (same for $5$ and $2$). For the model to be consistent, all facets of the polyhedron EXCEPT one (which will be the facet \emph{root}), must have one and only one ancestor; If facets $1$ and $5$ are not adjacent in the polyhedron, the function stops and displays an error in the terminal. When the \emph{model} option is set to \emph{nil} (the default value), the algorithm calculates a consistent model itself.
+
+    \item \opt{to2d = false}, is a boolean value that returns a 2D version of the pattern in the screen plane coordinate system. With the value \emph{true}, the \emph{opening} option automatically takes the value $1$, and the facets returned by the function will have vertices expressed as complex numbers.
+
+    \item \opt{tabs = false}, is a boolean value that allows adding or excluding tabs from the pattern in the 2D version. With the value \emph{true}, the \emph{to2d} option automatically takes the value \emph{true} as well. The facets returned by the function will have vertices expressed as complex numbers in the screen coordinate system, and the function also returns a 2D polygonal line representing tabs for certain edges (these are determined automatically).
+
+    \item \opt{tabs\_wd = 0.2}, a numeric value representing the thickness of the tabs when the \emph{tabs} option is set to \emph{true}.
+
+    \item \opt{tabs\_lg = 0.5}, a numerical value between $0$ and $1$, determines the length of the shorter side of the tabs. This length is equal to the length of the edge (which is the longer side) multiplied by \emph{tabs\_lg} (when the \emph{tabs} option is set to \emph{true}).
+
+    \item \opt{rotate = 0}, when the \emph{to2d} option is set to \emph{true}, rotates the drawing by an angle equal to \emph{rotate} (in degrees) around its center. In the 3D version, the drawing is rotated by an angle equal to \emph{rotate} (in degrees) around the axis passing through the centroid of the facet \emph{root} and oriented by a normal vector to this facet pointing outwards from the polyhedron.
+\end{itemize}
+
+
+
+The function returns a table containing the following fields:
+
+\begin{itemize}
+    \item The field \emph{facets}: which contains the list of facets, with vertices in 2D (complex numbers) if the \emph{to2d} option is \emph{true}, or vertices in 3D (3D points) otherwise.
+
+    \item The field \emph{tree}: which is a list of the form: \par\hfil\emph{\{ \{ancestor,n1,n2,angle,vertices\}, ...\} }\hfil\par
+    Each element of this list represents a facet, with the following information for each facet:
+    \begin{itemize}
+        \item \emph{ancestor}: the number of the ancestor facet, its position in the list \emph{tree} (the facet that served as the root has the number $0$ as its ancestor, which does not correspond to any facet).
+        \item \emph{n1, n2}: the number of the vertices of the ancestor facet representing the common edge.
+
+        \item  \emph{angle}: the angle in degrees with the ancestor facet.
+
+        \item  \emph{vertices}: the list of vertices (3D points) of the facet.
+    \end{itemize}
+
+    \item The \emph{bounds} field: which contains, as a list, the bounding box of the facets (either 2D or 3D)
+    
+    \item When the \emph{tabs} option is set to \emph{true}, there are two additional fields in the result:
+    \begin{itemize}
+        \item The \emph{tabs} field: which contains a 2D polygonal line (a list of lists of complex numbers) representing the tabs, only when the \emph{tabs} option is set to \emph{true}.
+
+        \item The \emph{twins} field: which contains a list of the form \emph{\{ \{\{a1,b1\},\{a2,b2\}\}, ... \}} representing the list of twin edge pairs (twin edges coincide when the polyhedron is closed). \emph{a1}, \emph{b1}, \emph{a2}, \emph{b2} are complex numbers representing the endpoints of the edges in the 2D version of the polyhedron net. This list is calculated only when the \emph{tabs} option is set to \emph{true}. 
+    \end{itemize} 
+\end{itemize}
+
+\subsubsection{The Drawing Method}
+
+This is the method \textbf{g:Dpolyhedron\_net(P, options)} where \emph{P} denotes a convex polyhedron. The options are those of the previous function, plus the following:
+
+\begin{itemize}
+    \item In the case of a 2D pattern (when the \emph{to2d} option, or the \emph{tabs} option, has the value \emph{true}):
+    \begin{itemize}
+        \item \opt{facet\_name = false}, with the value \emph{true} the facet number (preceded by the letter F) will be displayed in the center of each facet.
+
+        \item \opt{edge\_name = false}, with the value \emph{true}, the edge number (preceded by the letter 'e') will be displayed in the center of each edge, allowing you to identify twin edges and therefore neighboring facets.
+
+        \item \opt{tabs\_options = ""}, string representing TikZ drawing options for the tabs if the \emph{tabs} option has the value \emph{true}.
+
+        \item \opt{facet\_options = ""}, string representing TikZ drawing options for the \emph{g:Dpolyline()} method that will draw the facets. 
+    \end{itemize}
+
+    \item In the case of a 3D pattern, there is only the following additional information:
+    \begin{itemize}
+        \item \opt{facet\_options = \{\}}, a list of drawing options for the \emph{g:Dfacet()} method that will draw the facets.
+    \end{itemize}
+\end{itemize}
+
+The drawing is accompanied by a display in the terminal of its 2D bounding box.
+
+    
+\subsubsection{Examples}
+
+In this example, we display the default 2D net of a parallelepiped $P$ with hatched tabs, the facet numbers (this number is the position in the \emph{P.facets} list), and the edge numbers to see which ones need to be glued together:
+
+\begin{demo}{Net of a parallelepiped}
+\begin{luadraw}{name=parallelep_net}
+local g = graph3d:new{viewdir={30,60},window={-8.5,8,-5,5},bbox=false, size={10,10}}
+require 'luadraw_cvx_polyhedra_nets'
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+g:Dpolyhedron_net(P, {tabs=true, tabs_options="pattern=north west lines, pattern color=gray", facet_options="fill=Orange!30", facet_name=true, edge_name=true})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+The default pattern here would correspond to the option \emph{model=\{\{1,3\},\{1,4\},\{1,5\},\{1,6\},\{3,2\}\}}\footnote{The algorithm takes the first face, then looks for its neighbors, then the neighbors of the first neighbor, etc.}, but we might want to impose a different model, for example, with the same parallelepiped:
+
+\begin{demo}{Imposed pattern of a parallelepiped}
+\begin{luadraw}{name=parallelep_net2}
+local g = graph3d:new{viewdir={30,60},window={-9,9,-5,5},bbox=false,size={10,10}}
+require 'luadraw_cvx_polyhedra_nets'
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+g:Dpolyhedron_net(P, {model={{4,6,1,3,2,5}},tabs=true, tabs_options="pattern=north west lines, pattern color=gray", facet_options="fill=Orange!30", facet_name=true, edge_name=true, rotate=-90})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Here is an example with a truncated parallelepiped that is half-unfolded:
+
+\begin{demo}{Half unfolded truncated parallelepiped}
+\begin{luadraw}{name=parallelep_net3}
+local g = graph3d:new{window={-9,15,-9,9,0.6,0.6},bg="lightgray", viewdir={30,60}, margin={0,0,0,0}} 
+require 'luadraw_cvx_polyhedra_nets'
+P = parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+local A, B, C = M(4,2.5,3), M(2,5,3), M(4,5,1.5)
+P = cutpoly(P, plane(A,B,C), true) -- P is truncated with a plane
+g:Shift3d(M(0,-4,5))
+g:Dpolynames(P,"facet") -- this function shows facet numbers of P
+-- half unfolded P
+g:Shift3d(M(0,0,-11))
+g:Dpolyhedron_net(P,{opening=0.5, facet_options={color="Crimson", opacity=0.7, edgecolor="Gold", edgewidth=8}})
+-- 2d net
+g:Shift(10)
+g:Dpolyhedron_net(P,{tabs=true, tabs_options="pattern=north west lines, pattern color=gray", facet_name=true, rotate=90})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{NB:} The functions \textbf{unfold\_polyhedron} and \textbf{g:Dpolyhedron\_net} apply to any convex polyhedron, but they will not give the expected result with a non-convex polyhedron.
+
+\subsubsection{The \emph{unfold\_tree()} function}
+
+It can be useful to retrieve the tree generated by the \textbf{unfold\_polyhedron} function to avoid recalculating it multiple times, for example, during an animation. The \textbf{unfold\_tree(tree,opening,num)} function also allows you to unfold the polyhedron. The argument \emph{tree} is the tree provided by the \emph{unfold\_polyhedron} function, the optional argument \emph{opening} is a number between $0$ and $1$ that represents the opening rate ($1$ by default), the optional argument \emph{num} is the number of the facet you want to open (and all descendants of that facet will rotate in the same way), when this argument is omitted, all facets rotate.
+
+
+\paragraph{Example of animation:}
+
+\begin{Luacode}
+\begin{luacode*}
+nbimages = 70 -- must be global
+-- images creation
+local g = graph3d:new{ viewdir=perspective("central",30,60), bg="gray", size={10,10}, margin={0,0,0,0} }
+-- declarations
+require 'luadraw_polyhedrons'
+require 'luadraw_cvx_polyhedra_nets'
+local p = linspace(0,1,36)
+local T = linspace(0,360,nbimages+1)
+local P = dodecahedron(Origin, -2*vecI)
+local net = unfold_polyhedron(P)
+local tree = net.tree
+-- create the image number k, this function must be global
+function makeframe(k) 
+    local r = k
+    if k > 36 then r = 72-k end
+    local P1 = rotate3d( unfold_tree(tree,p[r]), T[k], {Origin,vecK})
+    g:Dfacet(P1, {color="Crimson", edgecolor="Gold", edgewidth=8})
+    -- send image number k
+    g:Sendtotex()  -- send the tikzpicture to TeX
+    g:Cleargraph()  
+end
+\end{luacode*}
+\end{Luacode}
+
+The \TeX\ code (with the \emph{animate} package):
+
+\begin{TeXcode}
+\def\nb{\directlua{tex.print(nbimages)}}
+\def\makeframe#1{\directlua{makeframe(#1)}}%
+
+\begin{animateinline}[poster=first,controls,loop]{8}
+\multiframe{\nb}{ik=1+1}{%
+\makeframe{\ik}%
+}%
+\end{animateinline}
+\end{TeXcode}
+
+\begin{luacode*}
+nbimages = 70
+-- images creation
+local g = graph3d:new{ viewdir=perspective("central",30,60), bg="gray", size={10,10}, margin={0,0,0,0} }
+-- declarations
+require 'luadraw_polyhedrons'
+require 'luadraw_cvx_polyhedra_nets'
+local p = linspace(0,1,36)
+local T = linspace(0,360,nbimages+1)
+local P = dodecahedron(Origin, -2*vecI)
+local net = unfold_polyhedron(P)
+local tree = net.tree
+-- create the image number k, this function must be global
+function makeframe(k) -- do not modify this line
+    local r = k
+    if k > 36 then r = 72-k end
+    local P1 = rotate3d( unfold_tree(tree,p[r]), T[k],{Origin,vecK})
+    g:Dfacet(P1, {color="Crimson", edgecolor="Gold", edgewidth=8})
+    -- send image number k
+    g:Sendtotex()  -- do not modify
+    g:Cleargraph() -- do not modify
+end
+\end{luacode*}
+
+\def\nb{\directlua{tex.print(nbimages)}}%
+\def\makeframe#1{\directlua{makeframe(#1)}}%
+
+The result :
+
+\begin{minipage}{0.9\textwidth}
+\begin{center}
+\captionof{figure}{Unfolding a dodecahedron}
+\begin{animateinline}[poster=first,controls,loop]{8} %palindrome
+\multiframe{\nb}{ik=1+1}{%
+\makeframe{\ik}%
+}%
+\end{animateinline}
+\end{center}
+\end{minipage}

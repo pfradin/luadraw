@@ -1,0 +1,831 @@
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=lightgray},show background rectangle]%
+\begin{scope}%
+\clip (0,0) rectangle (10.0,10.0);%
+\draw[draw=none,left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.0968;blue,0.0496},shading angle=175.7595] (2.6695,2.0016) -- (2.7115,1.9984) -- (2.7169,2.0712) -- (2.6749,2.0745)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.0968;blue,0.0496}] (2.7169,2.0712) -- (2.6749,2.0745);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.0968;blue,0.0496},right color={rgb,1:red,1;green,0.3534;blue,0.1811},shading angle=175.335] (2.6749,2.0745) -- (2.7169,2.0712) -- (2.7333,2.2721) -- (2.6913,2.2757)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3534;blue,0.1811}] (2.7333,2.2721) -- (2.6913,2.2757);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3534;blue,0.1811},right color={rgb,1:red,0.9703;green,0.574;blue,0.3079},shading angle=174.8309] (2.6913,2.2757) -- (2.7333,2.2721) -- (2.7523,2.4819) -- (2.7103,2.4859)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.9703;green,0.574;blue,0.3079}] (2.7523,2.4819) -- (2.7103,2.4859);%
+\draw[draw=none,left color={rgb,1:red,0.9703;green,0.574;blue,0.3079},right color={rgb,1:red,0.9273;green,0.783;blue,0.4348},shading angle=174.2084] (2.7103,2.4859) -- (2.7523,2.4819) -- (2.7754,2.7092) -- (2.7334,2.7138)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.9273;green,0.783;blue,0.4348}] (2.7754,2.7092) -- (2.7334,2.7138);%
+\draw[draw=none,left color={rgb,1:red,0.9273;green,0.783;blue,0.4348},right color={rgb,1:red,0.7485;green,0.9041;blue,0.5534},shading angle=173.3772] (2.7334,2.7138) -- (2.7754,2.7092) -- (2.8062,2.9744) -- (2.7643,2.9797)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.7485;green,0.9041;blue,0.5534}] (2.8062,2.9744) -- (2.7643,2.9797);%
+\draw[draw=none,left color={rgb,1:red,0.7485;green,0.9041;blue,0.5534},right color={rgb,1:red,0.5676;green,0.9741;blue,0.665},shading angle=172.2261] (2.7643,2.9797) -- (2.8062,2.9744) -- (2.8464,3.2689) -- (2.8046,3.2751)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.5676;green,0.9741;blue,0.665}] (2.8464,3.2689) -- (2.8046,3.2751);%
+\draw[draw=none,left color={rgb,1:red,0.5676;green,0.9741;blue,0.665},right color={rgb,1:red,0.428;green,0.9741;blue,0.7424},shading angle=170.8461] (2.8046,3.2751) -- (2.8464,3.2689) -- (2.8865,3.5183) -- (2.845,3.5255)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.428;green,0.9741;blue,0.7424}] (2.8865,3.5183) -- (2.845,3.5255);%
+\draw[draw=none,left color={rgb,1:red,0.428;green,0.9741;blue,0.7424},right color={rgb,1:red,0.3201;green,0.9506;blue,0.7974},shading angle=169.4022] (2.845,3.5255) -- (2.8865,3.5183) -- (2.9267,3.733) -- (2.8854,3.7413)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3201;green,0.9506;blue,0.7974}] (2.9267,3.733) -- (2.8854,3.7413);%
+\draw[draw=none,left color={rgb,1:red,0.3201;green,0.9506;blue,0.7974},right color={rgb,1:red,0.2357;green,0.8934;blue,0.8326},shading angle=167.9022] (2.8854,3.7413) -- (2.9267,3.733) -- (2.9669,3.9203) -- (2.9257,3.9297)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2357;green,0.8934;blue,0.8326}] (2.9669,3.9203) -- (2.9257,3.9297);%
+\draw[draw=none,left color={rgb,1:red,0.2357;green,0.8934;blue,0.8326},right color={rgb,1:red,0.167;green,0.8469;blue,0.8612},shading angle=166.3529] (2.9257,3.9297) -- (2.9669,3.9203) -- (3.007,4.0856) -- (2.9662,4.0961)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.167;green,0.8469;blue,0.8612}] (3.007,4.0856) -- (2.9662,4.0961);%
+\draw[draw=none,left color={rgb,1:red,0.167;green,0.8469;blue,0.8612},right color={rgb,1:red,0.1102;green,0.8084;blue,0.8849},shading angle=164.76] (2.9662,4.0961) -- (3.007,4.0856) -- (3.0471,4.2328) -- (3.0066,4.2445)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1102;green,0.8084;blue,0.8849}] (3.0471,4.2328) -- (3.0066,4.2445);%
+\draw[draw=none,left color={rgb,1:red,0.1102;green,0.8084;blue,0.8849},right color={rgb,1:red,0.0777;green,0.7704;blue,0.9032},shading angle=163.1283] (3.0066,4.2445) -- (3.0471,4.2328) -- (3.0872,4.365) -- (3.047,4.3779)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.0777;green,0.7704;blue,0.9032}] (3.0872,4.365) -- (3.047,4.3779);%
+\draw[draw=none,left color={rgb,1:red,0.0777;green,0.7704;blue,0.9032},right color={rgb,1:red,0.0985;green,0.7197;blue,0.914},shading angle=161.4617] (3.047,4.3779) -- (3.0872,4.365) -- (3.1273,4.4845) -- (3.0875,4.4985)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.0985;green,0.7197;blue,0.914}] (3.1273,4.4845) -- (3.0875,4.4985);%
+\draw[draw=none,left color={rgb,1:red,0.0985;green,0.7197;blue,0.914},right color={rgb,1:red,0.1164;green,0.676;blue,0.9232},shading angle=159.7632] (3.0875,4.4985) -- (3.1273,4.4845) -- (3.1673,4.5932) -- (3.128,4.6084)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1164;green,0.676;blue,0.9232}] (3.1673,4.5932) -- (3.128,4.6084);%
+\draw[draw=none,left color={rgb,1:red,0.1164;green,0.676;blue,0.9232},right color={rgb,1:red,0.1319;green,0.6381;blue,0.9313},shading angle=158.0353] (3.128,4.6084) -- (3.1673,4.5932) -- (3.2074,4.6924) -- (3.1685,4.7088)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1319;green,0.6381;blue,0.9313}] (3.2074,4.6924) -- (3.1685,4.7088);%
+\draw[draw=none,left color={rgb,1:red,0.1319;green,0.6381;blue,0.9313},right color={rgb,1:red,0.1456;green,0.6048;blue,0.9383},shading angle=156.2798] (3.1685,4.7088) -- (3.2074,4.6924) -- (3.2474,4.7835) -- (3.209,4.801)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1456;green,0.6048;blue,0.9383}] (3.2474,4.7835) -- (3.209,4.801);%
+\draw[draw=none,left color={rgb,1:red,0.1456;green,0.6048;blue,0.9383},right color={rgb,1:red,0.1577;green,0.5753;blue,0.9446},shading angle=154.4976] (3.209,4.801) -- (3.2474,4.7835) -- (3.2873,4.8673) -- (3.2496,4.886)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1577;green,0.5753;blue,0.9446}] (3.2873,4.8673) -- (3.2496,4.886);%
+\draw[draw=none,left color={rgb,1:red,0.1577;green,0.5753;blue,0.9446},right color={rgb,1:red,0.1685;green,0.5489;blue,0.9501},shading angle=152.6895] (3.2496,4.886) -- (3.2873,4.8673) -- (3.3273,4.9447) -- (3.2901,4.9646)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1685;green,0.5489;blue,0.9501}] (3.3273,4.9447) -- (3.2901,4.9646);%
+\draw[draw=none,left color={rgb,1:red,0.1685;green,0.5489;blue,0.9501},right color={rgb,1:red,0.1783;green,0.5252;blue,0.9552},shading angle=150.8554] (3.2901,4.9646) -- (3.3273,4.9447) -- (3.3672,5.0163) -- (3.3307,5.0374)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1783;green,0.5252;blue,0.9552}] (3.3672,5.0163) -- (3.3307,5.0374);%
+\draw[draw=none,left color={rgb,1:red,0.1783;green,0.5252;blue,0.9552},right color={rgb,1:red,0.1871;green,0.5036;blue,0.9597},shading angle=148.995] (3.3307,5.0374) -- (3.3672,5.0163) -- (3.4072,5.0827) -- (3.3714,5.105)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1871;green,0.5036;blue,0.9597}] (3.4072,5.0827) -- (3.3714,5.105);%
+\draw[draw=none,left color={rgb,1:red,0.1871;green,0.5036;blue,0.9597},right color={rgb,1:red,0.1951;green,0.484;blue,0.9639},shading angle=147.1074] (3.3714,5.105) -- (3.4072,5.0827) -- (3.447,5.1444) -- (3.412,5.1679)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1951;green,0.484;blue,0.9639}] (3.447,5.1444) -- (3.412,5.1679);%
+\draw[draw=none,left color={rgb,1:red,0.1951;green,0.484;blue,0.9639},right color={rgb,1:red,0.2025;green,0.4659;blue,0.9677},shading angle=145.1913] (3.412,5.1679) -- (3.447,5.1444) -- (3.4869,5.2017) -- (3.4527,5.2264)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2025;green,0.4659;blue,0.9677}] (3.4869,5.2017) -- (3.4527,5.2264);%
+\draw[draw=none,left color={rgb,1:red,0.2025;green,0.4659;blue,0.9677},right color={rgb,1:red,0.2094;green,0.4492;blue,0.9713},shading angle=143.2451] (3.4527,5.2264) -- (3.4869,5.2017) -- (3.5267,5.2551) -- (3.4934,5.2809)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2094;green,0.4492;blue,0.9713}] (3.5267,5.2551) -- (3.4934,5.2809);%
+\draw[draw=none,left color={rgb,1:red,0.2094;green,0.4492;blue,0.9713},right color={rgb,1:red,0.2158;green,0.4337;blue,0.9745},shading angle=141.2667] (3.4934,5.2809) -- (3.5267,5.2551) -- (3.5666,5.3047) -- (3.5341,5.3317)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2158;green,0.4337;blue,0.9745}] (3.5666,5.3047) -- (3.5341,5.3317);%
+\draw[draw=none,left color={rgb,1:red,0.2158;green,0.4337;blue,0.9745},right color={rgb,1:red,0.2256;green,0.4171;blue,0.9762},shading angle=139.2539] (3.5341,5.3317) -- (3.5666,5.3047) -- (3.6063,5.3509) -- (3.5749,5.379)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2256;green,0.4171;blue,0.9762}] (3.6063,5.3509) -- (3.5749,5.379);%
+\draw[draw=none,left color={rgb,1:red,0.2256;green,0.4171;blue,0.9762},right color={rgb,1:red,0.2365;green,0.4005;blue,0.9771},shading angle=137.204] (3.5749,5.379) -- (3.6063,5.3509) -- (3.6461,5.3938) -- (3.6157,5.423)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2365;green,0.4005;blue,0.9771}] (3.6461,5.3938) -- (3.6157,5.423);%
+\draw[draw=none,left color={rgb,1:red,0.2365;green,0.4005;blue,0.9771},right color={rgb,1:red,0.2468;green,0.3848;blue,0.978},shading angle=135.1139] (3.6157,5.423) -- (3.6461,5.3938) -- (3.6858,5.4337) -- (3.6565,5.464)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2468;green,0.3848;blue,0.978}] (3.6858,5.4337) -- (3.6565,5.464);%
+\draw[draw=none,left color={rgb,1:red,0.2468;green,0.3848;blue,0.978},right color={rgb,1:red,0.2566;green,0.3699;blue,0.9789},shading angle=132.9806] (3.6565,5.464) -- (3.6858,5.4337) -- (3.7255,5.4707) -- (3.6973,5.5021)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2566;green,0.3699;blue,0.9789}] (3.7255,5.4707) -- (3.6973,5.5021);%
+\draw[draw=none,left color={rgb,1:red,0.2566;green,0.3699;blue,0.9789},right color={rgb,1:red,0.2659;green,0.3557;blue,0.9797},shading angle=130.8008] (3.6973,5.5021) -- (3.7255,5.4707) -- (3.7651,5.5049) -- (3.7382,5.5374)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2659;green,0.3557;blue,0.9797}] (3.7651,5.5049) -- (3.7382,5.5374);%
+\draw[draw=none,left color={rgb,1:red,0.2659;green,0.3557;blue,0.9797},right color={rgb,1:red,0.2749;green,0.3421;blue,0.9805},shading angle=128.5709] (3.7382,5.5374) -- (3.7651,5.5049) -- (3.8048,5.5365) -- (3.7791,5.57)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2749;green,0.3421;blue,0.9805}] (3.8048,5.5365) -- (3.7791,5.57);%
+\draw[draw=none,left color={rgb,1:red,0.2749;green,0.3421;blue,0.9805},right color={rgb,1:red,0.2836;green,0.3289;blue,0.9812},shading angle=126.2877] (3.7791,5.57) -- (3.8048,5.5365) -- (3.8443,5.5655) -- (3.8201,5.6001)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2836;green,0.3289;blue,0.9812}] (3.8443,5.5655) -- (3.8201,5.6001);%
+\draw[draw=none,left color={rgb,1:red,0.2836;green,0.3289;blue,0.9812},right color={rgb,1:red,0.292;green,0.3162;blue,0.982},shading angle=123.9476] (3.8201,5.6001) -- (3.8443,5.5655) -- (3.8839,5.5922) -- (3.8611,5.6276)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.292;green,0.3162;blue,0.982}] (3.8839,5.5922) -- (3.8611,5.6276);%
+\draw[draw=none,left color={rgb,1:red,0.292;green,0.3162;blue,0.982},right color={rgb,1:red,0.3001;green,0.3038;blue,0.9827},shading angle=121.5477] (3.8611,5.6276) -- (3.8839,5.5922) -- (3.9234,5.6164) -- (3.9021,5.6528)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3001;green,0.3038;blue,0.9827}] (3.9234,5.6164) -- (3.9021,5.6528);%
+\draw[draw=none,left color={rgb,1:red,0.3001;green,0.3038;blue,0.9827},right color={rgb,1:red,0.308;green,0.2917;blue,0.9834},shading angle=119.0852] (3.9021,5.6528) -- (3.9234,5.6164) -- (3.9629,5.6384) -- (3.9432,5.6757)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.308;green,0.2917;blue,0.9834}] (3.9629,5.6384) -- (3.9432,5.6757);%
+\draw[draw=none,left color={rgb,1:red,0.308;green,0.2917;blue,0.9834},right color={rgb,1:red,0.3158;green,0.2799;blue,0.984},shading angle=116.5581] (3.9432,5.6757) -- (3.9629,5.6384) -- (4.0023,5.6581) -- (3.9843,5.6962)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3158;green,0.2799;blue,0.984}] (4.0023,5.6581) -- (3.9843,5.6962);%
+\draw[draw=none,left color={rgb,1:red,0.3158;green,0.2799;blue,0.984},right color={rgb,1:red,0.3235;green,0.2683;blue,0.9847},shading angle=113.9649] (3.9843,5.6962) -- (4.0023,5.6581) -- (4.0417,5.6756) -- (4.0254,5.7145)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3235;green,0.2683;blue,0.9847}] (4.0417,5.6756) -- (4.0254,5.7145);%
+\draw[draw=none,left color={rgb,1:red,0.3235;green,0.2683;blue,0.9847},right color={rgb,1:red,0.331;green,0.2568;blue,0.9853},shading angle=111.3055] (4.0254,5.7145) -- (4.0417,5.6756) -- (4.081,5.6909) -- (4.0666,5.7306)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.331;green,0.2568;blue,0.9853}] (4.081,5.6909) -- (4.0666,5.7306);%
+\draw[draw=none,left color={rgb,1:red,0.331;green,0.2568;blue,0.9853},right color={rgb,1:red,0.3385;green,0.2455;blue,0.986},shading angle=108.5811] (4.0666,5.7306) -- (4.081,5.6909) -- (4.1203,5.7041) -- (4.1079,5.7445)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3385;green,0.2455;blue,0.986}] (4.1203,5.7041) -- (4.1079,5.7445);%
+\draw[draw=none,left color={rgb,1:red,0.3385;green,0.2455;blue,0.986},right color={rgb,1:red,0.3459;green,0.2342;blue,0.9866},shading angle=105.7941] (4.1079,5.7445) -- (4.1203,5.7041) -- (4.1596,5.7153) -- (4.1491,5.7561)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3459;green,0.2342;blue,0.9866}] (4.1596,5.7153) -- (4.1491,5.7561);%
+\draw[draw=none,left color={rgb,1:red,0.3459;green,0.2342;blue,0.9866},right color={rgb,1:red,0.3532;green,0.2231;blue,0.9873},shading angle=102.9492] (4.1491,5.7561) -- (4.1596,5.7153) -- (4.1988,5.7243) -- (4.1904,5.7656)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3532;green,0.2231;blue,0.9873}] (4.1988,5.7243) -- (4.1904,5.7656);%
+\draw[draw=none,left color={rgb,1:red,0.3532;green,0.2231;blue,0.9873},right color={rgb,1:red,0.3606;green,0.2119;blue,0.9879},shading angle=100.0528] (4.1904,5.7656) -- (4.1988,5.7243) -- (4.238,5.7312) -- (4.2318,5.7729)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3606;green,0.2119;blue,0.9879}] (4.238,5.7312) -- (4.2318,5.7729);%
+\draw[draw=none,left color={rgb,1:red,0.3606;green,0.2119;blue,0.9879},right color={rgb,1:red,0.3679;green,0.2008;blue,0.9885},shading angle=97.1138] (4.2318,5.7729) -- (4.238,5.7312) -- (4.2772,5.7361) -- (4.2731,5.7781)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3679;green,0.2008;blue,0.9885}] (4.2772,5.7361) -- (4.2731,5.7781);%
+\draw[draw=none,left color={rgb,1:red,0.3679;green,0.2008;blue,0.9885},right color={rgb,1:red,0.3751;green,0.1897;blue,0.9892},shading angle=94.1429] (4.2731,5.7781) -- (4.2772,5.7361) -- (4.3164,5.739) -- (4.3145,5.7811)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3751;green,0.1897;blue,0.9892}] (4.3164,5.739) -- (4.3145,5.7811);%
+\draw[draw=none,left color={rgb,1:red,0.3751;green,0.1897;blue,0.9892},right color={rgb,1:red,0.3824;green,0.1787;blue,0.9898},shading angle=91.1533] (4.3145,5.7811) -- (4.3164,5.739) -- (4.3556,5.7397) -- (4.3558,5.7819)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3824;green,0.1787;blue,0.9898}] (4.3556,5.7397) -- (4.3558,5.7819);%
+\draw[draw=none,left color={rgb,1:red,0.3824;green,0.1787;blue,0.9898},right color={rgb,1:red,0.3897;green,0.1676;blue,0.9904},shading angle=88.16] (4.3558,5.7819) -- (4.3556,5.7397) -- (4.3947,5.7385) -- (4.3972,5.7806)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3897;green,0.1676;blue,0.9904}] (4.3947,5.7385) -- (4.3972,5.7806);%
+\draw[draw=none,left color={rgb,1:red,0.3897;green,0.1676;blue,0.9904},right color={rgb,1:red,0.397;green,0.1566;blue,0.9911},shading angle=85.1796] (4.3972,5.7806) -- (4.3947,5.7385) -- (4.4339,5.7352) -- (4.4386,5.7771)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.397;green,0.1566;blue,0.9911}] (4.4339,5.7352) -- (4.4386,5.7771);%
+\draw[draw=none,left color={rgb,1:red,0.397;green,0.1566;blue,0.9911},right color={rgb,1:red,0.4042;green,0.1455;blue,0.9917},shading angle=82.2298] (4.4386,5.7771) -- (4.4339,5.7352) -- (4.4731,5.7298) -- (4.4799,5.7715)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4042;green,0.1455;blue,0.9917}] (4.4731,5.7298) -- (4.4799,5.7715);%
+\draw[draw=none,left color={rgb,1:red,0.4042;green,0.1455;blue,0.9917},right color={rgb,1:red,0.4115;green,0.1346;blue,0.9923},shading angle=79.329] (4.4799,5.7715) -- (4.4731,5.7298) -- (4.5124,5.7224) -- (4.5212,5.7637)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4115;green,0.1346;blue,0.9923}] (4.5124,5.7224) -- (4.5212,5.7637);%
+\draw[draw=none,left color={rgb,1:red,0.4115;green,0.1346;blue,0.9923},right color={rgb,1:red,0.4187;green,0.1236;blue,0.9929},shading angle=76.4955] (4.5212,5.7637) -- (4.5124,5.7224) -- (4.5516,5.713) -- (4.5625,5.7538)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4187;green,0.1236;blue,0.9929}] (4.5516,5.713) -- (4.5625,5.7538);%
+\draw[draw=none,left color={rgb,1:red,0.4187;green,0.1236;blue,0.9929},right color={rgb,1:red,0.4258;green,0.1128;blue,0.9936},shading angle=73.747] (4.5625,5.7538) -- (4.5516,5.713) -- (4.5909,5.7016) -- (4.6037,5.7418)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4258;green,0.1128;blue,0.9936}] (4.5909,5.7016) -- (4.6037,5.7418);%
+\draw[draw=none,left color={rgb,1:red,0.4258;green,0.1128;blue,0.9936},right color={rgb,1:red,0.4328;green,0.1021;blue,0.9942},shading angle=71.1002] (4.6037,5.7418) -- (4.5909,5.7016) -- (4.6303,5.6881) -- (4.6449,5.7277)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4328;green,0.1021;blue,0.9942}] (4.6303,5.6881) -- (4.6449,5.7277);%
+\draw[draw=none,left color={rgb,1:red,0.4328;green,0.1021;blue,0.9942},right color={rgb,1:red,0.4397;green,0.0916;blue,0.9948},shading angle=68.5702] (4.6449,5.7277) -- (4.6303,5.6881) -- (4.6697,5.6726) -- (4.686,5.7115)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4397;green,0.0916;blue,0.9948}] (4.6697,5.6726) -- (4.686,5.7115);%
+\draw[draw=none,left color={rgb,1:red,0.4397;green,0.0916;blue,0.9948},right color={rgb,1:red,0.4465;green,0.0813;blue,0.9954},shading angle=66.1701] (4.686,5.7115) -- (4.6697,5.6726) -- (4.7092,5.6552) -- (4.727,5.6934)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4465;green,0.0813;blue,0.9954}] (4.7092,5.6552) -- (4.727,5.6934);%
+\draw[draw=none,left color={rgb,1:red,0.4465;green,0.0813;blue,0.9954},right color={rgb,1:red,0.4531;green,0.0713;blue,0.9959},shading angle=63.9111] (4.727,5.6934) -- (4.7092,5.6552) -- (4.7488,5.6358) -- (4.768,5.6733)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4531;green,0.0713;blue,0.9959}] (4.7488,5.6358) -- (4.768,5.6733);%
+\draw[draw=none,left color={rgb,1:red,0.4531;green,0.0713;blue,0.9959},right color={rgb,1:red,0.4595;green,0.0616;blue,0.9965},shading angle=61.8025] (4.768,5.6733) -- (4.7488,5.6358) -- (4.7884,5.6146) -- (4.8089,5.6514)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4595;green,0.0616;blue,0.9965}] (4.7884,5.6146) -- (4.8089,5.6514);%
+\draw[draw=none,left color={rgb,1:red,0.4595;green,0.0616;blue,0.9965},right color={rgb,1:red,0.4656;green,0.0524;blue,0.997},shading angle=59.8515] (4.8089,5.6514) -- (4.7884,5.6146) -- (4.8281,5.5915) -- (4.8498,5.6277)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4656;green,0.0524;blue,0.997}] (4.8281,5.5915) -- (4.8498,5.6277);%
+\draw[draw=none,left color={rgb,1:red,0.4656;green,0.0524;blue,0.997},right color={rgb,1:red,0.4713;green,0.0436;blue,0.9975},shading angle=58.0634] (4.8498,5.6277) -- (4.8281,5.5915) -- (4.8678,5.5667) -- (4.8906,5.6022)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4713;green,0.0436;blue,0.9975}] (4.8678,5.5667) -- (4.8906,5.6022);%
+\draw[draw=none,left color={rgb,1:red,0.4713;green,0.0436;blue,0.9975},right color={rgb,1:red,0.4767;green,0.0354;blue,0.998},shading angle=56.4423] (4.8906,5.6022) -- (4.8678,5.5667) -- (4.9076,5.5403) -- (4.9313,5.5752)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4767;green,0.0354;blue,0.998}] (4.9076,5.5403) -- (4.9313,5.5752);%
+\draw[draw=none,left color={rgb,1:red,0.4767;green,0.0354;blue,0.998},right color={rgb,1:red,0.4816;green,0.0279;blue,0.9984},shading angle=54.991] (4.9313,5.5752) -- (4.9076,5.5403) -- (4.9474,5.5124) -- (4.972,5.5467)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4816;green,0.0279;blue,0.9984}] (4.9474,5.5124) -- (4.972,5.5467);%
+\draw[draw=none,left color={rgb,1:red,0.4816;green,0.0279;blue,0.9984},right color={rgb,1:red,0.4861;green,0.0211;blue,0.9988},shading angle=53.7112] (4.972,5.5467) -- (4.9474,5.5124) -- (4.9874,5.4831) -- (5.0126,5.5169)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4861;green,0.0211;blue,0.9988}] (4.9874,5.4831) -- (5.0126,5.5169);%
+\draw[draw=none,left color={rgb,1:red,0.4861;green,0.0211;blue,0.9988},right color={rgb,1:red,0.49;green,0.0151;blue,0.9991},shading angle=52.6041] (5.0126,5.5169) -- (4.9874,5.4831) -- (5.0273,5.4526) -- (5.0532,5.4859)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.49;green,0.0151;blue,0.9991}] (5.0273,5.4526) -- (5.0532,5.4859);%
+\draw[draw=none,left color={rgb,1:red,0.49;green,0.0151;blue,0.9991},right color={rgb,1:red,0.4934;green,0.0101;blue,0.9994},shading angle=51.6709] (5.0532,5.4859) -- (5.0273,5.4526) -- (5.0673,5.4209) -- (5.0937,5.4538)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4934;green,0.0101;blue,0.9994}] (5.0673,5.4209) -- (5.0937,5.4538);%
+\draw[draw=none,left color={rgb,1:red,0.4934;green,0.0101;blue,0.9994},right color={rgb,1:red,0.4961;green,0.0059;blue,0.9997},shading angle=50.9122] (5.0937,5.4538) -- (5.0673,5.4209) -- (5.1074,5.3884) -- (5.1342,5.421)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4961;green,0.0059;blue,0.9997}] (5.1074,5.3884) -- (5.1342,5.421);%
+\draw[draw=none,left color={rgb,1:red,0.4961;green,0.0059;blue,0.9997},right color={rgb,1:red,0.4981;green,0.0029;blue,0.9998},shading angle=50.3295] (5.1342,5.421) -- (5.1074,5.3884) -- (5.1476,5.3551) -- (5.1746,5.3875)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4981;green,0.0029;blue,0.9998}] (5.1476,5.3551) -- (5.1746,5.3875);%
+\draw[draw=none,left color={rgb,1:red,0.4981;green,0.0029;blue,0.9998},right color={rgb,1:red,0.4994;green,0.0009;blue,1},shading angle=49.9242] (5.1746,5.3875) -- (5.1476,5.3551) -- (5.1877,5.3213) -- (5.215,5.3535)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4994;green,0.0009;blue,1}] (5.1877,5.3213) -- (5.215,5.3535);%
+\draw[draw=none,left color={rgb,1:red,0.4994;green,0.0009;blue,1},right color={rgb,1:red,0.5;green,0;blue,1},shading angle=49.6986] (5.215,5.3535) -- (5.1877,5.3213) -- (5.228,5.2872) -- (5.2553,5.3193)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.5;green,0;blue,1}] (5.228,5.2872) -- (5.2553,5.3193);%
+\draw[draw=none,left color={rgb,1:red,0.5;green,0;blue,1},right color={rgb,1:red,0.4998;green,0.0003;blue,1},shading angle=49.656] (5.2553,5.3193) -- (5.228,5.2872) -- (5.2682,5.2529) -- (5.2955,5.2851)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4998;green,0.0003;blue,1}] (5.2682,5.2529) -- (5.2955,5.2851);%
+\draw[draw=none,left color={rgb,1:red,0.4998;green,0.0003;blue,1},right color={rgb,1:red,0.4988;green,0.0018;blue,0.9999},shading angle=49.8004] (5.2955,5.2851) -- (5.2682,5.2529) -- (5.3086,5.2189) -- (5.3357,5.2512)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4988;green,0.0018;blue,0.9999}] (5.3086,5.2189) -- (5.3357,5.2512);%
+\draw[draw=none,left color={rgb,1:red,0.4988;green,0.0018;blue,0.9999},right color={rgb,1:red,0.497;green,0.0046;blue,0.9997},shading angle=50.1374] (5.3357,5.2512) -- (5.3086,5.2189) -- (5.349,5.1851) -- (5.3759,5.2176)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.497;green,0.0046;blue,0.9997}] (5.349,5.1851) -- (5.3759,5.2176);%
+\draw[draw=none,left color={rgb,1:red,0.497;green,0.0046;blue,0.9997},right color={rgb,1:red,0.4944;green,0.0085;blue,0.9995},shading angle=50.6733] (5.3759,5.2176) -- (5.349,5.1851) -- (5.3894,5.152) -- (5.4159,5.1848)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4944;green,0.0085;blue,0.9995}] (5.3894,5.152) -- (5.4159,5.1848);%
+\draw[draw=none,left color={rgb,1:red,0.4944;green,0.0085;blue,0.9995},right color={rgb,1:red,0.491;green,0.0136;blue,0.9992},shading angle=51.4163] (5.4159,5.1848) -- (5.3894,5.152) -- (5.4299,5.1197) -- (5.456,5.1529)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.491;green,0.0136;blue,0.9992}] (5.4299,5.1197) -- (5.456,5.1529);%
+\draw[draw=none,left color={rgb,1:red,0.491;green,0.0136;blue,0.9992},right color={rgb,1:red,0.4869;green,0.02;blue,0.9989},shading angle=52.3757] (5.456,5.1529) -- (5.4299,5.1197) -- (5.4705,5.0884) -- (5.4959,5.1221)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4869;green,0.02;blue,0.9989}] (5.4705,5.0884) -- (5.4959,5.1221);%
+\draw[draw=none,left color={rgb,1:red,0.4869;green,0.02;blue,0.9989},right color={rgb,1:red,0.482;green,0.0274;blue,0.9984},shading angle=53.5623] (5.4959,5.1221) -- (5.4705,5.0884) -- (5.5112,5.0584) -- (5.5358,5.0926)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.482;green,0.0274;blue,0.9984}] (5.5112,5.0584) -- (5.5358,5.0926);%
+\draw[draw=none,left color={rgb,1:red,0.482;green,0.0274;blue,0.9984},right color={rgb,1:red,0.4763;green,0.0359;blue,0.9979},shading angle=54.988] (5.5358,5.0926) -- (5.5112,5.0584) -- (5.5519,5.0298) -- (5.5756,5.0647)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4763;green,0.0359;blue,0.9979}] (5.5519,5.0298) -- (5.5756,5.0647);%
+\draw[draw=none,left color={rgb,1:red,0.4763;green,0.0359;blue,0.9979},right color={rgb,1:red,0.47;green,0.0455;blue,0.9974},shading angle=56.666] (5.5756,5.0647) -- (5.5519,5.0298) -- (5.5927,5.003) -- (5.6153,5.0386)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.47;green,0.0455;blue,0.9974}] (5.5927,5.003) -- (5.6153,5.0386);%
+\draw[draw=none,left color={rgb,1:red,0.47;green,0.0455;blue,0.9974},right color={rgb,1:red,0.4631;green,0.0561;blue,0.9968},shading angle=58.6098] (5.6153,5.0386) -- (5.5927,5.003) -- (5.6337,4.978) -- (5.6549,5.0144)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4631;green,0.0561;blue,0.9968}] (5.6337,4.978) -- (5.6549,5.0144);%
+\draw[draw=none,left color={rgb,1:red,0.4631;green,0.0561;blue,0.9968},right color={rgb,1:red,0.4555;green,0.0676;blue,0.9961},shading angle=60.833] (5.6549,5.0144) -- (5.6337,4.978) -- (5.6747,4.9551) -- (5.6944,4.9924)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4555;green,0.0676;blue,0.9961}] (5.6747,4.9551) -- (5.6944,4.9924);%
+\draw[draw=none,left color={rgb,1:red,0.4555;green,0.0676;blue,0.9961},right color={rgb,1:red,0.4474;green,0.0799;blue,0.9954},shading angle=63.3481] (5.6944,4.9924) -- (5.6747,4.9551) -- (5.7158,4.9345) -- (5.7338,4.9726)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4474;green,0.0799;blue,0.9954}] (5.7158,4.9345) -- (5.7338,4.9726);%
+\draw[draw=none,left color={rgb,1:red,0.4474;green,0.0799;blue,0.9954},right color={rgb,1:red,0.4388;green,0.093;blue,0.9947},shading angle=66.1652] (5.7338,4.9726) -- (5.7158,4.9345) -- (5.7571,4.9162) -- (5.7731,4.9553)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4388;green,0.093;blue,0.9947}] (5.7571,4.9162) -- (5.7731,4.9553);%
+\draw[draw=none,left color={rgb,1:red,0.4388;green,0.093;blue,0.9947},right color={rgb,1:red,0.4297;green,0.1069;blue,0.9939},shading angle=69.2905] (5.7731,4.9553) -- (5.7571,4.9162) -- (5.7985,4.9006) -- (5.8122,4.9405)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4297;green,0.1069;blue,0.9939}] (5.7985,4.9006) -- (5.8122,4.9405);%
+\draw[draw=none,left color={rgb,1:red,0.4297;green,0.1069;blue,0.9939},right color={rgb,1:red,0.4201;green,0.1214;blue,0.9931},shading angle=72.7239] (5.8122,4.9405) -- (5.7985,4.9006) -- (5.84,4.8877) -- (5.8512,4.9284)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4201;green,0.1214;blue,0.9931}] (5.84,4.8877) -- (5.8512,4.9284);%
+\draw[draw=none,left color={rgb,1:red,0.4201;green,0.1214;blue,0.9931},right color={rgb,1:red,0.4101;green,0.1366;blue,0.9922},shading angle=76.457] (5.8512,4.9284) -- (5.84,4.8877) -- (5.8817,4.8776) -- (5.8901,4.919)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4101;green,0.1366;blue,0.9922}] (5.8817,4.8776) -- (5.8901,4.919);%
+\draw[draw=none,left color={rgb,1:red,0.4101;green,0.1366;blue,0.9922},right color={rgb,1:red,0.3998;green,0.1523;blue,0.9913},shading angle=80.4711] (5.8901,4.919) -- (5.8817,4.8776) -- (5.9235,4.8706) -- (5.9289,4.9125)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3998;green,0.1523;blue,0.9913}] (5.9235,4.8706) -- (5.9289,4.9125);%
+\draw[draw=none,left color={rgb,1:red,0.3998;green,0.1523;blue,0.9913},right color={rgb,1:red,0.389;green,0.1686;blue,0.9904},shading angle=84.7356] (5.9289,4.9125) -- (5.9235,4.8706) -- (5.9653,4.8668) -- (5.9676,4.9089)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.389;green,0.1686;blue,0.9904}] (5.9653,4.8668) -- (5.9676,4.9089);%
+\draw[draw=none,left color={rgb,1:red,0.389;green,0.1686;blue,0.9904},right color={rgb,1:red,0.3779;green,0.1855;blue,0.9894},shading angle=89.2077] (5.9676,4.9089) -- (5.9653,4.8668) -- (6.0073,4.8662) -- (6.0062,4.9084)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3779;green,0.1855;blue,0.9894}] (6.0073,4.8662) -- (6.0062,4.9084);%
+\draw[draw=none,left color={rgb,1:red,0.3779;green,0.1855;blue,0.9894},right color={rgb,1:red,0.3665;green,0.2029;blue,0.9884},shading angle=93.8337] (6.0062,4.9084) -- (6.0073,4.8662) -- (6.0493,4.869) -- (6.0447,4.911)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3665;green,0.2029;blue,0.9884}] (6.0493,4.869) -- (6.0447,4.911);%
+\draw[draw=none,left color={rgb,1:red,0.3665;green,0.2029;blue,0.9884},right color={rgb,1:red,0.3547;green,0.2208;blue,0.9874},shading angle=98.5519] (6.0447,4.911) -- (6.0493,4.869) -- (6.0912,4.8753) -- (6.0832,4.9168)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3547;green,0.2208;blue,0.9874}] (6.0912,4.8753) -- (6.0832,4.9168);%
+\draw[draw=none,left color={rgb,1:red,0.3547;green,0.2208;blue,0.9874},right color={rgb,1:red,0.3425;green,0.2393;blue,0.9863},shading angle=103.2972] (6.0832,4.9168) -- (6.0912,4.8753) -- (6.1332,4.8852) -- (6.1218,4.9259)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3425;green,0.2393;blue,0.9863}] (6.1332,4.8852) -- (6.1218,4.9259);%
+\draw[draw=none,left color={rgb,1:red,0.3425;green,0.2393;blue,0.9863},right color={rgb,1:red,0.33;green,0.2584;blue,0.9853},shading angle=108.0058] (6.1218,4.9259) -- (6.1332,4.8852) -- (6.1751,4.8989) -- (6.1605,4.9384)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.33;green,0.2584;blue,0.9853}] (6.1751,4.8989) -- (6.1605,4.9384);%
+\draw[draw=none,left color={rgb,1:red,0.33;green,0.2584;blue,0.9853},right color={rgb,1:red,0.317;green,0.2781;blue,0.9841},shading angle=112.6206] (6.1605,4.9384) -- (6.1751,4.8989) -- (6.2169,4.9163) -- (6.1992,4.9546)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.317;green,0.2781;blue,0.9841}] (6.2169,4.9163) -- (6.1992,4.9546);%
+\draw[draw=none,left color={rgb,1:red,0.317;green,0.2781;blue,0.9841},right color={rgb,1:red,0.3035;green,0.2986;blue,0.983},shading angle=117.0942] (6.1992,4.9546) -- (6.2169,4.9163) -- (6.2586,4.9376) -- (6.238,4.9744)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3035;green,0.2986;blue,0.983}] (6.2586,4.9376) -- (6.238,4.9744);%
+\draw[draw=none,left color={rgb,1:red,0.3035;green,0.2986;blue,0.983},right color={rgb,1:red,0.2895;green,0.3199;blue,0.9817},shading angle=121.3912] (6.238,4.9744) -- (6.2586,4.9376) -- (6.3002,4.963) -- (6.277,4.9982)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2895;green,0.3199;blue,0.9817}] (6.3002,4.963) -- (6.277,4.9982);%
+\draw[draw=none,left color={rgb,1:red,0.2895;green,0.3199;blue,0.9817},right color={rgb,1:red,0.2749;green,0.3422;blue,0.9805},shading angle=125.4886] (6.277,4.9982) -- (6.3002,4.963) -- (6.3417,4.9926) -- (6.316,5.0261)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2749;green,0.3422;blue,0.9805}] (6.3417,4.9926) -- (6.316,5.0261);%
+\draw[draw=none,left color={rgb,1:red,0.2749;green,0.3422;blue,0.9805},right color={rgb,1:red,0.2595;green,0.3655;blue,0.9791},shading angle=129.3743] (6.316,5.0261) -- (6.3417,4.9926) -- (6.383,5.0265) -- (6.3552,5.0582)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2595;green,0.3655;blue,0.9791}] (6.383,5.0265) -- (6.3552,5.0582);%
+\draw[draw=none,left color={rgb,1:red,0.2595;green,0.3655;blue,0.9791},right color={rgb,1:red,0.2432;green,0.3902;blue,0.9777},shading angle=133.0453] (6.3552,5.0582) -- (6.383,5.0265) -- (6.4243,5.065) -- (6.3945,5.0949)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2432;green,0.3902;blue,0.9777}] (6.4243,5.065) -- (6.3945,5.0949);%
+\draw[draw=none,left color={rgb,1:red,0.2432;green,0.3902;blue,0.9777},right color={rgb,1:red,0.226;green,0.4164;blue,0.9762},shading angle=136.5059] (6.3945,5.0949) -- (6.4243,5.065) -- (6.4654,5.1083) -- (6.434,5.1365)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.226;green,0.4164;blue,0.9762}] (6.4654,5.1083) -- (6.434,5.1365);%
+\draw[draw=none,left color={rgb,1:red,0.226;green,0.4164;blue,0.9762},right color={rgb,1:red,0.2125;green,0.4417;blue,0.9728},shading angle=139.7651] (6.434,5.1365) -- (6.4654,5.1083) -- (6.5064,5.1568) -- (6.4735,5.1832)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2125;green,0.4417;blue,0.9728}] (6.5064,5.1568) -- (6.4735,5.1832);%
+\draw[draw=none,left color={rgb,1:red,0.2125;green,0.4417;blue,0.9728},right color={rgb,1:red,0.2023;green,0.4666;blue,0.9676},shading angle=142.8349] (6.4735,5.1832) -- (6.5064,5.1568) -- (6.5473,5.2108) -- (6.5131,5.2354)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2023;green,0.4666;blue,0.9676}] (6.5473,5.2108) -- (6.5131,5.2354);%
+\draw[draw=none,left color={rgb,1:red,0.2023;green,0.4666;blue,0.9676},right color={rgb,1:red,0.1912;green,0.4936;blue,0.9618},shading angle=145.7291] (6.5131,5.2354) -- (6.5473,5.2108) -- (6.5882,5.2708) -- (6.5528,5.2937)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1912;green,0.4936;blue,0.9618}] (6.5882,5.2708) -- (6.5528,5.2937);%
+\draw[draw=none,left color={rgb,1:red,0.1912;green,0.4936;blue,0.9618},right color={rgb,1:red,0.179;green,0.5232;blue,0.9556},shading angle=148.4615] (6.5528,5.2937) -- (6.5882,5.2708) -- (6.629,5.3372) -- (6.5925,5.3585)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.179;green,0.5232;blue,0.9556}] (6.629,5.3372) -- (6.5925,5.3585);%
+\draw[draw=none,left color={rgb,1:red,0.179;green,0.5232;blue,0.9556},right color={rgb,1:red,0.1656;green,0.5559;blue,0.9487},shading angle=151.0459] (6.5925,5.3585) -- (6.629,5.3372) -- (6.6697,5.4108) -- (6.6323,5.4304)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1656;green,0.5559;blue,0.9487}] (6.6697,5.4108) -- (6.6323,5.4304);%
+\draw[draw=none,left color={rgb,1:red,0.1656;green,0.5559;blue,0.9487},right color={rgb,1:red,0.1507;green,0.5924;blue,0.9409},shading angle=153.495] (6.6323,5.4304) -- (6.6697,5.4108) -- (6.7103,5.4923) -- (6.6722,5.5104)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1507;green,0.5924;blue,0.9409}] (6.7103,5.4923) -- (6.6722,5.5104);%
+\draw[draw=none,left color={rgb,1:red,0.1507;green,0.5924;blue,0.9409},right color={rgb,1:red,0.1338;green,0.6336;blue,0.9322},shading angle=155.8202] (6.6722,5.5104) -- (6.7103,5.4923) -- (6.7509,5.5828) -- (6.7121,5.5993)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1338;green,0.6336;blue,0.9322}] (6.7509,5.5828) -- (6.7121,5.5993);%
+\draw[draw=none,left color={rgb,1:red,0.1338;green,0.6336;blue,0.9322},right color={rgb,1:red,0.1145;green,0.6806;blue,0.9223},shading angle=158.0315] (6.7121,5.5993) -- (6.7509,5.5828) -- (6.7915,5.6833) -- (6.7521,5.6984)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1145;green,0.6806;blue,0.9223}] (6.7915,5.6833) -- (6.7521,5.6984);%
+\draw[draw=none,left color={rgb,1:red,0.1145;green,0.6806;blue,0.9223},right color={rgb,1:red,0.0923;green,0.7348;blue,0.9108},shading angle=160.1374] (6.7521,5.6984) -- (6.7915,5.6833) -- (6.832,5.7955) -- (6.7921,5.8092)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.0923;green,0.7348;blue,0.9108}] (6.832,5.7955) -- (6.7921,5.8092);%
+\draw[draw=none,left color={rgb,1:red,0.0923;green,0.7348;blue,0.9108},right color={rgb,1:red,0.0849;green,0.7913;blue,0.8954},shading angle=162.1445] (6.7921,5.8092) -- (6.832,5.7955) -- (6.8725,5.9212) -- (6.8322,5.9335)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.0849;green,0.7913;blue,0.8954}] (6.8725,5.9212) -- (6.8322,5.9335);%
+\draw[draw=none,left color={rgb,1:red,0.0849;green,0.7913;blue,0.8954},right color={rgb,1:red,0.1451;green,0.832;blue,0.8704},shading angle=164.0579] (6.8322,5.9335) -- (6.8725,5.9212) -- (6.913,6.0628) -- (6.8722,6.0738)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.1451;green,0.832;blue,0.8704}] (6.913,6.0628) -- (6.8722,6.0738);%
+\draw[draw=none,left color={rgb,1:red,0.1451;green,0.832;blue,0.8704},right color={rgb,1:red,0.2178;green,0.8813;blue,0.8401},shading angle=165.8811] (6.8722,6.0738) -- (6.913,6.0628) -- (6.9534,6.2236) -- (6.9124,6.2332)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.2178;green,0.8813;blue,0.8401}] (6.9534,6.2236) -- (6.9124,6.2332);%
+\draw[draw=none,left color={rgb,1:red,0.2178;green,0.8813;blue,0.8401},right color={rgb,1:red,0.3072;green,0.9418;blue,0.8028},shading angle=167.6157] (6.9124,6.2332) -- (6.9534,6.2236) -- (6.9938,6.4076) -- (6.9525,6.416)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.3072;green,0.9418;blue,0.8028}] (6.9938,6.4076) -- (6.9525,6.416);%
+\draw[draw=none,left color={rgb,1:red,0.3072;green,0.9418;blue,0.8028},right color={rgb,1:red,0.4212;green,0.9741;blue,0.7462},shading angle=169.2619] (6.9525,6.416) -- (6.9938,6.4076) -- (7.0342,6.6205) -- (6.9927,6.6278)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.4212;green,0.9741;blue,0.7462}] (7.0342,6.6205) -- (6.9927,6.6278);%
+\draw[draw=none,left color={rgb,1:red,0.4212;green,0.9741;blue,0.7462},right color={rgb,1:red,0.5694;green,0.9741;blue,0.664},shading angle=170.818] (6.9927,6.6278) -- (7.0342,6.6205) -- (7.0745,6.8701) -- (7.0328,6.8764)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.5694;green,0.9741;blue,0.664}] (7.0745,6.8701) -- (7.0328,6.8764);%
+\draw[draw=none,left color={rgb,1:red,0.5694;green,0.9741;blue,0.664},right color={rgb,1:red,0.725;green,0.92;blue,0.5691},shading angle=172.1527] (7.0328,6.8764) -- (7.0745,6.8701) -- (7.1079,7.1123) -- (7.0661,7.1177)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.725;green,0.92;blue,0.5691}] (7.1079,7.1123) -- (7.0661,7.1177);%
+\draw[draw=none,left color={rgb,1:red,0.725;green,0.92;blue,0.5691},right color={rgb,1:red,0.8726;green,0.82;blue,0.4711},shading angle=173.1631] (7.0661,7.1177) -- (7.1079,7.1123) -- (7.1336,7.3267) -- (7.0917,7.3314)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.8726;green,0.82;blue,0.4711}] (7.1336,7.3267) -- (7.0917,7.3314);%
+\draw[draw=none,left color={rgb,1:red,0.8726;green,0.82;blue,0.4711},right color={rgb,1:red,0.9513;green,0.6666;blue,0.3641},shading angle=173.9288] (7.0917,7.3314) -- (7.1336,7.3267) -- (7.1549,7.5265) -- (7.1129,7.5307)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.9513;green,0.6666;blue,0.3641}] (7.1549,7.5265) -- (7.1129,7.5307);%
+\draw[draw=none,left color={rgb,1:red,0.9513;green,0.6666;blue,0.3641},right color={rgb,1:red,0.9902;green,0.4771;blue,0.2491},shading angle=174.5468] (7.1129,7.5307) -- (7.1549,7.5265) -- (7.1732,7.7185) -- (7.1312,7.7223)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.9902;green,0.4771;blue,0.2491}] (7.1732,7.7185) -- (7.1312,7.7223);%
+\draw[draw=none,left color={rgb,1:red,0.9902;green,0.4771;blue,0.2491},right color={rgb,1:red,1;green,0.2494;blue,0.1278},shading angle=175.0644] (7.1312,7.7223) -- (7.1732,7.7185) -- (7.1894,7.9059) -- (7.1474,7.9094)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2494;blue,0.1278}] (7.1894,7.9059) -- (7.1474,7.9094);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2494;blue,0.1278},right color={rgb,1:red,1;green,0.1271;blue,0.0652},shading angle=175.5073] (7.1474,7.9094) -- (7.1894,7.9059) -- (7.1967,7.9983) -- (7.1546,8.0017)--cycle;%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9998;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=182.8832] (8.9784,2.509) -- (9.0206,2.5111) -- (9.02,2.5222) -- (8.978,2.518)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (9.02,2.5222) -- (8.978,2.518);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=188.6122] (8.978,2.518) -- (9.02,2.5222) -- (9.0166,2.5444) -- (8.9753,2.536)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (9.0166,2.5444) -- (8.9753,2.536);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=194.2319] (8.9753,2.536) -- (9.0166,2.5444) -- (9.0111,2.5663) -- (8.9707,2.554)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (9.0111,2.5663) -- (8.9707,2.554);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=199.6801] (8.9707,2.554) -- (9.0111,2.5663) -- (9.0033,2.588) -- (8.9643,2.5719)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (9.0033,2.588) -- (8.9643,2.5719);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=204.9075] (8.9643,2.5719) -- (9.0033,2.588) -- (8.9935,2.6092) -- (8.956,2.5898)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (8.9935,2.6092) -- (8.956,2.5898);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=209.8799] (8.956,2.5898) -- (8.9935,2.6092) -- (8.9815,2.63) -- (8.9458,2.6075)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (8.9815,2.63) -- (8.9458,2.6075);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=214.5778] (8.9458,2.6075) -- (8.9815,2.63) -- (8.9675,2.6504) -- (8.9337,2.6251)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (8.9675,2.6504) -- (8.9337,2.6251);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=218.9943] (8.9337,2.6251) -- (8.9675,2.6504) -- (8.9515,2.6701) -- (8.9197,2.6424)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (8.9515,2.6701) -- (8.9197,2.6424);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=223.1326] (8.9197,2.6424) -- (8.9515,2.6701) -- (8.9335,2.6893) -- (8.9037,2.6594)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (8.9335,2.6893) -- (8.9037,2.6594);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=227.0029] (8.9037,2.6594) -- (8.9335,2.6893) -- (8.9134,2.708) -- (8.8861,2.6758)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (8.9134,2.708) -- (8.8861,2.6758);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=232.3458] (8.8861,2.6758) -- (8.9134,2.708) -- (8.8684,2.7428) -- (8.8444,2.708)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (8.8684,2.7428) -- (8.8444,2.708);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=238.6826] (8.8444,2.708) -- (8.8684,2.7428) -- (8.8158,2.7748) -- (8.7956,2.7377)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (8.8158,2.7748) -- (8.7956,2.7377);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=244.2655] (8.7956,2.7377) -- (8.8158,2.7748) -- (8.7563,2.8035) -- (8.7396,2.7647)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (8.7563,2.8035) -- (8.7396,2.7647);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=249.2308] (8.7396,2.7647) -- (8.7563,2.8035) -- (8.6902,2.8285) -- (8.6768,2.7885)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (8.6902,2.8285) -- (8.6768,2.7885);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=253.6941] (8.6768,2.7885) -- (8.6902,2.8285) -- (8.6179,2.8497) -- (8.6075,2.8088)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (8.6179,2.8497) -- (8.6075,2.8088);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=257.7501] (8.6075,2.8088) -- (8.6179,2.8497) -- (8.5397,2.8667) -- (8.5321,2.8252)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (8.5397,2.8667) -- (8.5321,2.8252);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=261.4747] (8.5321,2.8252) -- (8.5397,2.8667) -- (8.4557,2.8793) -- (8.4513,2.8373)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (8.4557,2.8793) -- (8.4513,2.8373);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=266.5837] (8.4513,2.8373) -- (8.4557,2.8793) -- (8.274,2.8901) -- (8.2737,2.8479)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (8.274,2.8901) -- (8.2737,2.8479);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=-87.3131] (8.2737,2.8479) -- (8.274,2.8901) -- (8.0757,2.8808) -- (8.0797,2.8388)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (8.0757,2.8808) -- (8.0797,2.8388);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=-81.7655] (8.0797,2.8388) -- (8.0757,2.8808) -- (7.8651,2.8503) -- (7.873,2.8089)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (7.8651,2.8503) -- (7.873,2.8089);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=-76.5998] (7.873,2.8089) -- (7.8651,2.8503) -- (7.6467,2.7983) -- (7.6582,2.7577)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (7.6467,2.7983) -- (7.6582,2.7577);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=-71.693] (7.6582,2.7577) -- (7.6467,2.7983) -- (7.425,2.7249) -- (7.4399,2.6854)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (7.425,2.7249) -- (7.4399,2.6854);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=-66.9534] (7.4399,2.6854) -- (7.425,2.7249) -- (7.2044,2.6311) -- (7.2225,2.593)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.2044,2.6311) -- (7.2225,2.593);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0;blue,0},shading angle=-62.3077] (7.2225,2.593) -- (7.2044,2.6311) -- (6.9894,2.5183) -- (7.0106,2.4817)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0;blue,0}] (6.9894,2.5183) -- (7.0106,2.4817);%
+\draw[draw=none,left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=-57.6923] (7.0106,2.4817) -- (6.9894,2.5183) -- (6.7843,2.3885) -- (6.8082,2.3538)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (6.7843,2.3885) -- (6.8082,2.3538);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=-53.0466] (6.8082,2.3538) -- (6.7843,2.3885) -- (6.5927,2.2444) -- (6.6195,2.2118)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.5927,2.2444) -- (6.6195,2.2118);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=-48.307] (6.6195,2.2118) -- (6.5927,2.2444) -- (6.4183,2.0891) -- (6.4477,2.0588)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.4183,2.0891) -- (6.4477,2.0588);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=-43.4002] (6.4477,2.0588) -- (6.4183,2.0891) -- (6.2641,1.926) -- (6.296,1.8984)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.2641,1.926) -- (6.296,1.8984);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=-38.2345] (6.296,1.8984) -- (6.2641,1.926) -- (6.1324,1.7589) -- (6.1668,1.7344)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.1324,1.7589) -- (6.1668,1.7344);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=-32.6869] (6.1668,1.7344) -- (6.1324,1.7589) -- (6.0252,1.5917) -- (6.0619,1.5708)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.0252,1.5917) -- (6.0619,1.5708);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=-26.5837] (6.0619,1.5708) -- (6.0252,1.5917) -- (5.9437,1.4289) -- (5.9823,1.4117)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (5.9437,1.4289) -- (5.9823,1.4117);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=-21.4747] (5.9823,1.4117) -- (5.9437,1.4289) -- (5.9126,1.3499) -- (5.9524,1.3357)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (5.9126,1.3499) -- (5.9524,1.3357);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=-17.7501] (5.9524,1.3357) -- (5.9126,1.3499) -- (5.8882,1.2737) -- (5.9288,1.2623)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (5.8882,1.2737) -- (5.9288,1.2623);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=-13.6941] (5.9288,1.2623) -- (5.8882,1.2737) -- (5.8704,1.2005) -- (5.9117,1.1921)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (5.8704,1.2005) -- (5.9117,1.1921);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=-9.2308] (5.9117,1.1921) -- (5.8704,1.2005) -- (5.859,1.1307) -- (5.901,1.1258)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (5.859,1.1307) -- (5.901,1.1258);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=-4.2655] (5.901,1.1258) -- (5.859,1.1307) -- (5.8541,1.0649) -- (5.8963,1.0638)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (5.8541,1.0649) -- (5.8963,1.0638);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=1.3174] (5.8963,1.0638) -- (5.8541,1.0649) -- (5.8555,1.0034) -- (5.8976,1.0067)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (5.8555,1.0034) -- (5.8976,1.0067);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=7.6542] (5.8976,1.0067) -- (5.8555,1.0034) -- (5.8631,0.9469) -- (5.9047,0.9545)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (5.8631,0.9469) -- (5.9047,0.9545);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=12.9971] (5.9047,0.9545) -- (5.8631,0.9469) -- (5.8693,0.9202) -- (5.9101,0.931)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (5.8693,0.9202) -- (5.9101,0.931);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=16.8674] (5.9101,0.931) -- (5.8693,0.9202) -- (5.8769,0.895) -- (5.9168,0.9087)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (5.8769,0.895) -- (5.9168,0.9087);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=21.0057] (5.9168,0.9087) -- (5.8769,0.895) -- (5.886,0.8713) -- (5.9248,0.8879)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (5.886,0.8713) -- (5.9248,0.8879);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=25.4222] (5.9248,0.8879) -- (5.886,0.8713) -- (5.8966,0.849) -- (5.934,0.8687)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (5.8966,0.849) -- (5.934,0.8687);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=30.1201] (5.934,0.8687) -- (5.8966,0.849) -- (5.9087,0.8282) -- (5.9442,0.851)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (5.9087,0.8282) -- (5.9442,0.851);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=35.0925] (5.9442,0.851) -- (5.9087,0.8282) -- (5.9222,0.809) -- (5.9556,0.8349)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (5.9222,0.809) -- (5.9556,0.8349);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=40.3199] (5.9556,0.8349) -- (5.9222,0.809) -- (5.937,0.7915) -- (5.9679,0.8203)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (5.937,0.7915) -- (5.9679,0.8203);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=45.7681] (5.9679,0.8203) -- (5.937,0.7915) -- (5.9532,0.7757) -- (5.9812,0.8074)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (5.9532,0.7757) -- (5.9812,0.8074);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=51.3878] (5.9812,0.8074) -- (5.9532,0.7757) -- (5.9707,0.7618) -- (5.9954,0.796)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (5.9707,0.7618) -- (5.9954,0.796);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,1;blue,0},shading angle=57.1168] (5.9954,0.796) -- (5.9707,0.7618) -- (5.9894,0.7497) -- (6.0106,0.7862)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,1;blue,0}] (5.9894,0.7497) -- (6.0106,0.7862);%
+\draw[draw=none,left color={rgb,1:red,1;green,1;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=62.8832] (6.0106,0.7862) -- (5.9894,0.7497) -- (6.0093,0.7395) -- (6.0266,0.778)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (6.0093,0.7395) -- (6.0266,0.778);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=68.6122] (6.0266,0.778) -- (6.0093,0.7395) -- (6.0301,0.7313) -- (6.0436,0.7714)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (6.0301,0.7313) -- (6.0436,0.7714);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=74.2319] (6.0436,0.7714) -- (6.0301,0.7313) -- (6.0519,0.7252) -- (6.0614,0.7663)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (6.0519,0.7252) -- (6.0614,0.7663);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=79.6801] (6.0614,0.7663) -- (6.0519,0.7252) -- (6.0745,0.7211) -- (6.0802,0.7629)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (6.0745,0.7211) -- (6.0802,0.7629);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=84.9075] (6.0802,0.7629) -- (6.0745,0.7211) -- (6.0979,0.719) -- (6.0998,0.7612)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (6.0979,0.719) -- (6.0998,0.7612);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=89.8799] (6.0998,0.7612) -- (6.0979,0.719) -- (6.1219,0.7189) -- (6.1202,0.7611)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (6.1219,0.7189) -- (6.1202,0.7611);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=94.5778] (6.1202,0.7611) -- (6.1219,0.7189) -- (6.1465,0.7209) -- (6.1415,0.7628)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (6.1465,0.7209) -- (6.1415,0.7628);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=98.9943] (6.1415,0.7628) -- (6.1465,0.7209) -- (6.1716,0.7249) -- (6.1635,0.7663)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (6.1716,0.7249) -- (6.1635,0.7663);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=103.1326] (6.1635,0.7663) -- (6.1716,0.7249) -- (6.1972,0.7309) -- (6.1862,0.7716)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (6.1972,0.7309) -- (6.1862,0.7716);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=107.0029] (6.1862,0.7716) -- (6.1972,0.7309) -- (6.2234,0.7389) -- (6.2092,0.7787)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (6.2234,0.7389) -- (6.2092,0.7787);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=112.3458] (6.2092,0.7787) -- (6.2234,0.7389) -- (6.2761,0.7605) -- (6.2579,0.7987)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (6.2761,0.7605) -- (6.2579,0.7987);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=118.6826] (6.2579,0.7987) -- (6.2761,0.7605) -- (6.3301,0.7901) -- (6.308,0.8261)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (6.3301,0.7901) -- (6.308,0.8261);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=124.2655] (6.308,0.8261) -- (6.3301,0.7901) -- (6.3847,0.8273) -- (6.3594,0.8611)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (6.3847,0.8273) -- (6.3594,0.8611);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=129.2308] (6.3594,0.8611) -- (6.3847,0.8273) -- (6.4394,0.8719) -- (6.4114,0.9036)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (6.4394,0.8719) -- (6.4114,0.9036);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=133.6941] (6.4114,0.9036) -- (6.4394,0.8719) -- (6.4939,0.924) -- (6.4637,0.9535)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (6.4939,0.924) -- (6.4637,0.9535);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=137.7501] (6.4637,0.9535) -- (6.4939,0.924) -- (6.5477,0.9832) -- (6.5156,1.0106)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (6.5477,0.9832) -- (6.5156,1.0106);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=141.4747] (6.5156,1.0106) -- (6.5477,0.9832) -- (6.6006,1.0497) -- (6.5664,1.0745)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (6.6006,1.0497) -- (6.5664,1.0745);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=146.5837] (6.5664,1.0745) -- (6.6006,1.0497) -- (6.7008,1.2016) -- (6.6644,1.223)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.7008,1.2016) -- (6.6644,1.223);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=152.6869] (6.6644,1.223) -- (6.7008,1.2016) -- (6.792,1.3781) -- (6.7535,1.3956)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.792,1.3781) -- (6.7535,1.3956);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=158.2345] (6.7535,1.3956) -- (6.792,1.3781) -- (6.8708,1.5757) -- (6.831,1.5895)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.8708,1.5757) -- (6.831,1.5895);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=163.4002] (6.831,1.5895) -- (6.8708,1.5757) -- (6.935,1.7908) -- (6.894,1.8011)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.935,1.7908) -- (6.894,1.8011);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=168.307] (6.894,1.8011) -- (6.935,1.7908) -- (6.9823,2.0195) -- (6.9407,2.0263)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.9823,2.0195) -- (6.9407,2.0263);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=173.0466] (6.9407,2.0263) -- (6.9823,2.0195) -- (7.0113,2.2574) -- (6.9693,2.2608)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.0113,2.2574) -- (6.9693,2.2608);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0;blue,0},shading angle=177.6923] (6.9693,2.2608) -- (7.0113,2.2574) -- (7.0211,2.5) -- (6.9789,2.5)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0;blue,0}] (7.0211,2.5) -- (6.9789,2.5);%
+\draw[draw=none,left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=182.3077] (6.9789,2.5) -- (7.0211,2.5) -- (7.0113,2.7426) -- (6.9693,2.7392)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.0113,2.7426) -- (6.9693,2.7392);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=186.9534] (6.9693,2.7392) -- (7.0113,2.7426) -- (6.9823,2.9805) -- (6.9407,2.9737)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.9823,2.9805) -- (6.9407,2.9737);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=191.693] (6.9407,2.9737) -- (6.9823,2.9805) -- (6.935,3.2092) -- (6.894,3.1989)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.935,3.2092) -- (6.894,3.1989);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=196.5998] (6.894,3.1989) -- (6.935,3.2092) -- (6.8708,3.4243) -- (6.831,3.4105)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.8708,3.4243) -- (6.831,3.4105);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=201.7655] (6.831,3.4105) -- (6.8708,3.4243) -- (6.792,3.6219) -- (6.7535,3.6044)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.792,3.6219) -- (6.7535,3.6044);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=207.3131] (6.7535,3.6044) -- (6.792,3.6219) -- (6.7008,3.7984) -- (6.6644,3.777)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.7008,3.7984) -- (6.6644,3.777);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=213.4163] (6.6644,3.777) -- (6.7008,3.7984) -- (6.6006,3.9503) -- (6.5664,3.9255)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (6.6006,3.9503) -- (6.5664,3.9255);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=218.5253] (6.5664,3.9255) -- (6.6006,3.9503) -- (6.5477,4.0168) -- (6.5156,3.9894)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (6.5477,4.0168) -- (6.5156,3.9894);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=222.2499] (6.5156,3.9894) -- (6.5477,4.0168) -- (6.4939,4.076) -- (6.4637,4.0465)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (6.4939,4.076) -- (6.4637,4.0465);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=226.3059] (6.4637,4.0465) -- (6.4939,4.076) -- (6.4394,4.1281) -- (6.4114,4.0964)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (6.4394,4.1281) -- (6.4114,4.0964);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=230.7692] (6.4114,4.0964) -- (6.4394,4.1281) -- (6.3847,4.1727) -- (6.3594,4.1389)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (6.3847,4.1727) -- (6.3594,4.1389);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=235.7345] (6.3594,4.1389) -- (6.3847,4.1727) -- (6.3301,4.2099) -- (6.308,4.1739)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (6.3301,4.2099) -- (6.308,4.1739);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=241.3174] (6.308,4.1739) -- (6.3301,4.2099) -- (6.2761,4.2395) -- (6.2579,4.2013)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (6.2761,4.2395) -- (6.2579,4.2013);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=247.6542] (6.2579,4.2013) -- (6.2761,4.2395) -- (6.2234,4.2611) -- (6.2092,4.2213)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (6.2234,4.2611) -- (6.2092,4.2213);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=252.9971] (6.2092,4.2213) -- (6.2234,4.2611) -- (6.1972,4.2691) -- (6.1862,4.2284)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (6.1972,4.2691) -- (6.1862,4.2284);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=256.8674] (6.1862,4.2284) -- (6.1972,4.2691) -- (6.1716,4.2751) -- (6.1635,4.2337)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (6.1716,4.2751) -- (6.1635,4.2337);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=261.0057] (6.1635,4.2337) -- (6.1716,4.2751) -- (6.1465,4.2791) -- (6.1415,4.2372)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (6.1465,4.2791) -- (6.1415,4.2372);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=265.4222] (6.1415,4.2372) -- (6.1465,4.2791) -- (6.1219,4.2811) -- (6.1202,4.2389)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (6.1219,4.2811) -- (6.1202,4.2389);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=-89.8799] (6.1202,4.2389) -- (6.1219,4.2811) -- (6.0979,4.281) -- (6.0998,4.2388)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (6.0979,4.281) -- (6.0998,4.2388);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=-84.9075] (6.0998,4.2388) -- (6.0979,4.281) -- (6.0745,4.2789) -- (6.0802,4.2371)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (6.0745,4.2789) -- (6.0802,4.2371);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=-79.6801] (6.0802,4.2371) -- (6.0745,4.2789) -- (6.0519,4.2748) -- (6.0614,4.2337)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (6.0519,4.2748) -- (6.0614,4.2337);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=-74.2319] (6.0614,4.2337) -- (6.0519,4.2748) -- (6.0301,4.2687) -- (6.0436,4.2286)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (6.0301,4.2687) -- (6.0436,4.2286);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=-68.6122] (6.0436,4.2286) -- (6.0301,4.2687) -- (6.0093,4.2605) -- (6.0266,4.222)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (6.0093,4.2605) -- (6.0266,4.222);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,1;blue,0},shading angle=-62.8832] (6.0266,4.222) -- (6.0093,4.2605) -- (5.9894,4.2503) -- (6.0106,4.2138)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,1;blue,0}] (5.9894,4.2503) -- (6.0106,4.2138);%
+\draw[draw=none,left color={rgb,1:red,1;green,1;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=-57.1168] (6.0106,4.2138) -- (5.9894,4.2503) -- (5.9707,4.2382) -- (5.9954,4.204)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (5.9707,4.2382) -- (5.9954,4.204);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=-51.3878] (5.9954,4.204) -- (5.9707,4.2382) -- (5.9532,4.2243) -- (5.9812,4.1926)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (5.9532,4.2243) -- (5.9812,4.1926);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=-45.7681] (5.9812,4.1926) -- (5.9532,4.2243) -- (5.937,4.2085) -- (5.9679,4.1797)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (5.937,4.2085) -- (5.9679,4.1797);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=-40.3199] (5.9679,4.1797) -- (5.937,4.2085) -- (5.9222,4.191) -- (5.9556,4.1651)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (5.9222,4.191) -- (5.9556,4.1651);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=-35.0925] (5.9556,4.1651) -- (5.9222,4.191) -- (5.9087,4.1718) -- (5.9442,4.149)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (5.9087,4.1718) -- (5.9442,4.149);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=-30.1201] (5.9442,4.149) -- (5.9087,4.1718) -- (5.8966,4.151) -- (5.934,4.1313)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (5.8966,4.151) -- (5.934,4.1313);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=-25.4222] (5.934,4.1313) -- (5.8966,4.151) -- (5.886,4.1287) -- (5.9248,4.1121)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (5.886,4.1287) -- (5.9248,4.1121);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=-21.0057] (5.9248,4.1121) -- (5.886,4.1287) -- (5.8769,4.105) -- (5.9168,4.0913)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (5.8769,4.105) -- (5.9168,4.0913);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=-16.8674] (5.9168,4.0913) -- (5.8769,4.105) -- (5.8693,4.0798) -- (5.9101,4.069)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (5.8693,4.0798) -- (5.9101,4.069);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=-12.9971] (5.9101,4.069) -- (5.8693,4.0798) -- (5.8631,4.0531) -- (5.9047,4.0455)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (5.8631,4.0531) -- (5.9047,4.0455);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=-7.6542] (5.9047,4.0455) -- (5.8631,4.0531) -- (5.8555,3.9966) -- (5.8976,3.9933)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (5.8555,3.9966) -- (5.8976,3.9933);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=-1.3174] (5.8976,3.9933) -- (5.8555,3.9966) -- (5.8541,3.9351) -- (5.8963,3.9362)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (5.8541,3.9351) -- (5.8963,3.9362);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=4.2655] (5.8963,3.9362) -- (5.8541,3.9351) -- (5.859,3.8693) -- (5.901,3.8742)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (5.859,3.8693) -- (5.901,3.8742);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=9.2308] (5.901,3.8742) -- (5.859,3.8693) -- (5.8704,3.7995) -- (5.9117,3.8079)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (5.8704,3.7995) -- (5.9117,3.8079);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=13.6941] (5.9117,3.8079) -- (5.8704,3.7995) -- (5.8882,3.7263) -- (5.9288,3.7377)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (5.8882,3.7263) -- (5.9288,3.7377);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=17.7501] (5.9288,3.7377) -- (5.8882,3.7263) -- (5.9126,3.6501) -- (5.9524,3.6643)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (5.9126,3.6501) -- (5.9524,3.6643);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=21.4747] (5.9524,3.6643) -- (5.9126,3.6501) -- (5.9437,3.5711) -- (5.9823,3.5883)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (5.9437,3.5711) -- (5.9823,3.5883);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=26.5837] (5.9823,3.5883) -- (5.9437,3.5711) -- (6.0252,3.4083) -- (6.0619,3.4292)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.0252,3.4083) -- (6.0619,3.4292);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=32.6869] (6.0619,3.4292) -- (6.0252,3.4083) -- (6.1324,3.2411) -- (6.1668,3.2656)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.1324,3.2411) -- (6.1668,3.2656);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=38.2345] (6.1668,3.2656) -- (6.1324,3.2411) -- (6.2641,3.074) -- (6.296,3.1016)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.2641,3.074) -- (6.296,3.1016);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=43.4002] (6.296,3.1016) -- (6.2641,3.074) -- (6.4183,2.9109) -- (6.4477,2.9412)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.4183,2.9109) -- (6.4477,2.9412);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=48.307] (6.4477,2.9412) -- (6.4183,2.9109) -- (6.5927,2.7556) -- (6.6195,2.7882)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.5927,2.7556) -- (6.6195,2.7882);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=53.0466] (6.6195,2.7882) -- (6.5927,2.7556) -- (6.7843,2.6115) -- (6.8082,2.6462)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (6.7843,2.6115) -- (6.8082,2.6462);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0;blue,0},shading angle=57.6923] (6.8082,2.6462) -- (6.7843,2.6115) -- (6.9894,2.4817) -- (7.0106,2.5183)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0;blue,0}] (6.9894,2.4817) -- (7.0106,2.5183);%
+\draw[draw=none,left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=62.3077] (7.0106,2.5183) -- (6.9894,2.4817) -- (7.2044,2.3689) -- (7.2225,2.407)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.2044,2.3689) -- (7.2225,2.407);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=66.9534] (7.2225,2.407) -- (7.2044,2.3689) -- (7.425,2.2751) -- (7.4399,2.3146)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (7.425,2.2751) -- (7.4399,2.3146);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=71.693] (7.4399,2.3146) -- (7.425,2.2751) -- (7.6467,2.2017) -- (7.6582,2.2423)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (7.6467,2.2017) -- (7.6582,2.2423);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=76.5998] (7.6582,2.2423) -- (7.6467,2.2017) -- (7.8651,2.1497) -- (7.873,2.1911)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (7.8651,2.1497) -- (7.873,2.1911);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=81.7655] (7.873,2.1911) -- (7.8651,2.1497) -- (8.0757,2.1192) -- (8.0797,2.1612)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (8.0757,2.1192) -- (8.0797,2.1612);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=87.3131] (8.0797,2.1612) -- (8.0757,2.1192) -- (8.274,2.1099) -- (8.2737,2.1521)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (8.274,2.1099) -- (8.2737,2.1521);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=93.4163] (8.2737,2.1521) -- (8.274,2.1099) -- (8.4557,2.1207) -- (8.4513,2.1627)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (8.4557,2.1207) -- (8.4513,2.1627);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=98.5253] (8.4513,2.1627) -- (8.4557,2.1207) -- (8.5397,2.1333) -- (8.5321,2.1748)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (8.5397,2.1333) -- (8.5321,2.1748);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=102.2499] (8.5321,2.1748) -- (8.5397,2.1333) -- (8.6179,2.1503) -- (8.6075,2.1912)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (8.6179,2.1503) -- (8.6075,2.1912);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=106.3059] (8.6075,2.1912) -- (8.6179,2.1503) -- (8.6902,2.1715) -- (8.6768,2.2115)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (8.6902,2.1715) -- (8.6768,2.2115);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=110.7692] (8.6768,2.2115) -- (8.6902,2.1715) -- (8.7563,2.1965) -- (8.7396,2.2353)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (8.7563,2.1965) -- (8.7396,2.2353);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=115.7345] (8.7396,2.2353) -- (8.7563,2.1965) -- (8.8158,2.2252) -- (8.7956,2.2623)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (8.8158,2.2252) -- (8.7956,2.2623);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=121.3174] (8.7956,2.2623) -- (8.8158,2.2252) -- (8.8684,2.2572) -- (8.8444,2.292)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (8.8684,2.2572) -- (8.8444,2.292);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=127.6542] (8.8444,2.292) -- (8.8684,2.2572) -- (8.9134,2.292) -- (8.8861,2.3242)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (8.9134,2.292) -- (8.8861,2.3242);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=132.9971] (8.8861,2.3242) -- (8.9134,2.292) -- (8.9335,2.3107) -- (8.9037,2.3406)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (8.9335,2.3107) -- (8.9037,2.3406);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=136.8674] (8.9037,2.3406) -- (8.9335,2.3107) -- (8.9515,2.3299) -- (8.9197,2.3576)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (8.9515,2.3299) -- (8.9197,2.3576);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=141.0057] (8.9197,2.3576) -- (8.9515,2.3299) -- (8.9675,2.3496) -- (8.9337,2.3749)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (8.9675,2.3496) -- (8.9337,2.3749);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=145.4222] (8.9337,2.3749) -- (8.9675,2.3496) -- (8.9815,2.37) -- (8.9458,2.3925)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (8.9815,2.37) -- (8.9458,2.3925);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=150.1201] (8.9458,2.3925) -- (8.9815,2.37) -- (8.9935,2.3908) -- (8.956,2.4102)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (8.9935,2.3908) -- (8.956,2.4102);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=155.0925] (8.956,2.4102) -- (8.9935,2.3908) -- (9.0033,2.412) -- (8.9643,2.4281)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (9.0033,2.412) -- (8.9643,2.4281);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=160.3199] (8.9643,2.4281) -- (9.0033,2.412) -- (9.0111,2.4337) -- (8.9707,2.446)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (9.0111,2.4337) -- (8.9707,2.446);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=165.7681] (8.9707,2.446) -- (9.0111,2.4337) -- (9.0166,2.4556) -- (8.9753,2.464)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (9.0166,2.4556) -- (8.9753,2.464);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=171.3878] (8.9753,2.464) -- (9.0166,2.4556) -- (9.02,2.4778) -- (8.978,2.482)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (9.02,2.4778) -- (8.978,2.482);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,1;blue,0},shading angle=177.1168] (8.978,2.482) -- (9.02,2.4778) -- (9.0211,2.5) -- (8.9789,2.5)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,1;blue,0}] (9.0211,2.5) -- (8.9789,2.5);%
+\draw[draw=none,left color={rgb,1:red,1;green,1;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=182.8832] (8.9789,2.5) -- (9.0211,2.5) -- (9.02,2.5222) -- (8.978,2.518)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (9.02,2.5222) -- (8.978,2.518);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=188.6122] (8.978,2.518) -- (9.02,2.5222) -- (9.0166,2.5444) -- (8.9753,2.536)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (9.0166,2.5444) -- (8.9753,2.536);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=194.2319] (8.9753,2.536) -- (9.0166,2.5444) -- (9.0111,2.5663) -- (8.9707,2.554)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (9.0111,2.5663) -- (8.9707,2.554);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=199.6801] (8.9707,2.554) -- (9.0111,2.5663) -- (9.0033,2.588) -- (8.9643,2.5719)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (9.0033,2.588) -- (8.9643,2.5719);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=204.9075] (8.9643,2.5719) -- (9.0033,2.588) -- (8.9935,2.6092) -- (8.956,2.5898)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (8.9935,2.6092) -- (8.956,2.5898);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=209.8799] (8.956,2.5898) -- (8.9935,2.6092) -- (8.9815,2.63) -- (8.9458,2.6075)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (8.9815,2.63) -- (8.9458,2.6075);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=214.5778] (8.9458,2.6075) -- (8.9815,2.63) -- (8.9675,2.6504) -- (8.9337,2.6251)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (8.9675,2.6504) -- (8.9337,2.6251);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=218.9943] (8.9337,2.6251) -- (8.9675,2.6504) -- (8.9515,2.6701) -- (8.9197,2.6424)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (8.9515,2.6701) -- (8.9197,2.6424);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=223.1326] (8.9197,2.6424) -- (8.9515,2.6701) -- (8.9335,2.6893) -- (8.9037,2.6594)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (8.9335,2.6893) -- (8.9037,2.6594);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=227.0029] (8.9037,2.6594) -- (8.9335,2.6893) -- (8.9134,2.708) -- (8.8861,2.6758)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (8.9134,2.708) -- (8.8861,2.6758);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=232.3458] (8.8861,2.6758) -- (8.9134,2.708) -- (8.8684,2.7428) -- (8.8444,2.708)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (8.8684,2.7428) -- (8.8444,2.708);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=238.6826] (8.8444,2.708) -- (8.8684,2.7428) -- (8.8158,2.7748) -- (8.7956,2.7377)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (8.8158,2.7748) -- (8.7956,2.7377);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=244.2655] (8.7956,2.7377) -- (8.8158,2.7748) -- (8.7563,2.8035) -- (8.7396,2.7647)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (8.7563,2.8035) -- (8.7396,2.7647);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=249.2308] (8.7396,2.7647) -- (8.7563,2.8035) -- (8.6902,2.8285) -- (8.6768,2.7885)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (8.6902,2.8285) -- (8.6768,2.7885);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=253.6941] (8.6768,2.7885) -- (8.6902,2.8285) -- (8.6179,2.8497) -- (8.6075,2.8088)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (8.6179,2.8497) -- (8.6075,2.8088);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=257.7501] (8.6075,2.8088) -- (8.6179,2.8497) -- (8.5397,2.8667) -- (8.5321,2.8252)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (8.5397,2.8667) -- (8.5321,2.8252);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=261.4747] (8.5321,2.8252) -- (8.5397,2.8667) -- (8.4557,2.8793) -- (8.4513,2.8373)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (8.4557,2.8793) -- (8.4513,2.8373);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=266.5837] (8.4513,2.8373) -- (8.4557,2.8793) -- (8.274,2.8901) -- (8.2737,2.8479)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (8.274,2.8901) -- (8.2737,2.8479);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=-87.3131] (8.2737,2.8479) -- (8.274,2.8901) -- (8.0757,2.8808) -- (8.0797,2.8388)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (8.0757,2.8808) -- (8.0797,2.8388);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=-81.7655] (8.0797,2.8388) -- (8.0757,2.8808) -- (7.8651,2.8503) -- (7.873,2.8089)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (7.8651,2.8503) -- (7.873,2.8089);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=-76.5998] (7.873,2.8089) -- (7.8651,2.8503) -- (7.6467,2.7983) -- (7.6582,2.7577)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (7.6467,2.7983) -- (7.6582,2.7577);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=-71.693] (7.6582,2.7577) -- (7.6467,2.7983) -- (7.425,2.7249) -- (7.4399,2.6854)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (7.425,2.7249) -- (7.4399,2.6854);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=-66.9534] (7.4399,2.6854) -- (7.425,2.7249) -- (7.2044,2.6311) -- (7.2225,2.593)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.2044,2.6311) -- (7.2225,2.593);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0;blue,0},shading angle=-62.3077] (7.2225,2.593) -- (7.2044,2.6311) -- (6.9894,2.5183) -- (7.0106,2.4817)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0;blue,0}] (6.9894,2.5183) -- (7.0106,2.4817);%
+\draw[draw=none,left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=-57.6923] (7.0106,2.4817) -- (6.9894,2.5183) -- (6.7843,2.3885) -- (6.8082,2.3538)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (6.7843,2.3885) -- (6.8082,2.3538);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=-53.0466] (6.8082,2.3538) -- (6.7843,2.3885) -- (6.5927,2.2444) -- (6.6195,2.2118)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.5927,2.2444) -- (6.6195,2.2118);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=-48.307] (6.6195,2.2118) -- (6.5927,2.2444) -- (6.4183,2.0891) -- (6.4477,2.0588)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.4183,2.0891) -- (6.4477,2.0588);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=-43.4002] (6.4477,2.0588) -- (6.4183,2.0891) -- (6.2641,1.926) -- (6.296,1.8984)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.2641,1.926) -- (6.296,1.8984);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=-38.2345] (6.296,1.8984) -- (6.2641,1.926) -- (6.1324,1.7589) -- (6.1668,1.7344)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.1324,1.7589) -- (6.1668,1.7344);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=-32.6869] (6.1668,1.7344) -- (6.1324,1.7589) -- (6.0252,1.5917) -- (6.0619,1.5708)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.0252,1.5917) -- (6.0619,1.5708);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=-26.5837] (6.0619,1.5708) -- (6.0252,1.5917) -- (5.9437,1.4289) -- (5.9823,1.4117)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (5.9437,1.4289) -- (5.9823,1.4117);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=-21.4747] (5.9823,1.4117) -- (5.9437,1.4289) -- (5.9126,1.3499) -- (5.9524,1.3357)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (5.9126,1.3499) -- (5.9524,1.3357);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=-17.7501] (5.9524,1.3357) -- (5.9126,1.3499) -- (5.8882,1.2737) -- (5.9288,1.2623)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (5.8882,1.2737) -- (5.9288,1.2623);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=-13.6941] (5.9288,1.2623) -- (5.8882,1.2737) -- (5.8704,1.2005) -- (5.9117,1.1921)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (5.8704,1.2005) -- (5.9117,1.1921);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=-9.2308] (5.9117,1.1921) -- (5.8704,1.2005) -- (5.859,1.1307) -- (5.901,1.1258)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (5.859,1.1307) -- (5.901,1.1258);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=-4.2655] (5.901,1.1258) -- (5.859,1.1307) -- (5.8541,1.0649) -- (5.8963,1.0638)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (5.8541,1.0649) -- (5.8963,1.0638);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=1.3174] (5.8963,1.0638) -- (5.8541,1.0649) -- (5.8555,1.0034) -- (5.8976,1.0067)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (5.8555,1.0034) -- (5.8976,1.0067);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=7.6542] (5.8976,1.0067) -- (5.8555,1.0034) -- (5.8631,0.9469) -- (5.9047,0.9545)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (5.8631,0.9469) -- (5.9047,0.9545);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=12.9971] (5.9047,0.9545) -- (5.8631,0.9469) -- (5.8693,0.9202) -- (5.9101,0.931)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (5.8693,0.9202) -- (5.9101,0.931);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=16.8674] (5.9101,0.931) -- (5.8693,0.9202) -- (5.8769,0.895) -- (5.9168,0.9087)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (5.8769,0.895) -- (5.9168,0.9087);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=21.0057] (5.9168,0.9087) -- (5.8769,0.895) -- (5.886,0.8713) -- (5.9248,0.8879)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (5.886,0.8713) -- (5.9248,0.8879);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=25.4222] (5.9248,0.8879) -- (5.886,0.8713) -- (5.8966,0.849) -- (5.934,0.8687)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (5.8966,0.849) -- (5.934,0.8687);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=30.1201] (5.934,0.8687) -- (5.8966,0.849) -- (5.9087,0.8282) -- (5.9442,0.851)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (5.9087,0.8282) -- (5.9442,0.851);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=35.0925] (5.9442,0.851) -- (5.9087,0.8282) -- (5.9222,0.809) -- (5.9556,0.8349)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (5.9222,0.809) -- (5.9556,0.8349);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=40.3199] (5.9556,0.8349) -- (5.9222,0.809) -- (5.937,0.7915) -- (5.9679,0.8203)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (5.937,0.7915) -- (5.9679,0.8203);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=45.7681] (5.9679,0.8203) -- (5.937,0.7915) -- (5.9532,0.7757) -- (5.9812,0.8074)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (5.9532,0.7757) -- (5.9812,0.8074);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=51.3878] (5.9812,0.8074) -- (5.9532,0.7757) -- (5.9707,0.7618) -- (5.9954,0.796)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (5.9707,0.7618) -- (5.9954,0.796);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,1;blue,0},shading angle=57.1168] (5.9954,0.796) -- (5.9707,0.7618) -- (5.9894,0.7497) -- (6.0106,0.7862)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,1;blue,0}] (5.9894,0.7497) -- (6.0106,0.7862);%
+\draw[draw=none,left color={rgb,1:red,1;green,1;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=62.8832] (6.0106,0.7862) -- (5.9894,0.7497) -- (6.0093,0.7395) -- (6.0266,0.778)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (6.0093,0.7395) -- (6.0266,0.778);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=68.6122] (6.0266,0.778) -- (6.0093,0.7395) -- (6.0301,0.7313) -- (6.0436,0.7714)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (6.0301,0.7313) -- (6.0436,0.7714);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=74.2319] (6.0436,0.7714) -- (6.0301,0.7313) -- (6.0519,0.7252) -- (6.0614,0.7663)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (6.0519,0.7252) -- (6.0614,0.7663);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=79.6801] (6.0614,0.7663) -- (6.0519,0.7252) -- (6.0745,0.7211) -- (6.0802,0.7629)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (6.0745,0.7211) -- (6.0802,0.7629);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=84.9075] (6.0802,0.7629) -- (6.0745,0.7211) -- (6.0979,0.719) -- (6.0998,0.7612)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (6.0979,0.719) -- (6.0998,0.7612);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=89.8799] (6.0998,0.7612) -- (6.0979,0.719) -- (6.1219,0.7189) -- (6.1202,0.7611)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (6.1219,0.7189) -- (6.1202,0.7611);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=94.5778] (6.1202,0.7611) -- (6.1219,0.7189) -- (6.1465,0.7209) -- (6.1415,0.7628)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (6.1465,0.7209) -- (6.1415,0.7628);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=98.9943] (6.1415,0.7628) -- (6.1465,0.7209) -- (6.1716,0.7249) -- (6.1635,0.7663)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (6.1716,0.7249) -- (6.1635,0.7663);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=103.1326] (6.1635,0.7663) -- (6.1716,0.7249) -- (6.1972,0.7309) -- (6.1862,0.7716)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (6.1972,0.7309) -- (6.1862,0.7716);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=107.0029] (6.1862,0.7716) -- (6.1972,0.7309) -- (6.2234,0.7389) -- (6.2092,0.7787)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (6.2234,0.7389) -- (6.2092,0.7787);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=112.3458] (6.2092,0.7787) -- (6.2234,0.7389) -- (6.2761,0.7605) -- (6.2579,0.7987)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (6.2761,0.7605) -- (6.2579,0.7987);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=118.6826] (6.2579,0.7987) -- (6.2761,0.7605) -- (6.3301,0.7901) -- (6.308,0.8261)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (6.3301,0.7901) -- (6.308,0.8261);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=124.2655] (6.308,0.8261) -- (6.3301,0.7901) -- (6.3847,0.8273) -- (6.3594,0.8611)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (6.3847,0.8273) -- (6.3594,0.8611);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=129.2308] (6.3594,0.8611) -- (6.3847,0.8273) -- (6.4394,0.8719) -- (6.4114,0.9036)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (6.4394,0.8719) -- (6.4114,0.9036);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=133.6941] (6.4114,0.9036) -- (6.4394,0.8719) -- (6.4939,0.924) -- (6.4637,0.9535)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (6.4939,0.924) -- (6.4637,0.9535);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=137.7501] (6.4637,0.9535) -- (6.4939,0.924) -- (6.5477,0.9832) -- (6.5156,1.0106)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (6.5477,0.9832) -- (6.5156,1.0106);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=141.4747] (6.5156,1.0106) -- (6.5477,0.9832) -- (6.6006,1.0497) -- (6.5664,1.0745)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (6.6006,1.0497) -- (6.5664,1.0745);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=146.5837] (6.5664,1.0745) -- (6.6006,1.0497) -- (6.7008,1.2016) -- (6.6644,1.223)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.7008,1.2016) -- (6.6644,1.223);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=152.6869] (6.6644,1.223) -- (6.7008,1.2016) -- (6.792,1.3781) -- (6.7535,1.3956)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.792,1.3781) -- (6.7535,1.3956);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=158.2345] (6.7535,1.3956) -- (6.792,1.3781) -- (6.8708,1.5757) -- (6.831,1.5895)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.8708,1.5757) -- (6.831,1.5895);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=163.4002] (6.831,1.5895) -- (6.8708,1.5757) -- (6.935,1.7908) -- (6.894,1.8011)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.935,1.7908) -- (6.894,1.8011);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=168.307] (6.894,1.8011) -- (6.935,1.7908) -- (6.9823,2.0195) -- (6.9407,2.0263)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.9823,2.0195) -- (6.9407,2.0263);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=173.0466] (6.9407,2.0263) -- (6.9823,2.0195) -- (7.0113,2.2574) -- (6.9693,2.2608)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.0113,2.2574) -- (6.9693,2.2608);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0;blue,0},shading angle=177.6923] (6.9693,2.2608) -- (7.0113,2.2574) -- (7.0211,2.5) -- (6.9789,2.5)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0;blue,0}] (7.0211,2.5) -- (6.9789,2.5);%
+\draw[draw=none,left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=182.3077] (6.9789,2.5) -- (7.0211,2.5) -- (7.0113,2.7426) -- (6.9693,2.7392)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.0113,2.7426) -- (6.9693,2.7392);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=186.9534] (6.9693,2.7392) -- (7.0113,2.7426) -- (6.9823,2.9805) -- (6.9407,2.9737)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.9823,2.9805) -- (6.9407,2.9737);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=191.693] (6.9407,2.9737) -- (6.9823,2.9805) -- (6.935,3.2092) -- (6.894,3.1989)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.935,3.2092) -- (6.894,3.1989);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=196.5998] (6.894,3.1989) -- (6.935,3.2092) -- (6.8708,3.4243) -- (6.831,3.4105)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.8708,3.4243) -- (6.831,3.4105);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=201.7655] (6.831,3.4105) -- (6.8708,3.4243) -- (6.792,3.6219) -- (6.7535,3.6044)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.792,3.6219) -- (6.7535,3.6044);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=207.3131] (6.7535,3.6044) -- (6.792,3.6219) -- (6.7008,3.7984) -- (6.6644,3.777)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.7008,3.7984) -- (6.6644,3.777);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=213.4163] (6.6644,3.777) -- (6.7008,3.7984) -- (6.6006,3.9503) -- (6.5664,3.9255)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (6.6006,3.9503) -- (6.5664,3.9255);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=218.5253] (6.5664,3.9255) -- (6.6006,3.9503) -- (6.5477,4.0168) -- (6.5156,3.9894)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (6.5477,4.0168) -- (6.5156,3.9894);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=222.2499] (6.5156,3.9894) -- (6.5477,4.0168) -- (6.4939,4.076) -- (6.4637,4.0465)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (6.4939,4.076) -- (6.4637,4.0465);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=226.3059] (6.4637,4.0465) -- (6.4939,4.076) -- (6.4394,4.1281) -- (6.4114,4.0964)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (6.4394,4.1281) -- (6.4114,4.0964);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=230.7692] (6.4114,4.0964) -- (6.4394,4.1281) -- (6.3847,4.1727) -- (6.3594,4.1389)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (6.3847,4.1727) -- (6.3594,4.1389);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=235.7345] (6.3594,4.1389) -- (6.3847,4.1727) -- (6.3301,4.2099) -- (6.308,4.1739)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (6.3301,4.2099) -- (6.308,4.1739);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=241.3174] (6.308,4.1739) -- (6.3301,4.2099) -- (6.2761,4.2395) -- (6.2579,4.2013)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (6.2761,4.2395) -- (6.2579,4.2013);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=247.6542] (6.2579,4.2013) -- (6.2761,4.2395) -- (6.2234,4.2611) -- (6.2092,4.2213)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (6.2234,4.2611) -- (6.2092,4.2213);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=252.9971] (6.2092,4.2213) -- (6.2234,4.2611) -- (6.1972,4.2691) -- (6.1862,4.2284)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (6.1972,4.2691) -- (6.1862,4.2284);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=256.8674] (6.1862,4.2284) -- (6.1972,4.2691) -- (6.1716,4.2751) -- (6.1635,4.2337)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (6.1716,4.2751) -- (6.1635,4.2337);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=261.0057] (6.1635,4.2337) -- (6.1716,4.2751) -- (6.1465,4.2791) -- (6.1415,4.2372)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (6.1465,4.2791) -- (6.1415,4.2372);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=265.4222] (6.1415,4.2372) -- (6.1465,4.2791) -- (6.1219,4.2811) -- (6.1202,4.2389)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (6.1219,4.2811) -- (6.1202,4.2389);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=-89.8799] (6.1202,4.2389) -- (6.1219,4.2811) -- (6.0979,4.281) -- (6.0998,4.2388)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (6.0979,4.281) -- (6.0998,4.2388);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=-84.9075] (6.0998,4.2388) -- (6.0979,4.281) -- (6.0745,4.2789) -- (6.0802,4.2371)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (6.0745,4.2789) -- (6.0802,4.2371);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=-79.6801] (6.0802,4.2371) -- (6.0745,4.2789) -- (6.0519,4.2748) -- (6.0614,4.2337)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (6.0519,4.2748) -- (6.0614,4.2337);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=-74.2319] (6.0614,4.2337) -- (6.0519,4.2748) -- (6.0301,4.2687) -- (6.0436,4.2286)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (6.0301,4.2687) -- (6.0436,4.2286);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=-68.6122] (6.0436,4.2286) -- (6.0301,4.2687) -- (6.0093,4.2605) -- (6.0266,4.222)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (6.0093,4.2605) -- (6.0266,4.222);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,1;blue,0},shading angle=-62.8832] (6.0266,4.222) -- (6.0093,4.2605) -- (5.9894,4.2503) -- (6.0106,4.2138)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,1;blue,0}] (5.9894,4.2503) -- (6.0106,4.2138);%
+\draw[draw=none,left color={rgb,1:red,1;green,1;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=-57.1168] (6.0106,4.2138) -- (5.9894,4.2503) -- (5.9707,4.2382) -- (5.9954,4.204)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (5.9707,4.2382) -- (5.9954,4.204);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=-51.3878] (5.9954,4.204) -- (5.9707,4.2382) -- (5.9532,4.2243) -- (5.9812,4.1926)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (5.9532,4.2243) -- (5.9812,4.1926);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=-45.7681] (5.9812,4.1926) -- (5.9532,4.2243) -- (5.937,4.2085) -- (5.9679,4.1797)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (5.937,4.2085) -- (5.9679,4.1797);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=-40.3199] (5.9679,4.1797) -- (5.937,4.2085) -- (5.9222,4.191) -- (5.9556,4.1651)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (5.9222,4.191) -- (5.9556,4.1651);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=-35.0925] (5.9556,4.1651) -- (5.9222,4.191) -- (5.9087,4.1718) -- (5.9442,4.149)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (5.9087,4.1718) -- (5.9442,4.149);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=-30.1201] (5.9442,4.149) -- (5.9087,4.1718) -- (5.8966,4.151) -- (5.934,4.1313)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (5.8966,4.151) -- (5.934,4.1313);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=-25.4222] (5.934,4.1313) -- (5.8966,4.151) -- (5.886,4.1287) -- (5.9248,4.1121)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (5.886,4.1287) -- (5.9248,4.1121);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=-21.0057] (5.9248,4.1121) -- (5.886,4.1287) -- (5.8769,4.105) -- (5.9168,4.0913)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (5.8769,4.105) -- (5.9168,4.0913);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=-16.8674] (5.9168,4.0913) -- (5.8769,4.105) -- (5.8693,4.0798) -- (5.9101,4.069)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (5.8693,4.0798) -- (5.9101,4.069);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=-12.9971] (5.9101,4.069) -- (5.8693,4.0798) -- (5.8631,4.0531) -- (5.9047,4.0455)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (5.8631,4.0531) -- (5.9047,4.0455);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=-7.6542] (5.9047,4.0455) -- (5.8631,4.0531) -- (5.8555,3.9966) -- (5.8976,3.9933)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (5.8555,3.9966) -- (5.8976,3.9933);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=-1.3174] (5.8976,3.9933) -- (5.8555,3.9966) -- (5.8541,3.9351) -- (5.8963,3.9362)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (5.8541,3.9351) -- (5.8963,3.9362);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=4.2655] (5.8963,3.9362) -- (5.8541,3.9351) -- (5.859,3.8693) -- (5.901,3.8742)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (5.859,3.8693) -- (5.901,3.8742);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=9.2308] (5.901,3.8742) -- (5.859,3.8693) -- (5.8704,3.7995) -- (5.9117,3.8079)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (5.8704,3.7995) -- (5.9117,3.8079);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=13.6941] (5.9117,3.8079) -- (5.8704,3.7995) -- (5.8882,3.7263) -- (5.9288,3.7377)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (5.8882,3.7263) -- (5.9288,3.7377);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=17.7501] (5.9288,3.7377) -- (5.8882,3.7263) -- (5.9126,3.6501) -- (5.9524,3.6643)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (5.9126,3.6501) -- (5.9524,3.6643);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=21.4747] (5.9524,3.6643) -- (5.9126,3.6501) -- (5.9437,3.5711) -- (5.9823,3.5883)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (5.9437,3.5711) -- (5.9823,3.5883);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=26.5837] (5.9823,3.5883) -- (5.9437,3.5711) -- (6.0252,3.4083) -- (6.0619,3.4292)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (6.0252,3.4083) -- (6.0619,3.4292);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=32.6869] (6.0619,3.4292) -- (6.0252,3.4083) -- (6.1324,3.2411) -- (6.1668,3.2656)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (6.1324,3.2411) -- (6.1668,3.2656);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=38.2345] (6.1668,3.2656) -- (6.1324,3.2411) -- (6.2641,3.074) -- (6.296,3.1016)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (6.2641,3.074) -- (6.296,3.1016);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=43.4002] (6.296,3.1016) -- (6.2641,3.074) -- (6.4183,2.9109) -- (6.4477,2.9412)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (6.4183,2.9109) -- (6.4477,2.9412);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=48.307] (6.4477,2.9412) -- (6.4183,2.9109) -- (6.5927,2.7556) -- (6.6195,2.7882)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (6.5927,2.7556) -- (6.6195,2.7882);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=53.0466] (6.6195,2.7882) -- (6.5927,2.7556) -- (6.7843,2.6115) -- (6.8082,2.6462)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (6.7843,2.6115) -- (6.8082,2.6462);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0;blue,0},shading angle=57.6923] (6.8082,2.6462) -- (6.7843,2.6115) -- (6.9894,2.4817) -- (7.0106,2.5183)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0;blue,0}] (6.9894,2.4817) -- (7.0106,2.5183);%
+\draw[draw=none,left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.1191;blue,0},shading angle=62.3077] (7.0106,2.5183) -- (6.9894,2.4817) -- (7.2044,2.3689) -- (7.2225,2.407)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.1191;blue,0}] (7.2044,2.3689) -- (7.2225,2.407);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.1191;blue,0},right color={rgb,1:red,1;green,0.2391;blue,0},shading angle=66.9534] (7.2225,2.407) -- (7.2044,2.3689) -- (7.425,2.2751) -- (7.4399,2.3146)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.2391;blue,0}] (7.425,2.2751) -- (7.4399,2.3146);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.2391;blue,0},right color={rgb,1:red,1;green,0.3544;blue,0},shading angle=71.693] (7.4399,2.3146) -- (7.425,2.2751) -- (7.6467,2.2017) -- (7.6582,2.2423)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.3544;blue,0}] (7.6467,2.2017) -- (7.6582,2.2423);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.3544;blue,0},right color={rgb,1:red,1;green,0.4642;blue,0},shading angle=76.5998] (7.6582,2.2423) -- (7.6467,2.2017) -- (7.8651,2.1497) -- (7.873,2.1911)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.4642;blue,0}] (7.8651,2.1497) -- (7.873,2.1911);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.4642;blue,0},right color={rgb,1:red,1;green,0.5691;blue,0},shading angle=81.7655] (7.873,2.1911) -- (7.8651,2.1497) -- (8.0757,2.1192) -- (8.0797,2.1612)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.5691;blue,0}] (8.0757,2.1192) -- (8.0797,2.1612);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.5691;blue,0},right color={rgb,1:red,1;green,0.6632;blue,0},shading angle=87.3131] (8.0797,2.1612) -- (8.0757,2.1192) -- (8.274,2.1099) -- (8.2737,2.1521)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.6632;blue,0}] (8.274,2.1099) -- (8.2737,2.1521);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.6632;blue,0},right color={rgb,1:red,1;green,0.7485;blue,0},shading angle=93.4163] (8.2737,2.1521) -- (8.274,2.1099) -- (8.4557,2.1207) -- (8.4513,2.1627)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7485;blue,0}] (8.4557,2.1207) -- (8.4513,2.1627);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7485;blue,0},right color={rgb,1:red,1;green,0.7878;blue,0},shading angle=98.5253] (8.4513,2.1627) -- (8.4557,2.1207) -- (8.5397,2.1333) -- (8.5321,2.1748)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.7878;blue,0}] (8.5397,2.1333) -- (8.5321,2.1748);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.7878;blue,0},right color={rgb,1:red,1;green,0.8241;blue,0},shading angle=102.2499] (8.5321,2.1748) -- (8.5397,2.1333) -- (8.6179,2.1503) -- (8.6075,2.1912)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8241;blue,0}] (8.6179,2.1503) -- (8.6075,2.1912);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8241;blue,0},right color={rgb,1:red,1;green,0.8574;blue,0},shading angle=106.3059] (8.6075,2.1912) -- (8.6179,2.1503) -- (8.6902,2.1715) -- (8.6768,2.2115)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8574;blue,0}] (8.6902,2.1715) -- (8.6768,2.2115);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8574;blue,0},right color={rgb,1:red,1;green,0.8868;blue,0},shading angle=110.7692] (8.6768,2.2115) -- (8.6902,2.1715) -- (8.7563,2.1965) -- (8.7396,2.2353)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.8868;blue,0}] (8.7563,2.1965) -- (8.7396,2.2353);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.8868;blue,0},right color={rgb,1:red,1;green,0.9129;blue,0},shading angle=115.7345] (8.7396,2.2353) -- (8.7563,2.1965) -- (8.8158,2.2252) -- (8.7956,2.2623)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9129;blue,0}] (8.8158,2.2252) -- (8.7956,2.2623);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9129;blue,0},right color={rgb,1:red,1;green,0.9358;blue,0},shading angle=121.3174] (8.7956,2.2623) -- (8.8158,2.2252) -- (8.8684,2.2572) -- (8.8444,2.292)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9358;blue,0}] (8.8684,2.2572) -- (8.8444,2.292);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9358;blue,0},right color={rgb,1:red,1;green,0.9553;blue,0},shading angle=127.6542] (8.8444,2.292) -- (8.8684,2.2572) -- (8.9134,2.292) -- (8.8861,2.3242)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9553;blue,0}] (8.9134,2.292) -- (8.8861,2.3242);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9553;blue,0},right color={rgb,1:red,1;green,0.9637;blue,0},shading angle=132.9971] (8.8861,2.3242) -- (8.9134,2.292) -- (8.9335,2.3107) -- (8.9037,2.3406)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9637;blue,0}] (8.9335,2.3107) -- (8.9037,2.3406);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9637;blue,0},right color={rgb,1:red,1;green,0.9713;blue,0},shading angle=136.8674] (8.9037,2.3406) -- (8.9335,2.3107) -- (8.9515,2.3299) -- (8.9197,2.3576)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9713;blue,0}] (8.9515,2.3299) -- (8.9197,2.3576);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9713;blue,0},right color={rgb,1:red,1;green,0.978;blue,0},shading angle=141.0057] (8.9197,2.3576) -- (8.9515,2.3299) -- (8.9675,2.3496) -- (8.9337,2.3749)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.978;blue,0}] (8.9675,2.3496) -- (8.9337,2.3749);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.978;blue,0},right color={rgb,1:red,1;green,0.9838;blue,0},shading angle=145.4222] (8.9337,2.3749) -- (8.9675,2.3496) -- (8.9815,2.37) -- (8.9458,2.3925)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9838;blue,0}] (8.9815,2.37) -- (8.9458,2.3925);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9838;blue,0},right color={rgb,1:red,1;green,0.9887;blue,0},shading angle=150.1201] (8.9458,2.3925) -- (8.9815,2.37) -- (8.9935,2.3908) -- (8.956,2.4102)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9887;blue,0}] (8.9935,2.3908) -- (8.956,2.4102);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9887;blue,0},right color={rgb,1:red,1;green,0.9928;blue,0},shading angle=155.0925] (8.956,2.4102) -- (8.9935,2.3908) -- (9.0033,2.412) -- (8.9643,2.4281)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9928;blue,0}] (9.0033,2.412) -- (8.9643,2.4281);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9928;blue,0},right color={rgb,1:red,1;green,0.9959;blue,0},shading angle=160.3199] (8.9643,2.4281) -- (9.0033,2.412) -- (9.0111,2.4337) -- (8.9707,2.446)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9959;blue,0}] (9.0111,2.4337) -- (8.9707,2.446);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9959;blue,0},right color={rgb,1:red,1;green,0.9982;blue,0},shading angle=165.7681] (8.9707,2.446) -- (9.0111,2.4337) -- (9.0166,2.4556) -- (8.9753,2.464)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9982;blue,0}] (9.0166,2.4556) -- (8.9753,2.464);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9982;blue,0},right color={rgb,1:red,1;green,0.9995;blue,0},shading angle=171.3878] (8.9753,2.464) -- (9.0166,2.4556) -- (9.02,2.4778) -- (8.978,2.482)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,0.9995;blue,0}] (9.02,2.4778) -- (8.978,2.482);%
+\draw[draw=none,left color={rgb,1:red,1;green,0.9995;blue,0},right color={rgb,1:red,1;green,1;blue,0},shading angle=177.1168] (8.978,2.482) -- (9.02,2.4778) -- (9.0211,2.5) -- (8.9789,2.5)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,1;green,1;blue,0}] (9.0211,2.5) -- (8.9789,2.5);%
+\draw[draw=none,left color={rgb,1:red,1;green,1;blue,0},right color={rgb,1:red,1;green,0.9998;blue,0},shading angle=182.8832] (8.9789,2.5) -- (9.0211,2.5) -- (9.0206,2.5111) -- (8.9784,2.509)--cycle;%
+\draw[draw=none,left color={rgb,1:red,0.9627;green,0.8015;blue,0.5232},right color={rgb,1:red,0.9412;green,0.902;blue,0.549},shading angle=247.5] (3.191,9.1681) -- (3.2232,9.2461) -- (2.5,9.5457) -- (2.5,9.4543)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.9412;green,0.902;blue,0.549}] (2.5,9.5457) -- (2.5,9.4543);%
+\draw[draw=none,left color={rgb,1:red,0.9412;green,0.902;blue,0.549},right color={rgb,1:red,0.9843;green,0.701;blue,0.4973},shading angle=-67.5] (2.5,9.4543) -- (2.5,9.5457) -- (1.0535,8.9465) -- (1.1181,8.8819)--cycle;%
+\draw[draw=none,left color={rgb,1:red,0.9843;green,0.701;blue,0.4973},right color={rgb,1:red,0.904;green,0.5647;blue,0.6843},shading angle=-22.5] (1.1181,8.8819) -- (1.0535,8.9465) -- (0.4543,7.5) -- (0.5457,7.5)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.904;green,0.5647;blue,0.6843}] (0.4543,7.5) -- (0.5457,7.5);%
+\draw[draw=none,left color={rgb,1:red,0.904;green,0.5647;blue,0.6843},right color={rgb,1:red,0.6229;green,0.8593;blue,0.9856},shading angle=22.5] (0.5457,7.5) -- (0.4543,7.5) -- (1.0535,6.0535) -- (1.1181,6.1181)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.6229;green,0.8593;blue,0.9856}] (1.0535,6.0535) -- (1.1181,6.1181);%
+\draw[draw=none,left color={rgb,1:red,0.6229;green,0.8593;blue,0.9856},right color={rgb,1:red,0.8784;green,1;blue,1},shading angle=67.5] (1.1181,6.1181) -- (1.0535,6.0535) -- (2.5,5.4543) -- (2.5,5.5457)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.8784;green,1;blue,1}] (2.5,5.4543) -- (2.5,5.5457);%
+\draw[draw=none,left color={rgb,1:red,0.8784;green,1;blue,1},right color={rgb,1:red,0.6229;green,0.8593;blue,0.9856},shading angle=112.5] (2.5,5.5457) -- (2.5,5.4543) -- (3.9465,6.0535) -- (3.8819,6.1181)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.6229;green,0.8593;blue,0.9856}] (3.9465,6.0535) -- (3.8819,6.1181);%
+\draw[draw=none,left color={rgb,1:red,0.6229;green,0.8593;blue,0.9856},right color={rgb,1:red,0.904;green,0.5648;blue,0.6844},shading angle=157.5] (3.8819,6.1181) -- (3.9465,6.0535) -- (4.5457,7.5) -- (4.4543,7.5)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.904;green,0.5648;blue,0.6844}] (4.5457,7.5) -- (4.4543,7.5);%
+\draw[draw=none,left color={rgb,1:red,0.904;green,0.5648;blue,0.6844},right color={rgb,1:red,0.9843;green,0.701;blue,0.4973},shading angle=202.5] (4.4543,7.5) -- (4.5457,7.5) -- (3.9465,8.9465) -- (3.8819,8.8819)--cycle;%
+\draw[arrows=-,line width=0.1pt,color={rgb,1:red,0.9843;green,0.701;blue,0.4973}] (3.9465,8.9465) -- (3.8819,8.8819);%
+\draw[draw=none,left color={rgb,1:red,0.9843;green,0.701;blue,0.4973},right color={rgb,1:red,0.9627;green,0.8015;blue,0.5232},shading angle=247.5] (3.8819,8.8819) -- (3.9465,8.9465) -- (3.2232,9.2461) -- (3.191,9.1681)--cycle;%
+\end{scope}%
+\end{tikzpicture}%

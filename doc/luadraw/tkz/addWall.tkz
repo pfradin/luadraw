@@ -124,8 +124,8 @@
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (5.6289,0) -- (6.7578,0.9777);%
 \draw[] (6.7578,0.9777) -- (6.7578,3.7517);%
+\draw[] (5.6289,0) -- (6.7578,0.9777);%
 \pgfsetstrokecolor{ForestGreen!50!white!75.79!black}%
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillopacity{1}%
@@ -399,8 +399,8 @@
 \pgfsetroundcap%
 \draw[] (8.0446,0) -- (8.0446,4.6657);%
 \draw[] (8.0446,4.6657) -- (5,5.5446);%
-\draw[] (5,5.5446) -- (3.2422,4.0223);%
 \draw[] (3.2422,4.0223) -- (3.2422,0);%
+\draw[] (5,5.5446) -- (3.2422,4.0223);%
 \end{scope}%
 \end{scope}%
 \end{tikzpicture}%

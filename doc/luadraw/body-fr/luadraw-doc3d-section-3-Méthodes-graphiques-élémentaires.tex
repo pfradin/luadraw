@@ -52,15 +52,15 @@ La méthode \textbf{g:Line3d2seg(d,scale)} renvoie une table constituée de deux
     
 \subsubsection{Chemin 3d : Dpath3d}
 
-La méthode \textbf{g:Dpath3d(chemin,draw\_options,clip)} fait le dessin du \emph{chemin}. L'argument \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante. L'argument \emph{chemin} est une liste de points 3d suivis d'instructions (chaînes) fonctionnant sur le même principe qu'en 2d. Les instructions sont :
-    \begin{itemize}
-      \item \emph{"m"} pour moveto,
-      \item \emph{"l"} pour lineto,
-      \item \emph{"b"} pour bézier (il faut deux points de contrôles),
-      \item \emph{"c"} pour cercle (il faut un point du cercle, le centre et un vecteur normal),
-      \item \emph{"ca"} pour arc de cercle (il faut 3 points, un rayon, un sens et éventuellement un vecteur normal),
-      \item \emph{"cl"} pour close (ferme la composante courante).
-      \end{itemize}
+La méthode \textbf{g:Dpath3d(chemin,draw\_options,clip)} fait le dessin du \emph{chemin}. L'argument \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw}. L'argument \emph{clip} vaut \emph{false} par défaut, il indique si le tracé doit être clippé avec la fenêtre 3d courante. L'argument \emph{chemin} est une liste de points 3d suivis d'instructions (chaînes) fonctionnant \textbf{sur le même principe qu'en 2d}. Instructions disponibles et leur syntaxe, le mot \emph{last} représente le dernier point du morceau précédent:
+      \begin{itemize}
+      \item \emph{p1,"m"} (moveto), permet de commencer une nouvelle composante du chemin au point 3d $p1$.
+      \item \emph{p1,...,pn,"l"} (lineto), dessine la ligne polygonale 3d \emph{\{last,p1,...,pn\}}.
+      \item \emph{c1,c2,p2,"b"} (bézier) dessine la courbe de Bézier \emph{\{last,c1,c2,p2\}}, où $c1$ et $c2$ sont les deux points (3d) de contrôle.
+      \item \emph{p1,n,"c"} (cercle), dessine le cercle de centre $p1$ et passant par le point \emph{last}, et normal au vecteur 3d \emph{n}.
+      \item \emph{p1,p2,r,sens,n,"ca"} (arc de cercle), dessine un arc de cercle de centre $p1$, de rayon $r$, allant de \emph{last} vers $p2$, dans le sens direct lorsque \emph{sens=1} (et donc dans le sens inverse si \emph{sens=-1}). Le vecteur 3d \emph{n} est optionnel, il indique un vecteur normal au plan du cercle lorsque les points \emph{last}, \emph{p1} et \emph{p2} sont alignés (et dans ce cas, le vecteur \emph{n} est obligatoire).
+      \item \emph{"cl"} (closepath), cette instruction s'utilise seule, elle permet de refermer la composante courante en traçant un segment reliant le dernier point au premier point (de la composante courante).
+      \end{itemize}      
 
 Voici par exemple le code de la figure \ref{viewdir}.
 
