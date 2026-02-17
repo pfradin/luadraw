@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -225,6 +225,16 @@ function rectangle(a,b,c)
     if (a1 == nil) or (b1 == nil) then return end
     return {a,b,b1,a1}
 end
+
+function parallelogram(a,u,v)
+-- renvoie le parallélogramme ayant comme sommet a et construit sur les deux vecteurs u et v
+    a = toComplex(a)
+    u = toComplex(u)
+    v = toComplex(v)
+    if (a == nil) or (u == nil) or (v == nil) then return end
+    return {a,a+u,a+u+v,a+v}
+end
+
 
 function ellipse(c,rx,ry,inclin)
 -- renvoie les points de l'ellipse de centre c et de rayons rx et ry

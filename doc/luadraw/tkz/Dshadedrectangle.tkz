@@ -1,0 +1,831 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0899;blue,0.0999},upper right={rgb,1:red,1;green,0.4236;blue,0.6567},lower left={rgb,1:red,1;green,0.019;blue,0.0211},lower right={rgb,1:red,1;green,0.4187;blue,0.6129}] (0,0.4009) -- (0.4445,0.4009) -- (0.4445,0.9627) -- (0,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.1106;blue,0.1229},upper right={rgb,1:red,1;green,0.4172;blue,0.599},lower left={rgb,1:red,1;green,0.0899;blue,0.0999},lower right={rgb,1:red,1;green,0.4236;blue,0.6567}] (0,0.9464) -- (0.4445,0.9464) -- (0.4445,1.5082) -- (0,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0489;blue,0.0543},upper right={rgb,1:red,1;green,0.4094;blue,0.5294},lower left={rgb,1:red,1;green,0.1106;blue,0.1229},lower right={rgb,1:red,1;green,0.4172;blue,0.599}] (0,1.4918) -- (0.4445,1.4918) -- (0.4445,2.0536) -- (0,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0;blue,0},upper right={rgb,1:red,1;green,0.4121;blue,0.5532},lower left={rgb,1:red,1;green,0.0489;blue,0.0543},lower right={rgb,1:red,1;green,0.4094;blue,0.5294}] (0,2.0373) -- (0.4445,2.0373) -- (0.4445,2.5991) -- (0,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0378;blue,0.042},upper right={rgb,1:red,1;green,0.4211;blue,0.6347},lower left={rgb,1:red,1;green,0;blue,0},lower right={rgb,1:red,1;green,0.4121;blue,0.5532}] (0,2.5827) -- (0.4445,2.5827) -- (0.4445,3.1445) -- (0,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.1053;blue,0.117},upper right={rgb,1:red,1;green,0.4227;blue,0.6492},lower left={rgb,1:red,1;green,0.0378;blue,0.042},lower right={rgb,1:red,1;green,0.4211;blue,0.6347}] (0,3.1282) -- (0.4445,3.1282) -- (0.4445,3.69) -- (0,3.69);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0987;blue,0.1097},upper right={rgb,1:red,1;green,0.4144;blue,0.5739},lower left={rgb,1:red,1;green,0.1053;blue,0.117},lower right={rgb,1:red,1;green,0.4227;blue,0.6492}] (0,3.6736) -- (0.4445,3.6736) -- (0.4445,4.2355) -- (0,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0283;blue,0.0314},upper right={rgb,1:red,1;green,0.409;blue,0.5251},lower left={rgb,1:red,1;green,0.0987;blue,0.1097},lower right={rgb,1:red,1;green,0.4144;blue,0.5739}] (0,4.2191) -- (0.4445,4.2191) -- (0.4445,4.7809) -- (0,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.002;blue,0.0022},upper right={rgb,1:red,1;green,0.4146;blue,0.576},lower left={rgb,1:red,1;green,0.0283;blue,0.0314},lower right={rgb,1:red,1;green,0.409;blue,0.5251}] (0,4.7645) -- (0.4445,4.7645) -- (0.4445,5.3264) -- (0,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0594;blue,0.066},upper right={rgb,1:red,1;green,0.4229;blue,0.6502},lower left={rgb,1:red,1;green,0.002;blue,0.0022},lower right={rgb,1:red,1;green,0.4146;blue,0.576}] (0,5.31) -- (0.4445,5.31) -- (0.4445,5.8718) -- (0,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.1136;blue,0.1262},upper right={rgb,1:red,1;green,0.421;blue,0.633},lower left={rgb,1:red,1;green,0.0594;blue,0.066},lower right={rgb,1:red,1;green,0.4229;blue,0.6502}] (0,5.8555) -- (0.4445,5.8555) -- (0.4445,6.4173) -- (0,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0807;blue,0.0897},upper right={rgb,1:red,1;green,0.4119;blue,0.5514},lower left={rgb,1:red,1;green,0.1136;blue,0.1262},lower right={rgb,1:red,1;green,0.421;blue,0.633}] (0,6.4009) -- (0.4445,6.4009) -- (0.4445,6.9627) -- (0,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0119;blue,0.0132},upper right={rgb,1:red,1;green,0.4095;blue,0.5302},lower left={rgb,1:red,1;green,0.0807;blue,0.0897},lower right={rgb,1:red,1;green,0.4119;blue,0.5514}] (0,6.9464) -- (0.4445,6.9464) -- (0.4445,7.5082) -- (0,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0119;blue,0.0132},upper right={rgb,1:red,1;green,0.4174;blue,0.6012},lower left={rgb,1:red,1;green,0.0119;blue,0.0132},lower right={rgb,1:red,1;green,0.4095;blue,0.5302}] (0,7.4918) -- (0.4445,7.4918) -- (0.4445,8.0536) -- (0,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.0807;blue,0.0897},upper right={rgb,1:red,1;green,0.4236;blue,0.6569},lower left={rgb,1:red,1;green,0.0119;blue,0.0132},lower right={rgb,1:red,1;green,0.4174;blue,0.6012}] (0,8.0373) -- (0.4445,8.0373) -- (0.4445,8.5991) -- (0,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4236;blue,0.6567},upper right={rgb,1:red,1;green,0.5901;blue,0.9464},lower left={rgb,1:red,1;green,0.4187;blue,0.6129},lower right={rgb,1:red,1;green,0.6165;blue,0.9649}] (0.4282,0.4009) -- (0.8809,0.4009) -- (0.8809,0.9627) -- (0.4282,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4172;blue,0.599},upper right={rgb,1:red,1;green,0.5392;blue,0.9108},lower left={rgb,1:red,1;green,0.4236;blue,0.6567},lower right={rgb,1:red,1;green,0.5901;blue,0.9464}] (0.4282,0.9464) -- (0.8809,0.9464) -- (0.8809,1.5082) -- (0.4282,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4094;blue,0.5294},upper right={rgb,1:red,1;green,0.5409;blue,0.912},lower left={rgb,1:red,1;green,0.4172;blue,0.599},lower right={rgb,1:red,1;green,0.5392;blue,0.9108}] (0.4282,1.4918) -- (0.8809,1.4918) -- (0.8809,2.0536) -- (0.4282,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4121;blue,0.5532},upper right={rgb,1:red,1;green,0.5928;blue,0.9483},lower left={rgb,1:red,1;green,0.4094;blue,0.5294},lower right={rgb,1:red,1;green,0.5409;blue,0.912}] (0.4282,2.0373) -- (0.8809,2.0373) -- (0.8809,2.5991) -- (0.4282,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4211;blue,0.6347},upper right={rgb,1:red,1;green,0.6159;blue,0.9645},lower left={rgb,1:red,1;green,0.4121;blue,0.5532},lower right={rgb,1:red,1;green,0.5928;blue,0.9483}] (0.4282,2.5827) -- (0.8809,2.5827) -- (0.8809,3.1445) -- (0.4282,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4227;blue,0.6492},upper right={rgb,1:red,1;green,0.574;blue,0.9351},lower left={rgb,1:red,1;green,0.4211;blue,0.6347},lower right={rgb,1:red,1;green,0.6159;blue,0.9645}] (0.4282,3.1282) -- (0.8809,3.1282) -- (0.8809,3.69) -- (0.4282,3.69);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4144;blue,0.5739},upper right={rgb,1:red,1;green,0.5324;blue,0.906},lower left={rgb,1:red,1;green,0.4227;blue,0.6492},lower right={rgb,1:red,1;green,0.574;blue,0.9351}] (0.4282,3.6736) -- (0.8809,3.6736) -- (0.8809,4.2355) -- (0.4282,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.409;blue,0.5251},upper right={rgb,1:red,1;green,0.5535;blue,0.9208},lower left={rgb,1:red,1;green,0.4144;blue,0.5739},lower right={rgb,1:red,1;green,0.5324;blue,0.906}] (0.4282,4.2191) -- (0.8809,4.2191) -- (0.8809,4.7809) -- (0.4282,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4146;blue,0.576},upper right={rgb,1:red,1;green,0.606;blue,0.9575},lower left={rgb,1:red,1;green,0.409;blue,0.5251},lower right={rgb,1:red,1;green,0.5535;blue,0.9208}] (0.4282,4.7645) -- (0.8809,4.7645) -- (0.8809,5.3264) -- (0.4282,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4229;blue,0.6502},upper right={rgb,1:red,1;green,0.6091;blue,0.9597},lower left={rgb,1:red,1;green,0.4146;blue,0.576},lower right={rgb,1:red,1;green,0.606;blue,0.9575}] (0.4282,5.31) -- (0.8809,5.31) -- (0.8809,5.8718) -- (0.4282,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.421;blue,0.633},upper right={rgb,1:red,1;green,0.558;blue,0.9239},lower left={rgb,1:red,1;green,0.4229;blue,0.6502},lower right={rgb,1:red,1;green,0.6091;blue,0.9597}] (0.4282,5.8555) -- (0.8809,5.8555) -- (0.8809,6.4173) -- (0.4282,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4119;blue,0.5514},upper right={rgb,1:red,1;green,0.5314;blue,0.9053},lower left={rgb,1:red,1;green,0.421;blue,0.633},lower right={rgb,1:red,1;green,0.558;blue,0.9239}] (0.4282,6.4009) -- (0.8809,6.4009) -- (0.8809,6.9627) -- (0.4282,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4095;blue,0.5302},upper right={rgb,1:red,1;green,0.569;blue,0.9316},lower left={rgb,1:red,1;green,0.4119;blue,0.5514},lower right={rgb,1:red,1;green,0.5314;blue,0.9053}] (0.4282,6.9464) -- (0.8809,6.9464) -- (0.8809,7.5082) -- (0.4282,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4174;blue,0.6012},upper right={rgb,1:red,1;green,0.6145;blue,0.9635},lower left={rgb,1:red,1;green,0.4095;blue,0.5302},lower right={rgb,1:red,1;green,0.569;blue,0.9316}] (0.4282,7.4918) -- (0.8809,7.4918) -- (0.8809,8.0536) -- (0.4282,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4236;blue,0.6569},upper right={rgb,1:red,1;green,0.5972;blue,0.9513},lower left={rgb,1:red,1;green,0.4174;blue,0.6012},lower right={rgb,1:red,1;green,0.6145;blue,0.9635}] (0.4282,8.0373) -- (0.8809,8.0373) -- (0.8809,8.5991) -- (0.4282,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5901;blue,0.9464},upper right={rgb,1:red,1;green,0.809;blue,1},lower left={rgb,1:red,1;green,0.6165;blue,0.9649},lower right={rgb,1:red,1;green,0.8731;blue,1}] (0.8645,0.4009) -- (1.3173,0.4009) -- (1.3173,0.9627) -- (0.8645,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5392;blue,0.9108},upper right={rgb,1:red,1;green,0.7946;blue,1},lower left={rgb,1:red,1;green,0.5901;blue,0.9464},lower right={rgb,1:red,1;green,0.809;blue,1}] (0.8645,0.9464) -- (1.3173,0.9464) -- (1.3173,1.5082) -- (0.8645,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5409;blue,0.912},upper right={rgb,1:red,1;green,0.8509;blue,1},lower left={rgb,1:red,1;green,0.5392;blue,0.9108},lower right={rgb,1:red,1;green,0.7946;blue,1}] (0.8645,1.4918) -- (1.3173,1.4918) -- (1.3173,2.0536) -- (0.8645,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5928;blue,0.9483},upper right={rgb,1:red,0.9976;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.5409;blue,0.912},lower right={rgb,1:red,1;green,0.8509;blue,1}] (0.8645,2.0373) -- (1.3173,2.0373) -- (1.3173,2.5991) -- (0.8645,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.6159;blue,0.9645},upper right={rgb,1:red,1;green,0.8552;blue,1},lower left={rgb,1:red,1;green,0.5928;blue,0.9483},lower right={rgb,1:red,0.9976;green,0.8889;blue,1}] (0.8645,2.5827) -- (1.3173,2.5827) -- (1.3173,3.1445) -- (0.8645,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.574;blue,0.9351},upper right={rgb,1:red,1;green,0.7965;blue,1},lower left={rgb,1:red,1;green,0.6159;blue,0.9645},lower right={rgb,1:red,1;green,0.8552;blue,1}] (0.8645,3.1282) -- (1.3173,3.1282) -- (1.3173,3.69) -- (0.8645,3.69);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5324;blue,0.906},upper right={rgb,1:red,1;green,0.8058;blue,1},lower left={rgb,1:red,1;green,0.574;blue,0.9351},lower right={rgb,1:red,1;green,0.7965;blue,1}] (0.8645,3.6736) -- (1.3173,3.6736) -- (1.3173,4.2355) -- (0.8645,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5535;blue,0.9208},upper right={rgb,1:red,1;green,0.8695;blue,1},lower left={rgb,1:red,1;green,0.5324;blue,0.906},lower right={rgb,1:red,1;green,0.8058;blue,1}] (0.8645,4.2191) -- (1.3173,4.2191) -- (1.3173,4.7809) -- (0.8645,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.606;blue,0.9575},upper right={rgb,1:red,0.9991;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.5535;blue,0.9208},lower right={rgb,1:red,1;green,0.8695;blue,1}] (0.8645,4.7645) -- (1.3173,4.7645) -- (1.3173,5.3264) -- (0.8645,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.6091;blue,0.9597},upper right={rgb,1:red,1;green,0.8354;blue,1},lower left={rgb,1:red,1;green,0.606;blue,0.9575},lower right={rgb,1:red,0.9991;green,0.8889;blue,1}] (0.8645,5.31) -- (1.3173,5.31) -- (1.3173,5.8718) -- (0.8645,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.558;blue,0.9239},upper right={rgb,1:red,1;green,0.7904;blue,1},lower left={rgb,1:red,1;green,0.6091;blue,0.9597},lower right={rgb,1:red,1;green,0.8354;blue,1}] (0.8645,5.8555) -- (1.3173,5.8555) -- (1.3173,6.4173) -- (0.8645,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5314;blue,0.9053},upper right={rgb,1:red,1;green,0.8222;blue,1},lower left={rgb,1:red,1;green,0.558;blue,0.9239},lower right={rgb,1:red,1;green,0.7904;blue,1}] (0.8645,6.4009) -- (1.3173,6.4009) -- (1.3173,6.9627) -- (0.8645,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.569;blue,0.9316},upper right={rgb,1:red,1;green,0.8841;blue,1},lower left={rgb,1:red,1;green,0.5314;blue,0.9053},lower right={rgb,1:red,1;green,0.8222;blue,1}] (0.8645,6.9464) -- (1.3173,6.9464) -- (1.3173,7.5082) -- (0.8645,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.6145;blue,0.9635},upper right={rgb,1:red,1;green,0.8802;blue,1},lower left={rgb,1:red,1;green,0.569;blue,0.9316},lower right={rgb,1:red,1;green,0.8841;blue,1}] (0.8645,7.4918) -- (1.3173,7.4918) -- (1.3173,8.0536) -- (0.8645,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5972;blue,0.9513},upper right={rgb,1:red,1;green,0.8168;blue,1},lower left={rgb,1:red,1;green,0.6145;blue,0.9635},lower right={rgb,1:red,1;green,0.8802;blue,1}] (0.8645,8.0373) -- (1.3173,8.0373) -- (1.3173,8.5991) -- (0.8645,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.809;blue,1},upper right={rgb,1:red,0.9239;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.8731;blue,1},lower right={rgb,1:red,0.9054;green,0.8889;blue,1}] (1.3009,0.4009) -- (1.7536,0.4009) -- (1.7536,0.9627) -- (1.3009,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.7946;blue,1},upper right={rgb,1:red,0.8951;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.809;blue,1},lower right={rgb,1:red,0.9239;green,0.8889;blue,1}] (1.3009,0.9464) -- (1.7536,0.9464) -- (1.7536,1.5082) -- (1.3009,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8509;blue,1},upper right={rgb,1:red,0.8329;green,0.8665;blue,1},lower left={rgb,1:red,1;green,0.7946;blue,1},lower right={rgb,1:red,0.8951;green,0.8889;blue,1}] (1.3009,1.4918) -- (1.7536,1.4918) -- (1.7536,2.0536) -- (1.3009,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.9976;green,0.8889;blue,1},upper right={rgb,1:red,0.8624;green,0.8783;blue,1},lower left={rgb,1:red,1;green,0.8509;blue,1},lower right={rgb,1:red,0.8329;green,0.8665;blue,1}] (1.3009,2.0373) -- (1.7536,2.0373) -- (1.7536,2.5991) -- (1.3009,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8552;blue,1},upper right={rgb,1:red,0.9153;green,0.8889;blue,1},lower left={rgb,1:red,0.9976;green,0.8889;blue,1},lower right={rgb,1:red,0.8624;green,0.8783;blue,1}] (1.3009,2.5827) -- (1.7536,2.5827) -- (1.7536,3.1445) -- (1.3009,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.7965;blue,1},upper right={rgb,1:red,0.9198;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.8552;blue,1},lower right={rgb,1:red,0.9153;green,0.8889;blue,1}] (1.3009,3.1282) -- (1.7536,3.1282) -- (1.7536,3.69) -- (1.3009,3.69);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8058;blue,1},upper right={rgb,1:red,0.8766;green,0.884;blue,1},lower left={rgb,1:red,1;green,0.7965;blue,1},lower right={rgb,1:red,0.9198;green,0.8889;blue,1}] (1.3009,3.6736) -- (1.7536,3.6736) -- (1.7536,4.2355) -- (1.3009,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8695;blue,1},upper right={rgb,1:red,0.8298;green,0.8652;blue,1},lower left={rgb,1:red,1;green,0.8058;blue,1},lower right={rgb,1:red,0.8766;green,0.884;blue,1}] (1.3009,4.2191) -- (1.7536,4.2191) -- (1.7536,4.7809) -- (1.3009,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.9991;green,0.8889;blue,1},upper right={rgb,1:red,0.8862;green,0.8878;blue,1},lower left={rgb,1:red,1;green,0.8695;blue,1},lower right={rgb,1:red,0.8298;green,0.8652;blue,1}] (1.3009,4.7645) -- (1.7536,4.7645) -- (1.7536,5.3264) -- (1.3009,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8354;blue,1},upper right={rgb,1:red,0.9219;green,0.8889;blue,1},lower left={rgb,1:red,0.9991;green,0.8889;blue,1},lower right={rgb,1:red,0.8862;green,0.8878;blue,1}] (1.3009,5.31) -- (1.7536,5.31) -- (1.7536,5.8718) -- (1.3009,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.7904;blue,1},upper right={rgb,1:red,0.9118;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.8354;blue,1},lower right={rgb,1:red,0.9219;green,0.8889;blue,1}] (1.3009,5.8555) -- (1.7536,5.8555) -- (1.7536,6.4173) -- (1.3009,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8222;blue,1},upper right={rgb,1:red,0.8542;green,0.875;blue,1},lower left={rgb,1:red,1;green,0.7904;blue,1},lower right={rgb,1:red,0.9118;green,0.8889;blue,1}] (1.3009,6.4009) -- (1.7536,6.4009) -- (1.7536,6.9627) -- (1.3009,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8841;blue,1},upper right={rgb,1:red,0.8367;green,0.868;blue,1},lower left={rgb,1:red,1;green,0.8222;blue,1},lower right={rgb,1:red,0.8542;green,0.875;blue,1}] (1.3009,6.9464) -- (1.7536,6.9464) -- (1.7536,7.5082) -- (1.3009,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8802;blue,1},upper right={rgb,1:red,0.8999;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.8841;blue,1},lower right={rgb,1:red,0.8367;green,0.868;blue,1}] (1.3009,7.4918) -- (1.7536,7.4918) -- (1.7536,8.0536) -- (1.3009,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8168;blue,1},upper right={rgb,1:red,0.9243;green,0.8889;blue,1},lower left={rgb,1:red,1;green,0.8802;blue,1},lower right={rgb,1:red,0.8999;green,0.8889;blue,1}] (1.3009,8.0373) -- (1.7536,8.0373) -- (1.7536,8.5991) -- (1.3009,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.9239;green,0.8889;blue,1},upper right={rgb,1:red,0.6721;green,0.8022;blue,1},lower left={rgb,1:red,0.9054;green,0.8889;blue,1},lower right={rgb,1:red,0.7255;green,0.8235;blue,1}] (1.7373,0.4009) -- (2.19,0.4009) -- (2.19,0.9627) -- (1.7373,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.8951;green,0.8889;blue,1},upper right={rgb,1:red,0.5684;green,0.8;blue,1},lower left={rgb,1:red,0.9239;green,0.8889;blue,1},lower right={rgb,1:red,0.6721;green,0.8022;blue,1}] (1.7373,0.9464) -- (2.19,0.9464) -- (2.19,1.5082) -- (1.7373,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.8329;green,0.8665;blue,1},upper right={rgb,1:red,0.5791;green,0.8;blue,1},lower left={rgb,1:red,0.8951;green,0.8889;blue,1},lower right={rgb,1:red,0.5684;green,0.8;blue,1}] (1.7373,1.4918) -- (2.19,1.4918) -- (2.19,2.0536) -- (1.7373,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.8624;green,0.8783;blue,1},upper right={rgb,1:red,0.6858;green,0.8077;blue,1},lower left={rgb,1:red,0.8329;green,0.8665;blue,1},lower right={rgb,1:red,0.5791;green,0.8;blue,1}] (1.7373,2.0373) -- (2.19,2.0373) -- (2.19,2.5991) -- (1.7373,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.9153;green,0.8889;blue,1},upper right={rgb,1:red,0.7227;green,0.8224;blue,1},lower left={rgb,1:red,0.8624;green,0.8783;blue,1},lower right={rgb,1:red,0.6858;green,0.8077;blue,1}] (1.7373,2.5827) -- (2.19,2.5827) -- (2.19,3.1445) -- (1.7373,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.9198;green,0.8889;blue,1},upper right={rgb,1:red,0.6402;green,0.8;blue,1},lower left={rgb,1:red,0.9153;green,0.8889;blue,1},lower right={rgb,1:red,0.7227;green,0.8224;blue,1}] (1.7373,3.1282) -- (2.19,3.1282) -- (2.19,3.69) -- (1.7373,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.8766;green,0.884;blue,1},upper right={rgb,1:red,0.5547;green,0.8;blue,1},lower left={rgb,1:red,0.9198;green,0.8889;blue,1},lower right={rgb,1:red,0.6402;green,0.8;blue,1}] (1.7373,3.6736) -- (2.19,3.6736) -- (2.19,4.2355) -- (1.7373,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.8298;green,0.8652;blue,1},upper right={rgb,1:red,0.6076;green,0.8;blue,1},lower left={rgb,1:red,0.8766;green,0.884;blue,1},lower right={rgb,1:red,0.5547;green,0.8;blue,1}] (1.7373,4.2191) -- (2.19,4.2191) -- (2.19,4.7809) -- (1.7373,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.8862;green,0.8878;blue,1},upper right={rgb,1:red,0.709;green,0.8169;blue,1},lower left={rgb,1:red,0.8298;green,0.8652;blue,1},lower right={rgb,1:red,0.6076;green,0.8;blue,1}] (1.7373,4.7645) -- (2.19,4.7645) -- (2.19,5.3264) -- (1.7373,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.9219;green,0.8889;blue,1},upper right={rgb,1:red,0.709;green,0.8169;blue,1},lower left={rgb,1:red,0.8862;green,0.8878;blue,1},lower right={rgb,1:red,0.709;green,0.8169;blue,1}] (1.7373,5.31) -- (2.19,5.31) -- (2.19,5.8718) -- (1.7373,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.9118;green,0.8889;blue,1},upper right={rgb,1:red,0.6076;green,0.8;blue,1},lower left={rgb,1:red,0.9219;green,0.8889;blue,1},lower right={rgb,1:red,0.709;green,0.8169;blue,1}] (1.7373,5.8555) -- (2.19,5.8555) -- (2.19,6.4173) -- (1.7373,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.8542;green,0.875;blue,1},upper right={rgb,1:red,0.5547;green,0.8;blue,1},lower left={rgb,1:red,0.9118;green,0.8889;blue,1},lower right={rgb,1:red,0.6076;green,0.8;blue,1}] (1.7373,6.4009) -- (2.19,6.4009) -- (2.19,6.9627) -- (1.7373,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.8367;green,0.868;blue,1},upper right={rgb,1:red,0.6402;green,0.8;blue,1},lower left={rgb,1:red,0.8542;green,0.875;blue,1},lower right={rgb,1:red,0.5547;green,0.8;blue,1}] (1.7373,6.9464) -- (2.19,6.9464) -- (2.19,7.5082) -- (1.7373,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.8999;green,0.8889;blue,1},upper right={rgb,1:red,0.7227;green,0.8224;blue,1},lower left={rgb,1:red,0.8367;green,0.868;blue,1},lower right={rgb,1:red,0.6402;green,0.8;blue,1}] (1.7373,7.4918) -- (2.19,7.4918) -- (2.19,8.0536) -- (1.7373,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.9243;green,0.8889;blue,1},upper right={rgb,1:red,0.6858;green,0.8077;blue,1},lower left={rgb,1:red,0.8999;green,0.8889;blue,1},lower right={rgb,1:red,0.7227;green,0.8224;blue,1}] (1.7373,8.0373) -- (2.19,8.0373) -- (2.19,8.5991) -- (1.7373,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.6721;green,0.8022;blue,1},upper right={rgb,1:red,0.3273;green,0.7062;blue,1},lower left={rgb,1:red,0.7255;green,0.8235;blue,1},lower right={rgb,1:red,0.4803;green,0.8;blue,1}] (2.1736,0.4009) -- (2.6264,0.4009) -- (2.6264,0.9627) -- (2.1736,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.5684;green,0.8;blue,1},upper right={rgb,1:red,0.295;green,0.6805;blue,1},lower left={rgb,1:red,0.6721;green,0.8022;blue,1},lower right={rgb,1:red,0.3273;green,0.7062;blue,1}] (2.1736,0.9464) -- (2.6264,0.9464) -- (2.6264,1.5082) -- (2.1736,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.5791;green,0.8;blue,1},upper right={rgb,1:red,0.4448;green,0.8;blue,1},lower left={rgb,1:red,0.5684;green,0.8;blue,1},lower right={rgb,1:red,0.295;green,0.6805;blue,1}] (2.1736,1.4918) -- (2.6264,1.4918) -- (2.6264,2.0536) -- (2.1736,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.6858;green,0.8077;blue,1},upper right={rgb,1:red,0.5256;green,0.8;blue,1},lower left={rgb,1:red,0.5791;green,0.8;blue,1},lower right={rgb,1:red,0.4448;green,0.8;blue,1}] (2.1736,2.0373) -- (2.6264,2.0373) -- (2.6264,2.5991) -- (2.1736,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.7227;green,0.8224;blue,1},upper right={rgb,1:red,0.4411;green,0.7974;blue,1},lower left={rgb,1:red,0.6858;green,0.8077;blue,1},lower right={rgb,1:red,0.5256;green,0.8;blue,1}] (2.1736,2.5827) -- (2.6264,2.5827) -- (2.6264,3.1445) -- (2.1736,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.6402;green,0.8;blue,1},upper right={rgb,1:red,0.2927;green,0.6786;blue,1},lower left={rgb,1:red,0.7227;green,0.8224;blue,1},lower right={rgb,1:red,0.4411;green,0.7974;blue,1}] (2.1736,3.1282) -- (2.6264,3.1282) -- (2.6264,3.69) -- (2.1736,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.5547;green,0.8;blue,1},upper right={rgb,1:red,0.3308;green,0.7091;blue,1},lower left={rgb,1:red,0.6402;green,0.8;blue,1},lower right={rgb,1:red,0.2927;green,0.6786;blue,1}] (2.1736,3.6736) -- (2.6264,3.6736) -- (2.6264,4.2355) -- (2.1736,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.6076;green,0.8;blue,1},upper right={rgb,1:red,0.4832;green,0.8;blue,1},lower left={rgb,1:red,0.5547;green,0.8;blue,1},lower right={rgb,1:red,0.3308;green,0.7091;blue,1}] (2.1736,4.2191) -- (2.6264,4.2191) -- (2.6264,4.7809) -- (2.1736,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.709;green,0.8169;blue,1},upper right={rgb,1:red,0.5175;green,0.8;blue,1},lower left={rgb,1:red,0.6076;green,0.8;blue,1},lower right={rgb,1:red,0.4832;green,0.8;blue,1}] (2.1736,4.7645) -- (2.6264,4.7645) -- (2.6264,5.3264) -- (2.1736,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.709;green,0.8169;blue,1},upper right={rgb,1:red,0.3951;green,0.7605;blue,1},lower left={rgb,1:red,0.709;green,0.8169;blue,1},lower right={rgb,1:red,0.5175;green,0.8;blue,1}] (2.1736,5.31) -- (2.6264,5.31) -- (2.6264,5.8718) -- (2.1736,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.6076;green,0.8;blue,1},upper right={rgb,1:red,0.2767;green,0.6658;blue,1},lower left={rgb,1:red,0.709;green,0.8169;blue,1},lower right={rgb,1:red,0.3951;green,0.7605;blue,1}] (2.1736,5.8555) -- (2.6264,5.8555) -- (2.6264,6.4173) -- (2.1736,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.5547;green,0.8;blue,1},upper right={rgb,1:red,0.3764;green,0.7456;blue,1},lower left={rgb,1:red,0.6076;green,0.8;blue,1},lower right={rgb,1:red,0.2767;green,0.6658;blue,1}] (2.1736,6.4009) -- (2.6264,6.4009) -- (2.6264,6.9627) -- (2.1736,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.6402;green,0.8;blue,1},upper right={rgb,1:red,0.5105;green,0.8;blue,1},lower left={rgb,1:red,0.5547;green,0.8;blue,1},lower right={rgb,1:red,0.3764;green,0.7456;blue,1}] (2.1736,6.9464) -- (2.6264,6.9464) -- (2.6264,7.5082) -- (2.1736,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.7227;green,0.8224;blue,1},upper right={rgb,1:red,0.4954;green,0.8;blue,1},lower left={rgb,1:red,0.6402;green,0.8;blue,1},lower right={rgb,1:red,0.5105;green,0.8;blue,1}] (2.1736,7.4918) -- (2.6264,7.4918) -- (2.6264,8.0536) -- (2.1736,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.6858;green,0.8077;blue,1},upper right={rgb,1:red,0.348;green,0.7228;blue,1},lower left={rgb,1:red,0.7227;green,0.8224;blue,1},lower right={rgb,1:red,0.4954;green,0.8;blue,1}] (2.1736,8.0373) -- (2.6264,8.0373) -- (2.6264,8.5991) -- (2.1736,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.3273;green,0.7062;blue,1},upper right={rgb,1:red,0.0113;green,0.0317;blue,1},lower left={rgb,1:red,0.4803;green,0.8;blue,1},lower right={rgb,1:red,0.1673;green,0.4685;blue,1}] (2.61,0.4009) -- (3.0627,0.4009) -- (3.0627,0.9627) -- (2.61,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.295;green,0.6805;blue,1},upper right={rgb,1:red,0.2511;green,0.6453;blue,1},lower left={rgb,1:red,0.3273;green,0.7062;blue,1},lower right={rgb,1:red,0.0113;green,0.0317;blue,1}] (2.61,0.9464) -- (3.0627,0.9464) -- (3.0627,1.5082) -- (2.61,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.4448;green,0.8;blue,1},upper right={rgb,1:red,0.3942;green,0.7598;blue,1},lower left={rgb,1:red,0.295;green,0.6805;blue,1},lower right={rgb,1:red,0.2511;green,0.6453;blue,1}] (2.61,1.4918) -- (3.0627,1.4918) -- (3.0627,2.0536) -- (2.61,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.5256;green,0.8;blue,1},upper right={rgb,1:red,0.3268;green,0.7059;blue,1},lower left={rgb,1:red,0.4448;green,0.8;blue,1},lower right={rgb,1:red,0.3942;green,0.7598;blue,1}] (2.61,2.0373) -- (3.0627,2.0373) -- (3.0627,2.5991) -- (2.61,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.4411;green,0.7974;blue,1},upper right={rgb,1:red,0.0914;green,0.256;blue,1},lower left={rgb,1:red,0.5256;green,0.8;blue,1},lower right={rgb,1:red,0.3268;green,0.7059;blue,1}] (2.61,2.5827) -- (3.0627,2.5827) -- (3.0627,3.1445) -- (2.61,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.2927;green,0.6786;blue,1},upper right={rgb,1:red,0.0693;green,0.1939;blue,1},lower left={rgb,1:red,0.4411;green,0.7974;blue,1},lower right={rgb,1:red,0.0914;green,0.256;blue,1}] (2.61,3.1282) -- (3.0627,3.1282) -- (3.0627,3.69) -- (2.61,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.3308;green,0.7091;blue,1},upper right={rgb,1:red,0.3112;green,0.6934;blue,1},lower left={rgb,1:red,0.2927;green,0.6786;blue,1},lower right={rgb,1:red,0.0693;green,0.1939;blue,1}] (2.61,3.6736) -- (3.0627,3.6736) -- (3.0627,4.2355) -- (2.61,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.4832;green,0.8;blue,1},upper right={rgb,1:red,0.397;green,0.7621;blue,1},lower left={rgb,1:red,0.3308;green,0.7091;blue,1},lower right={rgb,1:red,0.3112;green,0.6934;blue,1}] (2.61,4.2191) -- (3.0627,4.2191) -- (3.0627,4.7809) -- (2.61,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.5175;green,0.8;blue,1},upper right={rgb,1:red,0.2707;green,0.661;blue,1},lower left={rgb,1:red,0.4832;green,0.8;blue,1},lower right={rgb,1:red,0.397;green,0.7621;blue,1}] (2.61,4.7645) -- (3.0627,4.7645) -- (3.0627,5.3264) -- (2.61,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.3951;green,0.7605;blue,1},upper right={rgb,1:red,0.0253;green,0.0708;blue,1},lower left={rgb,1:red,0.5175;green,0.8;blue,1},lower right={rgb,1:red,0.2707;green,0.661;blue,1}] (2.61,5.31) -- (3.0627,5.31) -- (3.0627,5.8718) -- (2.61,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.2767;green,0.6658;blue,1},upper right={rgb,1:red,0.1442;green,0.4037;blue,1},lower left={rgb,1:red,0.3951;green,0.7605;blue,1},lower right={rgb,1:red,0.0253;green,0.0708;blue,1}] (2.61,5.8555) -- (3.0627,5.8555) -- (3.0627,6.4173) -- (2.61,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.3764;green,0.7456;blue,1},upper right={rgb,1:red,0.3571;green,0.7301;blue,1},lower left={rgb,1:red,0.2767;green,0.6658;blue,1},lower right={rgb,1:red,0.1442;green,0.4037;blue,1}] (2.61,6.4009) -- (3.0627,6.4009) -- (3.0627,6.9627) -- (2.61,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.5105;green,0.8;blue,1},upper right={rgb,1:red,0.3815;green,0.7496;blue,1},lower left={rgb,1:red,0.3764;green,0.7456;blue,1},lower right={rgb,1:red,0.3571;green,0.7301;blue,1}] (2.61,6.9464) -- (3.0627,6.9464) -- (3.0627,7.5082) -- (2.61,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.4954;green,0.8;blue,1},upper right={rgb,1:red,0.2027;green,0.5675;blue,1},lower left={rgb,1:red,0.5105;green,0.8;blue,1},lower right={rgb,1:red,0.3815;green,0.7496;blue,1}] (2.61,7.4918) -- (3.0627,7.4918) -- (3.0627,8.0536) -- (2.61,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.348;green,0.7228;blue,1},upper right={rgb,1:red,0;green,0;blue,1},lower left={rgb,1:red,0.4954;green,0.8;blue,1},lower right={rgb,1:red,0.2027;green,0.5675;blue,1}] (2.61,8.0373) -- (3.0627,8.0373) -- (3.0627,8.5991) -- (2.61,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.0113;green,0.0317;blue,1},upper right={rgb,1:red,0.2027;green,0.5675;blue,1},lower left={rgb,1:red,0.1673;green,0.4685;blue,1},lower right={rgb,1:red,0;green,0;blue,1}] (3.0464,0.4009) -- (3.4991,0.4009) -- (3.4991,0.9627) -- (3.0464,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.2511;green,0.6453;blue,1},upper right={rgb,1:red,0.3815;green,0.7496;blue,1},lower left={rgb,1:red,0.0113;green,0.0317;blue,1},lower right={rgb,1:red,0.2027;green,0.5675;blue,1}] (3.0464,0.9464) -- (3.4991,0.9464) -- (3.4991,1.5082) -- (3.0464,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.3942;green,0.7598;blue,1},upper right={rgb,1:red,0.3571;green,0.7301;blue,1},lower left={rgb,1:red,0.2511;green,0.6453;blue,1},lower right={rgb,1:red,0.3815;green,0.7496;blue,1}] (3.0464,1.4918) -- (3.4991,1.4918) -- (3.4991,2.0536) -- (3.0464,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.3268;green,0.7059;blue,1},upper right={rgb,1:red,0.1442;green,0.4037;blue,1},lower left={rgb,1:red,0.3942;green,0.7598;blue,1},lower right={rgb,1:red,0.3571;green,0.7301;blue,1}] (3.0464,2.0373) -- (3.4991,2.0373) -- (3.4991,2.5991) -- (3.0464,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.0914;green,0.256;blue,1},upper right={rgb,1:red,0.0253;green,0.0708;blue,1},lower left={rgb,1:red,0.3268;green,0.7059;blue,1},lower right={rgb,1:red,0.1442;green,0.4037;blue,1}] (3.0464,2.5827) -- (3.4991,2.5827) -- (3.4991,3.1445) -- (3.0464,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.0693;green,0.1939;blue,1},upper right={rgb,1:red,0.2707;green,0.661;blue,1},lower left={rgb,1:red,0.0914;green,0.256;blue,1},lower right={rgb,1:red,0.0253;green,0.0708;blue,1}] (3.0464,3.1282) -- (3.4991,3.1282) -- (3.4991,3.69) -- (3.0464,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.3112;green,0.6934;blue,1},upper right={rgb,1:red,0.397;green,0.7621;blue,1},lower left={rgb,1:red,0.0693;green,0.1939;blue,1},lower right={rgb,1:red,0.2707;green,0.661;blue,1}] (3.0464,3.6736) -- (3.4991,3.6736) -- (3.4991,4.2355) -- (3.0464,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.397;green,0.7621;blue,1},upper right={rgb,1:red,0.3112;green,0.6934;blue,1},lower left={rgb,1:red,0.3112;green,0.6934;blue,1},lower right={rgb,1:red,0.397;green,0.7621;blue,1}] (3.0464,4.2191) -- (3.4991,4.2191) -- (3.4991,4.7809) -- (3.0464,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.2707;green,0.661;blue,1},upper right={rgb,1:red,0.0693;green,0.1939;blue,1},lower left={rgb,1:red,0.397;green,0.7621;blue,1},lower right={rgb,1:red,0.3112;green,0.6934;blue,1}] (3.0464,4.7645) -- (3.4991,4.7645) -- (3.4991,5.3264) -- (3.0464,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.0253;green,0.0708;blue,1},upper right={rgb,1:red,0.0914;green,0.256;blue,1},lower left={rgb,1:red,0.2707;green,0.661;blue,1},lower right={rgb,1:red,0.0693;green,0.1939;blue,1}] (3.0464,5.31) -- (3.4991,5.31) -- (3.4991,5.8718) -- (3.0464,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.1442;green,0.4037;blue,1},upper right={rgb,1:red,0.3268;green,0.7059;blue,1},lower left={rgb,1:red,0.0253;green,0.0708;blue,1},lower right={rgb,1:red,0.0914;green,0.256;blue,1}] (3.0464,5.8555) -- (3.4991,5.8555) -- (3.4991,6.4173) -- (3.0464,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.3571;green,0.7301;blue,1},upper right={rgb,1:red,0.3942;green,0.7598;blue,1},lower left={rgb,1:red,0.1442;green,0.4037;blue,1},lower right={rgb,1:red,0.3268;green,0.7059;blue,1}] (3.0464,6.4009) -- (3.4991,6.4009) -- (3.4991,6.9627) -- (3.0464,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.3815;green,0.7496;blue,1},upper right={rgb,1:red,0.2511;green,0.6453;blue,1},lower left={rgb,1:red,0.3571;green,0.7301;blue,1},lower right={rgb,1:red,0.3942;green,0.7598;blue,1}] (3.0464,6.9464) -- (3.4991,6.9464) -- (3.4991,7.5082) -- (3.0464,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.2027;green,0.5675;blue,1},upper right={rgb,1:red,0.0113;green,0.0317;blue,1},lower left={rgb,1:red,0.3815;green,0.7496;blue,1},lower right={rgb,1:red,0.2511;green,0.6453;blue,1}] (3.0464,7.4918) -- (3.4991,7.4918) -- (3.4991,8.0536) -- (3.0464,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0;green,0;blue,1},upper right={rgb,1:red,0.1673;green,0.4685;blue,1},lower left={rgb,1:red,0.2027;green,0.5675;blue,1},lower right={rgb,1:red,0.0113;green,0.0317;blue,1}] (3.0464,8.0373) -- (3.4991,8.0373) -- (3.4991,8.5991) -- (3.0464,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.2027;green,0.5675;blue,1},upper right={rgb,1:red,0.4954;green,0.8;blue,1},lower left={rgb,1:red,0;green,0;blue,1},lower right={rgb,1:red,0.348;green,0.7228;blue,1}] (3.4827,0.4009) -- (3.9355,0.4009) -- (3.9355,0.9627) -- (3.4827,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.3815;green,0.7496;blue,1},upper right={rgb,1:red,0.5105;green,0.8;blue,1},lower left={rgb,1:red,0.2027;green,0.5675;blue,1},lower right={rgb,1:red,0.4954;green,0.8;blue,1}] (3.4827,0.9464) -- (3.9355,0.9464) -- (3.9355,1.5082) -- (3.4827,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.3571;green,0.7301;blue,1},upper right={rgb,1:red,0.3764;green,0.7456;blue,1},lower left={rgb,1:red,0.3815;green,0.7496;blue,1},lower right={rgb,1:red,0.5105;green,0.8;blue,1}] (3.4827,1.4918) -- (3.9355,1.4918) -- (3.9355,2.0536) -- (3.4827,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.1442;green,0.4037;blue,1},upper right={rgb,1:red,0.2767;green,0.6658;blue,1},lower left={rgb,1:red,0.3571;green,0.7301;blue,1},lower right={rgb,1:red,0.3764;green,0.7456;blue,1}] (3.4827,2.0373) -- (3.9355,2.0373) -- (3.9355,2.5991) -- (3.4827,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.0253;green,0.0708;blue,1},upper right={rgb,1:red,0.3951;green,0.7605;blue,1},lower left={rgb,1:red,0.1442;green,0.4037;blue,1},lower right={rgb,1:red,0.2767;green,0.6658;blue,1}] (3.4827,2.5827) -- (3.9355,2.5827) -- (3.9355,3.1445) -- (3.4827,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.2707;green,0.661;blue,1},upper right={rgb,1:red,0.5175;green,0.8;blue,1},lower left={rgb,1:red,0.0253;green,0.0708;blue,1},lower right={rgb,1:red,0.3951;green,0.7605;blue,1}] (3.4827,3.1282) -- (3.9355,3.1282) -- (3.9355,3.69) -- (3.4827,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.397;green,0.7621;blue,1},upper right={rgb,1:red,0.4832;green,0.8;blue,1},lower left={rgb,1:red,0.2707;green,0.661;blue,1},lower right={rgb,1:red,0.5175;green,0.8;blue,1}] (3.4827,3.6736) -- (3.9355,3.6736) -- (3.9355,4.2355) -- (3.4827,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.3112;green,0.6934;blue,1},upper right={rgb,1:red,0.3308;green,0.7091;blue,1},lower left={rgb,1:red,0.397;green,0.7621;blue,1},lower right={rgb,1:red,0.4832;green,0.8;blue,1}] (3.4827,4.2191) -- (3.9355,4.2191) -- (3.9355,4.7809) -- (3.4827,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.0693;green,0.1939;blue,1},upper right={rgb,1:red,0.2927;green,0.6786;blue,1},lower left={rgb,1:red,0.3112;green,0.6934;blue,1},lower right={rgb,1:red,0.3308;green,0.7091;blue,1}] (3.4827,4.7645) -- (3.9355,4.7645) -- (3.9355,5.3264) -- (3.4827,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.0914;green,0.256;blue,1},upper right={rgb,1:red,0.4411;green,0.7974;blue,1},lower left={rgb,1:red,0.0693;green,0.1939;blue,1},lower right={rgb,1:red,0.2927;green,0.6786;blue,1}] (3.4827,5.31) -- (3.9355,5.31) -- (3.9355,5.8718) -- (3.4827,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.3268;green,0.7059;blue,1},upper right={rgb,1:red,0.5256;green,0.8;blue,1},lower left={rgb,1:red,0.0914;green,0.256;blue,1},lower right={rgb,1:red,0.4411;green,0.7974;blue,1}] (3.4827,5.8555) -- (3.9355,5.8555) -- (3.9355,6.4173) -- (3.4827,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.3942;green,0.7598;blue,1},upper right={rgb,1:red,0.4448;green,0.8;blue,1},lower left={rgb,1:red,0.3268;green,0.7059;blue,1},lower right={rgb,1:red,0.5256;green,0.8;blue,1}] (3.4827,6.4009) -- (3.9355,6.4009) -- (3.9355,6.9627) -- (3.4827,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.2511;green,0.6453;blue,1},upper right={rgb,1:red,0.295;green,0.6805;blue,1},lower left={rgb,1:red,0.3942;green,0.7598;blue,1},lower right={rgb,1:red,0.4448;green,0.8;blue,1}] (3.4827,6.9464) -- (3.9355,6.9464) -- (3.9355,7.5082) -- (3.4827,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.0113;green,0.0317;blue,1},upper right={rgb,1:red,0.3273;green,0.7062;blue,1},lower left={rgb,1:red,0.2511;green,0.6453;blue,1},lower right={rgb,1:red,0.295;green,0.6805;blue,1}] (3.4827,7.4918) -- (3.9355,7.4918) -- (3.9355,8.0536) -- (3.4827,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.1673;green,0.4685;blue,1},upper right={rgb,1:red,0.4803;green,0.8;blue,1},lower left={rgb,1:red,0.0113;green,0.0317;blue,1},lower right={rgb,1:red,0.3273;green,0.7062;blue,1}] (3.4827,8.0373) -- (3.9355,8.0373) -- (3.9355,8.5991) -- (3.4827,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.4954;green,0.8;blue,1},upper right={rgb,1:red,0.7227;green,0.8224;blue,1},lower left={rgb,1:red,0.348;green,0.7228;blue,1},lower right={rgb,1:red,0.6858;green,0.8077;blue,1}] (3.9191,0.4009) -- (4.3718,0.4009) -- (4.3718,0.9627) -- (3.9191,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.5105;green,0.8;blue,1},upper right={rgb,1:red,0.6402;green,0.8;blue,1},lower left={rgb,1:red,0.4954;green,0.8;blue,1},lower right={rgb,1:red,0.7227;green,0.8224;blue,1}] (3.9191,0.9464) -- (4.3718,0.9464) -- (4.3718,1.5082) -- (3.9191,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.3764;green,0.7456;blue,1},upper right={rgb,1:red,0.5547;green,0.8;blue,1},lower left={rgb,1:red,0.5105;green,0.8;blue,1},lower right={rgb,1:red,0.6402;green,0.8;blue,1}] (3.9191,1.4918) -- (4.3718,1.4918) -- (4.3718,2.0536) -- (3.9191,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.2767;green,0.6658;blue,1},upper right={rgb,1:red,0.6076;green,0.8;blue,1},lower left={rgb,1:red,0.3764;green,0.7456;blue,1},lower right={rgb,1:red,0.5547;green,0.8;blue,1}] (3.9191,2.0373) -- (4.3718,2.0373) -- (4.3718,2.5991) -- (3.9191,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.3951;green,0.7605;blue,1},upper right={rgb,1:red,0.709;green,0.8169;blue,1},lower left={rgb,1:red,0.2767;green,0.6658;blue,1},lower right={rgb,1:red,0.6076;green,0.8;blue,1}] (3.9191,2.5827) -- (4.3718,2.5827) -- (4.3718,3.1445) -- (3.9191,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.5175;green,0.8;blue,1},upper right={rgb,1:red,0.709;green,0.8169;blue,1},lower left={rgb,1:red,0.3951;green,0.7605;blue,1},lower right={rgb,1:red,0.709;green,0.8169;blue,1}] (3.9191,3.1282) -- (4.3718,3.1282) -- (4.3718,3.69) -- (3.9191,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.4832;green,0.8;blue,1},upper right={rgb,1:red,0.6076;green,0.8;blue,1},lower left={rgb,1:red,0.5175;green,0.8;blue,1},lower right={rgb,1:red,0.709;green,0.8169;blue,1}] (3.9191,3.6736) -- (4.3718,3.6736) -- (4.3718,4.2355) -- (3.9191,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.3308;green,0.7091;blue,1},upper right={rgb,1:red,0.5547;green,0.8;blue,1},lower left={rgb,1:red,0.4832;green,0.8;blue,1},lower right={rgb,1:red,0.6076;green,0.8;blue,1}] (3.9191,4.2191) -- (4.3718,4.2191) -- (4.3718,4.7809) -- (3.9191,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.2927;green,0.6786;blue,1},upper right={rgb,1:red,0.6402;green,0.8;blue,1},lower left={rgb,1:red,0.3308;green,0.7091;blue,1},lower right={rgb,1:red,0.5547;green,0.8;blue,1}] (3.9191,4.7645) -- (4.3718,4.7645) -- (4.3718,5.3264) -- (3.9191,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.4411;green,0.7974;blue,1},upper right={rgb,1:red,0.7227;green,0.8224;blue,1},lower left={rgb,1:red,0.2927;green,0.6786;blue,1},lower right={rgb,1:red,0.6402;green,0.8;blue,1}] (3.9191,5.31) -- (4.3718,5.31) -- (4.3718,5.8718) -- (3.9191,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.5256;green,0.8;blue,1},upper right={rgb,1:red,0.6858;green,0.8077;blue,1},lower left={rgb,1:red,0.4411;green,0.7974;blue,1},lower right={rgb,1:red,0.7227;green,0.8224;blue,1}] (3.9191,5.8555) -- (4.3718,5.8555) -- (4.3718,6.4173) -- (3.9191,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.4448;green,0.8;blue,1},upper right={rgb,1:red,0.5791;green,0.8;blue,1},lower left={rgb,1:red,0.5256;green,0.8;blue,1},lower right={rgb,1:red,0.6858;green,0.8077;blue,1}] (3.9191,6.4009) -- (4.3718,6.4009) -- (4.3718,6.9627) -- (3.9191,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.295;green,0.6805;blue,1},upper right={rgb,1:red,0.5684;green,0.8;blue,1},lower left={rgb,1:red,0.4448;green,0.8;blue,1},lower right={rgb,1:red,0.5791;green,0.8;blue,1}] (3.9191,6.9464) -- (4.3718,6.9464) -- (4.3718,7.5082) -- (3.9191,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.3273;green,0.7062;blue,1},upper right={rgb,1:red,0.6721;green,0.8022;blue,1},lower left={rgb,1:red,0.295;green,0.6805;blue,1},lower right={rgb,1:red,0.5684;green,0.8;blue,1}] (3.9191,7.4918) -- (4.3718,7.4918) -- (4.3718,8.0536) -- (3.9191,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.4803;green,0.8;blue,1},upper right={rgb,1:red,0.7255;green,0.8235;blue,1},lower left={rgb,1:red,0.3273;green,0.7062;blue,1},lower right={rgb,1:red,0.6721;green,0.8022;blue,1}] (3.9191,8.0373) -- (4.3718,8.0373) -- (4.3718,8.5991) -- (3.9191,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.7227;green,0.8224;blue,1},upper right={rgb,1:red,0.8999;green,0.8889;blue,1},lower left={rgb,1:red,0.6858;green,0.8077;blue,1},lower right={rgb,1:red,0.9243;green,0.8889;blue,1}] (4.3555,0.4009) -- (4.8082,0.4009) -- (4.8082,0.9627) -- (4.3555,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.6402;green,0.8;blue,1},upper right={rgb,1:red,0.8367;green,0.868;blue,1},lower left={rgb,1:red,0.7227;green,0.8224;blue,1},lower right={rgb,1:red,0.8999;green,0.8889;blue,1}] (4.3555,0.9464) -- (4.8082,0.9464) -- (4.8082,1.5082) -- (4.3555,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.5547;green,0.8;blue,1},upper right={rgb,1:red,0.8542;green,0.875;blue,1},lower left={rgb,1:red,0.6402;green,0.8;blue,1},lower right={rgb,1:red,0.8367;green,0.868;blue,1}] (4.3555,1.4918) -- (4.8082,1.4918) -- (4.8082,2.0536) -- (4.3555,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.6076;green,0.8;blue,1},upper right={rgb,1:red,0.9118;green,0.8889;blue,1},lower left={rgb,1:red,0.5547;green,0.8;blue,1},lower right={rgb,1:red,0.8542;green,0.875;blue,1}] (4.3555,2.0373) -- (4.8082,2.0373) -- (4.8082,2.5991) -- (4.3555,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.709;green,0.8169;blue,1},upper right={rgb,1:red,0.9219;green,0.8889;blue,1},lower left={rgb,1:red,0.6076;green,0.8;blue,1},lower right={rgb,1:red,0.9118;green,0.8889;blue,1}] (4.3555,2.5827) -- (4.8082,2.5827) -- (4.8082,3.1445) -- (4.3555,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.709;green,0.8169;blue,1},upper right={rgb,1:red,0.8862;green,0.8878;blue,1},lower left={rgb,1:red,0.709;green,0.8169;blue,1},lower right={rgb,1:red,0.9219;green,0.8889;blue,1}] (4.3555,3.1282) -- (4.8082,3.1282) -- (4.8082,3.69) -- (4.3555,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.6076;green,0.8;blue,1},upper right={rgb,1:red,0.8298;green,0.8652;blue,1},lower left={rgb,1:red,0.709;green,0.8169;blue,1},lower right={rgb,1:red,0.8862;green,0.8878;blue,1}] (4.3555,3.6736) -- (4.8082,3.6736) -- (4.8082,4.2355) -- (4.3555,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.5547;green,0.8;blue,1},upper right={rgb,1:red,0.8766;green,0.884;blue,1},lower left={rgb,1:red,0.6076;green,0.8;blue,1},lower right={rgb,1:red,0.8298;green,0.8652;blue,1}] (4.3555,4.2191) -- (4.8082,4.2191) -- (4.8082,4.7809) -- (4.3555,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.6402;green,0.8;blue,1},upper right={rgb,1:red,0.9198;green,0.8889;blue,1},lower left={rgb,1:red,0.5547;green,0.8;blue,1},lower right={rgb,1:red,0.8766;green,0.884;blue,1}] (4.3555,4.7645) -- (4.8082,4.7645) -- (4.8082,5.3264) -- (4.3555,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.7227;green,0.8224;blue,1},upper right={rgb,1:red,0.9153;green,0.8889;blue,1},lower left={rgb,1:red,0.6402;green,0.8;blue,1},lower right={rgb,1:red,0.9198;green,0.8889;blue,1}] (4.3555,5.31) -- (4.8082,5.31) -- (4.8082,5.8718) -- (4.3555,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.6858;green,0.8077;blue,1},upper right={rgb,1:red,0.8624;green,0.8783;blue,1},lower left={rgb,1:red,0.7227;green,0.8224;blue,1},lower right={rgb,1:red,0.9153;green,0.8889;blue,1}] (4.3555,5.8555) -- (4.8082,5.8555) -- (4.8082,6.4173) -- (4.3555,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.5791;green,0.8;blue,1},upper right={rgb,1:red,0.8329;green,0.8665;blue,1},lower left={rgb,1:red,0.6858;green,0.8077;blue,1},lower right={rgb,1:red,0.8624;green,0.8783;blue,1}] (4.3555,6.4009) -- (4.8082,6.4009) -- (4.8082,6.9627) -- (4.3555,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.5684;green,0.8;blue,1},upper right={rgb,1:red,0.8951;green,0.8889;blue,1},lower left={rgb,1:red,0.5791;green,0.8;blue,1},lower right={rgb,1:red,0.8329;green,0.8665;blue,1}] (4.3555,6.9464) -- (4.8082,6.9464) -- (4.8082,7.5082) -- (4.3555,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.6721;green,0.8022;blue,1},upper right={rgb,1:red,0.9239;green,0.8889;blue,1},lower left={rgb,1:red,0.5684;green,0.8;blue,1},lower right={rgb,1:red,0.8951;green,0.8889;blue,1}] (4.3555,7.4918) -- (4.8082,7.4918) -- (4.8082,8.0536) -- (4.3555,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.7255;green,0.8235;blue,1},upper right={rgb,1:red,0.9054;green,0.8889;blue,1},lower left={rgb,1:red,0.6721;green,0.8022;blue,1},lower right={rgb,1:red,0.9239;green,0.8889;blue,1}] (4.3555,8.0373) -- (4.8082,8.0373) -- (4.8082,8.5991) -- (4.3555,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.8999;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.8802;blue,1},lower left={rgb,1:red,0.9243;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.8168;blue,1}] (4.7918,0.4009) -- (5.2445,0.4009) -- (5.2445,0.9627) -- (4.7918,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.8367;green,0.868;blue,1},upper right={rgb,1:red,1;green,0.8841;blue,1},lower left={rgb,1:red,0.8999;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.8802;blue,1}] (4.7918,0.9464) -- (5.2445,0.9464) -- (5.2445,1.5082) -- (4.7918,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.8542;green,0.875;blue,1},upper right={rgb,1:red,1;green,0.8222;blue,1},lower left={rgb,1:red,0.8367;green,0.868;blue,1},lower right={rgb,1:red,1;green,0.8841;blue,1}] (4.7918,1.4918) -- (5.2445,1.4918) -- (5.2445,2.0536) -- (4.7918,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.9118;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.7904;blue,1},lower left={rgb,1:red,0.8542;green,0.875;blue,1},lower right={rgb,1:red,1;green,0.8222;blue,1}] (4.7918,2.0373) -- (5.2445,2.0373) -- (5.2445,2.5991) -- (4.7918,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,0.9219;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.8354;blue,1},lower left={rgb,1:red,0.9118;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.7904;blue,1}] (4.7918,2.5827) -- (5.2445,2.5827) -- (5.2445,3.1445) -- (4.7918,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.8862;green,0.8878;blue,1},upper right={rgb,1:red,0.9991;green,0.8889;blue,1},lower left={rgb,1:red,0.9219;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.8354;blue,1}] (4.7918,3.1282) -- (5.2445,3.1282) -- (5.2445,3.69) -- (4.7918,3.69);%
+\draw[draw=none,upper left={rgb,1:red,0.8298;green,0.8652;blue,1},upper right={rgb,1:red,1;green,0.8695;blue,1},lower left={rgb,1:red,0.8862;green,0.8878;blue,1},lower right={rgb,1:red,0.9991;green,0.8889;blue,1}] (4.7918,3.6736) -- (5.2445,3.6736) -- (5.2445,4.2355) -- (4.7918,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,0.8766;green,0.884;blue,1},upper right={rgb,1:red,1;green,0.8058;blue,1},lower left={rgb,1:red,0.8298;green,0.8652;blue,1},lower right={rgb,1:red,1;green,0.8695;blue,1}] (4.7918,4.2191) -- (5.2445,4.2191) -- (5.2445,4.7809) -- (4.7918,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,0.9198;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.7965;blue,1},lower left={rgb,1:red,0.8766;green,0.884;blue,1},lower right={rgb,1:red,1;green,0.8058;blue,1}] (4.7918,4.7645) -- (5.2445,4.7645) -- (5.2445,5.3264) -- (4.7918,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,0.9153;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.8552;blue,1},lower left={rgb,1:red,0.9198;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.7965;blue,1}] (4.7918,5.31) -- (5.2445,5.31) -- (5.2445,5.8718) -- (4.7918,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.8624;green,0.8783;blue,1},upper right={rgb,1:red,0.9976;green,0.8889;blue,1},lower left={rgb,1:red,0.9153;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.8552;blue,1}] (4.7918,5.8555) -- (5.2445,5.8555) -- (5.2445,6.4173) -- (4.7918,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,0.8329;green,0.8665;blue,1},upper right={rgb,1:red,1;green,0.8509;blue,1},lower left={rgb,1:red,0.8624;green,0.8783;blue,1},lower right={rgb,1:red,0.9976;green,0.8889;blue,1}] (4.7918,6.4009) -- (5.2445,6.4009) -- (5.2445,6.9627) -- (4.7918,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,0.8951;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.7946;blue,1},lower left={rgb,1:red,0.8329;green,0.8665;blue,1},lower right={rgb,1:red,1;green,0.8509;blue,1}] (4.7918,6.9464) -- (5.2445,6.9464) -- (5.2445,7.5082) -- (4.7918,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,0.9239;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.809;blue,1},lower left={rgb,1:red,0.8951;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.7946;blue,1}] (4.7918,7.4918) -- (5.2445,7.4918) -- (5.2445,8.0536) -- (4.7918,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,0.9054;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.8731;blue,1},lower left={rgb,1:red,0.9239;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.809;blue,1}] (4.7918,8.0373) -- (5.2445,8.0373) -- (5.2445,8.5991) -- (4.7918,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8802;blue,1},upper right={rgb,1:red,1;green,0.6145;blue,0.9635},lower left={rgb,1:red,1;green,0.8168;blue,1},lower right={rgb,1:red,1;green,0.5972;blue,0.9513}] (5.2282,0.4009) -- (5.6809,0.4009) -- (5.6809,0.9627) -- (5.2282,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8841;blue,1},upper right={rgb,1:red,1;green,0.569;blue,0.9316},lower left={rgb,1:red,1;green,0.8802;blue,1},lower right={rgb,1:red,1;green,0.6145;blue,0.9635}] (5.2282,0.9464) -- (5.6809,0.9464) -- (5.6809,1.5082) -- (5.2282,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8222;blue,1},upper right={rgb,1:red,1;green,0.5314;blue,0.9053},lower left={rgb,1:red,1;green,0.8841;blue,1},lower right={rgb,1:red,1;green,0.569;blue,0.9316}] (5.2282,1.4918) -- (5.6809,1.4918) -- (5.6809,2.0536) -- (5.2282,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.7904;blue,1},upper right={rgb,1:red,1;green,0.558;blue,0.9239},lower left={rgb,1:red,1;green,0.8222;blue,1},lower right={rgb,1:red,1;green,0.5314;blue,0.9053}] (5.2282,2.0373) -- (5.6809,2.0373) -- (5.6809,2.5991) -- (5.2282,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8354;blue,1},upper right={rgb,1:red,1;green,0.6091;blue,0.9597},lower left={rgb,1:red,1;green,0.7904;blue,1},lower right={rgb,1:red,1;green,0.558;blue,0.9239}] (5.2282,2.5827) -- (5.6809,2.5827) -- (5.6809,3.1445) -- (5.2282,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,0.9991;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.606;blue,0.9575},lower left={rgb,1:red,1;green,0.8354;blue,1},lower right={rgb,1:red,1;green,0.6091;blue,0.9597}] (5.2282,3.1282) -- (5.6809,3.1282) -- (5.6809,3.69) -- (5.2282,3.69);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8695;blue,1},upper right={rgb,1:red,1;green,0.5535;blue,0.9208},lower left={rgb,1:red,0.9991;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.606;blue,0.9575}] (5.2282,3.6736) -- (5.6809,3.6736) -- (5.6809,4.2355) -- (5.2282,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8058;blue,1},upper right={rgb,1:red,1;green,0.5324;blue,0.906},lower left={rgb,1:red,1;green,0.8695;blue,1},lower right={rgb,1:red,1;green,0.5535;blue,0.9208}] (5.2282,4.2191) -- (5.6809,4.2191) -- (5.6809,4.7809) -- (5.2282,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.7965;blue,1},upper right={rgb,1:red,1;green,0.574;blue,0.9351},lower left={rgb,1:red,1;green,0.8058;blue,1},lower right={rgb,1:red,1;green,0.5324;blue,0.906}] (5.2282,4.7645) -- (5.6809,4.7645) -- (5.6809,5.3264) -- (5.2282,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8552;blue,1},upper right={rgb,1:red,1;green,0.6159;blue,0.9645},lower left={rgb,1:red,1;green,0.7965;blue,1},lower right={rgb,1:red,1;green,0.574;blue,0.9351}] (5.2282,5.31) -- (5.6809,5.31) -- (5.6809,5.8718) -- (5.2282,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,0.9976;green,0.8889;blue,1},upper right={rgb,1:red,1;green,0.5928;blue,0.9483},lower left={rgb,1:red,1;green,0.8552;blue,1},lower right={rgb,1:red,1;green,0.6159;blue,0.9645}] (5.2282,5.8555) -- (5.6809,5.8555) -- (5.6809,6.4173) -- (5.2282,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8509;blue,1},upper right={rgb,1:red,1;green,0.5409;blue,0.912},lower left={rgb,1:red,0.9976;green,0.8889;blue,1},lower right={rgb,1:red,1;green,0.5928;blue,0.9483}] (5.2282,6.4009) -- (5.6809,6.4009) -- (5.6809,6.9627) -- (5.2282,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.7946;blue,1},upper right={rgb,1:red,1;green,0.5392;blue,0.9108},lower left={rgb,1:red,1;green,0.8509;blue,1},lower right={rgb,1:red,1;green,0.5409;blue,0.912}] (5.2282,6.9464) -- (5.6809,6.9464) -- (5.6809,7.5082) -- (5.2282,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.809;blue,1},upper right={rgb,1:red,1;green,0.5901;blue,0.9464},lower left={rgb,1:red,1;green,0.7946;blue,1},lower right={rgb,1:red,1;green,0.5392;blue,0.9108}] (5.2282,7.4918) -- (5.6809,7.4918) -- (5.6809,8.0536) -- (5.2282,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.8731;blue,1},upper right={rgb,1:red,1;green,0.6165;blue,0.9649},lower left={rgb,1:red,1;green,0.809;blue,1},lower right={rgb,1:red,1;green,0.5901;blue,0.9464}] (5.2282,8.0373) -- (5.6809,8.0373) -- (5.6809,8.5991) -- (5.2282,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.6145;blue,0.9635},upper right={rgb,1:red,1;green,0.4174;blue,0.6012},lower left={rgb,1:red,1;green,0.5972;blue,0.9513},lower right={rgb,1:red,1;green,0.4236;blue,0.6569}] (5.6645,0.4009) -- (6.1173,0.4009) -- (6.1173,0.9627) -- (5.6645,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.569;blue,0.9316},upper right={rgb,1:red,1;green,0.4095;blue,0.5302},lower left={rgb,1:red,1;green,0.6145;blue,0.9635},lower right={rgb,1:red,1;green,0.4174;blue,0.6012}] (5.6645,0.9464) -- (6.1173,0.9464) -- (6.1173,1.5082) -- (5.6645,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5314;blue,0.9053},upper right={rgb,1:red,1;green,0.4119;blue,0.5514},lower left={rgb,1:red,1;green,0.569;blue,0.9316},lower right={rgb,1:red,1;green,0.4095;blue,0.5302}] (5.6645,1.4918) -- (6.1173,1.4918) -- (6.1173,2.0536) -- (5.6645,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.558;blue,0.9239},upper right={rgb,1:red,1;green,0.421;blue,0.633},lower left={rgb,1:red,1;green,0.5314;blue,0.9053},lower right={rgb,1:red,1;green,0.4119;blue,0.5514}] (5.6645,2.0373) -- (6.1173,2.0373) -- (6.1173,2.5991) -- (5.6645,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.6091;blue,0.9597},upper right={rgb,1:red,1;green,0.4229;blue,0.6502},lower left={rgb,1:red,1;green,0.558;blue,0.9239},lower right={rgb,1:red,1;green,0.421;blue,0.633}] (5.6645,2.5827) -- (6.1173,2.5827) -- (6.1173,3.1445) -- (5.6645,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.606;blue,0.9575},upper right={rgb,1:red,1;green,0.4146;blue,0.576},lower left={rgb,1:red,1;green,0.6091;blue,0.9597},lower right={rgb,1:red,1;green,0.4229;blue,0.6502}] (5.6645,3.1282) -- (6.1173,3.1282) -- (6.1173,3.69) -- (5.6645,3.69);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5535;blue,0.9208},upper right={rgb,1:red,1;green,0.409;blue,0.5251},lower left={rgb,1:red,1;green,0.606;blue,0.9575},lower right={rgb,1:red,1;green,0.4146;blue,0.576}] (5.6645,3.6736) -- (6.1173,3.6736) -- (6.1173,4.2355) -- (5.6645,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5324;blue,0.906},upper right={rgb,1:red,1;green,0.4144;blue,0.5739},lower left={rgb,1:red,1;green,0.5535;blue,0.9208},lower right={rgb,1:red,1;green,0.409;blue,0.5251}] (5.6645,4.2191) -- (6.1173,4.2191) -- (6.1173,4.7809) -- (5.6645,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.574;blue,0.9351},upper right={rgb,1:red,1;green,0.4227;blue,0.6492},lower left={rgb,1:red,1;green,0.5324;blue,0.906},lower right={rgb,1:red,1;green,0.4144;blue,0.5739}] (5.6645,4.7645) -- (6.1173,4.7645) -- (6.1173,5.3264) -- (5.6645,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.6159;blue,0.9645},upper right={rgb,1:red,1;green,0.4211;blue,0.6347},lower left={rgb,1:red,1;green,0.574;blue,0.9351},lower right={rgb,1:red,1;green,0.4227;blue,0.6492}] (5.6645,5.31) -- (6.1173,5.31) -- (6.1173,5.8718) -- (5.6645,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5928;blue,0.9483},upper right={rgb,1:red,1;green,0.4121;blue,0.5532},lower left={rgb,1:red,1;green,0.6159;blue,0.9645},lower right={rgb,1:red,1;green,0.4211;blue,0.6347}] (5.6645,5.8555) -- (6.1173,5.8555) -- (6.1173,6.4173) -- (5.6645,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5409;blue,0.912},upper right={rgb,1:red,1;green,0.4094;blue,0.5294},lower left={rgb,1:red,1;green,0.5928;blue,0.9483},lower right={rgb,1:red,1;green,0.4121;blue,0.5532}] (5.6645,6.4009) -- (6.1173,6.4009) -- (6.1173,6.9627) -- (5.6645,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5392;blue,0.9108},upper right={rgb,1:red,1;green,0.4172;blue,0.599},lower left={rgb,1:red,1;green,0.5409;blue,0.912},lower right={rgb,1:red,1;green,0.4094;blue,0.5294}] (5.6645,6.9464) -- (6.1173,6.9464) -- (6.1173,7.5082) -- (5.6645,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.5901;blue,0.9464},upper right={rgb,1:red,1;green,0.4236;blue,0.6567},lower left={rgb,1:red,1;green,0.5392;blue,0.9108},lower right={rgb,1:red,1;green,0.4172;blue,0.599}] (5.6645,7.4918) -- (6.1173,7.4918) -- (6.1173,8.0536) -- (5.6645,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.6165;blue,0.9649},upper right={rgb,1:red,1;green,0.4187;blue,0.6129},lower left={rgb,1:red,1;green,0.5901;blue,0.9464},lower right={rgb,1:red,1;green,0.4236;blue,0.6567}] (5.6645,8.0373) -- (6.1173,8.0373) -- (6.1173,8.5991) -- (5.6645,8.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4174;blue,0.6012},upper right={rgb,1:red,1;green,0.0119;blue,0.0132},lower left={rgb,1:red,1;green,0.4236;blue,0.6569},lower right={rgb,1:red,1;green,0.0807;blue,0.0897}] (6.1009,0.4009) -- (6.5536,0.4009) -- (6.5536,0.9627) -- (6.1009,0.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4095;blue,0.5302},upper right={rgb,1:red,1;green,0.0119;blue,0.0132},lower left={rgb,1:red,1;green,0.4174;blue,0.6012},lower right={rgb,1:red,1;green,0.0119;blue,0.0132}] (6.1009,0.9464) -- (6.5536,0.9464) -- (6.5536,1.5082) -- (6.1009,1.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4119;blue,0.5514},upper right={rgb,1:red,1;green,0.0807;blue,0.0897},lower left={rgb,1:red,1;green,0.4095;blue,0.5302},lower right={rgb,1:red,1;green,0.0119;blue,0.0132}] (6.1009,1.4918) -- (6.5536,1.4918) -- (6.5536,2.0536) -- (6.1009,2.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.421;blue,0.633},upper right={rgb,1:red,1;green,0.1136;blue,0.1262},lower left={rgb,1:red,1;green,0.4119;blue,0.5514},lower right={rgb,1:red,1;green,0.0807;blue,0.0897}] (6.1009,2.0373) -- (6.5536,2.0373) -- (6.5536,2.5991) -- (6.1009,2.5991);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4229;blue,0.6502},upper right={rgb,1:red,1;green,0.0594;blue,0.066},lower left={rgb,1:red,1;green,0.421;blue,0.633},lower right={rgb,1:red,1;green,0.1136;blue,0.1262}] (6.1009,2.5827) -- (6.5536,2.5827) -- (6.5536,3.1445) -- (6.1009,3.1445);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4146;blue,0.576},upper right={rgb,1:red,1;green,0.002;blue,0.0022},lower left={rgb,1:red,1;green,0.4229;blue,0.6502},lower right={rgb,1:red,1;green,0.0594;blue,0.066}] (6.1009,3.1282) -- (6.5536,3.1282) -- (6.5536,3.69) -- (6.1009,3.69);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.409;blue,0.5251},upper right={rgb,1:red,1;green,0.0283;blue,0.0314},lower left={rgb,1:red,1;green,0.4146;blue,0.576},lower right={rgb,1:red,1;green,0.002;blue,0.0022}] (6.1009,3.6736) -- (6.5536,3.6736) -- (6.5536,4.2355) -- (6.1009,4.2355);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4144;blue,0.5739},upper right={rgb,1:red,1;green,0.0987;blue,0.1097},lower left={rgb,1:red,1;green,0.409;blue,0.5251},lower right={rgb,1:red,1;green,0.0283;blue,0.0314}] (6.1009,4.2191) -- (6.5536,4.2191) -- (6.5536,4.7809) -- (6.1009,4.7809);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4227;blue,0.6492},upper right={rgb,1:red,1;green,0.1053;blue,0.117},lower left={rgb,1:red,1;green,0.4144;blue,0.5739},lower right={rgb,1:red,1;green,0.0987;blue,0.1097}] (6.1009,4.7645) -- (6.5536,4.7645) -- (6.5536,5.3264) -- (6.1009,5.3264);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4211;blue,0.6347},upper right={rgb,1:red,1;green,0.0378;blue,0.042},lower left={rgb,1:red,1;green,0.4227;blue,0.6492},lower right={rgb,1:red,1;green,0.1053;blue,0.117}] (6.1009,5.31) -- (6.5536,5.31) -- (6.5536,5.8718) -- (6.1009,5.8718);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4121;blue,0.5532},upper right={rgb,1:red,1;green,0;blue,0},lower left={rgb,1:red,1;green,0.4211;blue,0.6347},lower right={rgb,1:red,1;green,0.0378;blue,0.042}] (6.1009,5.8555) -- (6.5536,5.8555) -- (6.5536,6.4173) -- (6.1009,6.4173);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4094;blue,0.5294},upper right={rgb,1:red,1;green,0.0489;blue,0.0543},lower left={rgb,1:red,1;green,0.4121;blue,0.5532},lower right={rgb,1:red,1;green,0;blue,0}] (6.1009,6.4009) -- (6.5536,6.4009) -- (6.5536,6.9627) -- (6.1009,6.9627);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4172;blue,0.599},upper right={rgb,1:red,1;green,0.1106;blue,0.1229},lower left={rgb,1:red,1;green,0.4094;blue,0.5294},lower right={rgb,1:red,1;green,0.0489;blue,0.0543}] (6.1009,6.9464) -- (6.5536,6.9464) -- (6.5536,7.5082) -- (6.1009,7.5082);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4236;blue,0.6567},upper right={rgb,1:red,1;green,0.0899;blue,0.0999},lower left={rgb,1:red,1;green,0.4172;blue,0.599},lower right={rgb,1:red,1;green,0.1106;blue,0.1229}] (6.1009,7.4918) -- (6.5536,7.4918) -- (6.5536,8.0536) -- (6.1009,8.0536);%
+\draw[draw=none,upper left={rgb,1:red,1;green,0.4187;blue,0.6129},upper right={rgb,1:red,1;green,0.019;blue,0.0211},lower left={rgb,1:red,1;green,0.4236;blue,0.6567},lower right={rgb,1:red,1;green,0.0899;blue,0.0999}] (6.1009,8.0373) -- (6.5536,8.0373) -- (6.5536,8.5991) -- (6.1009,8.5991);%
+\draw[line width=0.1pt,color={rgb,1:red,0;green,0;blue,1},left color={rgb,1:red,0;green,0;blue,1},right color={rgb,1:red,0.2222;green,0.6222;blue,1},shading angle=180.0] (7.7727,1.4318) -- (7.3636,1.4318) -- (7.3636,2.1136) -- (7.7727,2.1136)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.2222;green,0.6222;blue,1},left color={rgb,1:red,0.2222;green,0.6222;blue,1},right color={rgb,1:red,0.4444;green,0.8;blue,1},shading angle=180.0] (7.7727,2.1136) -- (7.3636,2.1136) -- (7.3636,2.7955) -- (7.7727,2.7955)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.4444;green,0.8;blue,1},left color={rgb,1:red,0.4444;green,0.8;blue,1},right color={rgb,1:red,0.6667;green,0.8;blue,1},shading angle=180.0] (7.7727,2.7955) -- (7.3636,2.7955) -- (7.3636,3.4773) -- (7.7727,3.4773)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.6667;green,0.8;blue,1},left color={rgb,1:red,0.6667;green,0.8;blue,1},right color={rgb,1:red,0.8889;green,0.8889;blue,1},shading angle=180.0] (7.7727,3.4773) -- (7.3636,3.4773) -- (7.3636,4.1591) -- (7.7727,4.1591)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.8889;green,0.8889;blue,1},left color={rgb,1:red,0.8889;green,0.8889;blue,1},right color={rgb,1:red,1;green,0.8889;blue,1},shading angle=180.0] (7.7727,4.1591) -- (7.3636,4.1591) -- (7.3636,4.8409) -- (7.7727,4.8409)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.8889;blue,1},left color={rgb,1:red,1;green,0.8889;blue,1},right color={rgb,1:red,1;green,0.6667;blue,1},shading angle=180.0] (7.7727,4.8409) -- (7.3636,4.8409) -- (7.3636,5.5227) -- (7.7727,5.5227)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.6667;blue,1},left color={rgb,1:red,1;green,0.6667;blue,1},right color={rgb,1:red,1;green,0.4444;blue,0.8444},shading angle=180.0] (7.7727,5.5227) -- (7.3636,5.5227) -- (7.3636,6.2045) -- (7.7727,6.2045)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.4444;blue,0.8444},left color={rgb,1:red,1;green,0.4444;blue,0.8444},right color={rgb,1:red,1;green,0.4;blue,0.4444},shading angle=180.0] (7.7727,6.2045) -- (7.3636,6.2045) -- (7.3636,6.8864) -- (7.7727,6.8864)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.4;blue,0.4444},left color={rgb,1:red,1;green,0.4;blue,0.4444},right color={rgb,1:red,1;green,0;blue,0},shading angle=180.0] (7.7727,6.8864) -- (7.3636,6.8864) -- (7.3636,7.5682) -- (7.7727,7.5682)--cycle;%
+\draw[] (7.7727,1.4318) -- (7.7727,7.5682) -- (7.3636,7.5682) -- (7.3636,1.4318)--cycle;%
+\draw[] (7.7727,1.4318) -- (7.3636,1.4318);%
+\draw[] (7.7727,1.8019) -- (7.3636,1.8019);%
+\draw[] (7.7727,3.3936) -- (7.3636,3.3936);%
+\draw[] (7.7727,4.9852) -- (7.3636,4.9852);%
+\draw[] (7.7727,6.5769) -- (7.3636,6.5769);%
+\draw[] (7.7727,7.5682) -- (7.3636,7.5682);%
+\draw[-] (7.7727,1.4318) node[right] {\small $0.27$} (7.7727,1.8019) node[right] {\small $0.5$} (7.7727,3.3936) node[right] {\small $1.5$} (7.7727,4.9852) node[right] {\small $2.5$} (7.7727,6.5769) node[right] {\small $3.5$} (7.7727,7.5682) node[right] {\small $4.12$};%
+\draw[-stealth] (0,1.4318) -- (0.0071,1.1592);%
+\draw[-stealth] (0,1.7727) -- (0.0337,1.5021);%
+\draw[-stealth] (0,2.1136) -- (0.0539,1.8463);%
+\draw[-stealth] (0,2.4545) -- (0.0647,2.1896);%
+\draw[-stealth] (0,2.7955) -- (0.0649,2.5306);%
+\draw[-stealth] (0,3.1364) -- (0.0545,2.8691);%
+\draw[-stealth] (0,3.4773) -- (0.0346,3.2068);%
+\draw[-stealth] (0,3.8182) -- (0.0082,3.5456);%
+\draw[-stealth] (0,6.5455) -- (0.0048,6.2728);%
+\draw[-stealth] (0,6.8864) -- (0.0317,6.6155);%
+\draw[-stealth] (0,7.2273) -- (0.0526,6.9597);%
+\draw[-stealth] (0,7.5682) -- (0.0642,7.3031);%
+\draw[-stealth] (0,7.9091) -- (0.0653,7.6443);%
+\draw[-stealth] (0,8.25) -- (0.0557,7.983);%
+\draw[-stealth] (0,8.5909) -- (0.0365,8.3206);%
+\draw[-stealth] (0.2727,0.75) -- (0.2442,0.4788);%
+\draw[-stealth] (0.2727,1.0909) -- (0.2743,0.8182);%
+\draw[-stealth] (0.2727,1.4318) -- (0.304,1.1609);%
+\draw[-stealth] (0.2727,1.7727) -- (0.3277,1.5056);%
+\draw[-stealth] (0.2727,2.1136) -- (0.3415,1.8497);%
+\draw[-stealth] (0.2727,2.4545) -- (0.344,2.1913);%
+\draw[-stealth] (0.2727,2.7955) -- (0.3351,2.53);%
+\draw[-stealth] (0.2727,3.1364) -- (0.3155,2.867);%
+\draw[-stealth] (0.2727,3.4773) -- (0.2878,3.205);%
+\draw[-stealth] (0.2727,3.8182) -- (0.2571,3.5459);%
+\draw[-stealth] (0.2727,4.1591) -- (0.2295,3.8898);%
+\draw[-stealth] (0.2727,4.5) -- (0.2101,4.2346);%
+\draw[-stealth] (0.2727,4.8409) -- (0.2014,4.5777);%
+\draw[-stealth] (0.2727,5.1818) -- (0.2041,4.9179);%
+\draw[-stealth] (0.2727,5.5227) -- (0.2182,5.2555);%
+\draw[-stealth] (0.2727,5.8636) -- (0.242,5.5926);%
+\draw[-stealth] (0.2727,6.2045) -- (0.2718,5.9318);%
+\draw[-stealth] (0.2727,6.5455) -- (0.3018,6.2743);%
+\draw[-stealth] (0.2727,6.8864) -- (0.3261,6.6189);%
+\draw[-stealth] (0.2727,7.2273) -- (0.3408,6.9632);%
+\draw[-stealth] (0.2727,7.5682) -- (0.3443,7.305);%
+\draw[-stealth] (0.2727,7.9091) -- (0.3362,7.6439);%
+\draw[-stealth] (0.2727,8.25) -- (0.3174,7.981);%
+\draw[-stealth] (0.2727,8.5909) -- (0.2902,8.3187);%
+\draw[-stealth] (0.5455,0.75) -- (0.5403,0.4773);%
+\draw[-stealth] (0.5455,1.0909) -- (0.5737,0.8196);%
+\draw[-stealth] (0.5455,1.4318) -- (0.6012,1.1649);%
+\draw[-stealth] (0.5455,1.7727) -- (0.6186,1.51);%
+\draw[-stealth] (0.5455,2.1136) -- (0.6238,1.8524);%
+\draw[-stealth] (0.5455,2.4545) -- (0.6166,2.1913);%
+\draw[-stealth] (0.5455,2.7955) -- (0.5975,2.5277);%
+\draw[-stealth] (0.5455,3.1364) -- (0.5686,2.8646);%
+\draw[-stealth] (0.5455,3.4773) -- (0.5349,3.2047);%
+\draw[-stealth] (0.5455,3.8182) -- (0.5035,3.5487);%
+\draw[-stealth] (0.5455,4.1591) -- (0.4803,3.8943);%
+\draw[-stealth] (0.5455,4.5) -- (0.4684,4.2384);%
+\draw[-stealth] (0.5455,4.8409) -- (0.4689,4.5791);%
+\draw[-stealth] (0.5455,5.1818) -- (0.4817,4.9166);%
+\draw[-stealth] (0.5455,5.5227) -- (0.5058,5.2529);%
+\draw[-stealth] (0.5455,5.8636) -- (0.5376,5.591);%
+\draw[-stealth] (0.5455,6.2045) -- (0.5711,5.933);%
+\draw[-stealth] (0.5455,6.5455) -- (0.5994,6.2781);%
+\draw[-stealth] (0.5455,6.8864) -- (0.6176,6.6234);%
+\draw[-stealth] (0.5455,7.2273) -- (0.6238,6.966);%
+\draw[-stealth] (0.5455,7.5682) -- (0.6176,7.3052);%
+\draw[-stealth] (0.5455,7.9091) -- (0.5994,7.6417);%
+\draw[-stealth] (0.5455,8.25) -- (0.5711,7.9785);%
+\draw[-stealth] (0.5455,8.5909) -- (0.5376,8.3183);%
+\draw[-stealth] (0.8182,0.75) -- (0.8424,0.4783);%
+\draw[-stealth] (0.8182,1.0909) -- (0.8746,0.8241);%
+\draw[-stealth] (0.8182,1.4318) -- (0.896,1.1704);%
+\draw[-stealth] (0.8182,1.7727) -- (0.9043,1.514);%
+\draw[-stealth] (0.8182,2.1136) -- (0.8992,1.8532);%
+\draw[-stealth] (0.8182,2.4545) -- (0.8809,2.1891);%
+\draw[-stealth] (0.8182,2.7955) -- (0.8509,2.5247);%
+\draw[-stealth] (0.8182,3.1364) -- (0.814,2.8637);%
+\draw[-stealth] (0.8182,3.4773) -- (0.7781,3.2075);%
+\draw[-stealth] (0.8182,3.8182) -- (0.7504,3.554);%
+\draw[-stealth] (0.8182,4.1591) -- (0.7349,3.8994);%
+\draw[-stealth] (0.8182,4.5) -- (0.7327,4.241);%
+\draw[-stealth] (0.8182,4.8409) -- (0.744,4.5785);%
+\draw[-stealth] (0.8182,5.1818) -- (0.768,4.9137);%
+\draw[-stealth] (0.8182,5.5227) -- (0.802,5.2505);%
+\draw[-stealth] (0.8182,5.8636) -- (0.8395,5.5917);%
+\draw[-stealth] (0.8182,6.2045) -- (0.8724,5.9373);%
+\draw[-stealth] (0.8182,6.5455) -- (0.8948,6.2837);%
+\draw[-stealth] (0.8182,6.8864) -- (0.9042,6.6275);%
+\draw[-stealth] (0.8182,7.2273) -- (0.9001,6.9671);%
+\draw[-stealth] (0.8182,7.5682) -- (0.8828,7.3032);%
+\draw[-stealth] (0.8182,7.9091) -- (0.8536,7.6387);%
+\draw[-stealth] (0.8182,8.25) -- (0.817,7.9773);%
+\draw[-stealth] (0.8182,8.5909) -- (0.7807,8.3208);%
+\draw[-stealth] (1.0909,0.75) -- (1.1477,0.4833);%
+\draw[-stealth] (1.0909,1.0909) -- (1.174,0.8311);%
+\draw[-stealth] (1.0909,1.4318) -- (1.1859,1.1762);%
+\draw[-stealth] (1.0909,1.7727) -- (1.1833,1.5161);%
+\draw[-stealth] (1.0909,2.1136) -- (1.1661,1.8515);%
+\draw[-stealth] (1.0909,2.4545) -- (1.1352,2.1854);%
+\draw[-stealth] (1.0909,2.7955) -- (1.0948,2.5228);%
+\draw[-stealth] (1.0909,3.1364) -- (1.0534,2.8662);%
+\draw[-stealth] (1.0909,3.4773) -- (1.0203,3.2138);%
+\draw[-stealth] (1.0909,3.8182) -- (1.0005,3.5609);%
+\draw[-stealth] (1.0909,4.1591) -- (0.9953,3.9037);%
+\draw[-stealth] (1.0909,4.5) -- (1.0046,4.2413);%
+\draw[-stealth] (1.0909,4.8409) -- (1.0284,4.5754);%
+\draw[-stealth] (1.0909,5.1818) -- (1.0645,4.9104);%
+\draw[-stealth] (1.0909,5.5227) -- (1.1066,5.2505);%
+\draw[-stealth] (1.0909,5.8636) -- (1.1451,5.5963);%
+\draw[-stealth] (1.0909,6.2045) -- (1.1724,5.9443);%
+\draw[-stealth] (1.0909,6.5455) -- (1.1855,6.2897);%
+\draw[-stealth] (1.0909,6.8864) -- (1.184,6.63);%
+\draw[-stealth] (1.0909,7.2273) -- (1.168,6.9657);%
+\draw[-stealth] (1.0909,7.5682) -- (1.1381,7.2996);%
+\draw[-stealth] (1.0909,7.9091) -- (1.0981,7.6365);%
+\draw[-stealth] (1.0909,8.25) -- (1.0565,7.9795);%
+\draw[-stealth] (1.0909,8.5909) -- (1.0225,8.3269);%
+\draw[-stealth] (1.3636,0.75) -- (1.4527,0.4922);%
+\draw[-stealth] (1.3636,1.0909) -- (1.4689,0.8393);%
+\draw[-stealth] (1.3636,1.4318) -- (1.4693,1.1804);%
+\draw[-stealth] (1.3636,1.7727) -- (1.4537,1.5153);%
+\draw[-stealth] (1.3636,2.1136) -- (1.4221,1.8472);%
+\draw[-stealth] (1.3636,2.4545) -- (1.3777,2.1822);%
+\draw[-stealth] (1.3636,2.7955) -- (1.3298,2.5248);%
+\draw[-stealth] (1.3636,3.1364) -- (1.2901,2.8737);%
+\draw[-stealth] (1.3636,3.4773) -- (1.2651,3.223);%
+\draw[-stealth] (1.3636,3.8182) -- (1.2562,3.5675);%
+\draw[-stealth] (1.3636,4.1591) -- (1.2632,3.9055);%
+\draw[-stealth] (1.3636,4.5) -- (1.2862,4.2385);%
+\draw[-stealth] (1.3636,4.8409) -- (1.3244,4.571);%
+\draw[-stealth] (1.3636,5.1818) -- (1.3719,4.9092);%
+\draw[-stealth] (1.3636,5.5227) -- (1.4173,5.2553);%
+\draw[-stealth] (1.3636,5.8636) -- (1.4507,5.6052);%
+\draw[-stealth] (1.3636,6.2045) -- (1.4682,5.9527);%
+\draw[-stealth] (1.3636,6.5455) -- (1.4698,6.2942);%
+\draw[-stealth] (1.3636,6.8864) -- (1.4555,6.6296);%
+\draw[-stealth] (1.3636,7.2273) -- (1.4252,6.9616);%
+\draw[-stealth] (1.3636,7.5682) -- (1.3815,7.296);%
+\draw[-stealth] (1.3636,7.9091) -- (1.3335,7.638);%
+\draw[-stealth] (1.3636,8.25) -- (1.2927,7.9866);%
+\draw[-stealth] (1.3636,8.5909) -- (1.2665,8.3361);%
+\draw[-stealth] (1.6364,0.75) -- (1.7539,0.5039);%
+\draw[-stealth] (1.6364,1.0909) -- (1.7577,0.8466);%
+\draw[-stealth] (1.6364,1.4318) -- (1.7442,1.1813);%
+\draw[-stealth] (1.6364,1.7727) -- (1.7125,1.5109);%
+\draw[-stealth] (1.6364,2.1136) -- (1.6639,1.8423);%
+\draw[-stealth] (1.6364,2.4545) -- (1.6078,2.1833);%
+\draw[-stealth] (1.6364,2.7955) -- (1.5594,2.5338);%
+\draw[-stealth] (1.6364,3.1364) -- (1.5281,2.8861);%
+\draw[-stealth] (1.6364,3.4773) -- (1.515,3.2331);%
+\draw[-stealth] (1.6364,3.8182) -- (1.5191,3.572);%
+\draw[-stealth] (1.6364,4.1591) -- (1.5408,3.9037);%
+\draw[-stealth] (1.6364,4.5) -- (1.5808,4.233);%
+\draw[-stealth] (1.6364,4.8409) -- (1.6347,4.5682);%
+\draw[-stealth] (1.6364,5.1818) -- (1.689,4.9142);%
+\draw[-stealth] (1.6364,5.5227) -- (1.7301,5.2666);%
+\draw[-stealth] (1.6364,5.8636) -- (1.7529,5.617);%
+\draw[-stealth] (1.6364,6.2045) -- (1.758,5.9604);%
+\draw[-stealth] (1.6364,6.5455) -- (1.7459,6.2957);%
+\draw[-stealth] (1.6364,6.8864) -- (1.7157,6.6254);%
+\draw[-stealth] (1.6364,7.2273) -- (1.6682,6.9564);%
+\draw[-stealth] (1.6364,7.5682) -- (1.6122,7.2965);%
+\draw[-stealth] (1.6364,7.9091) -- (1.5627,7.6465);%
+\draw[-stealth] (1.6364,8.25) -- (1.5299,7.9989);%
+\draw[-stealth] (1.6364,8.5909) -- (1.5154,8.3465);%
+\draw[-stealth] (1.9091,0.75) -- (2.0494,0.5161);%
+\draw[-stealth] (1.9091,1.0909) -- (2.0387,0.851);%
+\draw[-stealth] (1.9091,1.4318) -- (2.0079,1.1776);%
+\draw[-stealth] (1.9091,1.7727) -- (1.9549,1.5039);%
+\draw[-stealth] (1.9091,2.1136) -- (1.8881,1.8417);%
+\draw[-stealth] (1.9091,2.4545) -- (1.828,2.1942);%
+\draw[-stealth] (1.9091,2.7955) -- (1.7886,2.5508);%
+\draw[-stealth] (1.9091,3.1364) -- (1.7707,2.9014);%
+\draw[-stealth] (1.9091,3.4773) -- (1.7714,3.2419);%
+\draw[-stealth] (1.9091,3.8182) -- (1.7909,3.5724);%
+\draw[-stealth] (1.9091,4.1591) -- (1.8321,3.8975);%
+\draw[-stealth] (1.9091,4.5) -- (1.8935,4.2277);%
+\draw[-stealth] (1.9091,4.8409) -- (1.9598,4.5729);%
+\draw[-stealth] (1.9091,5.1818) -- (2.0111,4.9289);%
+\draw[-stealth] (1.9091,5.5227) -- (2.0403,5.2836);%
+\draw[-stealth] (1.9091,5.8636) -- (2.0494,5.6298);%
+\draw[-stealth] (1.9091,6.2045) -- (2.0403,5.9654);%
+\draw[-stealth] (1.9091,6.5455) -- (2.0111,6.2925);%
+\draw[-stealth] (1.9091,6.8864) -- (1.9598,6.6184);%
+\draw[-stealth] (1.9091,7.2273) -- (1.8935,6.955);%
+\draw[-stealth] (1.9091,7.5682) -- (1.8321,7.3065);%
+\draw[-stealth] (1.9091,7.9091) -- (1.7909,7.6633);%
+\draw[-stealth] (1.9091,8.25) -- (1.7714,8.0146);%
+\draw[-stealth] (1.9091,8.5909) -- (1.7707,8.3559);%
+\draw[-stealth] (2.1818,0.75) -- (2.3382,0.5266);%
+\draw[-stealth] (2.1818,1.0909) -- (2.3098,0.8501);%
+\draw[-stealth] (2.1818,1.4318) -- (2.2534,1.1686);%
+\draw[-stealth] (2.1818,1.7727) -- (2.1725,1.5002);%
+\draw[-stealth] (2.1818,2.1136) -- (2.0953,1.855);%
+\draw[-stealth] (2.1818,2.4545) -- (2.0454,2.2184);%
+\draw[-stealth] (2.1818,2.7955) -- (2.0222,2.5743);%
+\draw[-stealth] (2.1818,3.1364) -- (2.0192,2.9174);%
+\draw[-stealth] (2.1818,3.4773) -- (2.0354,3.2472);%
+\draw[-stealth] (2.1818,3.8182) -- (2.076,3.5668);%
+\draw[-stealth] (2.1818,4.1591) -- (2.1457,3.8888);%
+\draw[-stealth] (2.1818,4.5) -- (2.2292,4.2314);%
+\draw[-stealth] (2.1818,4.8409) -- (2.295,4.5928);%
+\draw[-stealth] (2.1818,5.1818) -- (2.3318,4.954);%
+\draw[-stealth] (2.1818,5.5227) -- (2.3451,5.3043);%
+\draw[-stealth] (2.1818,5.8636) -- (2.3395,5.6411);%
+\draw[-stealth] (2.1818,6.2045) -- (2.313,5.9655);%
+\draw[-stealth] (2.1818,6.5455) -- (2.259,6.2839);%
+\draw[-stealth] (2.1818,6.8864) -- (2.1793,6.6136);%
+\draw[-stealth] (2.1818,7.2273) -- (2.1006,6.9669);%
+\draw[-stealth] (2.1818,7.5682) -- (2.0483,7.3304);%
+\draw[-stealth] (2.1818,7.9091) -- (2.0232,7.6872);%
+\draw[-stealth] (2.1818,8.25) -- (2.0188,8.0314);%
+\draw[-stealth] (2.1818,8.5909) -- (2.0334,8.3621);%
+\draw[-stealth] (2.4545,0.75) -- (2.6202,0.5334);%
+\draw[-stealth] (2.4545,1.0909) -- (2.5641,0.8412);%
+\draw[-stealth] (2.4545,1.4318) -- (2.4648,1.1593);%
+\draw[-stealth] (2.4545,1.7727) -- (2.3599,1.517);%
+\draw[-stealth] (2.4545,2.1136) -- (2.296,1.8917);%
+\draw[-stealth] (2.4545,2.4545) -- (2.2681,2.2555);%
+\draw[-stealth] (2.4545,2.7955) -- (2.2619,2.6024);%
+\draw[-stealth] (2.4545,3.1364) -- (2.2733,2.9326);%
+\draw[-stealth] (2.4545,3.4773) -- (2.3095,3.2463);%
+\draw[-stealth] (2.4545,3.8182) -- (2.386,3.5542);%
+\draw[-stealth] (2.4545,4.1591) -- (2.4959,3.8895);%
+\draw[-stealth] (2.4545,4.5) -- (2.5842,4.2601);%
+\draw[-stealth] (2.4545,4.8409) -- (2.6293,4.6315);%
+\draw[-stealth] (2.4545,5.1818) -- (2.646,4.9876);%
+\draw[-stealth] (2.4545,5.5227) -- (2.6443,5.3269);%
+\draw[-stealth] (2.4545,5.8636) -- (2.6231,5.6492);%
+\draw[-stealth] (2.4545,6.2045) -- (2.5702,5.9576);%
+\draw[-stealth] (2.4545,6.5455) -- (2.4738,6.2734);%
+\draw[-stealth] (2.4545,6.8864) -- (2.367,6.6281);%
+\draw[-stealth] (2.4545,7.2273) -- (2.2995,7.0029);%
+\draw[-stealth] (2.4545,7.5682) -- (2.2694,7.3679);%
+\draw[-stealth] (2.4545,7.9091) -- (2.2617,7.7162);%
+\draw[-stealth] (2.4545,8.25) -- (2.2717,8.0477);%
+\draw[-stealth] (2.4545,8.5909) -- (2.3053,8.3626);%
+\draw[-stealth] (2.7273,0.75) -- (2.8934,0.5337);%
+\draw[-stealth] (2.7273,1.0909) -- (2.7758,0.8225);%
+\draw[-stealth] (2.7273,1.4318) -- (2.618,1.1819);%
+\draw[-stealth] (2.7273,1.7727) -- (2.5363,1.578);%
+\draw[-stealth] (2.7273,2.1136) -- (2.5078,1.9518);%
+\draw[-stealth] (2.7273,2.4545) -- (2.5004,2.3032);%
+\draw[-stealth] (2.7273,2.7955) -- (2.5061,2.6359);%
+\draw[-stealth] (2.7273,3.1364) -- (2.531,2.947);%
+\draw[-stealth] (2.7273,3.4773) -- (2.6037,3.2342);%
+\draw[-stealth] (2.7273,3.8182) -- (2.756,3.547);%
+\draw[-stealth] (2.7273,4.1591) -- (2.8841,3.9359);%
+\draw[-stealth] (2.7273,4.5) -- (2.9352,4.3236);%
+\draw[-stealth] (2.7273,4.8409) -- (2.952,4.6863);%
+\draw[-stealth] (2.7273,5.1818) -- (2.9532,5.0291);%
+\draw[-stealth] (2.7273,5.5227) -- (2.9404,5.3525);%
+\draw[-stealth] (2.7273,5.8636) -- (2.899,5.6518);%
+\draw[-stealth] (2.7273,6.2045) -- (2.7885,5.9388);%
+\draw[-stealth] (2.7273,6.5455) -- (2.6283,6.2913);%
+\draw[-stealth] (2.7273,6.8864) -- (2.5402,6.6879);%
+\draw[-stealth] (2.7273,7.2273) -- (2.5091,7.0637);%
+\draw[-stealth] (2.7273,7.5682) -- (2.5005,7.4167);%
+\draw[-stealth] (2.7273,7.9091) -- (2.5051,7.7509);%
+\draw[-stealth] (2.7273,8.25) -- (2.5279,8.0639);%
+\draw[-stealth] (2.7273,8.5909) -- (2.5949,8.3525);%
+\draw[-stealth] (3,0.75) -- (3.1418,0.517);%
+\draw[-stealth] (3,1.0909) -- (2.8542,0.8604);%
+\draw[-stealth] (3,1.4318) -- (2.7627,1.2974);%
+\draw[-stealth] (3,1.7727) -- (2.7455,1.6747);%
+\draw[-stealth] (3,2.1136) -- (2.7414,2.0269);%
+\draw[-stealth] (3,2.4545) -- (2.7426,2.3645);%
+\draw[-stealth] (3,2.7955) -- (2.7509,2.6845);%
+\draw[-stealth] (3,3.1364) -- (2.7871,2.9659);%
+\draw[-stealth] (3,3.4773) -- (2.9897,3.2047);%
+\draw[-stealth] (3,3.8182) -- (3.208,3.6418);%
+\draw[-stealth] (3,4.1591) -- (3.2482,4.046);%
+\draw[-stealth] (3,4.5) -- (3.2572,4.4093);%
+\draw[-stealth] (3,4.8409) -- (3.2586,4.7544);%
+\draw[-stealth] (3,5.1818) -- (3.255,5.085);%
+\draw[-stealth] (3,5.5227) -- (3.2392,5.3917);%
+\draw[-stealth] (3,5.8636) -- (3.1573,5.6408);%
+\draw[-stealth] (3,6.2045) -- (2.8714,5.964);%
+\draw[-stealth] (3,6.5455) -- (2.7655,6.4062);%
+\draw[-stealth] (3,6.8864) -- (2.7462,6.7866);%
+\draw[-stealth] (3,7.2273) -- (2.7415,7.1402);%
+\draw[-stealth] (3,7.5682) -- (2.7423,7.4789);%
+\draw[-stealth] (3,7.9091) -- (2.7497,7.8008);%
+\draw[-stealth] (3,8.25) -- (2.7815,8.0868);%
+\draw[-stealth] (3,8.5909) -- (2.963,8.3207);%
+\draw[-stealth] (3.2727,0.4091) -- (3.5455,0.4091);%
+\draw[-stealth] (3.2727,0.75) -- (3,0.75);%
+\draw[-stealth] (3.2727,1.0909) -- (3,1.0909);%
+\draw[-stealth] (3.2727,1.4318) -- (3,1.4318);%
+\draw[-stealth] (3.2727,1.7727) -- (3,1.7727);%
+\draw[-stealth] (3.2727,2.1136) -- (3,2.1136);%
+\draw[-stealth] (3.2727,2.4545) -- (3,2.4545);%
+\draw[-stealth] (3.2727,2.7955) -- (3,2.7955);%
+\draw[-stealth] (3.2727,3.1364) -- (3,3.1364);%
+\draw[-stealth] (3.2727,3.4773) -- (3.5455,3.4773);%
+\draw[-stealth] (3.2727,3.8182) -- (3.5455,3.8182);%
+\draw[-stealth] (3.2727,4.1591) -- (3.5455,4.1591);%
+\draw[-stealth] (3.2727,4.5) -- (3.5455,4.5);%
+\draw[-stealth] (3.2727,4.8409) -- (3.5455,4.8409);%
+\draw[-stealth] (3.2727,5.1818) -- (3.5455,5.1818);%
+\draw[-stealth] (3.2727,5.5227) -- (3.5455,5.5227);%
+\draw[-stealth] (3.2727,5.8636) -- (3,5.8636);%
+\draw[-stealth] (3.2727,6.2045) -- (3,6.2045);%
+\draw[-stealth] (3.2727,6.5455) -- (3,6.5455);%
+\draw[-stealth] (3.2727,6.8864) -- (3,6.8864);%
+\draw[-stealth] (3.2727,7.2273) -- (3,7.2273);%
+\draw[-stealth] (3.2727,7.5682) -- (3,7.5682);%
+\draw[-stealth] (3.2727,7.9091) -- (3,7.9091);%
+\draw[-stealth] (3.2727,8.25) -- (3,8.25);%
+\draw[-stealth] (3.2727,8.5909) -- (3.5455,8.5909);%
+\draw[-stealth] (3.5455,0.4091) -- (3.5084,0.6793);%
+\draw[-stealth] (3.5455,0.75) -- (3.327,0.9132);%
+\draw[-stealth] (3.5455,1.0909) -- (3.2952,1.1992);%
+\draw[-stealth] (3.5455,1.4318) -- (3.2877,1.5211);%
+\draw[-stealth] (3.5455,1.7727) -- (3.287,1.8598);%
+\draw[-stealth] (3.5455,2.1136) -- (3.2916,2.2134);%
+\draw[-stealth] (3.5455,2.4545) -- (3.311,2.5938);%
+\draw[-stealth] (3.5455,2.7955) -- (3.4168,3.036);%
+\draw[-stealth] (3.5455,3.1364) -- (3.7027,3.3592);%
+\draw[-stealth] (3.5455,3.4773) -- (3.7846,3.6083);%
+\draw[-stealth] (3.5455,3.8182) -- (3.8004,3.915);%
+\draw[-stealth] (3.5455,4.1591) -- (3.8041,4.2456);%
+\draw[-stealth] (3.5455,4.5) -- (3.8026,4.5907);%
+\draw[-stealth] (3.5455,4.8409) -- (3.7936,4.954);%
+\draw[-stealth] (3.5455,5.1818) -- (3.7535,5.3582);%
+\draw[-stealth] (3.5455,5.5227) -- (3.5352,5.7953);%
+\draw[-stealth] (3.5455,5.8636) -- (3.3326,6.0341);%
+\draw[-stealth] (3.5455,6.2045) -- (3.2963,6.3155);%
+\draw[-stealth] (3.5455,6.5455) -- (3.288,6.6355);%
+\draw[-stealth] (3.5455,6.8864) -- (3.2869,6.9731);%
+\draw[-stealth] (3.5455,7.2273) -- (3.291,7.3253);%
+\draw[-stealth] (3.5455,7.5682) -- (3.3082,7.7026);%
+\draw[-stealth] (3.5455,7.9091) -- (3.3997,8.1396);%
+\draw[-stealth] (3.5455,8.25) -- (3.6872,8.483);%
+\draw[-stealth] (3.8182,0.4091) -- (3.6858,0.6475);%
+\draw[-stealth] (3.8182,0.75) -- (3.6188,0.9361);%
+\draw[-stealth] (3.8182,1.0909) -- (3.596,1.2491);%
+\draw[-stealth] (3.8182,1.4318) -- (3.5914,1.5833);%
+\draw[-stealth] (3.8182,1.7727) -- (3.6,1.9363);%
+\draw[-stealth] (3.8182,2.1136) -- (3.6312,2.3121);%
+\draw[-stealth] (3.8182,2.4545) -- (3.7192,2.7087);%
+\draw[-stealth] (3.8182,2.7955) -- (3.8794,3.0612);%
+\draw[-stealth] (3.8182,3.1364) -- (3.9899,3.3482);%
+\draw[-stealth] (3.8182,3.4773) -- (4.0313,3.6475);%
+\draw[-stealth] (3.8182,3.8182) -- (4.0441,3.9709);%
+\draw[-stealth] (3.8182,4.1591) -- (4.0429,4.3137);%
+\draw[-stealth] (3.8182,4.5) -- (4.0262,4.6764);%
+\draw[-stealth] (3.8182,4.8409) -- (3.975,5.0641);%
+\draw[-stealth] (3.8182,5.1818) -- (3.847,5.453);%
+\draw[-stealth] (3.8182,5.5227) -- (3.6946,5.7658);%
+\draw[-stealth] (3.8182,5.8636) -- (3.6219,6.053);%
+\draw[-stealth] (3.8182,6.2045) -- (3.597,6.3641);%
+\draw[-stealth] (3.8182,6.5455) -- (3.5913,6.6968);%
+\draw[-stealth] (3.8182,6.8864) -- (3.5987,7.0482);%
+\draw[-stealth] (3.8182,7.2273) -- (3.6272,7.422);%
+\draw[-stealth] (3.8182,7.5682) -- (3.7089,7.8181);%
+\draw[-stealth] (3.8182,7.9091) -- (3.8667,8.1775);%
+\draw[-stealth] (3.8182,8.25) -- (3.9843,8.4663);%
+\draw[-stealth] (4.0909,0.4091) -- (3.9417,0.6374);%
+\draw[-stealth] (4.0909,0.75) -- (3.908,0.9523);%
+\draw[-stealth] (4.0909,1.0909) -- (3.8981,1.2838);%
+\draw[-stealth] (4.0909,1.4318) -- (3.9058,1.6321);%
+\draw[-stealth] (4.0909,1.7727) -- (3.9359,1.9971);%
+\draw[-stealth] (4.0909,2.1136) -- (4.0033,2.3719);%
+\draw[-stealth] (4.0909,2.4545) -- (4.1102,2.7266);%
+\draw[-stealth] (4.0909,2.7955) -- (4.2066,3.0424);%
+\draw[-stealth] (4.0909,3.1364) -- (4.2594,3.3508);%
+\draw[-stealth] (4.0909,3.4773) -- (4.2807,3.6731);%
+\draw[-stealth] (4.0909,3.8182) -- (4.2824,4.0124);%
+\draw[-stealth] (4.0909,4.1591) -- (4.2657,4.3685);%
+\draw[-stealth] (4.0909,4.5) -- (4.2206,4.7399);%
+\draw[-stealth] (4.0909,4.8409) -- (4.1323,5.1105);%
+\draw[-stealth] (4.0909,5.1818) -- (4.0224,5.4458);%
+\draw[-stealth] (4.0909,5.5227) -- (3.9458,5.7537);%
+\draw[-stealth] (4.0909,5.8636) -- (3.9097,6.0674);%
+\draw[-stealth] (4.0909,6.2045) -- (3.8982,6.3976);%
+\draw[-stealth] (4.0909,6.5455) -- (3.9045,6.7445);%
+\draw[-stealth] (4.0909,6.8864) -- (3.9324,7.1083);%
+\draw[-stealth] (4.0909,7.2273) -- (3.9963,7.483);%
+\draw[-stealth] (4.0909,7.5682) -- (4.1012,7.8407);%
+\draw[-stealth] (4.0909,7.9091) -- (4.2005,8.1588);%
+\draw[-stealth] (4.0909,8.25) -- (4.2566,8.4666);%
+\draw[-stealth] (4.3636,0.4091) -- (4.2152,0.6379);%
+\draw[-stealth] (4.3636,0.75) -- (4.2006,0.9686);%
+\draw[-stealth] (4.3636,1.0909) -- (4.2051,1.3128);%
+\draw[-stealth] (4.3636,1.4318) -- (4.2301,1.6696);%
+\draw[-stealth] (4.3636,1.7727) -- (4.2824,2.0331);%
+\draw[-stealth] (4.3636,2.1136) -- (4.3611,2.3864);%
+\draw[-stealth] (4.3636,2.4545) -- (4.4408,2.7161);%
+\draw[-stealth] (4.3636,2.7955) -- (4.4948,3.0345);%
+\draw[-stealth] (4.3636,3.1364) -- (4.5213,3.3589);%
+\draw[-stealth] (4.3636,3.4773) -- (4.5269,3.6957);%
+\draw[-stealth] (4.3636,3.8182) -- (4.5136,4.046);%
+\draw[-stealth] (4.3636,4.1591) -- (4.4769,4.4072);%
+\draw[-stealth] (4.3636,4.5) -- (4.411,4.7686);%
+\draw[-stealth] (4.3636,4.8409) -- (4.3275,5.1112);%
+\draw[-stealth] (4.3636,5.1818) -- (4.2578,5.4332);%
+\draw[-stealth] (4.3636,5.5227) -- (4.2173,5.7528);%
+\draw[-stealth] (4.3636,5.8636) -- (4.2011,6.0826);%
+\draw[-stealth] (4.3636,6.2045) -- (4.204,6.4257);%
+\draw[-stealth] (4.3636,6.5455) -- (4.2272,6.7816);%
+\draw[-stealth] (4.3636,6.8864) -- (4.2771,7.145);%
+\draw[-stealth] (4.3636,7.2273) -- (4.3543,7.4998);%
+\draw[-stealth] (4.3636,7.5682) -- (4.4352,7.8314);%
+\draw[-stealth] (4.3636,7.9091) -- (4.4916,8.1499);%
+\draw[-stealth] (4.3636,8.25) -- (4.5201,8.4734);%
+\draw[-stealth] (4.6364,0.4091) -- (4.498,0.6441);%
+\draw[-stealth] (4.6364,0.75) -- (4.4987,0.9854);%
+\draw[-stealth] (4.6364,1.0909) -- (4.5182,1.3367);%
+\draw[-stealth] (4.6364,1.4318) -- (4.5594,1.6935);%
+\draw[-stealth] (4.6364,1.7727) -- (4.6207,2.045);%
+\draw[-stealth] (4.6364,2.1136) -- (4.6871,2.3816);%
+\draw[-stealth] (4.6364,2.4545) -- (4.7384,2.7075);%
+\draw[-stealth] (4.6364,2.7955) -- (4.7676,3.0346);%
+\draw[-stealth] (4.6364,3.1364) -- (4.7767,3.3702);%
+\draw[-stealth] (4.6364,3.4773) -- (4.7676,3.7164);%
+\draw[-stealth] (4.6364,3.8182) -- (4.7384,4.0711);%
+\draw[-stealth] (4.6364,4.1591) -- (4.6871,4.4271);%
+\draw[-stealth] (4.6364,4.5) -- (4.6207,4.7723);%
+\draw[-stealth] (4.6364,4.8409) -- (4.5594,5.1025);%
+\draw[-stealth] (4.6364,5.1818) -- (4.5182,5.4276);%
+\draw[-stealth] (4.6364,5.5227) -- (4.4987,5.7581);%
+\draw[-stealth] (4.6364,5.8636) -- (4.498,6.0986);%
+\draw[-stealth] (4.6364,6.2045) -- (4.5159,6.4492);%
+\draw[-stealth] (4.6364,6.5455) -- (4.5553,6.8058);%
+\draw[-stealth] (4.6364,6.8864) -- (4.6154,7.1583);%
+\draw[-stealth] (4.6364,7.2273) -- (4.6821,7.4961);%
+\draw[-stealth] (4.6364,7.5682) -- (4.7351,7.8224);%
+\draw[-stealth] (4.6364,7.9091) -- (4.766,8.149);%
+\draw[-stealth] (4.6364,8.25) -- (4.7766,8.4839);%
+\draw[-stealth] (4.9091,0.4091) -- (4.7881,0.6535);%
+\draw[-stealth] (4.9091,0.75) -- (4.8026,1.0011);%
+\draw[-stealth] (4.9091,1.0909) -- (4.8354,1.3535);%
+\draw[-stealth] (4.9091,1.4318) -- (4.8849,1.7035);%
+\draw[-stealth] (4.9091,1.7727) -- (4.9409,2.0436);%
+\draw[-stealth] (4.9091,2.1136) -- (4.9885,2.3746);%
+\draw[-stealth] (4.9091,2.4545) -- (5.0187,2.7043);%
+\draw[-stealth] (4.9091,2.7955) -- (5.0307,3.0396);%
+\draw[-stealth] (4.9091,3.1364) -- (5.0256,3.383);%
+\draw[-stealth] (4.9091,3.4773) -- (5.0028,3.7334);%
+\draw[-stealth] (4.9091,3.8182) -- (4.9617,4.0858);%
+\draw[-stealth] (4.9091,4.1591) -- (4.9074,4.4318);%
+\draw[-stealth] (4.9091,4.5) -- (4.8535,4.767);%
+\draw[-stealth] (4.9091,4.8409) -- (4.8135,5.0963);%
+\draw[-stealth] (4.9091,5.1818) -- (4.7918,5.428);%
+\draw[-stealth] (4.9091,5.5227) -- (4.7877,5.7669);%
+\draw[-stealth] (4.9091,5.8636) -- (4.8008,6.1139);%
+\draw[-stealth] (4.9091,6.2045) -- (4.8321,6.4662);%
+\draw[-stealth] (4.9091,6.5455) -- (4.8805,6.8167);%
+\draw[-stealth] (4.9091,6.8864) -- (4.9366,7.1577);%
+\draw[-stealth] (4.9091,7.2273) -- (4.9853,7.4891);%
+\draw[-stealth] (4.9091,7.5682) -- (5.017,7.8187);%
+\draw[-stealth] (4.9091,7.9091) -- (5.0304,8.1534);%
+\draw[-stealth] (4.9091,8.25) -- (5.0266,8.4961);%
+\draw[-stealth] (5.1818,0.4091) -- (5.0847,0.6639);%
+\draw[-stealth] (5.1818,0.75) -- (5.1109,1.0134);%
+\draw[-stealth] (5.1818,1.0909) -- (5.1517,1.362);%
+\draw[-stealth] (5.1818,1.4318) -- (5.1997,1.704);%
+\draw[-stealth] (5.1818,1.7727) -- (5.2433,2.0384);%
+\draw[-stealth] (5.1818,2.1136) -- (5.2737,2.3704);%
+\draw[-stealth] (5.1818,2.4545) -- (5.288,2.7058);%
+\draw[-stealth] (5.1818,2.7955) -- (5.2864,3.0473);%
+\draw[-stealth] (5.1818,3.1364) -- (5.2689,3.3948);%
+\draw[-stealth] (5.1818,3.4773) -- (5.2355,3.7447);%
+\draw[-stealth] (5.1818,3.8182) -- (5.1901,4.0908);%
+\draw[-stealth] (5.1818,4.1591) -- (5.1426,4.429);%
+\draw[-stealth] (5.1818,4.5) -- (5.1044,4.7615);%
+\draw[-stealth] (5.1818,4.8409) -- (5.0814,5.0945);%
+\draw[-stealth] (5.1818,5.1818) -- (5.0744,5.4325);%
+\draw[-stealth] (5.1818,5.5227) -- (5.0833,5.777);%
+\draw[-stealth] (5.1818,5.8636) -- (5.1083,6.1263);%
+\draw[-stealth] (5.1818,6.2045) -- (5.148,6.4752);%
+\draw[-stealth] (5.1818,6.5455) -- (5.1959,6.8178);%
+\draw[-stealth] (5.1818,6.8864) -- (5.2403,7.1528);%
+\draw[-stealth] (5.1818,7.2273) -- (5.2718,7.4847);%
+\draw[-stealth] (5.1818,7.5682) -- (5.2874,7.8196);%
+\draw[-stealth] (5.1818,7.9091) -- (5.2871,8.1607);%
+\draw[-stealth] (5.1818,8.25) -- (5.2709,8.5078);%
+\draw[-stealth] (5.4545,0.4091) -- (5.3862,0.6731);%
+\draw[-stealth] (5.4545,0.75) -- (5.4202,1.0205);%
+\draw[-stealth] (5.4545,1.0909) -- (5.4618,1.3635);%
+\draw[-stealth] (5.4545,1.4318) -- (5.5017,1.7004);%
+\draw[-stealth] (5.4545,1.7727) -- (5.5316,2.0343);%
+\draw[-stealth] (5.4545,2.1136) -- (5.5477,2.37);%
+\draw[-stealth] (5.4545,2.4545) -- (5.5491,2.7103);%
+\draw[-stealth] (5.4545,2.7955) -- (5.536,3.0557);%
+\draw[-stealth] (5.4545,3.1364) -- (5.5087,3.4037);%
+\draw[-stealth] (5.4545,3.4773) -- (5.4702,3.7495);%
+\draw[-stealth] (5.4545,3.8182) -- (5.4281,4.0896);%
+\draw[-stealth] (5.4545,4.1591) -- (5.392,4.4246);%
+\draw[-stealth] (5.4545,4.5) -- (5.3683,4.7587);%
+\draw[-stealth] (5.4545,4.8409) -- (5.3589,5.0963);%
+\draw[-stealth] (5.4545,5.1818) -- (5.3642,5.4391);%
+\draw[-stealth] (5.4545,5.5227) -- (5.384,5.7862);%
+\draw[-stealth] (5.4545,5.8636) -- (5.4171,6.1338);%
+\draw[-stealth] (5.4545,6.2045) -- (5.4584,6.4772);%
+\draw[-stealth] (5.4545,6.5455) -- (5.4988,6.8146);%
+\draw[-stealth] (5.4545,6.8864) -- (5.5297,7.1485);%
+\draw[-stealth] (5.4545,7.2273) -- (5.5469,7.4839);%
+\draw[-stealth] (5.4545,7.5682) -- (5.5496,7.8238);%
+\draw[-stealth] (5.4545,7.9091) -- (5.5376,8.1689);%
+\draw[-stealth] (5.4545,8.25) -- (5.5114,8.5167);%
+\draw[-stealth] (5.7273,0.4091) -- (5.6898,0.6792);%
+\draw[-stealth] (5.7273,0.75) -- (5.7261,1.0227);%
+\draw[-stealth] (5.7273,1.0909) -- (5.7627,1.3613);%
+\draw[-stealth] (5.7273,1.4318) -- (5.7919,1.6968);%
+\draw[-stealth] (5.7273,1.7727) -- (5.8092,2.0329);%
+\draw[-stealth] (5.7273,2.1136) -- (5.8132,2.3725);%
+\draw[-stealth] (5.7273,2.4545) -- (5.8038,2.7163);%
+\draw[-stealth] (5.7273,2.7955) -- (5.7815,3.0627);%
+\draw[-stealth] (5.7273,3.1364) -- (5.7486,3.4083);%
+\draw[-stealth] (5.7273,3.4773) -- (5.7111,3.7495);%
+\draw[-stealth] (5.7273,3.8182) -- (5.6771,4.0863);%
+\draw[-stealth] (5.7273,4.1591) -- (5.6531,4.4215);%
+\draw[-stealth] (5.7273,4.5) -- (5.6418,4.759);%
+\draw[-stealth] (5.7273,4.8409) -- (5.644,5.1006);%
+\draw[-stealth] (5.7273,5.1818) -- (5.6595,5.446);%
+\draw[-stealth] (5.7273,5.5227) -- (5.6872,5.7925);%
+\draw[-stealth] (5.7273,5.8636) -- (5.7231,6.1363);%
+\draw[-stealth] (5.7273,6.2045) -- (5.76,6.4753);%
+\draw[-stealth] (5.7273,6.5455) -- (5.79,6.8109);%
+\draw[-stealth] (5.7273,6.8864) -- (5.8083,7.1468);%
+\draw[-stealth] (5.7273,7.2273) -- (5.8134,7.486);%
+\draw[-stealth] (5.7273,7.5682) -- (5.8051,7.8296);%
+\draw[-stealth] (5.7273,7.9091) -- (5.7837,8.1759);%
+\draw[-stealth] (5.7273,8.25) -- (5.7515,8.5217);%
+\draw[-stealth] (6,0.4091) -- (5.9922,0.6817);%
+\draw[-stealth] (6,0.75) -- (6.0257,1.0215);%
+\draw[-stealth] (6,1.0909) -- (6.0539,1.3583);%
+\draw[-stealth] (6,1.4318) -- (6.0722,1.6948);%
+\draw[-stealth] (6,1.7727) -- (6.0784,2.034);%
+\draw[-stealth] (6,2.1136) -- (6.0722,2.3766);%
+\draw[-stealth] (6,2.4545) -- (6.0539,2.7219);%
+\draw[-stealth] (6,2.7955) -- (6.0257,3.067);%
+\draw[-stealth] (6,3.1364) -- (5.9922,3.409);%
+\draw[-stealth] (6,3.4773) -- (5.9603,3.7471);%
+\draw[-stealth] (6,3.8182) -- (5.9363,4.0834);%
+\draw[-stealth] (6,4.1591) -- (5.9234,4.4209);%
+\draw[-stealth] (6,4.5) -- (5.923,4.7616);%
+\draw[-stealth] (6,4.8409) -- (5.9348,5.1057);%
+\draw[-stealth] (6,5.1818) -- (5.958,5.4513);%
+\draw[-stealth] (6,5.5227) -- (5.9895,5.7953);%
+\draw[-stealth] (6,5.8636) -- (6.0231,6.1354);%
+\draw[-stealth] (6,6.2045) -- (6.052,6.4723);%
+\draw[-stealth] (6,6.5455) -- (6.0711,6.8087);%
+\draw[-stealth] (6,6.8864) -- (6.0783,7.1476);%
+\draw[-stealth] (6,7.2273) -- (6.0731,7.49);%
+\draw[-stealth] (6,7.5682) -- (6.0558,7.8351);%
+\draw[-stealth] (6,7.9091) -- (6.0282,8.1804);%
+\draw[-stealth] (6,8.25) -- (5.9949,8.5227);%
+\draw[-stealth] (6.2727,0.4091) -- (6.2902,0.6813);%
+\draw[-stealth] (6.2727,0.75) -- (6.3174,1.019);%
+\draw[-stealth] (6.2727,1.0909) -- (6.3362,1.3561);%
+\draw[-stealth] (6.2727,1.4318) -- (6.3443,1.695);%
+\draw[-stealth] (6.2727,1.7727) -- (6.3408,2.0368);%
+\draw[-stealth] (6.2727,2.1136) -- (6.3261,2.3811);%
+\draw[-stealth] (6.2727,2.4545) -- (6.3018,2.7257);%
+\draw[-stealth] (6.2727,2.7955) -- (6.2718,3.0682);%
+\draw[-stealth] (6.2727,3.1364) -- (6.242,3.4074);%
+\draw[-stealth] (6.2727,3.4773) -- (6.2182,3.7445);%
+\draw[-stealth] (6.2727,3.8182) -- (6.2041,4.0821);%
+\draw[-stealth] (6.2727,4.1591) -- (6.2014,4.4223);%
+\draw[-stealth] (6.2727,4.5) -- (6.2101,4.7654);%
+\draw[-stealth] (6.2727,4.8409) -- (6.2295,5.1102);%
+\draw[-stealth] (6.2727,5.1818) -- (6.2571,5.4541);%
+\draw[-stealth] (6.2727,5.5227) -- (6.2878,5.795);%
+\draw[-stealth] (6.2727,5.8636) -- (6.3155,6.133);%
+\draw[-stealth] (6.2727,6.2045) -- (6.3351,6.47);%
+\draw[-stealth] (6.2727,6.5455) -- (6.344,6.8087);%
+\draw[-stealth] (6.2727,6.8864) -- (6.3415,7.1503);%
+\draw[-stealth] (6.2727,7.2273) -- (6.3277,7.4944);%
+\draw[-stealth] (6.2727,7.5682) -- (6.304,7.8391);%
+\draw[-stealth] (6.2727,7.9091) -- (6.2743,8.1818);%
+\draw[-stealth] (6.2727,8.25) -- (6.2442,8.5212);%
+\draw[-stealth] (6.5455,2.7955) -- (6.5224,3.0672);%
+\draw[-stealth] (6.5455,3.1364) -- (6.499,3.4051);%
+\draw[-stealth] (6.5455,3.4773) -- (6.4841,3.743);%
+\draw[-stealth] (6.5455,3.8182) -- (6.4793,4.0828);%
+\draw[-stealth] (6.5455,4.1591) -- (6.4853,4.4251);%
+\draw[-stealth] (6.5455,4.5) -- (6.5015,4.7692);%
+\draw[-stealth] (6.5455,4.8409) -- (6.5256,5.1129);%
+\draw[-stealth] (6.5455,7.9091) -- (6.5245,8.181);%
+\draw[-stealth] (6.5455,8.25) -- (6.5006,8.519);%
+\draw[-] (0,0.4091) -- (6.5455,0.4091) -- (6.5455,8.5909) -- (0,8.5909)--cycle;%
+\draw[-] (3.2727,8.6409) node[above] {\small vector field $f(x,y)=(\cos(x+y),x)$};%
+\draw[-] (0,8.3909) -- (0,8.5909) (0.4091,8.4909) -- (0.4091,8.5909) (0.8182,8.3909) -- (0.8182,8.5909) (1.2273,8.4909) -- (1.2273,8.5909) (1.6364,8.3909) -- (1.6364,8.5909) (2.0455,8.4909) -- (2.0455,8.5909) (2.4545,8.3909) -- (2.4545,8.5909) (2.8636,8.4909) -- (2.8636,8.5909) (3.2727,8.3909) -- (3.2727,8.5909) (3.6818,8.4909) -- (3.6818,8.5909) (4.0909,8.3909) -- (4.0909,8.5909) (4.5,8.4909) -- (4.5,8.5909) (4.9091,8.3909) -- (4.9091,8.5909) (5.3182,8.4909) -- (5.3182,8.5909) (5.7273,8.3909) -- (5.7273,8.5909) (6.1364,8.4909) -- (6.1364,8.5909) (6.5455,8.3909) -- (6.5455,8.5909);%
+\draw[-] (0,0.4091) -- (0,0.6091) (0.4091,0.4091) -- (0.4091,0.5091) (0.8182,0.4091) -- (0.8182,0.6091) (1.2273,0.4091) -- (1.2273,0.5091) (1.6364,0.4091) -- (1.6364,0.6091) (2.0455,0.4091) -- (2.0455,0.5091) (2.4545,0.4091) -- (2.4545,0.6091) (2.8636,0.4091) -- (2.8636,0.5091) (3.2727,0.4091) -- (3.2727,0.6091) (3.6818,0.4091) -- (3.6818,0.5091) (4.0909,0.4091) -- (4.0909,0.6091) (4.5,0.4091) -- (4.5,0.5091) (4.9091,0.4091) -- (4.9091,0.6091) (5.3182,0.4091) -- (5.3182,0.5091) (5.7273,0.4091) -- (5.7273,0.6091) (6.1364,0.4091) -- (6.1364,0.5091) (6.5455,0.4091) -- (6.5455,0.6091);%
+\draw[-] (0,0.4091) node[below] {\small $-4$} (0.8182,0.4091) node[below] {\small $-3$} (1.6364,0.4091) node[below] {\small $-2$} (2.4545,0.4091) node[below] {\small $-1$} (3.2727,0.4091) node[below] {\small $0$} (4.0909,0.4091) node[below] {\small $1$} (4.9091,0.4091) node[below] {\small $2$} (5.7273,0.4091) node[below] {\small $3$} (6.5455,0.4091) node[below] {\small $4$};%
+\draw[-] (0.2,0.4091) -- (0,0.4091) (0.1,0.8182) -- (0,0.8182) (0.2,1.2273) -- (0,1.2273) (0.1,1.6364) -- (0,1.6364) (0.2,2.0455) -- (0,2.0455) (0.1,2.4545) -- (0,2.4545) (0.2,2.8636) -- (0,2.8636) (0.1,3.2727) -- (0,3.2727) (0.2,3.6818) -- (0,3.6818) (0.1,4.0909) -- (0,4.0909) (0.2,4.5) -- (0,4.5) (0.1,4.9091) -- (0,4.9091) (0.2,5.3182) -- (0,5.3182) (0.1,5.7273) -- (0,5.7273) (0.2,6.1364) -- (0,6.1364) (0.1,6.5455) -- (0,6.5455) (0.2,6.9545) -- (0,6.9545) (0.1,7.3636) -- (0,7.3636) (0.2,7.7727) -- (0,7.7727) (0.1,8.1818) -- (0,8.1818) (0.2,8.5909) -- (0,8.5909);%
+\draw[-] (0,0.4091) node[left] {\small $-5$} (0,1.2273) node[left] {\small $-4$} (0,2.0455) node[left] {\small $-3$} (0,2.8636) node[left] {\small $-2$} (0,3.6818) node[left] {\small $-1$} (0,4.5) node[left] {\small $0$} (0,5.3182) node[left] {\small $1$} (0,6.1364) node[left] {\small $2$} (0,6.9545) node[left] {\small $3$} (0,7.7727) node[left] {\small $4$} (0,8.5909) node[left] {\small $5$};%
+\draw[-] (6.5455,0.4091) -- (6.3455,0.4091) (6.5455,0.8182) -- (6.4455,0.8182) (6.5455,1.2273) -- (6.3455,1.2273) (6.5455,1.6364) -- (6.4455,1.6364) (6.5455,2.0455) -- (6.3455,2.0455) (6.5455,2.4545) -- (6.4455,2.4545) (6.5455,2.8636) -- (6.3455,2.8636) (6.5455,3.2727) -- (6.4455,3.2727) (6.5455,3.6818) -- (6.3455,3.6818) (6.5455,4.0909) -- (6.4455,4.0909) (6.5455,4.5) -- (6.3455,4.5) (6.5455,4.9091) -- (6.4455,4.9091) (6.5455,5.3182) -- (6.3455,5.3182) (6.5455,5.7273) -- (6.4455,5.7273) (6.5455,6.1364) -- (6.3455,6.1364) (6.5455,6.5455) -- (6.4455,6.5455) (6.5455,6.9545) -- (6.3455,6.9545) (6.5455,7.3636) -- (6.4455,7.3636) (6.5455,7.7727) -- (6.3455,7.7727) (6.5455,8.1818) -- (6.4455,8.1818) (6.5455,8.5909) -- (6.3455,8.5909);%
+\end{scope}%
+\end{tikzpicture}%

@@ -803,3 +803,486 @@ The result :
 \end{animateinline}
 \end{center}
 \end{minipage}
+
+
+\subsection{The \emph{luadraw\_fields} module}
+
+This module contains the functions and methods introduced at the end of Chapter~$1$ for drawing vector fields and gradient fields. It includes:
+
+\begin{itemize}
+    \item The function \textbf{field(f,x1,x2,y1,y2,grid,length)}, which returns the vector field (a list of line segments). The argument \emph{f} is a function \(f\colon (x,y)\mapsto f(x,y)\in\mathbf{R}^2\) (\(f(x,y)\) is a list of two real numbers). The field is computed over the rectangle \([x_1;x_2]\times[y_1;y_2]\). The argument \emph{grid}, which defaults to \emph{\{25,25\}}, specifies the number of subdivisions of the intervals \([x_1;x_2]\) and \([y_1;y_2]\). The argument \emph{length} allows one to fix the vector length (all vectors have the same norm); by default, a suitable length is computed from the step sizes along both axes.
+    
+    \item The method \textbf{g:Dvectorfield(f,options)} draws the vector field associated with the function \(f\). The argument \emph{options} is a table whose fields define the parameters (with their default values):
+        \begin{itemize}
+            \item \opt{view = default window}: a list of the form \{x1,x2,y1,y2\} defining the rectangle \([x_1;x_2]\times[y_1;y_2]\). By default, this is the window selected when the graph was created.
+            \item \opt{grid = \{25,25\}}: a list of two integers defining the number of subdivisions along each axis.
+            \item \opt{length = }: allows one to impose the vector length; by default, the length is computed from the step sizes along both axes.
+            \item \opt{draw\_options = ""}: a string containing the drawing options passed to \texttt{tikz}.
+        \end{itemize}
+        
+    \item The method \textbf{g:Dgradientfield(f,options)} draws the gradient field associated with the \textbf{scalar} function \(f\colon (x,y)\mapsto f(x,y)\in\mathbf{R}\). The argument \emph{options} is the same as in the \emph{Dvectorfield} method.
+\end{itemize}
+
+An example of both methods has already been given on page~\pageref{fields}.
+
+
+
+\subsection{The \emph{luadraw\_shadedforms} module}
+
+This module allows you to draw polygonal lines or fill a shape using a color gradient.
+
+This module loads the \emph{luadraw\_palette} extension.
+
+\subsubsection{Dshadedpolyline}
+
+The function \textbf{g:Dshadedpolyline(L, palette, options)} enables the rendering of a two-dimensional polygonal line (\emph{L}) with a continuous color gradient determined by the computational method and the selected \emph{palette}. The argument \emph{L} may be either a list of complex numbers or a list of lists of complex numbers. The \emph{palette} is a list of colors, each color being represented as a list of three real numbers between \(0\) and \(1\), corresponding respectively to the red, green, and blue components. The argument \emph{options} is a table whose fields define the parameters (with their default values) as follows:
+\begin{itemize}
+    \item \opt{values = "x"} — for each point in \emph{L}, a numerical value is computed, which determines the associated color according to the chosen palette. The \emph{values} option specifies the evaluation mode and may take one of the following forms:
+        \begin{itemize}
+            \item "x" (default): the value corresponds to the point’s abscissa;
+            \item "y": the value corresponds to the point’s ordinate;
+            \item a function \(f\colon(x,y)\mapsto f(x,y)\in\mathbf{R}\): the value for each point \((x,y)\) in \emph{L} is given by \(f(x,y)\).
+        \end{itemize}
+    \item \opt{width = current line width} — specifies the line thickness in tenths of a point (default: current line width).
+    \item \opt{close = false} — a Boolean value indicating whether the polygonal line should be closed.
+    \item \opt{clip = nil} — this option can be either \emph{nil} (default) or a table \emph{\{x1, x2, y1, y2\}}. In the former case, the line is clipped by the current two-dimensional window \textbf{after} applying the graph’s 2D transformation matrix; in the latter, the line is clipped by the window \([x_1, x_2]\times[y_1, y_2]\) \textbf{before} the transformation.
+\end{itemize}
+
+This procedure transforms \emph{L} into a sequence of trapezoids, which are subsequently filled using a smooth color gradient.
+
+\begin{demo}{Shaded polyline}
+\begin{luadraw}{name=shading_polyline}
+local i = cpx.I
+local g = graph:new{size={10,10},bg="lightgray", margin={0,0,0,0}}
+require 'luadraw_shadedforms'
+-- first example diff. equation y'= x^2+y^2-1 (=f(x,y))
+local x1,x2,y1,y2 = -3,3,-3,3
+local A = Z(0,1/2) -- initial condition
+local f = function(x,y) 
+    return x^2+y^2-1
+end
+local S = odesolve(f, A.re, A.im, x1, x2, 150) -- S is a matrix {X,Y}
+local L = {} -- to convert {X,Y} into the complex numbers list L
+for k = 1, #S[1] do table.insert(L, Z(S[1][k],S[2][k])) end 
+L = clippolyline(L,-2.5,2.4,y1,y2)[1] -- L is the solution curve
+g:Dshadedpolyline(L, palRainbow, {values=f, width=12}) -- solution drawn with rainbow color map using function f
+-- second example
+L = polar(function(t) return 2*math.cos(3*t) end, -math.pi, math.pi)
+local f = function(x,y) return cpx.abs(Z(x,y)) end -- here the value will be the modulus
+g:Shift(2-2.5*i)
+g:Dshadedpolyline(L, palAutumn, {values=f, width=12})
+-- third example
+g:Shift(-4.5+5*i)
+g:Dshadedpolyline( polyreg(0,2,8), palGasFlame, {values="y", width=24, close=true})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dcolorbar}
+
+The method \textbf{g:Dcolorbar(A,pal,options)} allows you to draw a rectangle with a color gradient from a palette, optionally with a gradation. The argument \emph{A} is a complex number; it is the reference point for constructing the rectangle. The argument \emph{pal} is a color palette (a list of lists of the form \{r,g,b\} where r, g, and b are between $0$ and $1$). The argument \emph{options} is an array whose fields define the parameters, which are (with their default values):
+
+\begin{itemize}
+    \item \opt{minmax = \{0,1\}}, a list containing the minimum value (which will be assigned to the first color of the palette) and the maximum value (which will be assigned to the last color of the palette). Thus, any numeric value between \emph{min} and \emph{max} corresponds to a color in the palette.
+
+    \item \opt{dir = cpx.I}, direction of the longer side of the rectangle (this vector is automatically normalized), so by default the rectangle is vertical.
+
+    \item \opt{length = 8}, length of the rectangle.
+
+    \item \opt{width = 0.5}, width of the rectangle. The vertices of the rectangle are:\par
+\hfil\verb|A, A+length*dir, A+length*dir+width*cpx.I*dir, A+width*cpx.I*dir|\hfil\par
+
+    \item \opt{values ​​= 0}, this option allows you to define either the number of numeric values ​​displayed equally within the interval \emph{minmax} (none by default), or the list of numeric values ​​displayed (in this case \emph{values} must be a list of numeric values ​​within the interval \emph{minmax}).
+
+    \item \opt{addvalues ​​= nil}, this option allows you to define a list of numeric values ​​to display in addition to the \emph{min} and \emph{max} values. This option takes precedence over the previous one.
+
+    \item \opt{digits = 2}, the number of decimal places for the numeric displays.
+
+    \item \opt{labelpos = "E"} option positions the labels relative to anchor points ("N", "NE", "E", "SE", "S", "SW", "W", "NW"). The labels are positioned along the \emph{(A, dir)} axis.
+\end{itemize}
+
+\begin{demo}{Color bars}
+\begin{luadraw}{name=Dcolorbar}
+local g = graph:new{size={10,10}, bbox=false}
+g:Labelsize("small")
+require 'luadraw_shadedforms'
+g:Dcolorbar(Z(-4,-4), palRainbow)
+g:Dcolorbar(Z(-2,-4), palGasFlame, {minmax={0,7},values=8})
+g:Dcolorbar(Z(-1,1), palAutumn, {dir=1,length=6,width=1,addvalues={0.25,0.5,0.75},labelpos="S"})
+g:Dcolorbar(Z(-1,-1), palViridis, {dir=1,length=6,width=-1,addvalues={0.25,0.5,0.75},labelpos="N"})
+g:Dlabel("No value", Z(-4.25,-4),{pos="S"},
+  "\\parbox{1.95cm}{minmax=\\{0,7\\}\\\\values=8}", Z(-2.25,-4), {},
+  "dir=1, length=6, width=1", Z(2,2), {pos="N"},
+  "dir=1, length=6, width=-1", Z(2,-2),{pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dshadedrectangle}
+
+\noindent\textbf{NB}: Using this method requires the \emph{shadings} library.
+
+The \textbf{g:Dshadedrectangle(x1,x2,y1,y2,pal,options)} method fills the rectangle [x1;x2]x[y1;y2] with a gradient of colors extracted from the \emph{pal} palette. Each point $(x,y)$ in the rectangle has a color from the palette, calculated from a value $f(x,y)$ where $f$ is a numeric function defined on the rectangle. The argument \emph{options} is a table whose fields define the parameters, which are (with their default values):
+
+\begin{itemize}
+    \item \opt{values ​​= function(x,y) return cpx.abs(Z(x,y)) end}, this option defines the function $f$ used to calculate the color of each point. The maximum value of $f$ on the rectangle will correspond to the last color in the palette, and the minimum value of $f$ will correspond to the first color in the palette.
+
+    \item \opt{grid = \{15,15\}}, this option defines the number of subdivisions for the interval [x1;x2] and for the interval [y1;y2]. The finer the subdivision, the longer the display will take...
+
+    \item \opt{bar = "none"} allows you to add or not add a legend using the \emph{Dcolorbar} method. This option can be: "none", "right", "bottom", "left", or "top".
+    
+    \item \opt{bardist = 1}, the distance between the rectangle and the legend, if there is one.
+
+    \item \opt{baroptions = \{\}}, a list of options for the \emph{Dcolorbar} method if there is a legend.
+
+    \item \opt{out = nil}, if a list variable is assigned to this parameter \emph{out}, then the method adds the two values ​​\emph{min} and \emph{max} of the $f$ function to this list (which allows you to retrieve these two values ​​if necessary).
+\end{itemize}
+
+\begin{demo}{Shaded rectangle}
+\begin{luadraw}{name=Dshadedrectangle}
+local g = graph:new{window={-4,6,-5.5,5.5}, size={10,10}, bbox=false}
+require 'luadraw_shadedforms'
+require 'luadraw_fields'
+g:Labelsize("small")
+local f = function(x,y) return {math.cos(x+y), x} end -- vector field
+local Nf = function(x,y) local A = f(x,y); return cpx.abs(Z(A[1],A[2])) end -- modulus of f(x,y)
+g:Dshadedrectangle(-4,4,-5,5, palPicnic, {values=Nf, bar="right", baroptions={addvalues={0.5,1.5,2.5,3.5}}})
+g:Dvectorfield(f,{view={-4,4,-5,5},draw_options="-stealth"})
+g:Dgradbox({Z(-4,-5),Z(4,5),1,1}, {title="vector field $f(x,y)=(\\cos(x+y),x)$"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dshadedregion}
+
+The method \textbf{g:Dshadedregion(apath,pal,options)} fills the region defined by the path \emph{apath} with a gradient of colors extracted from the palette \emph{pal}. This method uses the previous one (\emph{Dshadedrectangle}) on the rectangle defined by the bounding box of the path. Each point $(x,y)$ in this rectangle has a color from the palette, calculated from a value $f(x,y)$ where $f$ is a numeric function defined on this rectangle. The drawing is clipped to the path. The argument \emph{options} is the same as that of the previous method \emph{Dshadedrectangle}.
+
+\begin{demo}{Shaded region}
+\begin{luadraw}{name=Dshadedregion}
+local g = graph:new{window={-4.5,6,-4.5,5}, size={10,10},bg="lightgray", bbox=false}
+g:Labelsize("small")
+require 'luadraw_shadedforms'
+local L1, L2 = -2, 2
+local f = function(x,y) 
+    local z = Z(x,y)
+    return (cpx.abs(z-L1)-cpx.abs(z-L2))^2
+end
+g:Dshadedregion({4,0,4,3,"e"}, getPal("Grays",{reverse=true}), {values=f, grid={20,20}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{The \emph{luadraw\_povray} Module}
+
+This module enables the creation of (relatively simple) source files for the \emph{Pov-Ray} software and allows them to be compiled on the fly, provided that the software is installed on your system and its executable path is known. Once created, the resulting image (in \emph{png} format) can be automatically included in the current graphic, allowing further drawing both underneath and on top of it.
+The image is inserted with perfect alignment, meaning that the 3D reference frames of the graphic and of the image will match exactly, provided that the system operates in \textbf{orthographic projection} mode.
+Source files and generated images are created in the working directory of \emph{luadraw}. The source files can of course be compiled separately by the user; the parameters to be passed to Pov-Ray are written in comments at the beginning of the source file.
+The source file is divided into three parts: a preamble, the object declarations, and the rendering of those objects.
+
+\subsubsection{Before Creating Objects}
+
+The Pov-Ray drawing \textbf{must be initialized} using the method:
+\par \hfil\textbf{g:Pov\_new(options)}.\hfil\par
+The argument \emph{options} is a table whose fields (and their default values) are:
+\begin{itemize}
+    \item \opt{bg = ""}: this option defines the background. If it is an empty string (default), the background will be transparent (which is required if something needs to be drawn beneath the image). If it is a non-empty string, it must be the name of a color recognized by Pov-Ray. It can also be a table of the form \{r,g,b\}, representing a color with \(r\), \(g\), and \(b\) values between \(0\) and \(1\).
+    \item \opt{shadow = true}: this boolean indicates whether objects should cast shadows (it can be modified locally for each object).
+    \item \opt{imagescale = 1}: scales the size of the produced \emph{png} image; values greater than \(1\) will naturally increase file size.
+    \item \opt{param = "-V +A +FN"}: these are the base parameters passed to Pov-Ray. Additional parameters will include image width and height, as well as "+UA" if a transparent background is required.
+    \item \opt{pov\_cmd =}: the command name used to run Pov-Ray. On Unix systems, the default value is \emph{"povray"}; on Windows, it is \emph{"pvengine64.exe"}.
+    \item \opt{win\_param\_ext = "/RENDER /EXIT"}: additional parameters relevant only on Windows systems.
+\end{itemize}
+
+Then Pov-Ray can be instructed to include specific \emph{*.inc} files using the method:
+\par \hfil\textbf{g:Pov\_include("file1.inc", "file2.inc", ...)}.\hfil\par
+For example: \verb|g:Pov_include("textures.inc", "colors.inc")|. These two files are normally distributed with Pov-Ray: the first defines textures, the second defines colors. By default, no include files are added.
+
+\subsubsection{Creation of Objects}
+
+Objects are created using methods following the format \textbf{g:Pov\_<command>(<data>, options)}. Each object is first declared in the Pov-Ray source file with a name (similar to a variable), and then this object is "rendered" in the third section of the source file with a texture defined from the options.
+
+The argument \emph{options} is a table whose fields specify the parameters of the object. The following are the \textbf{parameters common to all objects}, along with their default values:
+\begin{itemize}
+    \item \opt{name = "object<num>"}, a string representing the name of the created object. By default, it is the word "object" followed by a number (its order of appearance). Assigning a name is useful when the object needs to be reused later.
+    \item \opt{shadow = true}, a Boolean indicating whether the object casts a shadow.
+    \item \opt{render = true}, a Boolean indicating whether the object should be displayed. It may be desirable not to render an object if it is only used in the construction of another one.
+    \item Options defining the base texture, composed of a \emph{pigment} (color + opacity) and a \emph{finish} (ambient + diffuse + phong):
+        \begin{itemize}
+            \item \opt{color = White}, this option may be either a table in the form \{r,g,b\} (with $r$, $g$, and $b$ between $0$ and $1$), or a string that must represent a color known to Pov-Ray. It can also refer to a texture defined only by a \emph{pigment} (for example, \verb|color="Blue_Sky3"|, where this name is defined in the file \emph{textures.inc}).
+            \item \opt{opacity = 1}, a real number between $0$ and $1$ defining the object’s opacity.
+            \item \opt{ambient = 0.35}, \opt{diffuse = 0.8}, and \opt{phong = 0.5}: parameters defining the \emph{finish}.
+            \item \opt{mytexture = nil}, this parameter allows specifying a texture directly as a string or referencing an existing Pov-Ray texture. In that case, the previous parameters are ignored.
+        \end{itemize}
+    \item \opt{matrix = nil}, a 3D transformation matrix applied locally to the object. The global 3D transformation matrix of the graphic is also taken into account.
+    \item \opt{clipbox = nil}, this option defines a list (table) of objects used to clip the object being constructed. These objects may be: an existing object, referenced by its name as a string; a box, specified as a table of the form \emph{\{M(xmin, ymin, zmin), M(xmax, ymax, zmax)\}} (representing the box diagonal); or a sphere, given as a table \emph{\{center, radius\}}, where \emph{center} is a 3D point and \emph{radius} a positive number.
+    \item \opt{clipplane = nil}, this option defines a list (table) of planes to clip the object being constructed. Each plane must be of the form \emph{\{A, n\}}, where \emph{A} is a point on the plane (a 3D point) and \emph{n} the normal vector to the plane. Only the part of the object lying in the half-space containing \emph{n} is preserved.
+\end{itemize}
+
+\subsubsection{List of Predefined Objects}
+
+The following is the list of objects that can be drawn using the corresponding methods:
+\begin{itemize}
+    \item Implicit surfaces defined by the equation \(f(x,y,z)=0\). The corresponding method is:\par
+    \hfil \textbf{g:Pov\_implicit( povfunction, luafunction, options)}\hfil
+
+    The argument \emph{povfunction} is a string containing the expression of \(f(x,y,z)\). Pov-Ray supports standard mathematical functions; however, note that the power function is written as \emph{pow}, i.e. \(x \mapsto \mathrm{pow}(x,n)\), and that Pov-Ray does not handle numerical errors such as division by zero.
+
+    The options are those already described, plus the specific option \opt{containedby = }, which specifies the box (or sphere) within which the computations are carried out. By default, this box is the current 3D window of the graphic. A box is given as a table of the form \emph{\{M(xinf,yinf,zinf), M(xsup,ysup,zsup)\}} (representing a diagonal of the box), and a sphere is a table of the form \emph{\{C,r\}}, where \emph{C} is the center (a 3D point) and \emph{r} the radius. Example:
+    \begin{Luacode}
+    local f = function(x,y,z) return x^2+y^2+z^2 - 1 end
+    local r = 1.1
+    g:Pov_implicit("x*x+y*y+z*z-1", f, {color=SteelBlue, containedby={M(-r,-r,-r), M(r,r,r)}})
+    \end{Luacode}
+
+    \item Parametric surfaces given by \((u,v)\mapsto (x(u,v), y(u,v), z(u,v))\). The corresponding method is:\par
+    \hfil \textbf{g:Pov\_surface( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)}\hfil
+
+    The arguments \emph{xfunc}, \emph{yfunc}, and \emph{zfunc} are three strings containing the expressions of \(x(u,v)\), \(y(u,v)\), and \(z(u,v)\), respectively. The arguments \emph{u1} and \emph{u2}, and respectively \emph{v1} and \emph{v2}, define the bounds of the interval for the parameter \(u\), and respectively for the parameter \(v\). The options are those already described, plus two specific options:
+    \begin{itemize}
+        \item \opt{containedby = }, which specifies the box (or sphere) within which the computations are performed. By default, this box is the current 3D window of the graphic. A box is a table of the form \emph{\{M(xinf,yinf,zinf), M(xsup,ysup,zsup)\}} (representing a diagonal of the box), and a sphere is a table \emph{\{C,r\}}, where \emph{C} is the center (a 3D point) and \emph{r} the radius.
+        \item \opt{max\_grad = nil}, an (optional) numerical value used to optimize the computations. Pov-Ray’s documentation describes this number as follows:
+        \begin{small}
+        \begin{verbatim}
+The max_gradient is the maximum magnitude of all six partial derivatives 
+over the specified ranges of u and v.
+Take dx/du, dx/dv, dy/du, dy/dv, dz/du, and dz/dv and calculate them over 
+the entire range.
+The max_gradient should be at least the maximum (absolute value) of all of those values.
+Choosing a too small of a value will create holes or artifacts in the object.
+        \end{verbatim}
+        \end{small}
+    \end{itemize}
+    Example:
+    \begin{Luacode}
+    local pi = math.pi
+    local r = 1.1
+    g:Pov_surface("cos(u)*sin(v)", "sin(u)*sin(v)", "cos(v)",-pi,pi,0,pi, {color=SteelBlue, containedby={M(-r,-r,-r), M(r,r,r)}})
+    \end{Luacode}
+    Remark: one may use \emph{"pi"} instead of \emph{pi}, since this constant is predefined in Pov-Ray. Moreover, in this example, one could add the option \emph{grad\_max=1} in view of the chosen parametrization.
+
+    \item \textbf{Polyhedron or list of facets}. This is the method:\par
+    \hfil\textbf{g:Pov\_facet(F, options)}\hfil\par
+    The argument \emph{F} is either a polyhedron or a list of facets. The options include the common ones, plus the following specific options (with their default values): 
+    \begin{itemize}
+        \item \opt{edge = false}, boolean indicating whether edges should be drawn.
+        \item \opt{edgestyle = current line style}, style of the edges.
+        \item \opt{edgecolor = Black}, color of the edges.
+        \item \opt{edgewidth = current line width}, width of the edges.
+        \item \opt{hidden = false}, boolean indicating whether hidden edges should be drawn.
+        \item \opt{hiddenstyle = Hiddenlinestyle}, style of hidden edges.
+    \end{itemize}
+    Example:
+    \begin{Luacode}
+    local T1 = tetra(M(-1,-1,-1), 3*vecI, 3*vecJ, M(1,1,3))
+    g:Pov_facet(T1, {color=SteelBlue, edge=true, hidden=true})
+    \end{Luacode}
+    Note: drawing hidden edges is not always optimal; sometimes it is better to draw them with TikZ over the rendered image.
+    
+    
+    \item \textbf{Polygonal line}. This is the method:\par
+    \hfil\textbf{g:Pov\_polyline(L, options)}\hfil\par
+    The argument \emph{L} is either a list of 3D points or a list of lists of 3D points. The options include the common ones, plus the following specific options (with their default values): 
+    \begin{itemize}
+        \item \opt{style = current line style}, line style.
+        \item \opt{width = current line width}, line width.
+        \item \opt{close = false}, boolean indicating whether the line should be closed.
+        \item \opt{arrows = 0}, three possible values: $0$ (no arrow), $1$ (arrow at the end), or $2$ (arrows at both start and end).
+        \item \opt{arrowscale = 1}, scale factor for arrow size.
+        \item \opt{hidden = false}, boolean indicating whether hidden parts should be drawn.
+        \item \opt{hiddenstyle = Hiddenlinestyle}, style of hidden parts.
+    \end{itemize}
+    Example: drawing the axes
+    \begin{Luacode}
+    g:Pov_polyline({{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, {arrows=1,width=8})
+    \end{Luacode}
+    
+    
+    \item \textbf{3D points}. This is the method:\par
+    \hfil\textbf{g:Pov\_dots(L, options)}\hfil\par
+    The argument \emph{L} is a list of 3D points. The options include the common ones, plus the following specific options (with their default values): 
+        \begin{itemize}
+            \item \opt{style = "ball"}, two possible styles: "ball" (sphere) or "box" (a box with faces parallel to the 3D window).
+            \item \opt{dotscale = 1}, scale factor for dot size.
+        \end{itemize}
+       
+    \item \textbf{A plane}. This is the method:\par
+        \hfil\textbf{g:Pov\_plane(P, options)}\hfil\par
+    The argument \emph{P} is a table of the form \emph{\{A, n\}}, where \emph{A} is a point on the plane \(P\) (a 3D point) and \emph{n} is a vector normal to the plane. The plane is automatically clipped by the 3D window. The options are the options of \emph{Pov\_facet}, plus the specific option \opt{scale = 1}.
+    
+    \item \textbf{A circle}. This is the method:\par
+        \hfil\textbf{g:Pov\_circle(A, R, N, options)}\hfil\par
+    It draws the circle with center \emph{A}, radius \emph{R}, and normal vector \emph{N} specifying the plane of the circle. These are the common options.
+    
+     \item \textbf{Axes}.This is the method:\par
+        \hfil\textbf{g:Pov\_axes(O,options)}\hfil\par
+    It draws the axes using point $O$ as the intersection point. The options are the same as for \emph{Pov\_polyline}. There are no graduations or legend.   
+    
+    \item \textbf{Basic solids}. These are the methods:
+        \begin{itemize}
+            \item \textbf{g:Pov\_sphere(center, radius, options)}, which draws a sphere with center \emph{center} (3D point) and radius \emph{radius}. These are the common options.
+    
+            \item \textbf{g:Pov\_torus(center, R, r, N, options)}, which draws a torus centered at \emph{center} (3D point), with major radius \emph{R}, minor radius \emph{r}, lying in the plane normal to vector \emph{N}. These are the common options.
+    
+            \item \textbf{g:Pov\_cylinder(A, R, B, options)}, which draws a cylinder along the axis \emph{(AB)} from \emph{A} to \emph{B} (3D points), with radius \emph{R}. These are the common options plus the specific option \opt{hollow = false}, indicating whether the cylinder is hollow or not.
+    
+            \item \textbf{g:Pov\_cone(A, R, B, r, options)}, which draws a cone along the axis \emph{(AB)} from \emph{A} to \emph{B} (3D points), with radius \emph{R} at end \emph{A} and radius \emph{r} at end \emph{B}. The radius \emph{r} is optional and defaults to \(0\); in that case, \emph{B} is the apex of the cone. These are the common options plus the specific option \opt{hollow = false}, indicating whether the cone is hollow or not.
+    
+            \item \textbf{g:Pov\_box(A, B, options)}, which draws a box whose faces are parallel to those of the 3D window of the graphic. The 3D points \emph{A} and \emph{B} define a diagonal of the box, more precisely \emph{A = M(xinf, yinf, zinf)} and \emph{B = M(xsup, ysup, zsup)}. These are the common options.
+        \end{itemize}
+            
+    \item \textbf{A plane}. This is the method:\par
+        \hfil\textbf{g:Pov\_plane(P, options)}\hfil\par
+    The argument \emph{P} is a table of the form \emph{\{A, n\}} where \emph{A} is a point on the plane \(P\) (3D point) and \emph{n} is a vector normal to the plane. The plane is automatically clipped by the 3D window. These are the common options.
+    
+    \item \textbf{A circle}. This is the method:\par
+        \hfil\textbf{g:Pov\_circle(A, R, N, options)}\hfil\par
+    It draws the circle with center \emph{A} and radius \emph{R}; the argument \emph{N} specifies a vector normal to the plane of the circle. These are the common options.
+    
+    \item \textbf{Basic solids}. These are the methods:
+        \begin{itemize}
+            \item \textbf{g:Pov\_sphere(center, radius, options)}, which draws the sphere with center \emph{center} (point3d) and radius \emph{radius}. These are the common options.
+    
+            \item \textbf{g:Pov\_torus(center, R, r, N, options)}, which draws the torus centered at \emph{center} (point3d), with major radius \emph{R} and minor radius \emph{r}, in the plane normal to vector \emph{N}. These are the common options.
+            
+            \item \textbf{g:Pov\_cylinder(A, R, B, options)}, which draws the cylinder with axis \emph{(AB)} from \emph{A} to \emph{B} (3D points), and radius \emph{R}. These are the common options plus the specific option \opt{hollow = false}, which indicates whether the cylinder is hollow or not.
+    
+            \item \textbf{g:Pov\_cone(A, R, B, r, options)}, which draws the cone with axis \emph{(AB)} from \emph{A} to \emph{B} (3D points), with radius \emph{R} at endpoint \emph{A} and radius \emph{r} at endpoint \emph{B}. The radius \emph{r} is optional and defaults to \(0\); in that case, \emph{B} is the apex of the cone. These are the common options plus the specific option \opt{hollow = false}, which indicates whether the cone is hollow or not.
+            
+            \item \textbf{g:Pov\_box(A, B, options)}, which draws a box whose faces are parallel to those of the 3D window of the graphic; the 3D points \emph{A} and \emph{B} represent a diagonal of this box, more precisely \emph{A = M(xinf, yinf, zinf)} and \emph{B = M(xsup, ysup, zsup)}. These are the common options.
+        \end{itemize}
+    
+    \item \textbf{CSG geometry}. These are the following methods (for each of them, the options are the common options):
+        \begin{itemize}
+            \item \textbf{g:Pov\_union(list, options)}, where \emph{list} is a list of POV-Ray objects; these objects may be either the name of an already created object or a POV-Ray command given as a string. The result is treated as a single object.
+            
+            \item \textbf{g:Pov\_intersection(list, options)}, where \emph{list} is a list of POV-Ray objects; these objects may be either the name of an already created object or a POV-Ray command given as a string. The result is the common part of these objects.
+            
+            \item \textbf{g:Pov\_merge(list, options)}, where \emph{list} is a list of POV-Ray objects; these objects may be either the name of an already created object or a POV-Ray command given as a string. This command works like union, but removes internal surfaces (unlike union), which is useful in the case of transparency.
+            
+            \item \textbf{g:Pov\_difference(list, options)}, where \emph{list} is a list of \textbf{two} POV-Ray objects; these objects may be either the name of an already created object or a POV-Ray command given as a string. The result is the difference: object1 minus object2.
+        \end{itemize}
+    
+    \item \textbf{Writing directly to the source}, with the following methods:
+        \begin{itemize}
+            \item \textbf{g:Pov\_comment(comment)}, which writes the string \emph{comment} to the source as a comment.
+            \item \textbf{g:Pov\_special(code)}, which writes the string \emph{code} verbatim to the source; it must therefore be valid POV-Ray code. Note that a 3D point written as \emph{M(x, y, z)} in \emph{luadraw} is written in POV-Ray code as \emph{<-x, y, z>}; the POV-Ray coordinate system is thus not our usual one and is left-handed.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Save, execution, inclusion}
+
+\begin{itemize}
+    \item \textbf{Save and execution}. Once all objects have been created, saving and executing the file with Pov-Ray is done using the method:\par
+    \hfil \textbf{g:Pov\_exec(filename)} \hfil\par
+    The argument \emph{filename} must be a filename without path or extension, but it is optional; by default, the name of the current graphic is used. The created file will have the \emph{pov} extension and will be saved in the \emph{luadraw} working directory (this directory is stored in the \emph{cachedir} variable). The command used for execution is displayed in the terminal, along with the output from the Pov-Ray software, allowing you to see if it encountered an error. The image construction appears on screen, but the window closes as soon as rendering is complete. The image has the same name as the source, except the extension which is \emph{png} instead of \emph{pov}.
+    
+    \textbf{NB}: Pov-Ray execution requires compiling the document with the \emph{-shell-escape} or \emph{-enable-write18} option. Once the image is obtained, this option is no longer necessary unless the image has been modified.
+    
+    \item \textbf{Save only}. This is done with the method:\par
+    \hfil \textbf{g:Pov\_save(filename)} \hfil\par
+    With the same remarks as previously for the \emph{filename} argument.
+
+    \item \textbf{Image inclusion}. Once obtained, the image can be included in the graphic with the method:\par
+    \hfil \textbf{g:Pov\_show(filename)} \hfil\par
+    If the \emph{filename} argument is not specified, it refers to the name of the current graphic; otherwise, \emph{filename} must be a complete image filename (with extension). The inclusion is done with \verb|\includegraphics[]{filename}|.
+\end{itemize}
+
+\subsubsection{Examples}
+
+\paragraph{Intersection of two implicit surfaces}
+
+\begin{demo}{Intersection of two implicit surfaces}
+\begin{luadraw}{name=intersection_surf}
+local g = graph3d:new{window3d={0,1,0,1,0,2}, window={-0.25,1.5,-0.5,2.25}, size={10,10,0}, viewdir={-50,60}}
+local sqrt = math.sqrt
+require "luadraw_povray"
+local f = function(x,y,z) return x^3+y^3-z end
+local h = function(x,y,z) return (x*sqrt(1-y^2)+y*sqrt(1-x^2))^3-z end
+local L = implicit(function(x,y) return f(x,y,0)-h(x,y,0) end,0.01,1,0.01,1,{25,25})
+L = map(function(z) return M(z.re,z.im,z.re^3+z.im^3) end, L[1])  -- intersection curve
+-- using povray
+g:Pov_exec()
+g:Pov_implicit("pow(x,3)+pow(y,3)-z", f, {color=SteelBlue})
+g:Pov_implicit("z-pow(x*sqrt(1-y*y)+y*sqrt(1-x*x),3)", h, {color=Crimson, containedby={M(0,0,0),M(0.999,0.999,2)}})
+g:Pov_exec()
+-- drawing
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="lightgray",xyzstep=0.5, drawbox=true})
+g:Pov_show() --Pov-Ray image
+g:Dpolyline3d(L, "line width=1.2pt,dotted,Navy") --we draw the curve over the image
+local d = 0.1
+g:Dsquare(Z(-0.25,2.25), Z(-0.25,2.25-d),1,"draw=none,fill=Crimson")
+g:Dsquare(Z(-0.25,2.25-2*d), Z(-0.25,2.25-3*d),1,"draw=none,fill=SteelBlue")
+g:Dlabel("$z=(x\\sqrt{1-y^2}+y\\sqrt{1-x^2})^3$", Z(-0.25+d,2.25-d/2) , {pos="E"},
+    "$z=x^3+y^3$", Z(-0.25+d,2.25-5*d/2),{})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Villarceau circles}
+
+\begin{demo}{Villarceau circles}
+\begin{luadraw}{name=Villarceau_circles}
+local g = graph3d:new{window={-6.5,6.5,-5,5},margin={0,0,0,0}, size={10,10}, viewdir={20,65}}
+require "luadraw_povray"
+local R, r = 3, 1
+local N = rotate3d(vecK, math.asin(r/R)*rad, {Origin, vecJ})
+local P = {Origin, -N}
+-- using povray
+g:Pov_new({bg=LightGray})
+g:Pov_torus(Origin, R, r, vecK, {color=SteelBlue, clipplane=P})
+g:Pov_plane(P,{color=SeaGreen, opacity=0.4, edge=true, scale=0.9})
+g:Pov_axes(Origin,{color=Gold,arrows=1})
+g:Pov_dots(Origin, {dotscale=1.5})
+g:Pov_circle( M(0,r,0),R,N,{color=Crimson, width=12})
+g:Pov_circle( M(0,-r,0),R,N,{color=Crimson, width=12})
+g:Pov_exec()
+-- drawing
+g:Pov_show()
+local F = g:Plane2facet(P,0.9)
+g:Dpolyline3d({{-r*vecJ,-r*vecJ+vecK},{-(R+r)*vecJ,-(R+r)*vecJ+vecK}})
+g:Dpolyline3d({{r*vecJ,r*vecJ+vecK},{(R+r)*vecJ,(R+r)*vecJ+vecK}})
+g:Dpolyline3d({{-r*vecJ+vecK,-(R+r)*vecJ+vecK}, {r*vecJ+vecK,(R+r)*vecJ+vecK}}, "stealth-stealth")
+g:Ddots3d({-r*vecJ, r*vecJ})
+g:Dlabel3d("$x$",5*vecI,{pos="SW"},"$y$", 5*vecJ,{pos="SE"}, "$z$",5*vecK,{pos="N"},
+"$R$", -(R/2+r)*vecJ+vecK, {}, "$R$", (R/2+r)*vecJ+vecK, {},
+"bitangent plane to the torus", F[1], {pos="NW", dir={vecJ,pt3d.prod(N,vecJ)}},
+"$-r$",-r*vecJ,{pos="S"}, "$r$", r*vecJ,{} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Holes in an half sphere}
+
+\begin{demo}{Holes in a hemisphere}
+\begin{luadraw}{name=holes_in_hemisphere}
+local g = graph3d:new{window={-5,5,-4,5}, size={10,10}, bg="lightgray"}
+require "luadraw_povray"
+local O, R = Origin, 4
+local A, r = 2*R/3*vecJ, R/3
+local P = {Origin, vecK}
+local base = circle3d(A,r,vecK)[1] --circular base of the cylinder (list of 3d points)
+local Cylborder = {}
+for _, C in ipairs(base) do -- we project each point C of the base onto the half-sphere
+    table.insert(Cylborder,C + math.sqrt(R^2-pt3d.abs2(C))*vecK)
+end -- Cylborder is now the intersection between the half-sphere and the cylinder
+-- using povray 
+g:Pov_new()
+g:Pov_sphere(Origin, R, {name="sph", clipplane=P, render=false}) -- only declaration
+g:Pov_cylinder(A-vecK, r, A+R*vecK, {name="cyl1", render=false })
+g:Pov_union({"cyl1", "cyl1 rotate 90*z"}, {name="cylext", render=false})
+g:Pov_cylinder(A-vecK, r-0.001, A+R*vecK, {name="cyl2", render=false }) 
+-- renderings
+g:Pov_difference({"sph","cylext"}, {color=Blue, opacity=0.7})
+g:Pov_union( {"cyl2", "cyl2 rotate 90*z"}, {color=LightBlue,opacity=0.8,clipbox="sph"})
+g:Pov_axes(Origin,{color=Gold,arrows=1})
+g:Pov_exec()
+-- drawing
+g:Dcircle3d(O,R,vecK,"line width=1.2pt"); g:Dcircle3d(A,r,vecK,"line width=1.2pt")
+g:Dcircle3d(rotate3d(A,-90,{Origin,vecK}), r,vecK,"line width=1.2pt")
+g:Pov_show()
+g:Dpolyline3d( {Cylborder, rotate3d(Cylborder,-90,{Origin,vecK})}, "red, line width=1.2pt")
+g:Dlabel3d("$x$",5*vecI,{pos="S"}, "$y$", 5*vecJ, {pos="SE"}, "$z$", 5*vecK, {pos="N"})
+g:Show()
+\end{luadraw}
+\end{demo}

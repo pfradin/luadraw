@@ -1,10 +1,25 @@
 \section{Historique}
 
+\subsection{Version 2.6}
+Liste non exhaustive :
+\begin{itemize}
+    \item Ajout de l'extension \emph{luadraw\_povray} qui permet de créer une image avec Pov-Ray et de l'inclure dans le graphique en cours pour dessiner par dessus.
+    \item Ajout de l'extension \emph{luadraw\_fields} qui permet le dessin de champs de vecteurs ou de champs de gradient.
+    \item Ajout de l'extension \emph{luadraw\_shadedforms} qui  permet de dessiner des lignes polygonales 2d ou de remplir une forme, avec un dégradé de couleurs en fonction de la méthode de calcul et de la palette choisies.
+    \item La méthode \emph{g:Dshadedpolyline()} fait désormais partie de l'extension \emph{luadraw\_shadedforms}.    
+    \item Ajout des méthodes \emph{g:Dimage()} et \emph{g:Dmapimage()}, la première permet l'inclusion d'une image dans le graphique, la deuxième permet de mapper une image sur un parallélogramme.
+    \item Ajout de la fonction \emph{parallelogram()} qui renvoie les sommets d'un parallélogramme construit à partir d'un sommet et de deux vecteurs. Ajout également de la méthode de dessin \emph{g:Dparallelogram()} correspondante.
+    \item Ajout des options \emph{gradside} et \emph{gradsection} qui permettent de modifier les paramètres du gradient dans le dessin des cylindres, des cônes et des cônes tronqués (méthodes \emph{g:Dcylinder()}, \emph{g:Dcone()} et \emph{g:Dfrustum()}.
+    \item Extension de la méthode \emph{g:Newcolor(name,color)}, le second argument peut maintenant être soit une table de trois composantes RGB, soit une chaîne de caractères représentant une couleur.
+    \item Correction de bug...
+\end{itemize}
+
+
 \subsection{Version 2.5}
 Liste non exhaustive :
 \begin{itemize}
     \item Ajout de la fonction \emph{read\_csv\_file()}\footnote{Sur une idée de Christophe BAL.} qui permet de lire un fichier \emph{csv} avec différentes options.
-    \item L'extension \emph{luadraw\_palettes} est passée à la version 1.3.0 du projet \verb|@prism| de \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christphe BAL}.
+    \item L'extension \emph{luadraw\_palettes} est passée à la version 1.3.0 du projet \verb|@prism| de \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christophe BAL}.
     \item Ajout de la méthode \emph{g:Dshadedpolyline()} qui permet de dessiner une ligne polygonale 2d avec un dégradé de couleurs en fonction de la méthode de calcul et de la palette choisies.
     \item Ajout de la méthode \emph{g:Dpolynames()} qui permet d'afficher un polyèdre avec le numéro des faces et/ou ceux des sommets.
     \item Ajout de l'extension \emph{luadraw\_cvx\_polyhedra\_nets} qui permet de déterminer un patron des polyèdres convexes.

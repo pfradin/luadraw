@@ -52,13 +52,15 @@
 \pgfsetlinewidth{0.1pt}%
 \pgfsetfillcolor{white!83.64!black}%
 \draw[fill] (5.3177,8.7625) -- (5.885,7.9587) -- (5.8763,8.5856)--cycle;%
+\pgfsetstrokecolor{black}%
+\pgfsetlinewidth{0.4pt}%
+\draw[] (5.8763,8.5856) -- (5.3177,8.7625);%
 \pgfsetstrokecolor{gray}%
 \pgfsetlinewidth{0.2pt}%
 \draw[] (6.5665,8.4744) -- (6.2155,8.3735);%
 \pgfsetstrokecolor{black}%
 \pgfsetlinewidth{0.4pt}%
 \draw[] (5.8763,8.5856) -- (5.885,7.9587);%
-\draw[] (5.8763,8.5856) -- (5.3177,8.7625);%
 \pgfsetstrokecolor{gray}%
 \pgfsetlinewidth{0.2pt}%
 \draw[] (7.8416,8.8407) -- (6.5665,8.4744);%
@@ -156,11 +158,11 @@
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetlinewidth{0.4pt}%
-\draw[] (5.8763,8.5856) -- (5.885,7.9587);%
 \draw[] (4.7884,7.9636) -- (5.3177,8.7625);%
-\draw[] (5.885,7.9587) -- (4.7884,7.9636);%
-\draw[] (4.7884,7.9636) -- (5.8763,8.5856);%
 \draw[] (5.8763,8.5856) -- (5.3177,8.7625);%
+\draw[] (4.7884,7.9636) -- (5.8763,8.5856);%
+\draw[] (5.885,7.9587) -- (4.7884,7.9636);%
+\draw[] (5.8763,8.5856) -- (5.885,7.9587);%
 \draw[] (5.3177,8.7625) -- (5.885,7.9587);%
 \pgfsetstrokecolor{gray}%
 \pgfsetroundcap%

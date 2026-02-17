@@ -83,7 +83,7 @@
 \draw[-] (0.2099,7.7554) node[] {\footnotesize $z$} (0.8525,6.668) node[] {\footnotesize $-3$} (0.7988,6.9539) node[] {\footnotesize $-2$} (0.7415,7.2591) node[] {\footnotesize $-1$} (0.6802,7.5856) node[] {\footnotesize $0$} (0.6146,7.9359) node[] {\footnotesize $1$} (0.5442,8.3124) node[] {\footnotesize $2$} (0.4685,8.7184) node[] {\footnotesize $3$};%
 \draw[red,line width=0.4pt] (1.6795,8.9975) -- (2.6923,8.8026) -- (2.6923,6.7839) -- (2.085,6.1145);%
 \draw[red,line width=0.4pt] (2.6923,6.7839) -- (3.6784,6.4216);%
-\draw[fill,left color=cyan!50,right color = cyan,middle color=cyan!10, shading angle=90] (3.5609,6.8071) -- (3.573,6.7368) -- (3.5713,6.665) -- (3.555,6.5927) -- (3.5238,6.5212) -- (3.4774,6.452) -- (3.4161,6.3863) -- (3.3404,6.3258) -- (3.2514,6.272) -- (3.1506,6.2261) -- (3.0397,6.1894) -- (2.9211,6.163) -- (2.7974,6.1476) -- (2.6712,6.1438) -- (2.5456,6.1515) -- (2.4232,6.1706) -- (2.307,6.2005) -- (2.1992,6.2404) -- (2.1021,6.2891) -- (2.0174,6.3453) -- (1.9465,6.4077) -- (1.8901,6.4747) -- (1.8487,6.5449) -- (1.8225,6.6168) -- (1.8111,6.689) -- (1.8141,6.7605) -- (1.8307,6.8299) -- (2.6923,8.8026) -- (3.5357,6.8747)--cycle;%
+\draw[fill,left color=cyan!50,right color = cyan!100,middle color=cyan!10,shading angle=90] (1.8225,6.6168) -- (1.8111,6.689) -- (1.8141,6.7605) -- (1.8307,6.8299) -- (2.6923,8.8026) -- (3.5357,6.8747) -- (3.5609,6.8071) -- (3.573,6.7368) -- (3.5713,6.665) -- (3.555,6.5927) -- (3.5238,6.5212) -- (3.4774,6.452) -- (3.4161,6.3863) -- (3.3404,6.3258) -- (3.2514,6.272) -- (3.1506,6.2261) -- (3.0397,6.1894) -- (2.9211,6.163) -- (2.7974,6.1476) -- (2.6712,6.1438) -- (2.5456,6.1515) -- (2.4232,6.1706) -- (2.307,6.2005) -- (2.1992,6.2404) -- (2.1021,6.2891) -- (2.0174,6.3453) -- (1.9465,6.4077) -- (1.8901,6.4747) -- (1.8487,6.5449)--cycle;%
 \pgfsetstrokecolor{Navy}%
 \pgfsetroundcap%
 \pgfsetdash{{0pt}{3pt}}{0pt}%
@@ -168,7 +168,7 @@
 \draw[-] (5.4,7.7083) node[] {\footnotesize $y$} (5.9,6.4583) node[] {\footnotesize $-3$} (5.9,6.875) node[] {\footnotesize $-2$} (5.9,7.2917) node[] {\footnotesize $-1$} (5.9,7.7083) node[] {\footnotesize $0$} (5.9,8.125) node[] {\footnotesize $1$} (5.9,8.5417) node[] {\footnotesize $2$} (5.9,8.9583) node[] {\footnotesize $3$};%
 \draw[red,line width=0.4pt] (7.5,6.4583) -- (7.5,7.7083) -- (8.75,7.7083);%
 \draw[red,line width=0.4pt] (7.5,7.7083) -- (7.5,8.9583);%
-\draw[fill,left color=cyan!25,right color = cyan!50,middle color=cyan!18, shading angle=0] (8.2366,8.4449) .. controls (7.8278,8.8537) and (7.1722,8.8537) .. (6.7634,8.4449) .. controls (6.3546,8.0361) and (6.3546,7.3806) .. (6.7634,6.9718) .. controls (7.1722,6.563) and (7.8278,6.563) .. (8.2366,6.9718) .. controls (8.6454,7.3806) and (8.6454,8.0361) .. (8.2366,8.4449);%
+\draw[fill,left color=cyan!25,right color = cyan!50,middle color=cyan!18,shading angle=0] (8.2366,8.4449) .. controls (7.8278,8.8537) and (7.1722,8.8537) .. (6.7634,8.4449) .. controls (6.3546,8.0361) and (6.3546,7.3806) .. (6.7634,6.9718) .. controls (7.1722,6.563) and (7.8278,6.563) .. (8.2366,6.9718) .. controls (8.6454,7.3806) and (8.6454,8.0361) .. (8.2366,8.4449);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetroundcap%
 \pgfsetdash{{0pt}{3pt}}{0pt}%
@@ -246,8 +246,8 @@
 \draw[] (1.25,3.9583) -- (1.15,3.9583);%
 \draw[-] (0.4,2.7083) node[] {\footnotesize $z$} (0.9,1.4583) node[] {\footnotesize $-3$} (0.9,1.875) node[] {\footnotesize $-2$} (0.9,2.2917) node[] {\footnotesize $-1$} (0.9,2.7083) node[] {\footnotesize $0$} (0.9,3.125) node[] {\footnotesize $1$} (0.9,3.5417) node[] {\footnotesize $2$} (0.9,3.9583) node[] {\footnotesize $3$};%
 \draw[red,line width=0.4pt] (2.5,3.9583) -- (2.5,1.4583) -- (3.75,1.4583);%
-\draw[fill,left color=cyan!50,right color = cyan,middle color=cyan!10, shading angle=90] (2.5,3.9583) -- (1.4583,1.4583) -- (1.4583,1.4583) .. controls (1.4583,1.4583) and (1.9219,1.4583) .. (2.5,1.4583) .. controls (3.0781,1.4583) and (3.5417,1.4583) .. (3.5417,1.4583)--cycle;%
-\draw[fill,left color=cyan!25,right color = cyan!50,middle color=cyan!18, shading angle=90] (3.2366,1.4583) .. controls (2.8278,1.4583) and (2.1722,1.4583) .. (1.7634,1.4583) .. controls (1.3546,1.4583) and (1.3546,1.4583) .. (1.7634,1.4583) .. controls (2.1722,1.4583) and (2.8278,1.4583) .. (3.2366,1.4583) .. controls (3.6454,1.4583) and (3.6454,1.4583) .. (3.2366,1.4583);%
+\draw[fill,left color=cyan!50,right color = cyan!100,middle color=cyan!10,shading angle=90] (2.5,3.9583) -- (1.4583,1.4583) -- (1.4583,1.4583) .. controls (1.4583,1.4583) and (1.9219,1.4583) .. (2.5,1.4583) .. controls (3.0781,1.4583) and (3.5417,1.4583) .. (3.5417,1.4583)--cycle;%
+\draw[fill,left color=cyan!25,right color = cyan!50,middle color=cyan!18,shading angle=90] (3.2366,1.4583) .. controls (2.8278,1.4583) and (2.1722,1.4583) .. (1.7634,1.4583) .. controls (1.3546,1.4583) and (1.3546,1.4583) .. (1.7634,1.4583) .. controls (2.1722,1.4583) and (2.8278,1.4583) .. (3.2366,1.4583) .. controls (3.6454,1.4583) and (3.6454,1.4583) .. (3.2366,1.4583);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetroundcap%
 \pgfsetdash{{0pt}{3pt}}{0pt}%
@@ -327,8 +327,8 @@
 \draw[-] (5.4,2.7083) node[] {\footnotesize $z$} (5.9,1.4583) node[] {\footnotesize $-3$} (5.9,1.875) node[] {\footnotesize $-2$} (5.9,2.2917) node[] {\footnotesize $-1$} (5.9,2.7083) node[] {\footnotesize $0$} (5.9,3.125) node[] {\footnotesize $1$} (5.9,3.5417) node[] {\footnotesize $2$} (5.9,3.9583) node[] {\footnotesize $3$};%
 \draw[red,line width=0.4pt] (6.25,3.9583) -- (7.5,3.9583) -- (7.5,1.4583);%
 \draw[red,line width=0.4pt] (7.5,1.4583) -- (8.75,1.4583);%
-\draw[fill,left color=cyan!50,right color = cyan,middle color=cyan!10, shading angle=90] (7.5,3.9583) -- (6.4583,1.4583) -- (6.4583,1.4583) .. controls (6.4583,1.4583) and (6.9219,1.4583) .. (7.5,1.4583) .. controls (8.0781,1.4583) and (8.5417,1.4583) .. (8.5417,1.4583)--cycle;%
-\draw[fill,left color=cyan!25,right color = cyan!50,middle color=cyan!18, shading angle=90] (8.2366,1.4583) .. controls (8.6454,1.4583) and (8.6454,1.4583) .. (8.2366,1.4583) .. controls (7.8278,1.4583) and (7.1722,1.4583) .. (6.7634,1.4583) .. controls (6.3546,1.4583) and (6.3546,1.4583) .. (6.7634,1.4583) .. controls (7.1722,1.4583) and (7.8278,1.4583) .. (8.2366,1.4583);%
+\draw[fill,left color=cyan!50,right color = cyan!100,middle color=cyan!10,shading angle=90] (7.5,3.9583) -- (6.4583,1.4583) -- (6.4583,1.4583) .. controls (6.4583,1.4583) and (6.9219,1.4583) .. (7.5,1.4583) .. controls (8.0781,1.4583) and (8.5417,1.4583) .. (8.5417,1.4583)--cycle;%
+\draw[fill,left color=cyan!25,right color = cyan!50,middle color=cyan!18,shading angle=90] (8.2366,1.4583) .. controls (8.6454,1.4583) and (8.6454,1.4583) .. (8.2366,1.4583) .. controls (7.8278,1.4583) and (7.1722,1.4583) .. (6.7634,1.4583) .. controls (6.3546,1.4583) and (6.3546,1.4583) .. (6.7634,1.4583) .. controls (7.1722,1.4583) and (7.8278,1.4583) .. (8.2366,1.4583);%
 \pgfsetstrokecolor{Navy}%
 \pgfsetroundcap%
 \pgfsetdash{{0pt}{3pt}}{0pt}%

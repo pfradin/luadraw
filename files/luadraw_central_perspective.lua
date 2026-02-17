@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -198,6 +198,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         args = args or {}
         local color = args.color
         color = color or ""
+        color = self:Define_temp_color(color)
         local edgecolor = args.edgecolor or self.param.linecolor
         local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
@@ -205,6 +206,14 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local mode = args.mode or mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
+        
+        args.gradsection = args.gradsection or {25,18,50}
+        args.gradside= args.gradside or {50,10,100}
+        local lsection, msection, rsection = table.unpack( args.gradsection)
+        local lside, mside, rside = table.unpack( args.gradside)
+        local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
+        local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
+                
         local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
@@ -223,16 +232,16 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         if mode == mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!25,right color = "..color.."!50,middle color="..color.."!18, shading angle="..strReal(angle),opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         end
         if mode ~= mWireframe  then self:Dpolyline3d(BPh, true) end
         --visible part
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!50,right color = "..color..",middle color="..color.."!10, shading angle="..strReal(angle),opacity)
+            self:Filloptions("gradient", gradStyleSide..",shading angle="..strReal(angle),args.opacity)
         end
         self:Dpolyline3d(BPv, true)
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!10,right color = "..color)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         end
         if self:Cosine_incidence(-V,C) > 0 then self:Dcircle3d(C,r,V) end
         -- hidden edges
@@ -268,6 +277,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         args = args or {}
         local color = args.color
         color = color or ""
+        color = self:Define_temp_color(color)
         local edgecolor = args.edgecolor or self.param.linecolor
         local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
@@ -275,6 +285,14 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local mode = args.mode or mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
+        
+        args.gradsection = args.gradsection or {25,18,50}
+        args.gradside= args.gradside or {50,10,100}
+        local lsection, msection, rsection = table.unpack( args.gradsection)
+        local lside, mside, rside = table.unpack( args.gradside)
+        local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
+        local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
+        
         local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
@@ -292,16 +310,16 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         if mode == mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!25,right color = "..color.."!50,middle color="..color.."!18, shading angle="..strReal(angle),opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         end
         if mode ~= mWireframe  then self:Dpolyline3d(BPh, true) end
         --visible part
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!50,right color = "..color..",middle color="..color.."!10, shading angle="..strReal(angle),opacity)
+            self:Filloptions("gradient", gradStyleSide..",shading angle="..strReal(angle),args.opacity)
         end
         self:Dpolyline3d(BPv,true)
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!10,right color = "..color)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         end
         if self:Cosine_incidence(V,A) > 0 then self:Dcircle3d(A,r,V) end
         if self:Cosine_incidence(-V,C) > 0 then self:Dcircle3d(C,r,V) end
@@ -343,6 +361,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         args = args or {}
         local color = args.color
         color = color or ""
+        color = self:Define_temp_color(color)
         local edgecolor = args.edgecolor or self.param.linecolor
         local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
@@ -350,6 +369,14 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local mode = args.mode or mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
+        
+        args.gradsection = args.gradsection or {25,18,50}
+        args.gradside= args.gradside or {50,10,100}
+        local lsection, msection, rsection = table.unpack( args.gradsection)
+        local lside, mside, rside = table.unpack( args.gradside)
+        local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
+        local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
+                
         local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(B))*rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
@@ -368,16 +395,16 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         if mode == mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!25,right color = "..color.."!50,middle color="..color.."!18, shading angle="..strReal(angle),opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         end
         if mode ~= mWireframe  then self:Dpolyline3d(BPh, true) end
         --visible part
         if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!50,right color = "..color..",middle color="..color.."!10, shading angle="..strReal(angle),opacity)
+            self:Filloptions("gradient", gradStyleSide..",shading angle="..strReal(angle),args.opacity)
         end
         self:Dpolyline3d(BPv, true)
        if color ~= "" then 
-            self:Filloptions("gradient", "left color="..color.."!10,right color = "..color)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         end
         if self:Cosine_incidence(V,B) > 0 then self:Dcircle3d(B,r,V) end
         if self:Cosine_incidence(-V,A) > 0 then self:Dcircle3d(A,R,V) end

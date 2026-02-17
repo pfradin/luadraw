@@ -1,12 +1,13 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   http://www.latex-project.org/lppl.txt.
 
+luadraw = {}
 digits = 4 -- nombre de décimales dans les exports
 epsilon = 1e-12
 mm = math.floor(7227/254) -- conversion en dixième de point, ex: Linewidth(2*mm) pour une épaisseur de 2 millimètres
@@ -15,8 +16,10 @@ deg = math.pi/180 -- conversion en radians, ex 180*deg = pi
 rad = 180/math.pi -- conversion en degrés, ex : pi*rad = 180
 siunitx = false  -- utilisé dans la fonction num
 
-function strReal(reel) -- convertit un réel en chaîne avec digits décimales
-    local str = string.format("%." ..digits.."f",reel)
+
+function strReal(reel,dgt) -- convertit un réel en chaîne avec dgt décimales
+    dgt = dgt or digits
+    local str = string.format("%." ..dgt.."f",reel)
     local n = #str
     while string.sub(str,n,n) == "0" do
         n = n-1
@@ -27,8 +30,8 @@ function strReal(reel) -- convertit un réel en chaîne avec digits décimales
     return rep
 end
 
-function num(x) -- x is a real, returns a string
-    local rep = strReal(x)
+function num(x,dgt) -- x is a real, returns a string
+    local rep = strReal(x,dgt)
     if siunitx then rep = "\\num{"..rep.."}" end --needs \usepackage{siunitx}
     return rep
 end
@@ -80,16 +83,15 @@ function linspace(a,b,nbdots)
     return res
 end
 
-function reverse(tbl)
--- renvoie la séquence inverse de tbl (tbl n'est pas modifiée)
+function reverse(list)
     local rep = {}
-    for k = #tbl, 1, -1 do
-        table.insert(rep,tbl[k])
+    for _,x in ipairs(list) do
+        table.insert(rep,1,x)
     end
     return rep
 end
 
-function gcd(a,b)
+function luadraw.gcd(a,b)
     a = math.abs(a)
     b = math.abs(b)
     local igcd
@@ -101,8 +103,10 @@ function gcd(a,b)
     return igcd(a,b)
 end
 
+gcd = luadraw.gcd
+
 function lcm(a,b)
-    return math.abs(a*b) // gcd(a,b)
+    return math.abs(a*b) // luadraw.gcd(a,b)
 end
 
 function solve(f,a,b,n,df) -- version 2.4 of luadraw

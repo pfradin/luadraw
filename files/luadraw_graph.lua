@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,7 +8,6 @@
 --   http://www.latex-project.org/lppl.txt.
 
 -- Tout ce qui touche au dessin de base, sans les axes
-
 local luadraw_calc = require 'luadraw_calc'
 
 local luadraw_graph = {}
@@ -277,18 +276,9 @@ end
 
 function luadraw_graph:beginDraw() -- début du dessin
     local str = {"\\begin{tikzpicture}["..self.tikzpictureoptions.."]"}
-    --if self.bbox then
-        --table.insert(str,"\\useasboundingbox ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");") -- fixe la taille de l'image
-    --end
-    --if self.bg ~= "" then -- couleur de fond
-        --table.insert(str,"\\fill["..self.bg.."] ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
-    --end
-    --if self.border then
-        --table.insert(str,"\\draw ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
-    --end
-    table.insert(str,"\\begin{scope}")
+     table.insert(str,"\\begin{scope}")
     if self.bbox then
-        table.insert(str,"\\clip ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:graphWidth()+self.Rmargin)..","..tostring(self:graphHeight()+self.Tmargin)..");")
+        table.insert(str,"\\clip ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:Graphwidth()+self.Rmargin)..","..tostring(self:Graphheight()+self.Tmargin)..");")
     end
     return str
 end
@@ -609,101 +599,6 @@ function luadraw_graph:Dpolyline(L,close,draw_options,clip) -- close vaut true o
         end
     end
 end
-
-function luadraw_graph:Dshadedpolyline(L,pal,options)
--- L is a list of complex numbers or a list of list od complex numbers
--- pal refers to a color palette (list of {r,g,b})
--- options is a table of parmaeters :
-    -- values = "x" (values is "x" or "y" or a function f:(x,y)->f(x,y), applied at each point of L)
-    -- width = current line width (expressed in tenths of a point)
-    -- close = false (boolean indicating whether the line should be close)
-    -- clip = {x1,x2,y1,y2} clipping window, or nil for the default window
-    options = options or {}
-    local values = options.values or "x"
-    local wd = options.width or self.param.linewidth
-    local close = options.close or false
-    local clip = options.clip or nil
-    local x1,x2,y1,y2
-    if clip ~= nil then x1,x2,y1,y2 = table.unpack(clip) end
-    local ep = wd/20*pt
-    local f -- function applied at each point of L
-    if values == "x" then f = function(x,y) return x end 
-    elseif values == "y" then f = function(x,y) return y end 
-    else f = values
-    end
-    
-    if (L == nil) or (type(L) ~= "table") then return end
-    local i = cpx.I
-
-    if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
-    if clip ~= nil then
-        L = clippolyline(table.copy(L),x1,x2,y1,y2,close)
-    end
-    local mat = self.matrix
-    local transf
-    if isID(mat) then transf = function(l) return l end
-    else transf = function(l) return mtransform(l,mat) end
-    end
-    self:Savematrix(); self:IDmatrix()
-    local bord, aux, a, b, c, u, v, w, color_index
-    
-    for _, cp1 in ipairs(L) do
-        local cp = table.copy(cp1)
-        a, b = cp[1], cp[2]
-        while a == b do table.remove(cp,1); b = cp[2] end
-        local cycle = (a==cp[#cp])
-        close = close or cycle
-        table.remove(cp,1); table.remove(cp,1)
-        if close then
-            if not cycle then table.insert(cp,a) end
-            a = (a+b)/2
-            table.insert(cp,a); table.insert(cp1,a)
-        end
-        local Min, Max = math.huge, -math.huge
-        for _,z in ipairs(cp1) do
-            local v = f(z.re,z.im)
-            if v < Min then Min = v end
-            if v > Max then Max = v end
-        end
-        local m2, m1, angle = f(a.re,a.im)
-        if Max == Min then color_index = 0 else  color_index = (m2-Min)/(Max-Min) end
-        local c2, c1 = palette(pal,color_index)
-        v = cpx.normalize(b-a)
-        bord = {a-ep*i*v,a+ep*i*v}
-        aux = bord
-        c = b; b = a
-        for _, z in ipairs(cp) do
-            angle = self:Arg(v)*rad+90
-            a = b; b = c; c = z; u  =-v; v = cpx.normalize(c-b)
-            if v == nil then
-                c = b; b = a; v = -u
-            else
-                w = cpx.normalize(u+v)
-                if w == nil then
-                    bord = {b+ep*i*u, b-ep*i*u}
-                else
-                    bord = projO( bord,{b,w},u)
-                end
-                m1 = m2; m2 = f(b.re,b.im)
-                if Max == Min then color_index = 0 else  color_index = (m2-Min)/(Max-Min) end
-                c1 = c2; c2 = palette(pal,color_index)
-                self:Dpolyline( transf(concat(reverse(aux),bord)), true, "draw=none,left color="..c1..",right color="..c2..",shading angle="..strReal(angle))
-                aux = bord
-                self:Dseg( transf(bord), "arrows=-,line width=0.1pt,color="..c2) -- pour masquer les séparations
-            end
-        end
-        --last one
-        m1 = m2; m2 = f(c.re,c.im)
-        if Max == Min then color_index = 0 else color_index = (m2-Min)/(Max-Min) end
-        c1 = c2; c2 = palette(pal, color_index)
-        angle = self:Arg(v)*rad+90
-        bord = {c-ep*i*v, c+ep*i*v}
-        self:Dpolyline( transf(concat(reverse(aux),bord)), true,
-           "draw=none,left color="..c1..",right color="..c2..",shading angle="..strReal(angle))
-    end
-    self:Restorematrix()
-end
-
 
 -- courbe cartésienne
 function luadraw_graph:Dcartesian(f,args)
@@ -1034,6 +929,17 @@ end
 function luadraw_graph:Drectangle(a,b,c,draw_options)
 -- dessine le rectangle ayant comme sommets  consécutifs a et b (complexe) tel que le côté opposé passe par c.
     local S = rectangle(a,b,c)
+    self:Dpolyline(S,true,draw_options)
+end
+
+-- parallelogram
+function luadraw_graph:Dparallelogram(a,u,v,draw_options)
+-- dessine le parallélogramme ayant comme sommets consécutifs a, a+u, a+u+v, a+v
+    if type(a) == "table" then
+        draw_options = u
+        a,u,v = table.unpack(a)
+    end
+    local S = parallelogram(a,u,v)
     self:Dpolyline(S,true,draw_options)
 end
 
@@ -1469,7 +1375,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
 -- ex: Dpath( {-1,2+i,3,"l", 4, "m", -2*i,-3-3*i,"l","cl",...} )
 -- "m" pour moveto, "l" pour lineto, "b" pour bézier, "c" pour cercle, "ca" pour arc de cercle, "ea" arc d'ellipse, "e" pour ellipse, "s" pour spline naturelle, "cl" pour close
 -- "la" pour line arc (ligne aux coins arrondis), "cla" ligne fermée aux coins arrondis
-    clip = clip or false
+    clip = clip or false -- indique si  L est un chemin de clipping
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
     draw_options = draw_options or ""
     local commande
@@ -1674,15 +1580,20 @@ function luadraw_graph:Dpath(L,draw_options,clip)
 end
 
 -- clipping avec un chemin
-function luadraw_graph:Beginclip(path,inverse)
+function luadraw_graph:Beginclip(p,inverse) -- p = path
     inverse = inverse or false
     self:Writeln("\\begin{scope}")
     if inverse then
-        local chem = reverse(self:Box2d())
+        local chem = self:Box2d()
+        --local chem = reverse(self:Box2d())
+        local L = path(p)[1]
+        local G = isobar(L)
+        local A, B = L[1], L[2]
+        if cpx.det(A-B,B-G) >= 0 then chem = reverse(chem) end
         insert(chem,{"l","cl"})
-        table.insert(path,2,"m")
-        self:Dpath( concat(chem,path),"",true) -- path doit être dans le sens trigonométrique
-    else self:Dpath(path,"",true)
+        table.insert(p,2,"m")
+        self:Dpath( concat(chem,p),"",true) -- path doit être dans le sens trigonométrique
+    else self:Dpath(p,"",true)
     end
 end
 
@@ -1748,11 +1659,69 @@ end
 
 require("luadraw_colors.lua")
 
-function luadraw_graph:Newcolor(name, rgbtable)
+function luadraw_graph:Newcolor(name, color)
 -- definit dans l'export tikz une nouvelle couleur
 -- name est le nom (chaîne)
--- rgbtable est une table de trois compoantes: rouge, vert, bleu (entre 0 et 1)
-    self:Writeln("\\definecolor{"..name.."}{rgb}{"..strReal(rgbtable[1])..","..strReal(rgbtable[2])..","..strReal(rgbtable[3]).."}")
+-- color est une table de trois composantes: rouge, vert, bleu (entre 0 et 1) ou bien une chaîne définissant une couleur
+    if type(color) == "table" then
+        self:Writeln("\\definecolor{"..name.."}{rgb}{"..strReal(color[1])..","..strReal(color[2])..","..strReal(color[3]).."}")
+    elseif type(color) == "string" then
+        self:Writeln("\\colorlet{"..name.."}{"..color.."}")
+    end
+end
+
+------------- import an image --------------------------
+function luadraw_graph:Dimage(file,anchor,options)
+-- file = string (full name of the image file)
+-- anchor = complex number
+-- options = {pos="center", matrix=nil, name="", graphics_options=""}
+    local style = { ["N"] = "above", ["NE"] = "above right", ["NW"] = "above left",
+                    ["S"] = "below", ["SE"] = "below right", ["SW"] = "below left",
+                    ["W"] = "left", ["E"] = "right" }
+    options = options or {}
+    anchor = toComplex(anchor)
+    anchor = applymatrix(anchor,self.matrix)
+    local pos = options.pos or "center"
+    pos = style[pos]
+    local name = options.name or ""
+    if name ~= "" then name = "("..name..") " end
+    local graphics_options = options.graphics_options or ""
+    local mat 
+    if isID(self.matrix) then
+        mat = options.matrix 
+        if mat == nil then mat = ID end
+    else
+        mat = {Z(0,0), self.matrix[2], self.matrix[3]}
+        if options.matrix ~=nil then mat = composematrix(mat, options.matrix) end
+    end
+    if not isID(mat) then
+        local t,u,v = table.unpack( map(toComplex,mat) )
+        t = Z(t.re*self.Xscale, t.im*self.Yscale)
+        u = Z(u.re*self.Xscale, u.im*self.Xscale)
+        v = Z(v.re*self.Xscale, v.im*self.Yscale)
+        mat = ",cm={"..strReal(u.re)..","..strReal(u.im)..","..strReal(v.re)..","..strReal(v.im)..",("..strReal(t.re)..","..strReal(t.im)..")}"
+    else mat = ""
+    end
+    if pos ~= nil then pos = ","..pos else pos = "" end
+    local cmd = "\\node[line width=0.3pt,inner sep=-0.15pt"..mat..pos.."] "..name.."at ".. self:Coord(anchor).."{\\includegraphics["..graphics_options.."]{"..file.."}};"
+    self:Writeln(cmd)
+end
+
+function luadraw_graph:Dmapimage(file, parallelo, options)
+-- file = string (name of the image)
+-- parallelogram = {vertice, vector1, vector2} 
+    options = options or {}
+    local name = options.name or ""
+    local clip = options.clip or false
+    local border = options.border_options or nil -- draw_options to draw the border
+    local a, u, v = table.unpack( parallelo )
+    if clip then self:Beginclip( {a, a+u,a+u+v,a+v,"l","cl"} ) end
+        self:Dimage(file, Z(0,0),{pos="NE", name=name, matrix={a,u,v}, 
+            graphics_options="width=1cm,height=1cm"})
+    if clip then self:Endclip() end
+    if border ~= nil then
+        self:Dpolyline(parallelogram(a,u,v), true, border)
+    end
 end
 
 return luadraw_graph

@@ -1,6 +1,6 @@
 -- luadraw__matrix.lua (chargé par luadraw__calc, qui charge avant luadraw_complex.lua)
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.

@@ -292,15 +292,23 @@ Dessiner un cylindre à base circulaire (droit ou penché). Plusieurs syntaxes p
     \item La syntaxe : \textbf{g:Dcylinder(A,r,B,args)} dessine un cylindre droit, où \emph{A} est un point 3d représentant le centre d'une des faces circulaires, \emph{B} est le centre de la face opposée, et \emph{r} est le rayon. Le cylindre est droit, c'est à dire que les faces circulaires sont orthogonales à l'axe $(AB)$.
     \item Pour un cylindre penché :  \textbf{g:Dcylinder(A,r,V,B,args)}, où \emph{A} est un point 3d représentant le centre d'une des faces circulaires, \emph{B} est le centre de la face circulaire opposée, \emph{r} est le rayon, et \emph{V} est un vecteur 3d non nul orthogonal au plan des faces circulaires.
 \end{itemize}
-Pour les trois syntaxes, \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
-       \begin{itemize}
-            \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
-            \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
-            \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
-            \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
-            \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
-            \item \emph{opacity=1}, définit la transparence du dessin.
+
+Pour les trois syntaxes, \emph{args} est une table dont les champs définissent les options de tracé. Ces options sont :
+\begin{itemize}
+    \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
+    \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+    \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
+    \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
+    \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+    \item \emph{opacity=1}, définit la transparence du dessin.
+    \item Paramètres pour le gradient : lorsqu'il y a un remplissage avec la couleur, un gradient linéaire est utilisé pour le côté du cylindre et un autre pour la section, dans les deux cas le gradient est défini comme suit:\par
+    \hfil\verb|left color=<color>!<l>, right color=<color>!<r>, middlecolor=<color>!<m>|\hfil\par
+    où \emph{<color>} désigne la couleur utlisée, et \emph{<l>}, \emph{<m>}, \emph{<r>} sont trois nombres entre $0$ et $100$, ce sont ces trois nombres qui constituent les paramètres du gradient sous forme d'une table \emph{\{<l>,<m>,<r>\}}:
+        \begin{itemize}
+            \item Pour le côté du cylindre, c'est l'option \emph{gradside}, sa valeur par défaut est \emph{\{50,10,100\}}.
+            \item Pour la section du cylindre, c'est l'option \emph{gradsection}, sa valeur par défaut est \emph{\{25,18,50\}}.
         \end{itemize}
+\end{itemize}
 
 \subsubsection{Cône : Dcone}
 
@@ -310,7 +318,8 @@ Dessiner un cône à base circulaire (droit ou penché). Plusieurs syntaxes poss
     \item La syntaxe : \textbf{g:Dcone(C,r,A,args)} dessine un cône droit, où \emph{A} est un point 3d représentant le sommet du cône, \emph{C} est le centre de la face circulaire, et \emph{r} est le rayon. Le cône est droit, c'est à dire que la face circulaire est orthogonale à l'axe $(AC)$.
     \item Pour un cône penché :  \textbf{g:Dcone(C,r,V,A,args)}, où \emph{A} est un point 3d représentant le sommet du cône, \emph{C} est le centre de la face circulaire, \emph{r} est le rayon, et \emph{V} est un vecteur 3d non nul orthogonal au plan de la face circulaire.
 \end{itemize}
-Pour les trois syntaxes, \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
+
+Pour les trois syntaxes, \emph{args} est une table dont les champs définissent les options de tracé. Ces options sont :
 \begin{itemize}
     \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
     \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
@@ -318,6 +327,13 @@ Pour les trois syntaxes, \emph{args} est une table à 5 champs pour définir les
     \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
     \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
     \item \emph{opacity=1}, définit la transparence du dessin.
+    \item Paramètres pour le gradient : lorsqu'il y a un remplissage avec la couleur, un gradient linéaire est utilisé pour le côté du cône et un autre pour la section, dans les deux cas le gradient est défini comme suit:\par
+    \hfil\verb|left color=<color>!<l>, right color=<color>!<r>, middlecolor=<color>!<m>|\hfil\par
+    où \emph{<color>} désigne la couleur utlisée, et \emph{<l>}, \emph{<m>}, \emph{<r>} sont trois nombres entre $0$ et $100$, ce sont ces trois nombres qui constituent les paramètres du gradient sous forme d'une table \emph{\{<l>,<m>,<r>\}}:
+        \begin{itemize}
+            \item Pour le côté du cône, c'est l'option \emph{gradside}, sa valeur par défaut est \emph{\{50,10,100\}}.
+            \item Pour la section du cône, c'est l'option \emph{gradsection}, sa valeur par défaut est \emph{\{25,18,50\}}.
+        \end{itemize}
 \end{itemize}
 
 \subsubsection{Tronc de cône : Dfrustum}
@@ -329,15 +345,23 @@ La méthode \textbf{g:Dfrustum(A,V,R,r,args)} dessine un tronc de cône à bases
     \item La syntaxe : \textbf{g:Dfrustum(A,R,r,V,args)} pour un tronc de cône droit, \emph{A} est un point 3d représentant le centre de la face de rayon \emph{R}, \emph{V} est un vecteur 3d représentant l'axe du tronc de cône, le centre de la deuxième face circulaire est le point $A+V$, et son rayon est \emph{r},  (les faces sont orthogonales à $V$). Lorsque $R=r$ on a simplement un cylindre.
     \item La syntaxe : \textbf{g:Dfrustum(A,R,r,V,B,args)} pour un tronc de cône penché, \emph{A} est un point 3d représentant le centre de la face de rayon \emph{R}, \emph{V} est un vecteur 3d représentant un vecteur normal aux faces circulaires, le centre de la deuxième face circulaire est le point $B$, et son rayon est \emph{r}. Lorsque $R=r$ on a un cylindre penché.
 \end{itemize}
-Dans les deux cas, \emph{args} est une table à 5 champs pour définir les options de tracé. Ces options sont :
-    \begin{itemize}
-        \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
-        \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
-        \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
-        \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
-        \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
-        \item \emph{opacity=1}, définit la transparence du dessin.
-    \end{itemize}
+
+Dans les deux cas, \emph{args} est une table dont les champs définissent les options de tracé. Ces options sont :
+\begin{itemize}
+    \item \emph{mode=mWireframe ou mGrid} (\emph{mWireframe} par défaut). En mode \emph{mWireframe} c'est un dessin en fil de fer, en mode \emph{mGrid} c'est un dessin en grille (comme s'il y avait des facettes).
+    \item \emph{hiddenstyle}, définit le style de ligne pour les parties cachées (mettre "noline" pour ne pas les afficher). Par défaut cette option a la valeur de la variable globale \emph{Hiddenlinestyle} qui est elle même initialisée avec la valeur \emph{"dotted"}.
+    \item \emph{hiddencolor}, définit la couleur des lignes cachées (égale à edgecolor par défaut).
+    \item \emph{edgecolor}, définit la couleur des lignes (couleur courante par défaut).
+    \item \emph{color=""}, lorsque cette option est une chaîne vide (valeur par défaut) il n'y a pas de remplissage,  lorsque c'est une couleur (sous forme de chaîne) il y a un remplissage avec un gradient linéaire.
+    \item \emph{opacity=1}, définit la transparence du dessin.
+    \item Paramètres pour le gradient : lorsqu'il y a un remplissage avec la couleur, un gradient linéaire est utilisé pour le côté du cône et un autre pour la section, dans les deux cas le gradient est défini comme suit:\par
+    \hfil\verb|left color=<color>!<l>, right color=<color>!<r>, middlecolor=<color>!<m>|\hfil\par
+    où \emph{<color>} désigne la couleur utlisée, et \emph{<l>}, \emph{<m>}, \emph{<r>} sont trois nombres entre $0$ et $100$, ce sont ces trois nombres qui constituent les paramètres du gradient sous forme d'une table \emph{\{<l>,<m>,<r>\}}:
+        \begin{itemize}
+            \item Pour le côté du cône, c'est l'option \emph{gradside}, sa valeur par défaut est \emph{\{50,10,100\}}.
+            \item Pour la section du cône, c'est l'option \emph{gradsection}, sa valeur par défaut est \emph{\{25,18,50\}}.
+        \end{itemize}
+\end{itemize}
 
 \subsubsection{ Sphère : Dsphere}
 

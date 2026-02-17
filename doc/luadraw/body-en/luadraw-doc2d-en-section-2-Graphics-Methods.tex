@@ -310,6 +310,12 @@ g:Show(true)
     \item The \textbf{ellipticarcb(B,A,C,rx,ry,sens,inclination)} function returns this arc as a path (see Dpath) using Bézier curves.
 \end{itemize}
 
+\subsubsection{Dparallelogram}
+\begin{itemize}
+    \item The method \textbf{g:Dparallelogram(a,u,v,draw\_options)} where \emph{a}, \emph{u}, \emph{v} represent three complex numbers denoting a vertex and two vectors, draws the parallelogram with vertices \emph{\{a,a+u,a+u+v,a+v\}}. The argument \emph{draw\_options} is a string (empty by default) which will be passed as is to the \emph{\textbackslash draw} instruction.
+    \item The function \textbf{parallelogram(a,u,v)} returns the list of vertices of this parallelogram.
+\end{itemize}
+
 \subsubsection{Dpolyreg}
 \begin{itemize}
     \item The \textbf{g:Dpolyreg(vertex1,vertex2,number of points,direction,draw\_options)} or \par \textbf{g:Dpolyreg(center,vertex,number of points,draw\_options)} method draws a regular polygon. The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
@@ -318,7 +324,8 @@ g:Show(true)
 \subsubsection{Drectangle}
 \begin{itemize}
     \item The \textbf{g:Drectangle(a,b,c,draw\_options)} method draws a rectangle with consecutive vertices \emph{a} and \emph{b}, and whose opposite side passes through \emph{c}. The \emph{draw\_options} argument is a string (empty by default) that will be passed as is to the \emph{\textbackslash draw} instruction.
-    \item The \textbf{rectangle(a,b,c)} function returns the list of vertices of this rectangle. \end{itemize}
+    \item The \textbf{rectangle(a,b,c)} function returns the list of vertices of this rectangle.
+\end{itemize}
 
 \subsubsection{Dsequence}
 \begin{itemize}
@@ -1291,6 +1298,77 @@ g:Show()
 
 \paragraph{NB}: The result is not always satisfactory when the contours become too complex, or when the contours share common sections.
 
+
+\subsection{Importing an Image}
+
+\subsubsection{Placing an Image in the Graphic}
+
+To import an image into the current graphic (and possibly draw on top of it), use the method:\par
+\hfil\textbf{g:Dimage( filename, anchor, options )},\hfil\par
+where:
+\begin{itemize}
+    \item \emph{filename} is the full name of the image file. The image will be displayed using the \verb|\includegraphics[]{}| command within a node.
+    \item \emph{anchor} is a complex number representing the anchor point of the image in the graphic.
+    \item \emph{options} is a table whose fields define the display parameters (with their default values):
+    \begin{itemize}
+        \item \opt{pos = "center"} specifies the position of the image relative to the anchor point, following the same principle as for labels. Possible values are: "center", "N", "NE", "E", "SE", "S", "SW", "W", and "NW".
+        \item \opt{name = ""} optionally assigns a name to the node that will be created. This name can later be referenced in TikZ.
+        \item \opt{graphics\_options = ""} is a string containing the options to be passed to the \verb|\includegraphics| command.
+        \item \opt{matrix = nil} is a table representing an affine transformation matrix. This matrix is applied locally to the created node (for which the origin is the anchor point). Note that the current global 2D transformation matrix of the graphic is also taken into account by this method.
+    \end{itemize}
+\end{itemize}
+
+\begin{demo}{Importing an Image}
+
+\begin{luadraw}{name=Dimage}
+local g = graph:new{margin={0,0,0,0}, size={10,10},bg="green!30"}
+local filename = cachedir.."flower.jpg"
+local g_options = "width=4.5cm,height=4.5cm"
+g:Dimage(filename,Z(-5,5),{pos="SE", graphics_options=g_options})
+g:Dimage(filename,Z(5,5),{pos="SE", matrix={0,-1,cpx.I}, graphics_options=g_options})
+g:Rotate(180)
+g:Dimage(filename,Z(-5,5),{pos="SE", graphics_options=g_options})
+g:IDmatrix()
+g:Dimage(filename,Z(-5,-5),{pos="SE", matrix={0,1,-cpx.I}, graphics_options=g_options})
+g:Dlabel( "Original", Z(-5,5),{pos="SE"},
+    "Vertical symetry", Z(5,5), {pos="SW"},
+    "Rotation (global)", Z(5,-5), {pos="NW"},
+    "Horizontal symetry", Z(-5,-5), {pos="NE"} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Mapping an Image onto a Parallelogram}
+
+This can be done using the method: \textbf{g:Dmapimage( filename, parallelo, options )}, where:
+\begin{itemize}
+    \item \emph{filename} is the full name of the image file.
+    \item \emph{parallelo} is a list of the form \emph{\{a, u, v\}}, consisting of three complex numbers. This list defines the parallelogram with vertices \{a, a+u, a+u+v, a+v\}.
+    \item \emph{options} is a table whose fields specify the parameters (with their default values):
+    \begin{itemize}
+        \item \opt{name = ""} optionally assigns a name to the node that is created. This name can later be referenced in TikZ.
+        \item \opt{clip = false} is a Boolean flag indicating whether the image should be clipped to the parallelogram. In most cases, clipping is not required.
+        \item \opt{border\_options = nil}, when set to a value other than \emph{nil}, must be a string containing the drawing options for the boundary of the parallelogram. The value of \emph{border\_options} is passed directly to the \verb|\draw| command to render the outline.
+    \end{itemize}
+\end{itemize}
+
+\begin{demo}{Mapping an Image}
+\begin{luadraw}{name=Dmapimage}
+local g = graph:new{window={-2,3.5,-0.5,7}, margin={0,0,0,0}, size={10,10},bg="green!30"}
+local filename = cachedir.."flower.jpg"
+local i = cpx.I
+local a, u, v, w = 0, 3, -1.5+i, 4*i
+local facets = {{a,u,w}, {a+v,-v,w}, {a+v+w,-v,u} }
+local portrait = {a+w+(2*v+u)/3+0.2, (u-v)/4, 1.5*i+0.2}
+for _,f in ipairs(facets) do
+    g:Dmapimage(filename,f,{border_options="Navy"})
+end
+g:Dmapimage(cachedir.."russell.jpg", portrait, {border_options="lightgray,line width=1.5mm"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
 \subsection{Colors}
 
 In the \emph{luadraw} environment, colors are character strings that must correspond to colors known to tikz. The \emph{xcolor} package is strongly recommended so as not to be limited to basic colors.
@@ -1329,7 +1407,7 @@ The (optional) argument \emph{table} is a boolean (false by default) that indica
 
     \item The \textbf{getpalette(colors,nb,table)} function: the \emph{colors} argument is a list (table) of colors in \verb|{r,b,g}| format, the \emph{nb} argument indicates the desired number of colors. The function returns a list of \emph{nb} colors evenly distributed in \emph{colors}. The (optional) \emph{table} argument is a boolean (false by default) that indicates whether the colors are returned as \verb|{r,g,b}| tables or not (by default, they are as strings).
 
-    \item The \textbf{g:Newcolor(name,rgbtable)} method allows you to define a new color in the tikz export in rgb format, whose name will be \emph{name} (string). \emph{rgbtable} is a table of three components: red, green, blue (between 0 and 1) defining this color.
+    \item The method \textbf{g:Newcolor(name,color)} allows you to define a new color in the tikz export to rgb format. The name of this color will be \emph{name} (string). The argument \emph{color} can be either a table of three components: red, green, blue (between 0 and 1) defining this color, or a string representing a color. In the first case, the method uses a \verb|\definecolor|, and in the second case, it uses a \verb|\colorlet|.
 
 \end{itemize}
 You can also use all of TikZ's usual color management features.
@@ -1355,50 +1433,6 @@ Dpalette(palAutumn,A,h,L,N,"palAutumn"); A = A+dh
 Dpalette(palGistGray,A,h,L,N,"palGistGray"); A = A+dh
 Dpalette(palGasFlame,A,h,L,N,"palGasFlame"); A = A+dh
 Dpalette(palRainbow,A,h,L,N,"palRainbow")
-g:Show()
-\end{luadraw}
-\end{demo}
-
-\subsubsection{Dshadedpolyline}
-
-The function \textbf{g:Dshadedpolyline(L, palette, options)} enables the rendering of a two-dimensional polygonal line (\emph{L}) with a continuous color gradient determined by the computational method and the selected \emph{palette}. The argument \emph{L} may be either a list of complex numbers or a list of lists of complex numbers. The \emph{palette} is a list of colors, each color being represented as a list of three real numbers between \(0\) and \(1\), corresponding respectively to the red, green, and blue components. The argument \emph{options} is a table whose fields define the parameters (with their default values) as follows:
-\begin{itemize}
-    \item \opt{values = "x"} — for each point in \emph{L}, a numerical value is computed, which determines the associated color according to the chosen palette. The \emph{values} option specifies the evaluation mode and may take one of the following forms:
-        \begin{itemize}
-            \item "x" (default): the value corresponds to the point’s abscissa;
-            \item "y": the value corresponds to the point’s ordinate;
-            \item a function \(f\colon(x,y)\mapsto f(x,y)\in\mathbf{R}\): the value for each point \((x,y)\) in \emph{L} is given by \(f(x,y)\).
-        \end{itemize}
-    \item \opt{width = current line width} — specifies the line thickness in tenths of a point (default: current line width).
-    \item \opt{close = false} — a Boolean value indicating whether the polygonal line should be closed.
-    \item \opt{clip = nil} — this option can be either \emph{nil} (default) or a table \emph{\{x1, x2, y1, y2\}}. In the former case, the line is clipped by the current two-dimensional window \textbf{after} applying the graph’s 2D transformation matrix; in the latter, the line is clipped by the window \([x_1, x_2]\times[y_1, y_2]\) \textbf{before} the transformation.
-\end{itemize}
-
-This procedure transforms \emph{L} into a sequence of trapezoids, which are subsequently filled using a smooth color gradient.
-
-\begin{demo}{Shading polyline}
-\begin{luadraw}{name=shading_polyline}
-local i = cpx.I
-local g = graph:new{size={10,10},bg="lightgray", margin={0,0,0,0}}
--- first example diff. equation y'= x^2+y^2-1 (=f(x,y))
-local x1,x2,y1,y2 = -3,3,-3,3
-local A = Z(0,1/2) -- initial condition
-local f = function(x,y) 
-    return x^2+y^2-1
-end
-local S = odesolve(f, A.re, A.im, x1, x2, 150) -- S is a matrix {X,Y}
-local L = {} -- to convert {X,Y} into the complex numbers list L
-for k = 1, #S[1] do table.insert(L, Z(S[1][k],S[2][k])) end 
-L = clippolyline(L,-2.5,2.4,y1,y2)[1] -- L is the solution curve
-g:Dshadedpolyline(L, palRainbow, {values=f, width=12}) -- solution drawn with rainbow color map using function f
--- second example
-L = polar(function(t) return 2*math.cos(3*t) end, -math.pi, math.pi)
-local f = function(x,y) return cpx.abs(Z(x,y)) end -- here the value will be the modulus
-g:Shift(2-2.5*i)
-g:Dshadedpolyline(L, palAutumn, {values=f, width=12})
--- third example
-g:Shift(-4.5+5*i)
-g:Dshadedpolyline( polyreg(0,2,8), palGasFlame, {values="y", width=24, close=true})
 g:Show()
 \end{luadraw}
 \end{demo}

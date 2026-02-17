@@ -2248,8 +2248,8 @@
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (1.0024,2.0404) -- (1.0024,8.5356);%
 \draw[] (2,1.7524) -- (1.0024,2.0404);%
+\draw[] (1.0024,2.0404) -- (1.0024,8.5356);%
 \draw[] (1.0024,8.5356) -- (2,8.2476);%
 \pgfsetstrokecolor{Pink!50!white!89.13!black}%
 \pgfsetlinewidth{0.1pt}%

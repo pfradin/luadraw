@@ -1,0 +1,10 @@
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=green!30},show background rectangle]%
+\begin{scope}%
+\clip (0,0) rectangle (10.0,10.0);%
+\node[line width=0.3pt,inner sep=-0.15pt,below right] at (0,10){\includegraphics[width=4.5cm,height=4.5cm]{tkz/flower.jpg}};%
+\node[line width=0.3pt,inner sep=-0.15pt,cm={-1,0,0,1,(0,0)},below right] at (10,10){\includegraphics[width=4.5cm,height=4.5cm]{tkz/flower.jpg}};%
+\node[line width=0.3pt,inner sep=-0.15pt,cm={-1,0,0,-1,(0,0)},below right] at (10,0){\includegraphics[width=4.5cm,height=4.5cm]{tkz/flower.jpg}};%
+\node[line width=0.3pt,inner sep=-0.15pt,cm={1,0,0,-1,(0,0)},below right] at (0,0){\includegraphics[width=4.5cm,height=4.5cm]{tkz/flower.jpg}};%
+\draw[-] (0,10) node[below right] {Original} (10,10) node[below left] {Vertical symetry} (10,0) node[above left] {Rotation (global)} (0,0) node[above right] {Horizontal symetry};%
+\end{scope}%
+\end{tikzpicture}%

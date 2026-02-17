@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -286,14 +286,6 @@ function map(f,list)
     end
     return res
 end   
-
-function reverse(list)
-    local rep = {}
-    for _,x in ipairs(list) do
-        table.insert(rep,1,x)
-    end
-    return rep
-end
 
 function isobar(L)
 -- renvoie le centre de gravité de la liste L de complexes

@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -66,8 +66,9 @@ function classify3d(L, n)
     local u2 = pt3d.prod(v,u1)
     local rep = {}
     for k,A in ipairs(L) do
-       local pos = A-G
-       table.insert(rep, {cpx.arg( Z(pt3d.dot(pos,u1), pt3d.dot(pos,u2)) ), k} )
+        local pos = A-G
+        local zarg = cpx.arg( Z(pt3d.dot(pos,u1), pt3d.dot(pos,u2)) )
+        if zarg ~= nil then table.insert(rep, {zarg, k} ) end
     end
     table.sort(rep, function(e1,e2) return e1[1] < e2[1] end)
     local res = {}
@@ -1019,10 +1020,10 @@ function line2tube(L,r,args)
 -- L est une liste de points 3d 
 -- la fonction renvoie un tube centré sur L (liste de facettes)
 -- args est une table à 4 champs:
--- nbfacet=4 par défaut
--- close=true/false indique si la ligne doit être refermée
--- hollow=true/false indique si le tube a ses extrémités ouvertes (true) ou fermées
--- addwall=0 (ou 1) permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "tronçon" du tube
+-- nbfacet = 4 par défaut
+-- close = true/false indique si la ligne doit être refermée
+-- hollow = true/false indique si le tube a ses extrémités ouvertes (true) ou fermées
+-- addwall = 0 (ou 1) permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "tronçon" du tube
     if (L == nil) or (type(L) ~= "table") then return end
     args = args or {}
     local nbfacet = args.nbfacet or 3

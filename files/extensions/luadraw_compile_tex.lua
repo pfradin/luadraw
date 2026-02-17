@@ -1,6 +1,6 @@
 -- luadraw_compile_tex.lua
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -173,7 +173,9 @@ local splitLongSeg = function(L) -- to divide segments that are too long
             A = B; B = lg[k]
             local len = cpx.abs(B-A)
             local nb = math.floor(10*len)
-            insert(cp, linspace(A,B,nb+2) )
+            local aux = linspace(A,B,nb+2) 
+            if k > 2 then table.remove(aux,1) end
+            insert(cp, aux )
         end
         table.insert(ret,cp)
     end

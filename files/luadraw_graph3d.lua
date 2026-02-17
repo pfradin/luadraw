@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -608,12 +608,12 @@ end
 
 ------- solides sans facettes (fil de fer)
 
-function luadraw_graph3d:define_temp_color(argsColor)
+function luadraw_graph3d:Define_temp_color(argsColor)
     if type(argsColor) == "table" then 
         argsColor = rgb(argsColor) 
         argsColor = string.sub(argsColor,2,#argsColor-1) -- on retire les accolades
     end
-    if (type(argsColor) == "string") and (string.find(argsColor,"%A")~=nil) 
+    if (type(argsColor) == "string") and (string.find(argsColor,"%A")~=nil) -- contient caractère non alpha numérique
     then
         self:Writeln("\\colorlet{tempColor}{"..argsColor.."}")
         return "tempColor"
@@ -640,12 +640,18 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
     end
     args = args or {}
     args.color = args.color or ""
-    args.color = self:define_temp_color(args.color)
+    args.color = self:Define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
+    args.gradsection = args.gradsection or {25,18,50}
+    args.gradside= args.gradside or {50,10,100}
+    local lsection, msection, rsection = table.unpack( args.gradsection)
+    local lside, mside, rside = table.unpack( args.gradside)
+    local gradStyleSide = "left color="..args.color.."!"..tostring(lside)..",right color = "..args.color.."!"..tostring(rside)..",middle color="..args.color.."!"..tostring(mside)
+    local gradStyleSection = "left color="..args.color.."!"..tostring(lsection)..",right color = "..args.color.."!"..tostring(rsection)..",middle color="..args.color.."!"..tostring(msection)
     
     local oldfillstyle = self.param.fillstyle
     local oldfillopacity = self.param.fillopacity
@@ -666,7 +672,7 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
     self:Linecolor(args.edgecolor)
     local dcircle = function(center)
         if args.color ~= "" then
-            self:Filloptions("gradient", "left color="..args.color.."!25,right color = "..args.color.."!50,middle color="..args.color.."!18, shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         else
             self:Filloptions("none") 
         end
@@ -696,7 +702,7 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
             if args.color == "" then 
                 self:Filloptions("none") 
             else
-                self:Filloptions("gradient", "left color="..args.color.."!50,right color = "..args.color..",middle color="..args.color.."!10, shading angle="..strReal(angle),args.opacity)
+                self:Filloptions("gradient", gradStyleSide..",shading angle="..strReal(angle),args.opacity)
             end
             if args.mode == 1 then self:Linestyle("noline") end
             -- on voit la base circulaire en B, le vecteur I sort du cylindre en B et est dirigé vers l'observateur
@@ -745,12 +751,18 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
     end
     args = args or {}
     args.color = args.color or ""
-    args.color = self:define_temp_color(args.color)
+    args.color = self:Define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
+    args.gradsection = args.gradsection or {25,18,50}
+    args.gradside= args.gradside or {50,10,100}
+    local lsection, msection, rsection = table.unpack( args.gradsection)
+    local lside, mside, rside = table.unpack( args.gradside)
+    local gradStyleSide = "left color="..args.color.."!"..tostring(lside)..",right color = "..args.color.."!"..tostring(rside)..",middle color="..args.color.."!"..tostring(mside)
+    local gradStyleSection = "left color="..args.color.."!"..tostring(lsection)..",right color = "..args.color.."!"..tostring(rsection)..",middle color="..args.color.."!"..tostring(msection)
 
     local oldfillstyle = self.param.fillstyle
     local oldfillopacity = self.param.fillopacity
@@ -777,7 +789,7 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
     end    
     local dcircle = function(center)
         if args.color ~= "" then
-            self:Filloptions("gradient", "left color="..args.color.."!25,right color = "..args.color.."!50,middle color="..args.color.."!18, shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient",gradStyleSection..",shading angle="..strReal(angle),args.opacity)
         else
             self:Filloptions("none") 
         end
@@ -799,7 +811,7 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
                 self:Filloptions("none") 
             else
                 --self:Filloptions("gradient", "left color=white,right color = "..args.color..", shading angle="..strReal(angle),args.opacity)
-                self:Filloptions("gradient", "left color="..args.color.."!50,right color = "..args.color..",middle color="..args.color.."!10, shading angle="..strReal(angle),args.opacity)
+                self:Filloptions("gradient",gradStyleSide..",shading angle="..strReal(angle),args.opacity)
             end
             if args.mode == 1 then self:Linestyle("noline") end
             local sens = 1
@@ -868,7 +880,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
   
     local dcircle = function()
         if args.color ~= "" then
-            self:Filloptions("gradient","left color="..args.color.."!25,right color = "..args.color.."!50,middle color="..args.color.."!18",args.opacity)
+            --self:Filloptions("gradient",gradStyleSection,args.opacity)
         else
             self:Filloptions("none")
         end
@@ -886,13 +898,19 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
     end
     args = args or {}
     args.color = args.color or ""
-    args.color = self:define_temp_color(args.color)
+    args.color = self:Define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.mode = args.mode or 0
+    args.gradsection = args.gradsection or {25,18,50}
+    args.gradside= args.gradside or {50,10,100}
+    local lsection, msection, rsection = table.unpack( args.gradsection)
+    local lside, mside, rside = table.unpack( args.gradside)
+    local gradStyleSide = "left color="..args.color.."!"..tostring(lside)..",right color = "..args.color.."!"..tostring(rside)..",middle color="..args.color.."!"..tostring(mside)
+    local gradStyleSection = "left color="..args.color.."!"..tostring(lsection)..",right color = "..args.color.."!"..tostring(rsection)..",middle color="..args.color.."!"..tostring(msection)
     
     local oldfillstyle = self.param.fillstyle
     local oldfillopacity = self.param.fillopacity
@@ -940,7 +958,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
             if args.color == "" then 
                 self:Filloptions("none") 
             else
-                self:Filloptions("gradient", "left color="..args.color.."!50,right color = "..args.color..",middle color="..args.color.."!10, shading angle="..strReal(angle),args.opacity)
+                self:Filloptions("gradient",gradStyleSide..",shading angle="..strReal(angle),args.opacity)
             end
             if args.mode == 1 then self:Linestyle("noline") end
             local sens = 1
@@ -949,7 +967,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
             if pt3d.dot(self.Normal,self:MLtransform3d(V)) >= 0 then -- on voit la petite base circulaire (C,r)
                 self:Dpath3d({M3,M1,"l",C,M2,r,-sens,V,"ca",M4,"l",A,M3,R,sens,V,"ca"})
                 if args.color ~= "" then
-                    self:Filloptions("gradient","left color="..args.color.."!25,right color = "..args.color.."!50,middle color="..args.color.."!18",args.opacity)
+                    self:Filloptions("gradient",gradStyleSection..",shading angle="..strReal(angle),args.opacity)
                 else self:Filloptions("none")
                 end
                 --self:Darc3d(M1,C,M2,r,-sens,V)
@@ -962,7 +980,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
             else -- la grande base circulaire (A,R)
                 self:Dpath3d({M3,M1,"l",C,M2,r,sens,V,"ca",M4,"l",A,M3,R,-sens,V,"ca"})
                 if args.color ~= "" then
-                    self:Filloptions("gradient","left color="..args.color.."!25,right color = "..args.color.."!50,middle color="..args.color.."!18",args.opacity)
+                    self:Filloptions("gradient",gradStyleSection..",shading angle="..strReal(angle),args.opacity)
                 else self:Filloptions("none")
                 end
                 --self:Darc3d(M4,A,M3,R,-sens,V)            
@@ -1351,7 +1369,7 @@ function define_getcolor(F, pal, mode, default_color) -- used by drawfacet(), Dm
     return getcolor
 end
 
-function luadraw_graph3d:adjust_color(F,color,contrast,twoside) -- used by drawfacet(), Dmixfacet() and addFacet()
+function luadraw_graph3d:Adjust_color(F,color,contrast,twoside) -- used by drawfacet(), Dmixfacet() and addFacet()
 -- F = facet, contrast in [0,1], twoside=true/false
 -- adjust color based on facet normal vector (scalar product between the normal vector of the facet and the vector directed towards the observer.)
 -- returns a color (string), normal vector and coef
@@ -1420,7 +1438,7 @@ function luadraw_graph3d:drawfacet(S,args) -- internal use by Dpoly,and Dfacet, 
             if (args.mode == mFlat) or (args.mode == mFlatHidden) then
                 coul = rgb(getcolor(F))
             else
-                coul = self:adjust_color(F, getcolor(F),args.contrast,args.twoside)
+                coul = self:Adjust_color(F, getcolor(F),args.contrast,args.twoside)
             end
             self:Filloptions("full",coul,args.opacity)
             if (args.mode == 5) then 
@@ -1436,7 +1454,7 @@ function luadraw_graph3d:drawfacet(S,args) -- internal use by Dpoly,and Dfacet, 
         end
     else --modes 3, 4 ou 5 couleur des facettes uniques mais nuancées en fonction du vecteur normal
         for _,F in ipairs(S) do
-            coul = self:adjust_color(F,args.color,args.contrast,args.twoside)
+            coul = self:Adjust_color(F,args.color,args.contrast,args.twoside)
             if coul ~= nil then
                 self:Filloptions("full",coul,args.opacity)
                 if (args.mode == mShadedOnly) then 
@@ -1658,7 +1676,7 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
             self:Filloptions("full",coul,args.opacity)
             self:Dpolyline3d(F,true)
         else --mode = 3,4 ou 5 faces peintes
-            coul = self:adjust_color(F,args.getcolor(F),args.contrast,args.twoside)
+            coul = self:Adjust_color(F,args.getcolor(F),args.contrast,args.twoside)
             if coul ~= nil then
                 self:Filloptions("full",coul,args.opacity)
                 if (not args.backcull) or (not neg) then 
@@ -1737,7 +1755,7 @@ function luadraw_graph3d:addFacet(facet,args)
         insert(res, self:addWall(poly2facet(P),{matrix=ID3d}))
     end
     for _, face in ipairs(F) do
-        local coul,n,coef = self:adjust_color(face,getcolor(face),contrast,twoside)
+        local coul,n,coef = self:Adjust_color(face,getcolor(face),contrast,twoside)
         if coul ~= nil then
             if coef < 0 then n = -n  end -- n must be directed towards the observer
             if (not backcull) or (coef > 0)  then            

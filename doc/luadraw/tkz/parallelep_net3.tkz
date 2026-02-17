@@ -19,9 +19,9 @@
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (3.3215,8.5981) -- (3.3215,10.1569);%
 \draw[] (3.3215,8.5981) -- (2.1215,7.5588);%
 \draw[] (5.9196,7.8481) -- (3.3215,8.5981);%
+\draw[] (3.3215,8.5981) -- (3.3215,10.1569);%
 \pgfsetstrokecolor{Crimson}%
 \pgfsetfillopacity{1}%
 \pgfsetfillcolor{Crimson}%
@@ -92,8 +92,8 @@
 \pgfsetlinewidth{0.4pt}%
 \pgfsetstrokeopacity{1}%
 \pgfsetroundcap%
-\draw[] (3.3215,10.1569) -- (5.9196,9.4069);%
 \draw[] (2.1215,9.1177) -- (3.3215,10.1569);%
+\draw[] (3.3215,10.1569) -- (5.9196,9.4069);%
 \draw[] (3.4206,8.7427) -- (2.1215,9.1177);%
 \draw[] (5.3196,8.8873) -- (3.4206,8.7427);%
 \draw[] (5.9196,9.4069) -- (5.3196,8.8873);%
@@ -130,15 +130,15 @@
 \draw[] (8.4,5.0225) -- (8.4,8.0225) -- (10.2,8.0225) -- (10.2,5.0225)--cycle;%
 \draw[] (12.6,5.0225) -- (12.6,8.0225) -- (13.5,8.0225) -- (14.4,6.5225) -- (14.4,5.0225)--cycle;%
 \draw[] (11.4,9.8225) -- (13.1663,10.5775) -- (12.6,8.9225)--cycle;%
-\draw[pattern=north west lines, pattern color=gray] (13.5,8.0225) -- (13.8279,7.7092) -- (14.2779,6.9592) -- (14.4,6.5225);%
-\draw[pattern=north west lines, pattern color=gray] (10.2,0.2225) -- (10.08,0.9725) -- (10.08,2.4725) -- (10.2,3.2225);%
 \draw[pattern=north west lines, pattern color=gray] (11.4,0.2225) -- (11.1,0.1025) -- (10.5,0.1025) -- (10.2,0.2225);%
-\draw[pattern=north west lines, pattern color=gray] (10.2,3.2225) -- (10.08,3.6725) -- (10.08,4.5725) -- (10.2,5.0225);%
-\draw[pattern=north west lines, pattern color=gray] (12.6,5.0225) -- (12.72,4.5725) -- (12.72,3.6725) -- (12.6,3.2225);%
-\draw[pattern=north west lines, pattern color=gray] (10.2,8.0225) -- (10.08,8.4725) -- (10.08,9.3725) -- (10.2,9.8225);%
-\draw[pattern=north west lines, pattern color=gray] (12.6,8.9225) -- (12.72,8.6975) -- (12.72,8.2475) -- (12.6,8.0225);%
 \draw[pattern=north west lines, pattern color=gray] (12.6,1.7225) -- (12.3937,1.2725) -- (11.7937,0.5225) -- (11.4,0.2225);%
+\draw[pattern=north west lines, pattern color=gray] (13.5,8.0225) -- (13.8279,7.7092) -- (14.2779,6.9592) -- (14.4,6.5225);%
+\draw[pattern=north west lines, pattern color=gray] (10.2,8.0225) -- (10.08,8.4725) -- (10.08,9.3725) -- (10.2,9.8225);%
+\draw[pattern=north west lines, pattern color=gray] (10.2,3.2225) -- (10.08,3.6725) -- (10.08,4.5725) -- (10.2,5.0225);%
+\draw[pattern=north west lines, pattern color=gray] (10.2,0.2225) -- (10.08,0.9725) -- (10.08,2.4725) -- (10.2,3.2225);%
+\draw[pattern=north west lines, pattern color=gray] (12.6,8.9225) -- (12.72,8.6975) -- (12.72,8.2475) -- (12.6,8.0225);%
 \draw[pattern=north west lines, pattern color=gray] (12.6,3.2225) -- (12.72,2.8475) -- (12.72,2.0975) -- (12.6,1.7225);%
+\draw[pattern=north west lines, pattern color=gray] (12.6,5.0225) -- (12.72,4.5725) -- (12.72,3.6725) -- (12.6,3.2225);%
 \draw[-] (11.4,6.5225) node[font=\footnotesize] {F1};%
 \draw[-] (11.4,1.7225) node[font=\footnotesize] {F2};%
 \draw[-] (11.4,4.1225) node[font=\footnotesize] {F3};%

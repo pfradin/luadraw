@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -201,15 +201,15 @@ function isobar3d(L)
     return point3d:new(x/n,y/n,z/n)
 end
 
-function insert3d(L,A,epsilon)
+function insert3d(L,A,eps)
 -- L est une variable représentant une séquence de point3d distincts, A est un point 3d
 -- la fonction insère A dans la liste L sans doublon renvoie sa position dans la liste.
--- les comparaisons se font à epsilon près (qui vaut 0 par défaut)
-    epsilon = epsilon or 0
+-- les comparaisons se font à eps(ilon) près (qui vaut 0 par défaut)
+    eps = eps or 0
     local n = #L
     if n == 0 then table.insert(L,A); return 1 end
     for k,B in ipairs(L) do
-        if point3d.N1(B-A) <= epsilon then return k end
+        if point3d.N1(B-A) <= eps then return k end
     end
     table.insert(L,A)
     return n+1

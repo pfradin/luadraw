@@ -1,6 +1,6 @@
 -- luadraw_graph2d.lua
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -23,7 +23,7 @@ function simplifyFrac(a,b)
     if ((a < 0) and (b > 0)) or ((a > 0) and (b < 0)) then sg = -1 end
     a, b = math.abs(a), math.abs(b)
     if (math.floor(a) == a) and (math.floor(b) == b) then 
-        local d = gcd(a,b)
+        local d = luadraw.gcd(a,b)
         return sg*a//d, b//d
     else return sg*a, b
     end

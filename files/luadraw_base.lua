@@ -1,6 +1,6 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2026/01/15
--- version 2.5
+-- date 2026/02/17
+-- version 2.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,6 +8,7 @@
 --   http://www.latex-project.org/lppl.txt.
 
 -- définition des paramètres graphiques
+luadraw_version = 2.6
 require("luadraw_real")
 
 local luadraw_base = {}
@@ -56,11 +57,11 @@ end
 
 -- méthodes 
 
-function luadraw_base:graphWidth() -- largeur du graph en cm sans les marges
+function luadraw_base:Graphwidth() -- largeur du graph en cm sans les marges
     return (self.Xmax-self.Xmin)*self.Xscale
 end    
 
-function luadraw_base:graphHeight() -- hauteur du graph en cm sans les marges
+function luadraw_base:Graphheight() -- hauteur du graph en cm sans les marges
     return (self.Ymax-self.Ymin)*self.Yscale
 end
 

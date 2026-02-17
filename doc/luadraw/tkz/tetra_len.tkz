@@ -20,15 +20,11 @@
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
-\draw[] (5.2516,7.4846) -- (7.8679,3.2691);%
-\pgfsetbuttcap%
-\pgfsetdash{{2.5pt}{2pt}}{0pt}%
-\pgfsetroundcap%
 \draw[] (5,5) -- (2.8869,3.0849);%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
-\draw[] (7.8679,3.2691) -- (5,5);%
+\draw[] (5.2516,7.4846) -- (2.8869,3.0849);%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
@@ -36,7 +32,11 @@
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
-\draw[] (5.2516,7.4846) -- (2.8869,3.0849);%
+\draw[] (7.8679,3.2691) -- (5,5);%
+\pgfsetbuttcap%
+\pgfsetdash{{2.5pt}{2pt}}{0pt}%
+\pgfsetroundcap%
+\draw[] (5.2516,7.4846) -- (7.8679,3.2691);%
 \pgfsetbuttcap%
 \pgfsetdash{{2.5pt}{2pt}}{0pt}%
 \pgfsetroundcap%
