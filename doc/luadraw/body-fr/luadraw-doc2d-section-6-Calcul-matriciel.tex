@@ -22,7 +22,7 @@ La fonction \textbf{invmatrix(M)} calcule et renvoie l'inverse de la matrice $M$
 
 \subsubsection{matrixof}
 \begin{itemize}
-    \item La fonction \textbf{matrixof(f)} calcule et renvoie la matrice de $f$ (qui doit être une application affine du plan complexe.
+    \item La fonction \textbf{matrixof(f)} calcule et renvoie la matrice de $f$ (qui doit être une application affine du plan complexe).
     \item Exemple : \mintinline{Lua}{ matrixof( function(z) return proj(z,{0,Z(1,-1)}) end )} renvoie \par
      \mintinline{Lua}{{0,Z(0.5,-0.5),Z(-0.5,0.5)}} (matrice de la projection orthogonale sur la deuxième bissectrice).
 \end{itemize}
@@ -130,7 +130,7 @@ g:Show()
 \begin{Luacode}
 local g = graph:new{window={-5,5,-5,5},size={10,10}}
 \end{Luacode}
-L'option \emph{window=\{xmin,xmax,ymin,ymax\}} fixe la vue pour le graphique \emph{g}, ce sera le pavé \emph{[xmin, xmax]x [ymin, ymax]} de $\mathbf R^2$, et tous les tracés vont être clippés par cette fenêtre (sauf les labels qui peuvent débordés dans les marges, mais pas au-delà).
+L'option \emph{window=\{xmin,xmax,ymin,ymax\}} fixe la vue pour le graphique \emph{g}, ce sera le pavé \emph{[xmin, xmax] $\times$ [ymin, ymax]} de $\mathbf R^2$, et tous les tracés vont être clippés par cette fenêtre (sauf les labels qui peuvent débordés dans les marges, mais pas au-delà).
 Il est possible, à l'intérieur de ce pavé, de définir un autre pavé pour faire une nouvelle vue, avec la méthode \textbf{g:Viewport(x1,x2,y1,y2)}. Les valeurs de \emph{x1}, \emph{x2}, \emph{y1}, \emph{y2} se réfèrent la fenêtre initiale définie par l'option \emph{window}. À partir de là, tout ce qui sort de cette nouvelle zone va être clippé, et la matrice du graphe est réinitialisée à l'identité, par conséquent il faut sauvegarder auparavant les paramètres graphiques courants :
 \begin{Luacode}
 g:Saveattr()
@@ -149,7 +149,7 @@ local i = cpx.I
 g:Labelsize("tiny") 
 g:Writeln("\\tikzset{->-/.style={decoration={markings, mark=at position #1 with {\\arrow{>}}}, postaction={decorate}}}")
 g:Dline({0,1},"dashed,gray"); g:Dline({0,i},"dashed,gray")
-local legende = {"Point ordinaire", "Point d'inflexion", "Rebroussement 1ère espèce", "Rebroussement 2ème espèce"}
+local legende = {"Point ordinaire", "Point d'inflexion", "Rebroussement 1\\iere{} espèce", "Rebroussement 2\\ieme{} espèce"}
 local A, B, C =(1+i)*0.75, 0.75, 0
 local A2, B2 ={-1.25+i*0.5,-0.75-i*0.5,1.25-0.5*i, 0.5+i}, {-0.75,-0.75,0.75,0.75}
 local u = {Z(-5,0),Z(0,0),-5-5*i,-5*i}
