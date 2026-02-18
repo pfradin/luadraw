@@ -37,7 +37,7 @@ On peut passer des options de dessin directement à l'instruction \emph{\textbac
   \item \emph{"-"} qui signifie pas de flèche (valeur par défaut),
   \item \emph{"->"} qui signifie une flèche à la fin,
   \item \emph{"<-"} qui signifie une flèche au début,
-  \item \emph{"<->"}qui signifie une flèche à chaque bout.\\
+  \item \emph{"<->"} qui signifie une flèche à chaque bout.\\
   \textbf{ATTENTION} : la flèche n'est pas dessinée lorsque l'argument \emph{close} est true.
   \end{itemize}
 \end{itemize}
@@ -175,13 +175,13 @@ La méthode \textbf{g:Dmarkseg(a,b,n,long,espace,angle,draw\_options)} permet de
 
 \subsubsection{Dparallel}
 \begin{itemize}
-    \item La méthode \textbf{g:Dparallel(d,A,draw\_options)} trace la parallèle à \emph{d} passant par \emph{A}. L'argument \emph{d} peut-être soit une droite (une liste constituée d'un point et un vecteur directeur) soit un vecteur non nul. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
+    \item La méthode \textbf{g:Dparallel(d,A,draw\_options)} trace la parallèle à \emph{d} passant par \emph{A}. L'argument \emph{d} peut être soit une droite (une liste constituée d'un point et un vecteur directeur) soit un vecteur non nul. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
     \item La fonction \textbf{parallel(d,A)} renvoie la parallèle à \emph{d} passant par \emph{A} sous la forme d'une liste \emph{\{B,u\}} où \emph{B} est un point de la droite et \emph{u} un vecteur directeur.
 \end{itemize}
 
 \subsubsection{Dperp}
 \begin{itemize}
-    \item La méthode \textbf{g:Dperp(d,A,draw\_options)} trace la perpendiculaire à \emph{d} passant par \emph{A}. L'argument \emph{d} peut-être soit une droite (une liste constituée d'un point et un vecteur directeur) soit un vecteur non nul. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée  telle quelle à l'instruction \emph{\textbackslash draw}.
+    \item La méthode \textbf{g:Dperp(d,A,draw\_options)} trace la perpendiculaire à \emph{d} passant par \emph{A}. L'argument \emph{d} peut être soit une droite (une liste constituée d'un point et un vecteur directeur) soit un vecteur non nul. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée  telle quelle à l'instruction \emph{\textbackslash draw}.
     \item La fonction \textbf{perp(d,A)} renvoie la perpendiculaire à \emph{d} passant par \emph{A} sous la forme d'une liste \emph{\{B,u\}} où \emph{B} est un point de la droite et \emph{u} un vecteur directeur.
 \end{itemize}
 
@@ -208,7 +208,7 @@ La méthode \textbf{g:Dseg(seg,scale,draw\_options)} dessine le segment défini 
 
 \subsubsection{ Dtangent\_from}
 \begin{itemize}
-    \item La méthode \textbf{g:Dtangent\_from(A,p,t1,t2,dp,draw\_options,out)} dessine la ou les tangentes à la courbe paramétrée par \(p: t \mapsto p(t)\) (à valeurs complexes) issue(s) du point $A$ (nombre complexe). Les arguments \emph{t1} et \emph{t2} représentent les bornes de l'intervalle de recherche. L'argument optionnel \emph{dp} est une fonction représentant la dérivée de la fonction $p$, par défaut cet argument vaut \emph{nil} et lé dérivée de $p$ est remplacée par une approximation. L'argument optionnel \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. L'argument optionnel \emph{out}, s'il est utilisé, doit être le nom d'une variable, celle-ci doit être une table, elle contiendra à la fin de l'exécution les points de la courbe pour lesquels la tangente passe par $A$.
+    \item La méthode \textbf{g:Dtangent\_from(A,p,t1,t2,dp,draw\_options,out)} dessine la ou les tangentes à la courbe paramétrée par \(p: t \mapsto p(t)\) (à valeurs complexes) issue(s) du point $A$ (nombre complexe). Les arguments \emph{t1} et \emph{t2} représentent les bornes de l'intervalle de recherche. L'argument optionnel \emph{dp} est une fonction représentant la dérivée de la fonction $p$, par défaut cet argument vaut \emph{nil} et la dérivée de $p$ est remplacée par une approximation. L'argument optionnel \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. L'argument optionnel \emph{out}, s'il est utilisé, doit être le nom d'une variable, celle-ci doit être une table, elle contiendra à la fin de l'exécution les points de la courbe pour lesquels la tangente passe par $A$.
     \item La fonction \textbf{tangent\_from(A,p,t1,t2,dp)} renvoie la liste les points de la courbe paramétrée par $p$, sur l'intervalle\emph{[t1;t2]} pour lesquels la tangente passe par $A$ (nombre complexe). S'il n'y en a pas, la fonction renvoie une liste vide.
 \end{itemize}
 
@@ -297,7 +297,7 @@ g:Show(true)
 
 \subsubsection{Dcircle}
 \begin{itemize}
-    \item La méthode \textbf{g:Dcircle(c,r,d,draw\_options)} trace un cercle. Lorsque l'argument \emph{d} est nil, c'est le cercle de centre \emph{c} (complexe) et de rayon \emph{r}, lorsque \emph{d} est précisé (complexe) alors c'est le cercle passant par les points d'affixe \emph{c},\emph{r} et \emph{d}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. Autre syntaxe possible :  \textbf{g:Dcircle(C,draw\_options)} où \emph{C=\{c,r,d\}}.
+    \item La méthode \textbf{g:Dcircle(c,r,d,draw\_options)} trace un cercle. Lorsque l'argument \emph{d} est nil, c'est le cercle de centre \emph{c} (complexe) et de rayon \emph{r}, lorsque \emph{d} est précisé (complexe) alors c'est le cercle passant par les points d'affixe \emph{c}, \emph{r} et \emph{d}. L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}. Autre syntaxe possible :  \textbf{g:Dcircle(C,draw\_options)} où \emph{C=\{c,r,d\}}.
   \item La fonction \textbf{circle(c,r,d)} renvoie la liste des points de ce cercle (ligne polygonale). 
   \item La fonction \textbf{circleb(c,r,d)} renvoie ce cercle sous forme d'un chemin (voir Dpath) utilisant des courbes de Bézier.
 \end{itemize}
@@ -567,7 +567,7 @@ La méthode \textbf{g:Dwedge(B,A,C,r,sens,draw\_options)} dessine un secteur ang
 \item La fonction \textbf{odesolve(f,t0,Y0,tmin,tmax,nbdots,method)} permet une résolution approchée de l'équation différentielle \(Y'(t)=f(t,Y(t))\) dans l'intervalle {[}tmin,tmax{]} qui doit contenir \emph{t0}, avec la condition initiale $Y(t0)=Y0$.
 
 \begin{itemize}
-  \item L'argument \emph{f} est une fonction \(f: (t,Y) -> f(t,Y)\) à valeurs dans \(R^n\) et où \emph{Y} est également dans \(R^n\) : \emph{Y=\{y1, y2,\ldots, yn\}} (lorsque $n=1$, \emph{Y} est un réel).
+  \item L'argument \emph{f} est une fonction \(f\colon (t,Y) \mapsyo f(t,Y)\) à valeurs dans \(\mathbf R^n\) et où \emph{Y} est également dans \(\mathbf R^n\) : \emph{Y=\{y1, y2,\ldots, yn\}} (lorsque $n=1$, \emph{Y} est un réel).
   \item Les arguments \emph{t0} et \emph{Y0} donnent les conditions initiales avec \emph{Y0=\{y1(t0), \ldots, yn(t0)\}} (les yi sont réels), ou \emph{Y0=y1(t0)} lorsque $n=1$.
   \item Les arguments \emph{tmin} et \emph{tmax} définissent l'intervalle de résolution, celui-ci doit contenir \(t0\).
   \item L'argument \emph{nbdots} indique le nombre de points calculés de part et d'autre de \(t0\).
@@ -612,8 +612,8 @@ g:Show()
     
 \item La méthode \textbf{g:Dodesolve(f,t0,Y0,args)} permet le dessin d'une solution à l'équation \(Y'(t)=f(t,Y(t))\).
   \begin{itemize}
-  \item L'argument obligatoire \emph{f} est une fonction \(f: (t,Y) -> f(t,Y)\) à valeurs dans \(R^n\) et où \emph{Y} est également dans \(R^n\) : \emph{Y=\{y1, y2,\ldots, yn\}} (lorsque $n=1$, \emph{Y} est un réel).
-  \item Les arguments \emph{t0} et \emph{Y0} donnent les conditions initiales avec \emph{Y0=\{y1(t0), \ldots, yn(t0)\}} (les yi sont réels), ou \emph{Y0=y1(t0)} lorsque $n=1$.
+  \item L'argument obligatoire \emph{f} est une fonction \(f\colon (t,Y) \mapsto f(t,Y)\) à valeurs dans \(\mathbf R^n\) et où \emph{Y} est également dans \(\mathbf R^n\) : \emph{Y=\{y1, y2,\ldots, yn\}} (lorsque $n=1$, \emph{Y} est un réel).
+  \item Les arguments \emph{t0} et \emph{Y0} donnent les conditions initiales avec \emph{Y0=\{y1(t0), \ldots, yn(t0)\}} (les $yi$ sont réels), ou \emph{Y0=y1(t0)} lorsque $n=1$.
   \item L'argument \emph{args} (facultatif) permet de définir les paramètres pour la courbe, c'est une table à 6 champs : 
   
 \begin{TeXcode}
@@ -638,7 +638,7 @@ g:Show()
 \item La fonction \textbf{implicit(f,x1,x2,y1,y2,grid)} calcule et renvoie une une ligne polygonale constituant la courbe implicite d'équation $f(x,y)=0$ dans le pavé $[x_1,x_2]\times[y_1,y_2]$. Ce pavé est découpé en fonction du paramètre \emph{grid}.
 
       \begin{itemize}
-      \item L'argument obligatoire \emph{f} est une fonction \(f: (x,y) -> f(x,y)\) à valeurs dans \(R\).
+      \item L'argument obligatoire \emph{f} est une fonction \(f\colon (x,y) \mapsto f(x,y)\) à valeurs dans \(\mathbf R\).
       \item Les arguments \emph{x1}, \emph{x2} ,\emph{y1}, \emph{y2} définissent la fenêtre du tracé, qui sera le pavé $[x_1,x_2]\times[y_1,y_2]$, on doit avoir \(x1<x2\) et \(y1<y2\).
       \item L'argument \emph{grid} est une table contenant deux entiers positifs : \{n1,n2\}, le premier entier indique le nombre de subdivisions suivant $x$, et le second le nombre de subdivisions suivant $y$.
       \end{itemize}
@@ -646,7 +646,7 @@ g:Show()
 \item La méthode \textbf{g:Dimplicit(f,args)} fait le dessin de la courbe implicite d'équations $f(x,y)=0$.
 
       \begin{itemize}
-      \item L'argument obligatoire \emph{f} est une fonction \(f: (x,y) -> f(x,y)\) à valeurs dans \(R\).
+      \item L'argument obligatoire \emph{f} est une fonction \(f\colon (x,y) \mapsto f(x,y)\) à valeurs dans \(\mathbf R\).
       \item   L'argument \emph{args} permet de définir les paramètres du tracé, c'est une table à 3 champs :
       
       \begin{TeXcode}
@@ -662,7 +662,7 @@ g:Show()
 
 \subsubsection{Courbes de niveau : Dcontour}
 
-La méthode \textbf{g:Dcontour(f,z,args)} fait le dessin de \textbf{lignes de niveau} de la fonction \(f: (x,y) -> f(x,y)\) à valeurs réelles.
+La méthode \textbf{g:Dcontour(f,z,args)} fait le dessin de \textbf{lignes de niveau} de la fonction \(f\colon (x,y) \mapsto f(x,y)\) à valeurs réelles.
 
 \begin{itemize}
   \item L'argument \emph{z} (obligatoire) est la liste des différents niveaux à tracer.
@@ -842,7 +842,7 @@ g:Show()
 \end{TeXcode}
         \begin{itemize}
             \item Le champ \emph{pos} indique la position du label par rapport au point d'ancrage, il peut valoir \emph{"N"} pour nord, \emph{"NE"} pour nord-est, \emph{"NW"} pour nord-ouest, ou encore \emph{"S"}, \emph{"SE"}, \emph{"SW"}. Par défaut, il vaut \emph{center}, et dans ce cas le label est centré sur le point  d'ancrage.
-            \item Le champ \emph{dist} est une distance en cm qui vaut $0$ par défaut, c'est la distance entre le label et son point d'ancrage lorsque \emph{pos} n'est pas égal a \emph{center}.
+            \item Le champ \emph{dist} est une distance en cm qui vaut $0$ par défaut, c'est la distance entre le label et son point d'ancrage lorsque \emph{pos} n'est pas égal à \emph{center}.
             \item \emph{dir=\{dirX,dirY,dep\}} est la direction de l'écriture. Les 3 valeurs \emph{dirX}, \emph{dirY} et \emph{dep} sont trois complexes représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage. Le vecteur \emph{dep} est nul par défaut, et le vecteur \emph{dirY}, s'il est absent, est égal au vecteur \emph{dirX} tourné de 90 degrés dans le sens direct.
             Par défaut l'option \emph{dir} est égale à la valeur courante de la direction de l'écriture.
             \item L'argument \emph{node\_options} est une chaîne (vide par défaut) destinée à recevoir des options qui seront directement passées à tikz dans l'instruction \emph{node{[}{]}}.
@@ -946,7 +946,7 @@ g:Show()
       \item L'argument \emph{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \emph{\textbackslash draw}.
       \end{itemize}
   
-\item La fonction \textbf{spline(points,v1,v2)} renvoie sous forme de chemin (à dessiner avec Dpath) la spline cubique passant par les points de l'argument \emph{points} (qui doit être une liste de complexes). Les arguments \emph{v1} et \emph{v2} sont vecteurs tangents imposés aux extrémités (contraintes), lorsque ceux-ci sont égaux à \emph{nil}, c'est une spline cubique naturelle (c'est à dire sans contrainte) qui est calculée.
+\item La fonction \textbf{spline(points,v1,v2)} renvoie sous forme de chemin (à dessiner avec Dpath) la spline cubique passant par les points de l'argument \emph{points} (qui doit être une liste de complexes). Les arguments \emph{v1} et \emph{v2} sont vecteurs tangents imposés aux extrémités (contraintes), lorsque ceux-ci sont égaux à \emph{nil}, c'est une spline cubique naturelle (c'est-à-dire sans contrainte) qui est calculée.
 
 \item La méthode \textbf{g:Dspline(points,v1,v2,draw\_options)} fait le dessin de la spline décrite ci-dessus. L'argument \emph{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \emph{\textbackslash draw}.
 
@@ -965,11 +965,11 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
-\item La fonction \textbf{tcurve(L} renvoie sous forme de chemin une courbe passant par des points donnés avec des vecteurs tangents (à gauche et à droite) imposés à chaque point. \emph{L} est une table de la forme :
+\item La fonction \textbf{tcurve(L)} renvoie sous forme de chemin une courbe passant par des points donnés avec des vecteurs tangents (à gauche et à droite) imposés à chaque point. \emph{L} est une table de la forme :
 \begin{Luacode}
 L = {point1,{t1,a1,t2,a2}, point2,{t1,a1,t2,a2}, ..., pointN,{t1,a1,t2,a2}}
 \end{Luacode}
-\emph{point1}, ..., \emph{pointN} sont les points d'interpolation de la courbe (affixes), et chacun d'eux est suivi d'une table de la forme \verb|{t1,a1,t2,a2}| qui précise les vecteurs tangents à la courbe à gauche du point (avec \emph{t1} et \emph{a1}) et à droite du point (avec \emph{t2} et \emph{a2}). Le vecteur tangent à gauche est donné par la formule $V_g = t_1\times e^{ia_1\pi/180}$, donc $t1$ représente le module et $a1$ est un argument \textbf{en degrés} de ce vecteur. C'est la même chose avec \emph{t2} et \emph{a2} pour le vecteur tangent à droite, \textbf{mais ceux-ci sont facultatifs}, et s'ils ne sont pas précisés alors ils prennent les mêmes valeurs que \emph{t1} et \emph{a1}.
+\emph{point1}, \ldots, \emph{pointN} sont les points d'interpolation de la courbe (affixes), et chacun d'eux est suivi d'une table de la forme \verb|{t1,a1,t2,a2}| qui précise les vecteurs tangents à la courbe à gauche du point (avec \emph{t1} et \emph{a1}) et à droite du point (avec \emph{t2} et \emph{a2}). Le vecteur tangent à gauche est donné par la formule $V_g = t_1\times e^{ia_1\pi/180}$, donc $t1$ représente le module et $a1$ est un argument \textbf{en degrés} de ce vecteur. C'est la même chose avec \emph{t2} et \emph{a2} pour le vecteur tangent à droite, \textbf{mais ceux-ci sont facultatifs}, et s'ils ne sont pas précisés alors ils prennent les mêmes valeurs que \emph{t1} et \emph{a1}.
 
 Deux points consécutifs seront reliés par une courbe de Bézier, la fonction calcule les points de contrôle pour avoir les vecteurs tangents souhaités.
 
@@ -1037,7 +1037,7 @@ Variables globales utilisées pour les axes et les grilles :
     \item \emph{defaultlegendsep = 0.2} : définit la distance par défaut entre la légende et l'axe.
     \item \emph{digits = 4} : nombre de décimales par défaut dans les conversions en chaînes de caractères, les $0$ terminaux sont supprimés.
     \item \emph{dollar = true} :  pour ajouter des dollars autour des labels des graduations.
-    \item \emph{siunitx = false} :  avec la valeur \emph{true} les labels sont formatés avec la macro \verb|\num{..}| du package \emph{siunitx}, ce qui permet d'utiliser certaines options de ce package, comme remplacer le point décimal par une virgule en faisant :\par
+    \item \emph{siunitx = false} :  avec la valeur \emph{true} les labels sont formatés avec la macro \verb|\num{...}| du package \emph{siunitx}, ce qui permet d'utiliser certaines options de ce package, comme remplacer le point décimal par une virgule en faisant :\par
     \begin{TeXcode}
     \usepackage[local=FR]{siunitx}
     \end{TeXcode}
@@ -1147,12 +1147,12 @@ Les méthodes \textbf{g:DaxeX(\{A,xpas\}, options)} et \textbf{g:DaxeY(\{A,ypas\
             \item \opt{labelpos="bottom"} pour $Ox$ et \opt{labelpos="left"} pour $Oy$. Cette option précise la position des labels par rapport à l'axe. Pour l'axe $Ox$, les valeurs possibles sont : "none", "bottom" ou "top", pour l'axe $Oy$ c'est :  "none", "right" ou "left".
             \item \opt{labelden=1}. Cette option précise le dénominateur des labels (entier) pour l'axe. La formule qui définit le label à la graduation numéro $n$ est : \textbf{(originnum + unit*n)"labeltext"/labelden}.
             \item \opt{labeltext=""}. Cette option définit le texte qui sera ajouté au numérateur des labels.
-            \item \opt{labelstyle="S"} pour $Ox$ et \opt{labelstyle="W"} pour $Oy$. Cette option définit le style des labels. Les valeurs possibles sont "auto","N", "NW", "W", "SW", "S", "SE", "E".
+            \item \opt{labelstyle="S"} pour $Ox$ et \opt{labelstyle="W"} pour $Oy$. Cette option définit le style des labels. Les valeurs possibles sont "auto", "N", "NW", "W", "SW", "S", "SE", "E".
             \item \opt{labelangle=0}. Cette option définit l'angle des labels en degrés par rapport à l'horizontale.
             \item \opt{labelcolor=""}. Cette option permet de choisir une couleur pour les labels. La chaîne vide représente la couleur courante du texte.
             \item \opt{labelshift=0}. Cette option permet de définir un décalage systématique pour les labels sur l'axe (décalage de long de l'axe).
             \item \opt{nbdeci=2}. Cette option précise le nombre de décimales pour les labels numériques.
-            \item \opt{numericFormat=0}. Cette option précise le type d'affiche numérique (non encore implémenté).
+            \item \opt{numericFormat=0}. Cette option précise le type d'affichage numérique (non encore implémenté).
             \item \opt{mylabels=""}. Cette option permet d'imposer des labels personnels. Lorsqu'il y en a, la valeur passée à l'option doit être une liste du type : \verb|{pos1,"text1", pos2,"text2",...}|. Le nombre \emph{pos1} représente une abscisse dans le repère (A,xpas) pour $Ox$, ou (A,ypas$*$i) pour $Oy$, ce qui correspond au point d'affixe $A+$pos1$*$xpas pour $Ox$, et $A+$pos1$*$ypas$*i$ pour $Oy$.
         \end{itemize}
 \end{itemize}
@@ -1272,7 +1272,7 @@ g:Show()
 
 \subsubsection{Dessiner un ensemble}
 
-La fonction \textbf{set(center,angle,scale)} renvoie un chemin représentant un ensemble (en forme d'oeuf), donc le centre est \emph{center} (complexe), l'argumen \emph{angle} représente l'inclinaison (en degrés) de l'axe vertical de l'ensemble (0 par défaut), et l'argument \emph{scale} est un facteur d'échelle permettant de modifier la taille de l'ensemble (1 par défaut). Un tel chemin peut être dessiné avec la méthode \textbf{g:Dpath()}.
+La fonction \textbf{set(center,angle,scale)} renvoie un chemin représentant un ensemble (en forme d'œuf), donc le centre est \emph{center} (complexe), l'argumen \emph{angle} représente l'inclinaison (en degrés) de l'axe vertical de l'ensemble (0 par défaut), et l'argument \emph{scale} est un facteur d'échelle permettant de modifier la taille de l'ensemble (1 par défaut). Un tel chemin peut être dessiné avec la méthode \textbf{g:Dpath()}.
 
 \begin{demo}{Dessiner un ensemble}
 \begin{luadraw}{name=set}
