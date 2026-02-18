@@ -9,7 +9,7 @@ La fonction \textbf{concat\{table1, table2, \ldots{} \}} concatène toutes les t
 \end{itemize}
 
 \subsection{cut}
-La fonction \textbf{cut(L,A,before)} permet de couper \emph{L} au point \emph{A} qui est supposé être situé sur la ligne \emph{L} (\emph{L} est soit une liste de complexes, soit une ligne polygonale c'est à dire une liste de listes de complexes). Si l'argument \emph{before} vaut \emph{false} (valeur par défaut), alors la fonction renvoie la partie située avant \emph{A}, suivie de la partie située après \emph{A}, sinon c'est l'inverse.
+La fonction \textbf{cut(L,A,before)} permet de couper \emph{L} au point \emph{A} qui est supposé être situé sur la ligne \emph{L} (\emph{L} est soit une liste de complexes, soit une ligne polygonale c'est-à-dire une liste de listes de complexes). Si l'argument \emph{before} vaut \emph{false} (valeur par défaut), alors la fonction renvoie la partie située avant \emph{A}, suivie de la partie située après \emph{A}, sinon c'est l'inverse.
 
 \subsection{cutpolyline}
 La fonction \textbf{cutpolyline(L,D,close)} permet de couper la ligne polygonale \emph{L} avec la droite \emph{D}. L'argument \emph{L} doit être une liste de complexes ou une liste de listes de complexes, l'argument \emph{D} est une liste de la forme \emph{\{A,u\}} où est un complexe (point de la droite) et $u$ un complexe non nul (vecteur directeur de la droite). L'argument \emph{close} indique si la ligne \emph{L} doit être refermée (false par défaut). La fonction renvoie trois choses:
@@ -182,7 +182,7 @@ print(evalf(f,1,0))
 ne provoque pas d'erreur de la part de Lua, et il n'y a pas d'affichage non plus dans la console puisque la valeur à afficher est \emph{nil}.
 
 \subsubsection{int}
-La fonction \textbf{int(f,a,b)} renvoie une valeur approchée de l'intégrale de la fonction \emph{f} sur l'intervalle $[a;b]$. La fonction \emph{f} est à variable réelle et à valeurs réelles ou complexes. La méthode utilisée est la méthode de Simpson accélérée deux fois avec la méthode Romberg.
+La fonction \textbf{int(f,a,b)} renvoie une valeur approchée de l'intégrale de la fonction \emph{f} sur l'intervalle $[a;b]$. La fonction \emph{f} est à variable réelle et à valeurs réelles ou complexes. La méthode utilisée est la méthode de Simpson accélérée deux fois avec la méthode de Romberg.
 
 \paragraph{Exemple :}
 \begin{TeXcode}
