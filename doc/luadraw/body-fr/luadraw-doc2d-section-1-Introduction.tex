@@ -111,7 +111,7 @@ local g = graph:new{ window={x1,x2,y1,y2,xscale,yscale}, margin={left,right,top,
 La classe \emph{graph} est définie dans le paquet \emph{luadraw}. On instancie cette classe en invoquant son constructeur et en donnant un nom (ici c'est \emph{g}), on le fait en local de sorte que le graphique \emph{g} ainsi créé, n'existera plus une fois sorti de l'environnement (sinon \emph{g} resterait en mémoire jusqu'à la fin du document).
 
 \begin{itemize}
- \item Le paramètre (facultatif) \emph{window} définit le pavé de $\mathbf R^2$ correspondant au graphique : c'est $[x_1,x_2]\times[y_1,y_2]$. Les paramètres \emph{xscale} et \emph{yscale} sont facultatifs et valent $1$ par défaut, ils représentent l'échelle (cm par unité) sur les axes. Par défaut on a \emph{window = \{-5,5,-5,5,1,1\}}.
+ \item Le paramètre (facultatif) \emph{window} définit le pavé de $\mathbf R^2$ correspondant au graphique : c'est $[x_1,x_2]\times[y_1,y_2]$. Les paramètres \emph{xscale} et \emph{yscale} sont facultatifs et valent $1$ par défaut, ils représentent l'échelle (cm par unité) sur les axes. Par défaut on a \emph{window = \{-5.5,-5.5,1,1\}}.
  
 \item Le paramètre (facultatif) \emph{margin} définit des marges autour du graphique en cm. Par défaut on a \emph{margin = \{0.5,0.5,0.5,0.5\}}.
 
@@ -121,7 +121,7 @@ La classe \emph{graph} est définie dans le paquet \emph{luadraw}. On instancie 
 
 \item Le paramètre (facultatif) \emph{border} indique si un cadre doit être dessiné ou non autour du graphique (en incluant les marges). Par défaut ce paramètre vaut \emph{false}.
 
-\item Le paramètre (facultatif) \emph{bbox} indique si une boundingbox doit être ajoutée au graphique de telle sorte que celui-ci ait la taille souhaitée, tout ce qui en sort est clippé par tikz. Par défaut ce paramètre vaut \emph{true}. Avec la valeur \emph{false} il n'y a pas de boundingbox ajoutée, mais tout ce qui sort de la fenêtre 2d, sauf les path, est clippé par luadraw, la taille du grapique peut être plus petite que celle demandée.
+\item Le paramètre (facultatif) \emph{bbox} indique si une boundingbox doit être ajoutée au graphique de telle sorte que celui-ci ait la taille souhaitée, tout ce qui en sort est clippé par tikz. Par défaut ce paramètre vaut \emph{true}. Avec la valeur \emph{false} il n'y a pas de boundingbox ajoutée, mais tout ce qui sort de la fenêtre 2d, sauf les path, est clippé par luadraw, la taille du graphique peut être plus petite que celle demandée.
 
 \item Le paramètre (facultatif) \emph{pictureoptions} est une chaîne de caractères destinée à contenir des options qui seront passées à \emph{tikzpicture} comme ceci:
 \begin{TeXcode}
@@ -133,10 +133,10 @@ La classe \emph{graph} est définie dans le paquet \emph{luadraw}. On instancie 
 \paragraph{Construction du graphique.}
 
 \begin{itemize}
-    \item L'objet instancié (\emph{g} ici dans l'exemple) possède un certain nombre de méthodes permettant de faire du dessin (segments, droites, courbes,...). Les instructions de dessins ne sont pas directement envoyées à \TeX, elles sont enregistrées sous forme de chaînes dans une table qui est une propriété de l'objet \emph{g}. C'est la méthode \textbf{g:Show()} qui va envoyer ces instructions à \TeX\ tout en les sauvegardant dans un fichier texte\footnote{Ce fichier contiendra un environnement \emph{tikzpicture}.}. La méthode \textbf{g:Save()} enregistre le graphique dans le fichier désigné par l'option (de l'environnement) \emph{name} mais sans envoyer les instructions à \TeX.
+    \item L'objet instancié (\emph{g} ici dans l'exemple) possède un certain nombre de méthodes permettant de faire du dessin (segments, droites, courbes, \ldots). Les instructions de dessins ne sont pas directement envoyées à \TeX, elles sont enregistrées sous forme de chaînes dans une table qui est une propriété de l'objet \emph{g}. C'est la méthode \textbf{g:Show()} qui va envoyer ces instructions à \TeX\ tout en les sauvegardant dans un fichier texte\footnote{Ce fichier contiendra un environnement \emph{tikzpicture}.}. La méthode \textbf{g:Save()} enregistre le graphique dans le fichier désigné par l'option (de l'environnement) \emph{name} mais sans envoyer les instructions à \TeX.
     \item On peut faire une sauvegarde du graphique en cours dans un autre fichier avec la méthode \textbf{g:Savetofile(<nom de fichier avec extension>)}.
-    \item On peut réinitialiser un graphique en cours, c'est à dire supprimer tous les éléments déjà créés, avec la méthode \textbf{g:Cleargraph()}.
-    \item Le paquet \emph{luadraw} fournit aussi un certain nombre de fonctions mathématiques, ainsi que des fonctions permettant des calculs sur les listes (tables) de complexes, des transformations géométriques, ...etc.
+    \item On peut réinitialiser un graphique en cours, c'est-à-dire supprimer tous les éléments déjà créés, avec la méthode \textbf{g:Cleargraph()}.
+    \item Le paquet \emph{luadraw} fournit aussi un certain nombre de fonctions mathématiques, ainsi que des fonctions permettant des calculs sur les listes (tables) de complexes, des transformations géométriques, \ldots{} etc.
 \end{itemize}
 
 
@@ -146,7 +146,7 @@ La classe \emph{graph} est définie dans le paquet \emph{luadraw}. On instancie 
 \item L'objet instancié (\emph{g} ici dans l'exemple) possède :
     \begin{enumerate}
         \item Une vue originelle : c'est le pavé de $\mathbf R^2$ défini par l'option \emph{window} à la création. Celui-ci \textbf{ne doit pas être modifié} par la suite.
-        \item Une vue courante : c'est un pavé de $\mathbf R^2$ qui doit être inclus dans la vue originelle, ce qui sort de ce pavé sera clippé. Par défaut la vue courante est la vue originelle. Pour retrouver la vue courante on peut utiliser la méthode \textbf{g:Getview()} qui renvoie une table \verb|{x1,x2,y1,y2}|, celle-ci représente la pavé $[x1,x2]\times [y1,y2]$.
+        \item Une vue courante : c'est un pavé de $\mathbf R^2$ qui doit être inclus dans la vue originelle, ce qui sort de ce pavé sera clippé. Par défaut la vue courante est la vue originelle. Pour retrouver la vue courante on peut utiliser la méthode \textbf{g:Getview()} qui renvoie une table \verb|{x1,x2,y1,y2}|, celle-ci représente le pavé $[x1,x2]\times [y1,y2]$.
         \item Une matrice de transformation : celle-ci est initialisée à la matrice identité. Lors d'une instruction de dessin les points sont automatiquement transformés par cette matrice avant d'être envoyés à tikz.
         \item Un système de coordonnées (repère cartésien) lié à la vue courante, c'est le repère de l'utilisateur. Par défaut c'est le repère canonique de $\mathbf R^2$, mais il est possible d'en changer. Admettons que la vue courante soit le pavé $[-5,5]\times[-5,5]$, il est possible par exemple, de décider que ce pavé représente l'intervalle $[-1,12]$ pour les abscisses et l'intervalle $[0,8]$ pour les ordonnées, la méthode qui fait ce changement va modifier la matrice de transformation du graphe, de telle sorte que pour l'utilisateur tout se passe comme s'il était dans le pavé $[-1,12]\times [0,8]$. On peut retrouver les intervalles du repère de l'utilisateur avec les méthodes : \textbf{g:Xinf(), g:Xsup(), g:Yinf() et g:Ysup()}.
     \end{enumerate}
