@@ -137,7 +137,7 @@ g:Dline(0,1); g:Dline(0,cpx.I)
 g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-4.5,5.5,-5,5)
 draw()
 g:Ddots3d(r*vecI); g:Dlabel3d("$x=1$",r*vecI,{pos="W",dist=0.1}); 
-g:Dlabel("perspective on yz plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Dlabel("Perspective sur le plan yz",Z(0.5,-5),{pos="N",node_options="fill=white"})
 g:Restoreattr()
 
 -- top right
@@ -145,7 +145,7 @@ g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-4.75,5.5,-5,5)
 g:Setviewdir(perspective("xz",k,alpha))
 draw()
 g:Ddots3d(r*vecJ); g:Dlabel3d("$y=1$",r*vecJ,{pos="NW"}); 
-g:Dlabel("perspective on xz plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Dlabel("Perspective sur le plan xz",Z(0.5,-5),{pos="N",node_options="fill=white"})
 g:Restoreattr()
 
 -- bottom left
@@ -153,7 +153,7 @@ g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-4.5,5.5,-5,5.5)
 g:Setviewdir(perspective("xy",k,alpha))
 draw()
 g:Ddots3d(r*vecK); g:Dlabel3d("$z=1$",r*vecK,{pos="W"}); 
-g:Dlabel("perspective on xy plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Dlabel("Perspective sur le plan xy",Z(0.5,-5),{pos="N",node_options="fill=white"})
 g:Restoreattr()
 
 -- bottom right
@@ -162,7 +162,7 @@ g:Setviewdir(perspective("iso"))
 g:Dscene3d( g:addAxes(Origin, {arrows=1}) ); g:Dcircle(0, cpx.abs(g:Proj3d(r*vecI)))
 g:Ddots3d({r*vecI,r*vecJ,r*vecK}); 
 g:Dlabel3d("$z=1$",r*vecK,{pos="NW"}, "$x=1$",r*vecI,{pos="NW"},"$y=1$",r*vecJ,{pos="NE"});
-g:Dlabel("isometric perspective",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Dlabel("Perspective isométrique",Z(0.5,-5),{pos="N",node_options="fill=white"})
 g:Restoreattr()
 g:Show()
 \end{luadraw}
@@ -184,7 +184,7 @@ g:Setviewdir(perspective("yz",0.65,60))
 
 Depuis la version 2.4, \emph{luadraw} propose également la projection centrale. À la différence des modes précédents, \textbf{cette projection n'est pas affine}, et d'autre part elle n'est pas définie pour tous les points de l'espace, ce qui peut conduire à des erreurs, cela demande donc de la réflexion et des ajustements. Cette projection est définie par :
 \begin{itemize}
-    \item Une camera, qui est un point de l'espace mémorisé dans une variable appelée \emph{camera} et qui ne  doit pas être modifiée directement.
+    \item Une caméra, qui est un point de l'espace mémorisé dans une variable appelée \emph{camera} et qui ne  doit pas être modifiée directement.
     \item Une cible, qui est un point de l'espace mémorisé dans une variable appelée \emph{target} et qui ne  doit pas être modifiée directement.
 \end{itemize}
 Le plan passant par la \emph{target} et orthogonal à l'axe \emph{target} - \emph{camera} est le plan de la projection, il représente l'écran. Comme pour les modes précédents, la projection centrale est accessible par la fonction \emph{perspective} :\par
