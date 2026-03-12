@@ -1,11 +1,11 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 
 function getbounds3d(L)
@@ -27,14 +27,15 @@ function getbounds3d(L)
     return xmin, xmax, ymin, ymax, zmin, zmax
 end
 
-function merge3d(L)
+function merge3d(L,epsilon)
 -- L est une  liste de listes de points3d (ligne polygonale de l'espace), 
 -- on recolle au mieux les composantes
+    epsilon = epsilon or 1e-10
     local S, num, aux, rep = {}, {}, {}, {}
     for _, cp in ipairs(L) do
         aux = {}
         for _,A in ipairs(cp) do
-            table.insert(aux, insert3d(S,A,1e-10))
+            table.insert(aux, insert3d(S,A,epsilon))
         end
         table.insert(num, aux)
     end

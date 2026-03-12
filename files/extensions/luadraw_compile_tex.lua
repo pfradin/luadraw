@@ -1,11 +1,11 @@
 -- luadraw_compile_tex.lua
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- ce module permet de compiler un texte en tex, convertir le fichier en flattened postscript,
 -- de lire le contenu de ce fichier sous forme d'une liste de chemins (avec épaisseur en tête de chaque chemin, et instruction de remplissage à la fin), cette liste L peut être affichée avec la méthode g:Dcompiled_tex(anchor,L, options)
@@ -14,6 +14,9 @@
 
 preamble = "\\documentclass[12pt]{article}\n"
 usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"
+pdflatexcmd = "pdflatex"
+pstoeditcmd = "pstoedit"
+pdf2pscmd = "pdf2ps"
 
 function compile_tex(text,out)
 -- out est le nom du fichier crée, il ne doit comporter ni chemin, ni extension, il sera créé dans le dossier de travail de luadraw (nommé cachedir)
@@ -28,9 +31,9 @@ function compile_tex(text,out)
         f:write(text.."\n")
         f:write("\\end{document}\n")
         f:close()
-        os.execute("pdflatex -interaction=nonstopmode "..name..".tex "..name..".pdf" )
-        os.execute("pdf2ps "..name..".pdf")
-        os.execute("pstoedit -dt -pta -f ps -psarg  -r2400 "..name..".ps "..out..".eps")
+        os.execute(pdflatexcmd.." -interaction=nonstopmode "..name..".tex "..name..".pdf" )
+        os.execute(pdf2pscmd.." "..name..".pdf")
+        os.execute(pstoeditcmd.." -dt -pta -f ps -psarg  -r2400 "..name..".ps "..out..".eps")
         os.remove(name..".tex")
         os.remove(name..".pdf")
         os.remove(name..".ps")
@@ -206,13 +209,14 @@ function compiled_tex2polyline(L,scale)
     return ret -- list of list of complex numbers
 end
 
-function graph:Dcompiled_tex(anchor,L, options)
+function graph:Dcompiled_tex(anchor, L, options) -- or graph:Dcompiled_tex(L, anchor, options)
 --L est le résultat de la fonction read_compiled_tex(filename)
 --options : {scale=1, color= default, dir=nil, hollow=false, drawbox = false, draw_options=""}
 -- scale = scale number or table {scalex, scaley}
 -- dir = {vector1, vector2}
 -- drawbox= false
 -- draw_options=""
+    if (type(L) == "number") or isComplex(L) then anchor, L = L, anchor end
     anchor = anchor or 0
     anchor = toComplex(anchor)
     options = options or {}
@@ -220,7 +224,8 @@ function graph:Dcompiled_tex(anchor,L, options)
     options.scale = options.scale or 1
     options.drawbox = options.drawbox or false
     options.hollow = options.hollow or false
-    options.draw_options= options.draw_options or ""    
+    options.draw_options= options.draw_options or ""
+    options.pos = options.pos or "center"
     if L == nil then return end
     local lwd, cmd, scx, scy
     
@@ -236,13 +241,34 @@ function graph:Dcompiled_tex(anchor,L, options)
         scx, scy = table.unpack(options.scale)
     end
     local x1,x2,y1,y2 = table.unpack(L.bb)
-    local c = Z(x1+x2,y1+y2)/2
+    local c, tx, ty, t = Z(x1+x2,y1+y2)/2, (x2-x1)/2, (y2-y1)/2, nil
+    if options.pos == "center" then
+        t = nil
+    elseif options.pos == "S" then
+        t = Z(0,-ty)
+    elseif options.pos == "SW" then
+        t = Z(-tx,-ty)
+    elseif options.pos == "W" then
+        t = Z(-tx,0)
+    elseif options.pos == "NW" then
+        t = Z(-tx,ty)
+    elseif options.pos == "N" then
+        t = Z(0,ty)
+    elseif options.pos == "NE" then
+        t = Z(tx,ty)
+    elseif options.pos == "E" then
+        t = Z(tx,0)
+    elseif options.pos == "SE" then
+        t = Z(tx,-ty)
+    end
     local mat = {anchor+Z(c.re*(1-scx),c.im*(1-scy)),Z(scx,0),scy*cpx.I} 
+    local u, v
     if options.dir ~= nil then
-        local u, v = table.unpack(options.dir)
+        u, v = table.unpack(options.dir)
         u = u/cpx.abs(u); v = v/cpx.abs(v)
         mat = composematrix(mat,{0,u,v})
     end
+    if t ~= nil then mat = composematrix(mat,{t,1,cpx.I}) end
     local C = mtransform(L.path,mat)
     local bb = mtransform( {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2)}, mat) -- boite englobante
      for _, p in ipairs(C) do
@@ -292,12 +318,13 @@ end
 function graph:Compiled_tex2path3d(L,options)
 -- L est le résultat de la fonction read_compiled_tex(filename)
 -- la fonction convertit les chemins en chemins 3d et renvoie le résultat, celui-ci peut être dessiné avec la méthode g:Dcompiled_tex3d() 
--- options = {anchor=Origin, scale = 1, dir = {vecJ,vecK}, polyline=false}
+-- options = {anchor=Origin, scale = 1, dir = {vecJ,vecK}, polyline=false, pos="center"}
     options= options or {}
     options.scale= options.scale or 1
     options.anchor= options.anchor or Origin
     options.polyline= options.polyline or false
     options.dir= options.dir or {vecJ,vecK}
+    options.pos = options.pos or "center"
     local plane = {options.anchor, pt3d.prod(options.dir[1], options.dir[2])}
     local scx, scy, x1,x2,y1,y2
     if L == nil  then return end
@@ -307,11 +334,30 @@ function graph:Compiled_tex2path3d(L,options)
         scx, scy = table.unpack(options.scale)
     end
     x1,x2,y1,y2 = table.unpack(L.bb)
-    local c = Z((x1+x2)/2,(y1+y2)/2)
+        local c, tx, ty, t = Z(x1+x2,y1+y2)/2, (x2-x1)/2, (y2-y1)/2, Z(0,0)
+    if options.pos == "center" then
+        t = Z(0,0)
+    elseif options.pos == "S" then
+        t = Z(0,-ty); y1 = y1-ty; y2 = y2-ty
+    elseif options.pos == "SW" then
+        t = Z(-tx,-ty); y1 = y1-ty; y2 = y2-ty; x1 = x1-tx; x2 = x2-tx
+    elseif options.pos == "W" then
+        t = Z(-tx,0); x1 = x1-tx; x2 = x2-tx
+    elseif options.pos == "NW" then
+        t = Z(-tx,ty); x1 = x1-tx; x2 = x2-tx; y1 = y1+ty; y2 = y2+ty
+    elseif options.pos == "N" then
+        t = Z(0,ty); y1 = y1+ty; y2 = y2+ty
+    elseif options.pos == "NE" then
+        t = Z(tx,ty); y1 = y1+ty; y2 = y2+ty; x1 = x1+tx; x2 = x2+tx
+    elseif options.pos == "E" then
+        t = Z(tx,0); x1 = x1+tx; x2 = x2+tx
+    elseif options.pos == "SE" then
+        t = Z(tx,-ty); x1 = x1+tx; x2 = x2+tx; y1 = y1-ty; y2 = y2-ty
+    end
     local A = options.anchor
     local u = pt3d.normalize(options.dir[1])
     local v = pt3d.normalize(options.dir[2])
-    local mat = {-c,Z(1,0),cpx.I} 
+    local mat = {-c+t,Z(1,0),cpx.I} 
     local C = mtransform(L.path,mat)
     local f = function(z)
         if type(z)=="string" then return z else return A+scx*z.re*u+scy*z.im*v end

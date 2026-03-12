@@ -1,11 +1,11 @@
 -- luadraw_colors.lua (chargé par luadraw_graph)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- fonctions pour la gestion des couleurs
 -- couleurs de base, svgnames du paquet xcolor
@@ -208,6 +208,19 @@ function mixcolor(...)
         end
     end
     return rgb(r/S, g/S, b/S), {r/S,g/S,b/S} -- on renvoie la version chaîne et la version table
+end
+
+function mixpalette(pal, percent, color)
+-- pal = palette of colors (rgb tables)
+-- percent in [0;100]
+-- color = rgb table
+    color = color or White
+    local mix = {}
+    for _,c in ipairs(pal) do
+        local str, tbl =  mixcolor(c,percent,color,100-percent) -- str = string format, tbl = table format
+        table.insert(mix, tbl)
+    end
+    return mix
 end
 
 function palette(colors,pos,tbl)

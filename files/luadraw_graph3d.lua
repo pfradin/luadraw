@@ -1,11 +1,11 @@
 -- luadraw_graph3d.lua
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- ce module ajoute les bases du dessin 3d
 
@@ -248,7 +248,7 @@ function perspective(mode,k,alpha,d,look) -- change the type of projection
                 else return A end
             end
     elseif mode == "iso" then  -- isometric perspective, one unit on each axe has the same length on screen
-        phi = 45 -- angles in degrees for viewdir 
+        phi = math.acos(1/math.sqrt(3))*rad  -- angles in degrees for viewdir 
         theta = 45
         local a, b = math.sqrt(2)/2, 1/math.sqrt(6)
         f = function(A)
@@ -588,10 +588,11 @@ function luadraw_graph3d:Dlabel3d(...)
     local args = {}
     local text, anchor, anchor2d, options
     local dir = {}
-    for k, aux in ipairs{...} do
-        if  k%3 == 2 then anchor = aux; anchor2d = self:Proj3d(aux) 
-        elseif k%3 == 0 then --arguments
-            options = aux
+    local n = select("#", ...)  -- Nombre total d'arguments
+    for i = 1, n-2, 3 do   -- avec un pas de 3 (1,4,7...)
+        text, anchor, options = select(i, ...)  -- Récupère les 3 args
+        if anchor ~= nil then 
+            anchor2d = self:Proj3d(anchor) 
             options.dir = options.dir or dir
             dir = options.dir
             if #options.dir > 1 then
@@ -600,7 +601,8 @@ function luadraw_graph3d:Dlabel3d(...)
                 options.dir = {self:Proj3d(anchor+U)-anchor2d, self:Proj3d(anchor+V)-anchor2d} -- ce sont des vecteurs
             end
             insert(args,{text,anchor2d,options})
-        else text = aux
+        else
+            print("Warning : the anchor point associated with the text "..text.." is equal to nil")
         end
     end
     self:Dlabel(table.unpack(args))
@@ -642,8 +644,11 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
     args.color = args.color or ""
     args.color = self:Define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
+    args.edgestyle = args.edgestyle or self.param.linestyle
+    args.edgewidth = args.edgewidth or self.param.linewidth
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+    --if not Hiddenlines then args.hiddenstyle = "noline" end
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
@@ -669,7 +674,7 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
     if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
     end
-    self:Linecolor(args.edgecolor)
+    self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
     local dcircle = function(center)
         if args.color ~= "" then
             self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
@@ -716,13 +721,13 @@ function luadraw_graph3d:Dcylinder(A,r,V,B,args)
             --self:Darc3d(N1,B,N2,r,sens,V)
             if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
                 self:Filloptions("none")
-                self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
                 self:Darc3d(M1,A,M2,r,-sens,V)
             end
             --self:Ddots3d({B,N1}); self:Dpolyline3d({B,B+I}); self:Darc3d(B+J,B,B+K,r/2,1,I,"->")
             if args.mode == 1 then -- arêtes
-                self:Linestyle(oldlinestyle)
-                self:Dpoly(cylinder(A,r,V,B,35,false), {mode=0,hiddenstyle=args.hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor})
+                --self:Linestyle(oldlinestyle)
+                self:Dpoly(cylinder(A,r,V,B,35,false), {mode=0,hiddenstyle=args.hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor, edgestyle=args.edgestyle, edgewidth=args.edgewidth})
             end
         end
     end
@@ -753,8 +758,11 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
     args.color = args.color or ""
     args.color = self:Define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
+    args.edgestyle = args.edgestyle or self.param.linestyle
+    args.edgewidth = args.edgewidth or self.param.linewidth
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+    --if not Hiddenlines then args.hiddenstyle = "noline" end
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
@@ -771,7 +779,7 @@ function luadraw_graph3d:Dcone(C,r,V,A,args)
     local oldlineopacity = self.param.lineopacity
     local oldlinecolor = self.param.linecolor
     local oldlinewidth = self.param.linewidth
-    self:Linecolor(args.edgecolor)
+    self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
     if pt3d.dot(self:MLtransform3d(V),self:MLtransform3d(A-C)) < 0 then V = -V  end -- V et A-C dans le même sens
     local I = pt3d.normalize(V) -- vecteur normal au plan et dans la direction du sommet A
     local mat = self.matrix3d
@@ -891,7 +899,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
         else
             if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
                 self:Filloptions("none")
-                self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
                 self:Dcircle3d(C,r,V)
             end
         end
@@ -900,8 +908,11 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
     args.color = args.color or ""
     args.color = self:Define_temp_color(args.color)
     args.edgecolor = args.edgecolor or self.param.linecolor
+    args.edgestyle = args.edgestyle or self.param.linestyle
+    args.edgewidth = args.edgewidth or self.param.linewidth
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+    --if not Hiddenlines then args.hiddenstyle = "noline" end
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.mode = args.mode or 0
@@ -919,7 +930,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
     local oldlineopacity = self.param.lineopacity
     local oldlinecolor = self.param.linecolor
     local oldlinewidth = self.param.linewidth
-    self:Linecolor(args.edgecolor)
+    self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
     if R < r then
         A, C = C, A; V = -V
         R, r = r, R
@@ -974,7 +985,7 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
                 self:Dcircle3d(C,r,V)
                 if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
                     self:Filloptions("none")
-                    self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                    self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
                     self:Darc3d(M4,A,M3,R,-sens,V)
                 end
             else -- la grande base circulaire (A,R)
@@ -987,13 +998,14 @@ function luadraw_graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) p
                 self:Dcircle3d(A,R,V)
                 if (args.mode ~= 1) and (args.hiddenstyle ~= "noline") then -- partie cachée
                     self:Filloptions("none")
-                    self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+                    self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
                     self:Darc3d(M1,C,M2,r,-sens,V)
                 end
             end
             if args.mode == 1 then -- arêtes
-                self:Linestyle(oldlinestyle) -- la matrice a déjà été changée!
-                self:Dpoly(frustum(A,R,r,H,35,false),{mode=0, hiddenstyle=args.hiddenstyle, hiddencolor=args.hiddencolor})
+                --self:Linestyle(oldlinestyle) -- la matrice a déjà été changée!
+                self:Dpoly(frustum(A,R,r,H,35,false),{mode=0, hiddenstyle=args.hiddenstyle, hiddencolor=args.hiddencolor,
+                edgewidth=args.edgewidth, edgestyle=args.edgestyle})
             end
         end
     end
@@ -1044,6 +1056,7 @@ function luadraw_graph3d:Dsphere(A,r,args)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+    --if not Hiddenlines then args.hiddenstyle = "noline" end
     args.edgestyle = args.edgestyle or self.param.linestyle
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.edgewidth = args.edgewidth or self.param.linewidth    
@@ -1392,9 +1405,15 @@ function luadraw_graph3d:Adjust_color(F,color,contrast,twoside) -- used by drawf
         if notDef(c) then c = 0 end
         if type(color) == "string" then -- color must be a color name
             if neg then
-                newcolor = color.."!50!white!"..strReal(100*c).."!black"
+                if color ~= "white" then
+                    newcolor = color.."!50!white!"..strReal(100*c).."!black"
+                else
+                    newcolor = color.."!"..strReal(100*c).."!black"
+                end
             else
-                newcolor = color.."!"..strReal(100*c).."!black"
+                if color ~= "black" then newcolor = color.."!"..strReal(100*c).."!black"
+                else newcolor = "black"
+                end
             end
         else 
             r, g, b = table.unpack(color)
@@ -1619,6 +1638,7 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
     local clip = false
     local color = "white"
     local opacity = 1
+    local usepalette = nil
     local S, face, args = {}
     for k,F in ipairs{...} do
         if k%2 == 1 then 
@@ -1635,6 +1655,7 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
             if args.clip == nil then args.clip = clip else clip = args.clip end
             if args.color == nil then args.color = color else color = args.color end
             if args.twoside == nil then args.twoside = twoside else twoside = args.twoside end
+            if args.usepalette == nil then args.usepalette = usepalette else usepalette = args.usepalette end
             if args.usepalette == nil then
                 args.getcolor = function(f)
                     return args.color
@@ -1711,7 +1732,7 @@ function luadraw_graph3d:addFacet(facet,args)
     if facet == nil then return {{"nul"}} end
     args = args or {}
     if isPoint3d(facet[1]) then facet = {facet} end
-    local color = args.color or "White"
+    local color = args.color or "white"
     local opacity = args.opacity or 1
     local backcull = args.backcull or false
     local clip = args.clip or false

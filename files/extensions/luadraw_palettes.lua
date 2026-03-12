@@ -1,6 +1,6 @@
 -- luadraw_palettes.lua 
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- This file is a contribution of Christophe Bal: 
 -----------------------------------------------------------------
 -- File created by the ''@prism'' project, version 1.3.0,      --
@@ -11,7 +11,7 @@
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 
 -- color palette definitions (color tables in RGB format)

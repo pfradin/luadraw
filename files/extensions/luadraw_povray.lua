@@ -1,11 +1,11 @@
 -- luadraw_povray.lua
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- This module adds a (very basic) export to POV-RAY
 
@@ -22,15 +22,26 @@ local Pov_declarations = {""}
 local Pov_renderings = {""}
 local Pov_export = Pov_declarations
 local Pov_object = 0
-local Pov_cmd_win = "pvengine64.exe"
-local Pov_cmd_unix = "povray"
-local Pov_param = "-V +A +FN"
-local Pov_param_ext = "/RENDER /EXIT"
-local Pov_includefiles = {} --list of strings (inc files)
+local Pov_default_cmd_win = "pvengine64.exe"
+local Pov_default_cmd_unix = "povray"
+local Pov_default_cmd_ext = "" -- added at the end of the command
+local Pov_default_param = "-V +A +FN"
+local Pov_default_param_ext = "/RENDER /EXIT" -- for windows
+local Pov_default_includefiles = {} --list of strings (inc files)
+local Pov_default_bg = ""
+local Pov_default_scale = 1
+local Pov_default_shadow = true
+
+local Pov_cmd_win = Pov_default_cmd_win
+local Pov_cmd_unix = Pov_default_cmd_unix
+local Pov_cmd_ext =  Pov_default_cmd_ext -- added at the end of the command
+local Pov_param = Pov_default_param
+local Pov_param_ext = Pov_default_param_ext
+local Pov_includefiles = Pov_default_includefiles
 local Pov_size = ""
-local Pov_bg = ""
-local Pov_scale = 1
-local Pov_shadow = true
+local Pov_bg = Pov_default_bg
+local Pov_scale = Pov_default_scale
+local Pov_shadow = Pov_default_shadow
 
 function graph3d:Pov_clean()
     Pov_preamble = {""}
@@ -40,20 +51,40 @@ function graph3d:Pov_clean()
     Pov_object = 0
 end
 
-function graph3d:Pov_new(options)
--- options = {bg="" ,imagescale= 1, shadow=true, param="-V +A +FN", pov_cmd=default, win_param_ext=default}
+function luadraw_povray_default(options)
+-- options = {bg="" ,imagescale= 1, shadow=true, param="-V +A +FN", pov_cmd=default, win_param_ext=default, include={}, pov_cmd_ext=""}
     options = options or {}
-    Pov_scale = options.imagescale or 1
-    Pov_bg = options.bg or ""
-    Pov_shadow = options.shadow
-    if Pov_shadow == nil then Pov_shadow = true end
-    Pov_param = options.param or "-V +A +FN"
+    Pov_default_scale = options.imagescale or Pov_default_scale
+    Pov_default_bg = options.bg or Pov_default_bg
+    local shadow = options.shadow
+    if shadow ~= nil then Pov_default_shadow = shadow end
+    Pov_default_includefiles = options.include or Pov_default_includefiles  -- "{file1.inc", "file2.inc", ...}
+    Pov_default_cmd_ext = options.pov_cmd_ext or Pov_default_cmd_ext
+    Pov_param = options.param or Pov_default_param
     if os.type == "windows" then
-        Pov_cmd_win = options.pov_cmd or "pvengine64.exe"
+        Pov_default_cmd_win = options.pov_cmd or Pov_default_cmd_win
     else
-        Pov_cmd_unix = options.pov_cmd or "povray"
+        Pov_default_cmd_unix = options.pov_cmd or Pov_default_cmd_unix
     end
-    Pov_param_ext = options.win_param_ext or "/RENDER /EXIT"
+    Pov_default_param_ext = options.win_param_ext or Pov_default_param_ext
+ end
+
+function graph3d:Pov_new(options)
+-- options = {bg="" ,imagescale= 1, shadow=true, param="-V +A +FN", pov_cmd=default, win_param_ext=default, include={}, pov_cmd_ext=""}
+    options = options or {}
+    Pov_scale = options.imagescale or Pov_default_scale
+    Pov_bg = options.bg or Pov_default_bg
+    Pov_shadow = options.shadow
+    if Pov_shadow == nil then Pov_shadow = Pov_default_shadow end
+    Pov_includefiles = options.include or Pov_default_includefiles  -- "{file1.inc", "file2.inc", ...}
+    Pov_cmd_ext = options.pov_cmd_ext or Pov_default_cmd_ext
+    Pov_param = options.param or Pov_default_param
+    if os.type == "windows" then
+        Pov_cmd_win = options.pov_cmd or Pov_default_cmd_win
+    else
+        Pov_cmd_unix = options.pov_cmd or Pov_default_cmd_unix
+    end
+    Pov_param_ext = options.win_param_ext or Pov_default_param_ext
     self:Pov_clean()
  end
  
@@ -96,9 +127,9 @@ function graph3d:Pov_exec(filename) -- filename without path, without extension
         param = param .. " +UA" --transparent background
     end  
     if os.type == "windows" then
-        cmd = Pov_cmd_win.." "..Pov_size..param.." "..filename.." "..Pov_param_ext
+        cmd = Pov_cmd_win.." "..Pov_size..param.." "..filename.." "..Pov_param_ext..Pov_cmd_ext
     else
-        cmd = Pov_cmd_unix.." "..Pov_size..param.." "..filename
+        cmd = Pov_cmd_unix.." "..Pov_size..param.." "..filename..Pov_cmd_ext
     end
     print("execute: "..cmd)
     os.execute(cmd)  -- this instruction needs a compilation with -shell-escape option
@@ -536,7 +567,6 @@ function graph3d:Pov_facet(F,options)
     pov_writeln("  }")
     if edge then
         local L = facetedges(F)
-        whatis(F)
         self:Pov_polyline(L, {color=edgecolor, style=edgestyle, hidden=hidden, hiddenstyle=hiddenstyle, matrix=options.matrix, clipbox = options.clipbox, clipplane=options.clipplane, shadow=options.shadow})
     end
 end

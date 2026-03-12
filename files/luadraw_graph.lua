@@ -1,11 +1,11 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- Tout ce qui touche au dessin de base, sans les axes
 local luadraw_calc = require 'luadraw_calc'
@@ -34,7 +34,7 @@ function luadraw_graph:new(args) -- argument de la forme :
             ["coordsystem"] = {graph.Xmin, graph.Xmax, graph.Ymin, graph.Ymax},  -- coordonnées de la vue courante
             ["linestyle"] = "solid", -- "noline", ou "solid" ou "dashed" ou "dotted" ou  dash( motif )
             ["linecap"] = "butt", --"butt" ou "round" ou "square"
-            ["linejoin"] = "miter", -- "miter" ou "round" ou "bevel"
+            ["linejoin"] = "round", -- "miter" ou "round" ou "bevel"
             ["linewidth"]  = 4, -- en dixième de points
             ["linecolor"] = "black", -- couleur de tracé en svgnames ou tout autre nomenclature comprise par tikz
             ["lineopacity"] = 1,  -- opacité du trait
@@ -106,7 +106,7 @@ end
 function luadraw_graph:Defaultattr()
     self:Lineoptions("solid","black",4,"-") -- "noline" ou "solid" ou "dashed" ou "dotted" ou  dash( motif )
     self:Linecap("butt") --"butt" ou "round" ou "square"
-    self:Linejoin("miter") -- "miter" ou "round" ou "bevel"
+    self:Linejoin("round") -- "miter" ou "round" ou "bevel"
     self:Lineopacity(1)  -- opacité du trait
     self:Filloptions("none","black",1,false) --ou "full" "bdiag" "fdiag" "hvcross" "diagcross" "horizontal" "vertical" "gradient"
     self:Gradstyle("left color=white, right color=red") -- gradient linéaire de gauche à droite
@@ -1245,7 +1245,7 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
     local epX, epY = pt/self.Xscale, pt/self.Yscale
     
     local alabel=function() -- dessiner un label
-        if (texte == nil) or (texte == "") then return end
+        if (texte == nil) or (texte == "") or (anchor == nil) then return end
         if self.param.labelsize ~= "" then texte = "\\"..self.param.labelsize.." "..texte end
         pos = args.pos or pos
         dist = args.dist or dist
@@ -1283,12 +1283,12 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
         opt_str = opt_str..sep..dir_str
         self:Write(" "..self:Coord(anchor).." node["..opt_str.."] {"..texte.."}")
     end
-    for k, aux in ipairs{...} do
-        if k%3 == 1 then texte = aux
+    local n = select("#", ...)  -- Nombre total d'arguments
+    for i = 1, n-2, 3 do   -- Pas de 3 (1,4,7...)
+        texte, anchor, args = select(i, ...)  -- Récupère les 3 args
+        if anchor ~= nil then alabel() 
         else
-            if k%3 == 2 then anchor = aux
-            else  args = aux; alabel()
-            end
+            print("Warning : the anchor point associated with the text "..texte.." is equal to nil")
         end
     end
     if not first then self:Writeln(";") end

@@ -1,11 +1,11 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 bezier_nbdots = 12 -- Minimum number of points calculated when converting a Bézier curve into a polygonal line.
 function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal

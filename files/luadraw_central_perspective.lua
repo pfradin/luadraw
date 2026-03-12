@@ -1,11 +1,11 @@
 -- luadraw_central_perspective.lua 
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 --functions to be redefined
 local old_circle3db = circle3db
@@ -202,10 +202,11 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local edgecolor = args.edgecolor or self.param.linecolor
         local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
-        if not Hiddenlines then hiddenstyle = "noline" end        
+        --if not Hiddenlines then hiddenstyle = "noline" end        
         local mode = args.mode or mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
+        local edgestyle = args.edgestyle or self.param.linestyle
         
         args.gradsection = args.gradsection or {25,18,50}
         args.gradside= args.gradside or {50,10,100}
@@ -228,7 +229,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local oldlinestyle = self.param.linestyle
         local oldlinecolor = self.param.linecolor
         local oldlinewidth = self.param.linewidth
-        self:Lineoptions(nil,edgecolor,edgewidth)
+        self:Lineoptions(edgestyle,edgecolor,edgewidth)
         if mode == mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
@@ -250,8 +251,8 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             self:Dpolyline3d(BPh, true)
         end
         if mode == mGrid then -- edges
-            self:Linestyle(oldlinestyle)
-            self:Dpoly(cone(C,r,V,A,35,true), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor})
+            --self:Linestyle(oldlinestyle)
+            self:Dpoly(cone(C,r,V,A,35,true), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
         end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
@@ -281,10 +282,11 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local edgecolor = args.edgecolor or self.param.linecolor
         local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
-        if not Hiddenlines then hiddenstyle = "noline" end
+        --if not Hiddenlines then hiddenstyle = "noline" end
         local mode = args.mode or mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
+        local edgestyle = args.edgestyle or self.param.linestyle
         
         args.gradsection = args.gradsection or {25,18,50}
         args.gradside= args.gradside or {50,10,100}
@@ -306,7 +308,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local oldlinestyle = self.param.linestyle
         local oldlinecolor = self.param.linecolor
         local oldlinewidth = self.param.linewidth
-        self:Lineoptions(nil,edgecolor,edgewidth)
+        self:Lineoptions(edgestyle,edgecolor,edgewidth)
         if mode == mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
@@ -329,8 +331,8 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             self:Dpolyline3d(BPh, true)
         end
         if mode == mGrid then -- edges
-            self:Linestyle(oldlinestyle)
-            self:Dpoly(cylinder(C,r,V,A,35,false), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor})
+            --self:Linestyle(oldlinestyle)
+            self:Dpoly(cylinder(C,r,V,A,35,false), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor, edgewidth=edgewidth, edgestyle=edgestyle})
         end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
@@ -365,10 +367,11 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local edgecolor = args.edgecolor or self.param.linecolor
         local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
-        if not Hiddenlines then hiddenstyle = "noline" end        
+        --if not Hiddenlines then hiddenstyle = "noline" end        
         local mode = args.mode or mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
+        local edgestyle = args.edgestyle or self.param.linestyle
         
         args.gradsection = args.gradsection or {25,18,50}
         args.gradside= args.gradside or {50,10,100}
@@ -391,7 +394,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local oldlinestyle = self.param.linestyle
         local oldlinecolor = self.param.linecolor
         local oldlinewidth = self.param.linewidth
-        self:Lineoptions(nil,edgecolor,edgewidth)
+        self:Lineoptions(edgestyle,edgecolor,edgewidth)
         if mode == mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
@@ -414,8 +417,8 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             self:Dpolyline3d(BPh, true)
         end
         if mode == mGrid then -- edges
-            self:Linestyle(oldlinestyle)
-            self:Dpoly(frustum(A,R,r,V,B,35,false), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor})
+            --self:Linestyle(oldlinestyle)
+            self:Dpoly(frustum(A,R,r,V,B,35,false), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
         end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 

@@ -1,4 +1,4 @@
-# Package luadraw for LuaLaTeX version 2.6
+# Package luadraw for LuaLaTeX version 2.7
 
 * The *luadraw* package defines the environment of the same name, which lets you create mathematical graphs (2d and 3d) using the Lua language. These graphs are ultimately drawn by tikz (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language, capable of performing calculations, using tikz's graphics capabilities.  
 Run `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) required) or
@@ -9,6 +9,16 @@ and copy *doc* into texmf/doc/lualatex/
 Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requis) ou
  copier le contenu de *files* dans : texmf/tex/lualatex/luadraw/  
  et copier le contenu de *doc*  : texmf/doc/lualatex/
+ 
+**Version 2.7**
+* The basic solid drawing methods: *g:Dcylinder()*, *g:Dcone()* and *g:Dfrustum()* now have two additional options: *edgestyle* and *edgewidth* (as for the *g:Dsphere()* method).
+* In the *luadraw_compile_tex* module, for the methods: *g:Dcompiled_tex(L, anchor, options)* and *g:Compiled\_tex2path3d(L, options)*, add the option *pos* identical to the labels.
+* In the *luadraw_compile_tex* module, three global variables are added to manage access to the *pdflatex*, *pdf2ps* and *pstoedit* programs. These variables are *pdflatexcmd*, *pdf2pscmd* and *pstoeditcmd*, they allow you to optionally add a path to the program, for example: *pstoeditcmd = "/usr/bin/pstoedit"*.
+* New syntax for the function *circle(data, nbdots)*, where *data* is a list (center and radius, or three points on the circle) and *nbdots* is the desired number of points. The old syntaxes remain valid.
+* New syntax for the function *ellipse(data, nbdots)*, where *data* is a list: {center, rx, ry, incline}, and *nbdots* is the desired number of points. The old syntaxes remain valid.
+* Added the function *mixpalette(pal, percent, color)* which returns a new palette after mixing each color of the palette *pal* with *color*.
+* Correction of numerous typos in the documentation.
+* Bug fixes...
  
 **Version 2.6**
 * Added the *luadraw_povray* extension which allows you to create an image with Pov-Ray and include it in the current graphic to draw over it.

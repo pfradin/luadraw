@@ -1,19 +1,19 @@
 -- luadraw_shadedforms.lua 
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 
 -- to draw shaded polylines, shaded rectangles, shaded regions, color bars
 
 require 'luadraw_palettes'
 
-function graph:Dshadedpolyline(L,pal,options)
--- L is a list of complex numbers or a list of list od complex numbers
+function graph:Dshadedpolyline(L1,pal,options)
+-- L1 is a list of complex numbers or a list of list od complex numbers
 -- pal refers to a color palette (list of {r,g,b})
 -- options is a table of parmaeters :
     -- values = "x" (values is "x" or "y" or a function f:(x,y)->f(x,y), applied at each point of L)
@@ -34,7 +34,8 @@ function graph:Dshadedpolyline(L,pal,options)
     else f = values
     end
     
-    if (L == nil) or (type(L) ~= "table") then return end
+    if (L1 == nil) or (type(L1) ~= "table") then return end
+    local L = table.copy(L1)
     local i = cpx.I
 
     if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end

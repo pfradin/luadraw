@@ -1,11 +1,11 @@
 -- luadraw__matrix3d.lua (chargé par luadraw__graph3d)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- une matrice 3d est une table de 4 point3d de la forme [f(0,0,0), Lf(1,0,0), Lf(0,1,0), LF(0,0,1)] où
 -- f est la transformation affine représentée par la matrice et Lf sa partie linéaire.

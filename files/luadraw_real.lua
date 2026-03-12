@@ -1,11 +1,11 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 luadraw = {}
 digits = 4 -- nombre de décimales dans les exports
@@ -129,7 +129,7 @@ function solve(f,a,b,n,df) -- version 2.4 of luadraw
             if (r==nil) then break end
         end
         if (r ~= nil) and (r >= x) and (r < fin) and (math.abs(f(r)) < 1e-6) then
-            table.insert(S,r) -- on considère que r est une solution
+            table.insert(S,r) -- we consider that r is a solution
         end
         x = fin; fin = x+delta
     end

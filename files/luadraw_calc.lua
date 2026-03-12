@@ -1,11 +1,11 @@
 -- luadraw__calc.lua (chargé par luadraw_graph.lua)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl.
 
 -- module de calculs d'éléments graphiques
 
@@ -22,7 +22,7 @@ local luadraw_calc = {}
 setmetatable(luadraw_calc, {__index = luadraw_base}) -- obligatoire pour l'héritage
 
 function luadraw_calc:new(args)  -- argument de la forme :
--- {window={x1,x2,y1,y2,xscale,yscale}, margin={left, right, top, bottom}, size={large, haut, ratio}, bg="color", border=true/false }
+-- {window={x1,x2,y1,y2,xscale,yscale}, margin={top, right, bottom, left}, size={large, haut, ratio}, bg="color", border=true/false }
     local instance = luadraw_base:new(args) -- obligatoire, on utilise le constructeur de luadraw_base
     setmetatable(instance, {__index = luadraw_calc})  -- obligatoire, permet d'utiliser self
     

@@ -1,11 +1,11 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 
 -- utilitaires sur les liste de complexes (composantes connexes)
@@ -236,8 +236,13 @@ function parallelogram(a,u,v)
 end
 
 
-function ellipse(c,rx,ry,inclin)
+function ellipse(c,rx,ry,inclin) -- or ellipse({c,rx,ry,inclin},nbdots)
 -- renvoie les points de l'ellipse de centre c et de rayons rx et ry
+    local nbdots
+    if (not isComplex(c)) and (type(c) == "table") then
+        nbdots = rx or nbdots
+        c, rx, ry, inclin = table.unpack(c)
+    end
     inclin = (inclin or 0) -- inclinaison en degrés par rapport à l'horizontale
     c = toComplex(c)
     if (c == nil) or (rx == nil) or (ry == nil) or (type(rx) ~= "number") 
@@ -249,7 +254,11 @@ function ellipse(c,rx,ry,inclin)
     local p = function(t)
             return c + f*Z(rx*math.cos(t),ry*math.sin(t))
         end
-    return parametric(p,-math.pi,math.pi)
+    if nbdots ~= nil then 
+        return parametric(p,-math.pi,math.pi,nbdots,false,0)
+    else
+        return parametric(p,-math.pi,math.pi)
+    end
 end
 
 function ellipseb(c,rx,ry,inclin)
@@ -270,8 +279,13 @@ function ellipseb(c,rx,ry,inclin)
             c-n+du, c-dn+u, c+u, "b"}
 end
 
-function circle(c,r,d)  -- circle(center,radius) ou circle(a,b,c) (3 points)
+function circle(c,r,d)  -- circle(center,radius) ou circle(a,b,c) (3 points) ou circle({data},nbdots)
 -- renvoie les points du cercle de centre c et de rayon r ou passant par les trois points c,r et d
+    local nbdots
+    if (not isComplex(c)) and (type(c) == "table") then
+        nbdots = r or nbdots
+        c, r, d = table.unpack(c)
+    end
     c = toComplex(c)
     if (c == nil) or (r == nil) then return end
     if (d == nil) then
@@ -287,8 +301,11 @@ function circle(c,r,d)  -- circle(center,radius) ou circle(a,b,c) (3 points)
     local p = function(t)
         return c + r*cpx.exp(cpx.I*t)
     end
-    
-    return parametric(p,-math.pi,math.pi)
+    if nbdots ~= nil then
+        return parametric(p,-math.pi,math.pi,nbdots,false,0)
+    else
+        return parametric(p,-math.pi,math.pi)
+    end
 end
 
 function circleb(c,r,d)  -- circleb(center,radius) ou circleb(a,b,c) (3 points)
@@ -371,7 +388,7 @@ function ellipticarc(b, a, c, rx, ry, sens, inclin)
             return a + f*Z(rx*math.cos(t),ry*math.sin(t))
         end
     local nbdots = math.ceil(math.abs(t2-t1)*12/math.pi)
-    return parametric(p,t1,t2)
+    return parametric(p,t1,t2,nbdots)
 end
 
 function ellipticarcb(b, a, c, rx, ry, sens, inclin)
@@ -420,7 +437,7 @@ function asa_triangle(alpha,ab,beta)  -- returns 3 points A,B,C (table), the arg
 end
 
 
-function polyreg(centre,sommet,nbcotes,sens) -- ou polyreg(sommet1,sommet2,nbcotes) appelée par la méthode Dpolyreg
+function polyreg(centre,sommet,nbcotes) -- ou polyreg(sommet1,sommet2,nbcotes,sens) appelée par la méthode Dpolyreg
 -- renvoie une ligne polygonale représentant un polygone régulier
     if sens == nil then
         centre = toComplex(centre)
@@ -969,15 +986,19 @@ end
 
 
 -- recoller des composantes connexes, utilisé par les courbes implicites
-function merge(List)
+function merge(List,eps)
 -- L est une liste de liste de complexes
 -- on essaie de recoller au mieux les composantes connexes de L si possible
 -- la fonction renvoie le résultat
+-- les comparaisons se font à  eps près (par défaut eps=10^(-10) )
+    eps = eps or 1e-10
     local res = {}
     local L = table.copy(List)
     local equal = function(z1,z2)
         return z1==z2 --cpx.abs(z1-z2) < 1e-12
     end
+    local old_epsilon = epsilon
+    epsilon = eps
     local test = function(t1,t2)
         -- on teste si t1 se recolle à t2, si oui on modifie t1 et on renvoie true, sinon on ne range rien et on renvoie false
         local a1, b1 = t1[1], t1[#t1]
@@ -1020,6 +1041,7 @@ function merge(List)
         end
         table.insert(res,t1) -- on a fait les test pour t1,on le range dans res
     end
+    epsilon = old_epsilon
     return(res)
 end
 

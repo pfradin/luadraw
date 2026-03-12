@@ -1,14 +1,14 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- définition des paramètres graphiques
-luadraw_version = 2.6
+luadraw_version = 2.7
 require("luadraw_real")
 
 local luadraw_base = {}
@@ -26,7 +26,7 @@ function luadraw_base:new(args)  -- argument de la forme :
     graph.bbox = (args.bbox == nil) or args.bbox
     local window = args.window or {-5,5,-5,5,1,1}
     local margin = args.margin or {0.5,0.5,0.5,0.5}
-    local size = args.size  --size = {largeur, hauteur, ratio}
+    local size = args.size  --size = {largeur, hauteur, ratio xscale/yscale}
     local x1,x2,y1,y2,xscale,yscale = table.unpack(window)
     local top,right,bottom,left = table.unpack(margin)
     graph.Xmin = (x1 or -5) ; graph.Xmax = (x2 or 5)  

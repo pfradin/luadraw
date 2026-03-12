@@ -1,11 +1,11 @@
 -- luadraw_graph2d.lua
--- date 2026/02/17
--- version 2.6
+-- date 2026/03/12
+-- version 2.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
---   http://www.latex-project.org/lppl.txt.
+--   https://www.ctan.org/license/lppl
 
 -- ce module ajoute le tracé d'axes divers ou de grilles au module luadraw_graph
 
@@ -178,8 +178,8 @@ function luadraw_graph2d:Dgradline(d, options)
     else
         if cpx.dot(u,L[1]-A) < 0 then k1 = -k1 end
     end
-    --k1 = math.ceil(k1);  k2 = math.floor(k2)
-    k1 = nearest(k1);  k2 = nearest(k2)
+    k1 = math.ceil(k1);  k2 = math.floor(k2)
+    --k1 = nearest(k1);  k2 = nearest(k2)
     if gradlimits ~= "auto" then 
         local q1 = math.floor(gradlimits[1])*(nbsubdiv+1)
         local q2 = math.floor(gradlimits[2])*(nbsubdiv+1)
@@ -683,29 +683,34 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     xpas = math.abs(xpas); ypas = math.abs(ypas)
     originloc = toComplex(originloc)
     local x1, y1 = originloc.re, originloc.im
-    local k = nearest( (x1-xdep)/xpas ) -- math.floor( (x1-xdep)/xpas )
+    local k = nearest( (x1-xdep)/xpas ) -- math.floor( (x1-xdep)/xpas ) --
     local xmin = x1-k*xpas
-    k = nearest( (xfin-x1)/xpas ) -- math.floor( (xfin-x1)/xpas )
+    k = nearest( (xfin-x1)/xpas ) -- math.floor( (xfin-x1)/xpas ) --
     local xmax = x1+k*xpas
-    k = nearest( (y1-ydep)/ypas ) -- math.floor( (y1-ydep)/ypas )
+    k = nearest( (y1-ydep)/ypas ) -- math.floor( (y1-ydep)/ypas ) --
     local ymin = y1-k*ypas
-    k = nearest( (yfin-y1)/ypas ) --math.floor( (yfin-y1)/ypas )
+    k = nearest( (yfin-y1)/ypas ) --math.floor( (yfin-y1)/ypas ) --
     local ymax = y1+k*ypas
-    local xdiv = (xmax-xmin)//xpas
-    local ydiv = (ymax-ymin)//ypas
+    local xdiv = math.floor((xmax-xmin)/xpas)
+    local ydiv = math.floor((ymax-ymin)/ypas)
+    print(xmin, xmax, xdiv)
     self:Saveattr() --; self:Arrows("-"); self:Filloptions("none")
     --grille secondaire
     local subgridpasx = xpas/xnbsubdiv
     local subgridpasy = ypas/ynbsubdiv
     local grille = {}
     local x = xmin
-    for k = 1, nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas)
-        if (k-1)%xnbsubdiv ~= 0 then insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) end
+    for k = 1, nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas) do -- 
+        if (x>=A.re) and (x<=B.re) and ((k-1)%xnbsubdiv ~= 0) then 
+            insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) 
+        end
         x = x + subgridpasx
     end
     local y = ymin
-    for k = 1, nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas)
-        if (k-1)%ynbsubdiv ~= 0 then  insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) end
+    for k = 1, nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas) do --
+        if (y>=A.im) and (y<=B.im) and ((k-1)%ynbsubdiv ~= 0) then  
+            insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) 
+        end
         y = y + subgridpasy
     end
     if #grille > 0 then
@@ -715,9 +720,19 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     -- grille principale}
     grille = {}
     x = xmin
-    for k = 0, xdiv do insert(grille,{Z(x,ydep),"m",Z(x,yfin),"l"}); x = x+xpas end
+    for k = 0, xdiv do 
+        if (x>=A.re) and (x<=B.re) then
+            insert(grille,{Z(x,ydep),"m",Z(x,yfin),"l"})
+        end
+        x = x+xpas 
+    end
     y = ymin
-    for k = 0, ydiv do insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}); y = y+ypas end
+    for k = 0, ydiv do
+        if (y>=A.im) and (y<=B.im) then
+            insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"})
+        end
+        y = y+ypas 
+    end
     if #grille > 0 then
         self:Lineoptions(gridstyle,gridcolor,gridwidth); self:Linecap("round")
         self:Dpath(grille,"-")
