@@ -10,6 +10,23 @@ Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requi
  copier le contenu de *files* dans : texmf/tex/lualatex/luadraw/  
  et copier le contenu de *doc*  : texmf/doc/lualatex/
  
+**Version 2.8**
+
+* Added the *luadraw_decorations* extension, which enhances certain drawing methods by adding options. Currently, there is *g:Ddecoratedarc()* for 2D arcs and *g:Ddecoratedarc3d()* for 3D arcs.
+* Added the *luadraw_coils_chains* extension which allows drawing springs and chains.
+* Added the *luadraw_log_axes* extension which allows you to create and draw on a logarithmic grid in *x*, or in *y*, or in *x* and *y*.
+* Added functions: *nth_root(n,x)* (nth root of a real *x*, defined on **R** when *n* is odd); *cpx.cosh()*, *cpx.sinh()* (complex hyperbolic cosine and sine) and *cpx.pow(z,a)* (for calculating *z^a* with *z* a complex number and *a* a real number).
+* Added the *use_siunitx* option for the *g:Daxes()*, *g:DaxeX()*, *g:DaxeY()*, *g:Dgradbox()*, *g:Dgradline()* methods. This allows you to locally use or not use the formatting of numeric values ​​by the *siunitx* package.
+* Added the *showlines* option for the *g:Dgrid()* method which allows you to show or hide horizontal and/or vertical lines.
+* For the methods *g:Dpoly()*, *g:Dfacet()*, *g:Dmixfacet()*, and *g:addFacet()*, in the option *usepalette=*{palette, mode}*, the second argument can now be a function, *mode: f -> mode(f)* in **R**, where *f* denotes a facet (a list of 3D points). Facets with the smallest value have the first color of the palette, those with the smallest value have the last color of the palette, and for the others, the color is calculated by linear interpolation.
+* Added the function *obj_surface(f,u1,u2,v1,v2, grid)* which returns the surface parameterized by *f* in *obj* format, that is, a table with three fields {vertices={...}, facets={{...},{...}}}, normals={...}}. The first two fields are identical to the case of polyhedra, and the third field contains the unit vectors normal to the surface at each vertex. The facets are triangular.
+* In the *luadraw_povray* module: a second syntax has been added for drawing smooth parametric surfaces: *g:Pov_surface(f,u1,u2,v1,v2,options)* where *f* is the parameterization. This method is faster than the previous one.
+* In the *{luadraw_spherical* module: add the global variable *Hiddendelayed = false*. With the value *false*, hidden parts are drawn at the end of the *g:Dspherical()* instruction; with the value *true*, they are drawn at the very end of the current graph, which can be useful if you have added elements after the sphere that hide part of it.
+* For the *g:Daxes()* method: the \opt{originloc} option is still the point used as the origin for the graduations, but it is no longer automatically the point of intersection of the two axes.
+* For the method *g:Daxes()*: addition of the options *xynode_options = ""*, *xnode_options = xynode_options* and *ynode_options = xynode_options* which allow passing options to the instruction *\node{}* for all labels (except legends).
+* For the *g:addAaxes()* method, add the option *labels={"$x$", "$y$","$z$"}* to manage the labels displayed at the end of each axis.
+* Bug fixes...
+ 
 **Version 2.7**
 * The basic solid drawing methods: *g:Dcylinder()*, *g:Dcone()* and *g:Dfrustum()* now have two additional options: *edgestyle* and *edgewidth* (as for the *g:Dsphere()* method).
 * In the *luadraw_compile_tex* module, for the methods: *g:Dcompiled_tex(L, anchor, options)* and *g:Compiled\_tex2path3d(L, options)*, add the option *pos* identical to the labels.

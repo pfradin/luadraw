@@ -1,13 +1,14 @@
 -- luadraw_spherical.lua 
--- date 2026/03/12
--- version 2.7
+-- date 2026/04/09
+-- version 2.8
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
-Insidelabelcolor = "DarkGray"
+Insidelabelcolor = "darkgray"
+Hiddendelayed = false
 arrowBstyle = "->"
 arrowAstyle = "<-"
 arrowABstyle = "<->"
@@ -151,9 +152,14 @@ function graph3d:Dspherical()
     for _, elt in ipairs(after_sphere) do
         display_elt(elt)
     end
-   for _, elt in ipairs(hidden_part) do
-        display_elt(elt)
-    end    
+    if Hiddendelayed then self:Begindeferred() end
+        if sphere.show and Hiddenlines and (sphere.edgestyle ~= "noline") and (sphere.hiddenstyle ~= "noline") then
+            self:Dsphere(sphere.C, sphere.R, {mode=mBorder,edgecolor=sphere.edgecolor, edgewidth=3*sphere.edgewidth/4, edgestyle=sphere.hiddenstyle}) 
+        end
+        for _, elt in ipairs(hidden_part) do
+            display_elt(elt)
+        end    
+    if Hiddendelayed then self:Enddeferred() end
     self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     clear_spherical()
@@ -180,6 +186,9 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
         local J = I+r*pt3d.normalize(w) -- a point of the circle
         if  visibledot(I) then --(pt3d.dot(v,N) > 0) then -- visible
             table.insert(after_sphere, {{J,I,u,"c"},style,color,width,opacity})
+            if hidden and Hiddendelayed and (style ~= "noline") then
+                table.insert(hidden_part, {{J,I,u,"c"},Hiddenlinestyle,color,width,opacity})
+            end
         elseif hidden and (style ~= "noline") then
             table.insert(hidden_part, {{J,I,u,"c"},Hiddenlinestyle,color,width,opacity})
         else 
@@ -236,6 +245,9 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
                     sens = -1
                 end
                 table.insert(after_sphere, {{A,I,B,r,sens,u,"ca"},style,color,width,opacity})
+                if hidden and Hiddendelayed and (style ~= "noline") then
+                    table.insert(hidden_part, {{A,I,B,r,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                end
                 if hidden  and (style ~= "noline") then 
                     table.insert(hidden_part, {{A,I,B,r,-sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
                 else
@@ -288,6 +300,9 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
         if #dev ~= 0 then 
             table.insert(dev,"l")
             table.insert(after_sphere, {dev,style,color,width,opacity,arrow}) 
+            if hidden and Hiddendelayed and (style ~= "noline") then
+                table.insert(hidden_part, {dev,Hiddenlinestyle,color,width,opacity,arrow}) 
+            end
         end
     end
 
@@ -417,6 +432,9 @@ function graph3d:DSarc(AB,sens,options)
     end 
     if (projection_mode ~= "central") and (pt3d.N1(pt3d.prod(u,N))< 1e-12) then -- P est le plan de l'écran
         table.insert(after_sphere, {{A,C,B,R,sens,u,"ca"},style,color,width,opacity,arrows} )
+        if hidden and Hiddendelayed and (style ~= "noline") then
+            table.insert(hidden_part, {{A,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+        end
     else
         local M1, M2
         if projection_mode == "central" then
@@ -432,9 +450,16 @@ function graph3d:DSarc(AB,sens,options)
         if visibledot(A) and visibledot(B) then -- A et B sont visibles
             if sens == 1 then
                 table.insert(after_sphere, {{A,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB})
+                if hidden and Hiddendelayed and (style ~= "noline") then
+                    table.insert(hidden_part, {{A,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                end
             else
                 table.insert(after_sphere, {{A,C,M1,R,sens,u,"ca"},style,color,width,opacity,-arrowA})
                 table.insert(after_sphere, {{M2,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB})
+                if hidden and Hiddendelayed and (style ~= "noline") then
+                    table.insert(hidden_part, {{A,C,M1,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                    table.insert(hidden_part, {{M2,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                end
                 if hidden  and (style ~= "noline") then
                     table.insert(hidden_part, {{M1,C,M2,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,0})
                 else
@@ -454,6 +479,9 @@ function graph3d:DSarc(AB,sens,options)
                 end
             else
                 table.insert(after_sphere, {{M2,C,M1,R,sens,u,"ca"},style,color,width,opacity,0})
+                if hidden and Hiddendelayed and (style ~= "noline") then
+                    table.insert(hidden_part, {{M2,C,M1,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                end
                 if hidden  and (style ~= "noline") then
                     table.insert(hidden_part, {{A,C,M2,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
                     table.insert(hidden_part, {{M1,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,arrowB})
@@ -469,6 +497,9 @@ function graph3d:DSarc(AB,sens,options)
             if visibledot(A) then -- A est visible, B non
                 if sens == 1 then
                    table.insert(after_sphere, {{A,C,M2,R,sens,u,"ca"},style,color,width,opacity,-arrowA}) 
+                   if hidden and Hiddendelayed and (style ~= "noline") then
+                        table.insert(hidden_part, {{A,C,M2,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                    end
                    if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{M2,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,arrowB})
                     else
@@ -478,6 +509,9 @@ function graph3d:DSarc(AB,sens,options)
                     end
                 else
                     table.insert(after_sphere, {{A,C,M1,R,sens,u,"ca"},style,color,width,opacity,-arrowA}) 
+                    if hidden and Hiddendelayed and (style ~= "noline") then
+                        table.insert(hidden_part, {{A,C,M1,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                    end
                     if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{M1,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,arrowB})
                     else
@@ -489,6 +523,9 @@ function graph3d:DSarc(AB,sens,options)
             else -- B est visible, A non
                 if sens == 1 then
                    table.insert(after_sphere, {{M1,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB}) 
+                   if hidden and Hiddendelayed and (style ~= "noline") then
+                        table.insert(hidden_part, {{M1,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                    end
                    if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{A,C,M1,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
                     else
@@ -498,6 +535,9 @@ function graph3d:DSarc(AB,sens,options)
                     end
                 else
                     table.insert(after_sphere, {{M2,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB}) 
+                    if hidden and Hiddendelayed and (style ~= "noline") then
+                        table.insert(hidden_part, {{M2,C,B,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity})
+                    end
                     if hidden  and (style ~= "noline") then 
                         table.insert(hidden_part, {{A,C,M2,R,sens,u,"ca"},Hiddenlinestyle,color,width,opacity,-arrowA})
                     else
@@ -647,6 +687,9 @@ function graph3d:DSfacet(facet, options)
             end
         end
         table.insert(after_sphere, {chem,style,color,width,opacity,0,fill,fillopacity})
+        if hidden and Hiddendelayed and (style ~= "noline") then
+            table.insert(hidden_part, {chem,Hiddenlinestyle,color,width,opacity})
+        end
     end
     if #chemH > 0 then
         if chemH[1][1] ~= chemH[#chemH][1] then table.insert(chemH, chemH[1]) end
@@ -801,6 +844,9 @@ function graph3d:DScurve(L,options)
         end
     end
     table.insert(after_sphere, {rep,style,color,width,opacity})
+    if hidden and Hiddendelayed and (style ~= "noline") then
+        table.insert(hidden_part, {rep,Hiddenlinestyle,color,width,opacity})
+    end
     rep = {}
     for _, hidden in ipairs(Hidden) do
         if #hidden > 1 then

@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/03/12
--- version 2.7
+-- date 2026/04/09
+-- version 2.8
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -776,7 +776,7 @@ function surface(f,u1,u2,v1,v2,grid)
         end
     end
     local different = function(A,B)
-            return pt3d.N1(B-A)>1e-10
+        return pt3d.N1(B-A)>1e-10
     end
     local S = {}
     grid = grid or {25,25}
@@ -831,13 +831,17 @@ function cartesian3d(f,x1,x2,y1,y2,grid,addWall)
     if string.find(addWall,"x") ~= nil then
         local x, xpas = x1, (x2-x1)/(grid[1]-1)
         for k = 1, grid[1] do
-            table.insert(wall, clipplane({x*vecI,vecI},cube)); x = x+xpas
+            local clp = clipplane({x*vecI,vecI},cube)
+            if clp ~= nil then table.insert(wall, clp) end 
+            x = x+xpas
         end
     end
     if string.find(addWall,"y") ~= nil then
         local y, ypas = y1, (y2-y1)/(grid[2]-1)
         for k = 1, grid[2] do
-            table.insert(wall, clipplane({y*vecJ,vecJ},cube)); y = y+ypas
+            local clp = clipplane({y*vecJ,vecJ},cube)
+            if clp ~= nil then table.insert(wall, clp) end
+            y = y+ypas
         end
     end
     return rep, wall
@@ -851,9 +855,9 @@ function cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
     grid = grid or {25,25}
     addWall = addWall or 0
     local F = function(u,v)
-        return Mc(r(u,v),v,z(u,v))
+        return Mc(r(v,u),u,z(v,u))
     end
-    local rep = surface(F,u1,u2,v1,v2,grid)
+    local rep = surface(F,v1,v2,u1,u2,reverse(grid))
     local wall = {}
     if addWall ~= 0 then
         local x1,x2,y1,y2,z1,z2 = getbounds3d(rep)
@@ -861,14 +865,20 @@ function cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
         if string.find(addWall,"z") ~= nil then
             local u, upas = u1, (u2-u1)/(grid[1]-1)
             for k = 1, grid[1] do
-                table.insert(wall, clipplane({z(u,v1)*vecK,vecK},cube)); u = u+upas
+                local clp = clipplane({z(u,v1)*vecK,vecK},cube)
+                if clp ~= nil then table.insert(wall, clp) end
+                u = u+upas
             end
         end        
         if string.find(addWall,"v") ~= nil then
             local v, vpas = v1, (v2-v1)/(grid[2]-1)
-            for k = 1, grid[2] do
-                table.insert(wall, clipplane({Origin,-math.sin(v)*vecI+math.cos(v)*vecJ},cube)); v = v+vpas
+            --for k = 1, grid[2] do
+            while v < math.min(v2,v1+math.pi) do
+                local clp = clipplane({Origin,-math.sin(v)*vecI+math.cos(v)*vecJ},cube)
+                if clp ~= nil then table.insert(wall, clp) end
+                v = v+vpas
             end
+
         end
     end
     return rep, wall
@@ -1140,7 +1150,7 @@ function rotline(L,axe,angle1,angle2,args)
     return surface(f,1,n,angle1,angle2,{n,nb}), sep
 end
 
-function read_obj_file(file) -- Contribution de Christophe BAL 2025/09/02
+function read_obj_file(file, triangulate) -- Contribution de Christophe BAL 2025/09/02
 -- prototype::
 --    file : le chemin d'un fichier ext::''OBJ'' au format \wavefront
 --           simplifié (non gestion des textures, ni des normales).
@@ -1150,6 +1160,7 @@ function read_obj_file(file) -- Contribution de Christophe BAL 2025/09/02
 --             en analysant le fichier, et le polyèdre est une version
 --             \luadraw du modèle 3D indiqué par le fichier.
 ------
+    triangulate = triangulate or false
 
     local update_extreme_vals = function (a, a_min, a_max)
     -- sert à déterminer la bounding box du polyèdre
@@ -1159,6 +1170,7 @@ function read_obj_file(file) -- Contribution de Christophe BAL 2025/09/02
     local polyhedron = {}
     local vertices   = {}
     local facets     = {}
+    local normals    = {}
     local xmin, xmax = math.huge, -math.huge
     local ymin, ymax = math.huge, -math.huge
     local zmin, zmax = math.huge, -math.huge
@@ -1167,7 +1179,7 @@ function read_obj_file(file) -- Contribution de Christophe BAL 2025/09/02
     local pattern_vertex  = "^v%s+" .. pattern_decimal ..
                               "%s+" .. pattern_decimal .. 
                               "%s+" .. pattern_decimal
-    
+
     -- Dans les \regexs \lua, ''%'' est le caractère d'échappement.
     for line in io.lines(file) do
         -- Nettoyage des espaces finaux et initiaux : en \lua, ''-''
@@ -1203,8 +1215,131 @@ function read_obj_file(file) -- Contribution de Christophe BAL 2025/09/02
         end
     end
     polyhedron.vertices = vertices
-    polyhedron.facets   = facets
+    if triangulate then -- triangulate facets and calculate normals
+        local Tfacets = {}
+        for _, f in ipairs(facets) do --
+            if #f == 3 then table.insert(Tfacets,f)
+            else
+                local a, c, b = f[1], f[2]
+                for k = 3, #f do
+                    b = c; c = f[k]
+                    table.insert(Tfacets,{a,b,c})
+                end
+            end
+        end
+        for k = 1, #vertices do table.insert(normals,Origin) end
+        for _,f in ipairs(Tfacets) do
+            local a, b, c = table.unpack(f)
+            local A,B,C = vertices[a], vertices[b], vertices[c]
+            local N = pt3d.normalize( pt3d.prod(B-A,C-A) )
+            normals[a] = normals[a] + N; normals[b] = normals[b] + N; normals[c] = normals[c] + N
+        end
+        for k = 1, #normals do
+            normals[k] = pt3d.normalize( normals[k] )
+        end
+        polyhedron.normals = normals
+        polyhedron.facets   = Tfacets
+    else
+        polyhedron.facets   = facets
+    end
     return polyhedron, {xmin, xmax, ymin, ymax, zmin, zmax}  -- polyhedron first
+end
+
+
+function obj_surface(f,u1,u2,v1,v2,grid) -- surface à facettes triangulaires au format obj
+-- surface paramétrée par (u,v) -> f(u,v) dans R^3
+-- u1 et u2 sont les bornes pour u, et v1, v2 pour v
+-- grid={nbu,nbv} donne le nombre de points suivant u et suivant v
+-- renvoie une table à 3champs {vertices = {sommets (3D}, normals = {vecteurs (3D)}, facets = { {1,2,3},...} }
+-- les facettes sont triangulaires.
+    grid = grid or {25,25}
+    local F = function(u,v)
+        local R = evalf(f,u,v) -- protected evaluation
+        if (R == nil) then return cpx.Jump
+        else return R
+        end
+    end
+
+    local different = function(A,B)
+        return pt3d.N1(B-A)>1e-10
+    end
+    
+    local S, vertices, normals, posvertices = {}, {}, {}, {}
+    local posvertex = function(i,j)
+        local rep
+        if posvertices[i][j] == 0 then
+            table.insert(vertices, S[i][j]); rep = #vertices
+            table.insert(normals, Origin)
+            posvertices[i][j] = rep
+        else rep = posvertices[i][j]
+        end
+        return rep
+    end
+
+    local nbu, nbv = table.unpack(grid)
+    local upas, vpas = (u2-u1)/(nbu-1), (v2-v1)/(nbv-1)
+    local u, v, aux, auxN = u1
+    for i = 1, nbu do
+        aux = {}; auxN = {}
+        v = v1
+        for j = 1, nbv do
+            local R = F(u,v)
+            table.insert(aux,R)
+            table.insert(auxN, 0)
+            v = v+vpas
+        end
+        table.insert(S,aux); table.insert(posvertices,auxN)
+        u = u+upas
+    end
+    local rep = {}
+    local A, last
+    for i = 1, nbu-1 do
+        for j = 1, nbv-1 do
+            aux = {}
+            A = S[i][j]; first = A; last = A
+            if A ~= cpx.Jump then table.insert(aux,A); table.insert(aux,posvertex(i,j)) end
+            A = S[i+1][j]; 
+            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then 
+                table.insert(aux,A); table.insert(aux,posvertex(i+1,j)); last = A 
+            end
+            A = S[i+1][j+1]
+            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then 
+                table.insert(aux,A); table.insert(aux,posvertex(i+1,j+1)); last = A 
+            end
+            A = S[i][j+1]
+            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) and ((first == cpx.Jump) or different(A,first)) then table.insert(aux,A) table.insert(aux,posvertex(i,j+1)) end
+            local n = #aux
+            if n > 5 then -- ajout + triangulation
+                if n == 6 then table.insert(rep,aux) -- triangle 
+                else --quad {a,b,c,d}
+                    table.insert(rep,{aux[1],aux[2],aux[3],aux[4],aux[5],aux[6]}) -- triangle {a,b,c}
+                    table.insert(rep,{aux[1],aux[2],aux[5],aux[6],aux[7],aux[8]}) -- triangle {a,c,d}
+                end
+            end
+        end
+    end
+    -- calculs des normales
+    for _,f in ipairs(rep) do
+        local N = pt3d.normalize( pt3d.prod(f[3]-f[1], f[5]-f[1]) )
+        for k = 2,6,2 do
+            local pos = f[k]
+            normals[pos] = normals[pos]  + N
+        end
+    end
+    -- normalisation
+    local result, facet = {}
+    result.vertices = vertices; result.facets = {}
+    for _,f in ipairs(rep) do
+        facet = {}
+        for k = 2,6,2 do
+            local pos = f[k]
+            normals[pos] = pt3d.normalize( normals[pos] )
+            table.insert(facet, pos)
+        end
+        table.insert(result.facets, facet)
+    end
+    result.normals = normals
+    return result
 end
 
 function read_csv_file(file, options)

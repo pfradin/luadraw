@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2026/03/12
--- version 2.7
+-- date 2026/04/09
+-- version 2.8
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -1370,17 +1370,35 @@ function define_getcolor(F, pal, mode, default_color) -- used by drawfacet(), Dm
 -- mode = "x", "y", or "z"
 -- returns the fonction : getcolor(facet)
     default_color = default_color or White
-    local x1,x2,y1,y2,z1,z2 = getbounds3d(F)
-    local getcolor = function(f) -- f is a facet, returns the color of f
-        local A = isobar3d(f)
-        if mode == "x" then return palette(pal,(A.x-x1)/(x2-x1),true)
-        elseif mode == "y" then return palette(pal,(A.y-y1)/(y2-y1),true)
-        elseif mode == "z" then return palette(pal,(A.z-z1)/(z2-z1),true)
-        else return default_color
+    local getcolor
+    if type(mode) == "function" then -- mode = function(f) where f is a facet
+        local minV, maxV = math.huge, -math.huge
+        for _,f in ipairs(F) do
+            local value = mode(f)
+            if value < minV then minV = value end
+            if value > maxV then maxV = value end
+        end
+        local diff = maxV-minV
+        getcolor = function(f) -- f is a facet, returns the color of f
+            if diff == 0 then return default_color
+            else
+                local value = mode(f)
+                return palette(pal,(value-minV)/diff,true)
+            end
+        end
+    else
+        local x1,x2,y1,y2,z1,z2 = getbounds3d(F)
+        getcolor = function(f) -- f is a facet, returns the color of f
+            local A = isobar3d(f)
+            if mode == "x" then return palette(pal,(A.x-x1)/(x2-x1),true)
+            elseif mode == "y" then return palette(pal,(A.y-y1)/(y2-y1),true)
+            elseif mode == "z" then return palette(pal,(A.z-z1)/(z2-z1),true)
+            else return default_color
+            end
         end
     end
     return getcolor
-end
+end    
 
 function luadraw_graph3d:Adjust_color(F,color,contrast,twoside) -- used by drawfacet(), Dmixfacet() and addFacet()
 -- F = facet, contrast in [0,1], twoside=true/false
@@ -1438,7 +1456,7 @@ function luadraw_graph3d:drawfacet(S,args) -- internal use by Dpoly,and Dfacet, 
     local oldlinewidth = self.param.linewidth
     local coul = args.color
     local getcolor
-    local usepalette = args.usepalette -- palette = {Pal, "x", or "y" or "z"}, Pal is a list of colors in RGB table format
+    local usepalette = args.usepalette -- palette = {Pal, "x", or "y" or "z" or function}, Pal is a list of colors in RGB table format
     if usepalette ~= nil then
         local pal, mode = table.unpack(usepalette)
         getcolor = define_getcolor(S,pal,mode,coul)
@@ -2051,20 +2069,21 @@ function luadraw_graph3d:addAxes(O,args)
 -- ajouter les axes à la scène
 -- O est le point 3d de concours
 -- args table à 7 champs (comme bdPolyline) plus un champ legend=true/false
--- { color=défaut, style="solid", width=4, hidden=false, hiddenstyle="dotted", legend=true/false, opacity=1, arrows=0/1/2, arrowscale=1, matrix=ID3d }
+-- { color=défaut, style="solid", width=4, hidden=false, hiddenstyle="dotted", legend=true/false, opacity=1, arrows=0/1/2, arrowscale=1, matrix=ID3d, labels={"$x$", "$y$", "$z$"} }
     args = args or {}
     local arrowscale = args.arrowscale or 1
     local legend = args.legend
     if legend == nil then legend = true end
+    local labels = args.labels or {"$x$", "$y$", "$z$"}
     local x0,y0,z0 = O.x, O.y, O.z
     local rep = {}
     local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
     insert(rep, self:addPolyline( {{M(x1,y0,z0),M(x2,y0,z0)}, {M(x0,y1,z0),M(x0,y2,z0)},{M(x0,y0,z1),M(x0,y0,z2)}}, args ))    
     if legend then
         local long = 0.25*arrowscale
-        insert(rep, self:addLabel("$x$", M(x2+(x2-x1)/20,y0,z0), args))
-        insert(rep, self:addLabel("$y$", M(x0,y2+(y2-y1)/20,z0), args))
-        insert(rep, self:addLabel("$z$", M(x0,y0,z2+(z2-z1)/20), args))
+        insert(rep, self:addLabel(labels[1], M(x2+(x2-x1)/20,y0,z0), args))
+        insert(rep, self:addLabel(labels[2], M(x0,y2+(y2-y1)/20,z0), args))
+        insert(rep, self:addLabel(labels[3], M(x0,y0,z2+(z2-z1)/20), args))
         insert(rep, self:addWall({{M(x2,y0,z0)-long*vecI, vecI}, {M(x0,y2,z0)-long*vecJ, vecJ}, {M(x0,y0,z2)-long*vecK, vecK}},args))
     end
     return rep

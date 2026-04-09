@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/03/12
--- version 2.7
+-- date 2026/04/09
+-- version 2.8
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -167,4 +167,13 @@ function int(f,a,b)
         stop = error or ( (compt >= 3) and (V0 ~= nil) and (V1 ~= nil) and (cpx.abs(V0-V1) < 1e-6) )
     end
     if not error then return V1 end
+end
+
+function nth_root(n,x)
+-- n is a positive integer with n>1
+-- x is a real
+    if x>=0 then return x^(1/n)
+    elseif n%2 == 1 then
+        return -(-x)^(1/n)
+    end
 end

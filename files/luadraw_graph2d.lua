@@ -1,6 +1,6 @@
 -- luadraw_graph2d.lua
--- date 2026/03/12
--- version 2.7
+-- date 2026/04/09
+-- version 2.8
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -100,7 +100,7 @@ function luadraw_graph2d:Poslab(dir,alpha)
 -- renvoie la position du label quand celui-ci est placé au bout du vecteur dir
 -- en faisant un angle de alpha degrés par rapport à Ox
     dir = toComplex(dir)
-    dir = applyLmatrix(dir,self.matrix)
+    --dir = applyLmatrix(dir,self.matrix)
     local angle = self:Arg(dir)*180/math.pi - alpha -- angle entre -180 et 180 -- self:Arg
     if angle > 180 then angle = angle -360 end
     if angle < -180 then angle = angle + 360 end
@@ -144,9 +144,12 @@ function luadraw_graph2d:Dgradline(d, options)
     local labelstyle = options.labelstyle or "auto" -- "auto"  or "E" or "W",...
     local labelangle = options.labelangle or 0 -- angle des labels en degrés par rapport à l'horizontale
     local labelcolor = options.labelcolor or ""    
+    local node_options = options.node_options or "" -- node_options communes à tous les labels
     local labelshift = options.labelshift or 0 -- décalage systématique des labels
     local nbdeci = options.nbdeci or 2 -- nb de décimales, 2 par défaut
-    local numericFormat = options.numericFormat or 0 -- format d'affichage
+     if options.use_siunitx == nil then 
+        options.use_siunitx = siunitx -- format d'affichage géré par siunitx ou pas
+    end
     local mylabels = options.mylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} ATTENTION : pos est l'abscisse sur l'axe (A,u)
     
     local A, u = nil, nil
@@ -221,7 +224,7 @@ function luadraw_graph2d:Dgradline(d, options)
             if legendpos == 1 then 
                 ldir = u
             else
-                if labelpos == "bottom" 
+                if (labelpos == "bottom")
                 then 
                     ldir = n
                 else 
@@ -279,9 +282,11 @@ function luadraw_graph2d:Dgradline(d, options)
     local uDir = u/self:Abs(u)
     local O = dep+labelshift*uDir
     --affichage Labels
+    local old_siunitx = siunitx
+    siunitx = options.use_siunitx
     local optlab, sep, labelList = {}, "", {}
     optlab.pos = lpos
-    optlab.node_options = ""
+    optlab.node_options = node_options
     --if langle ~= 0 then optlab.node_options = "rotate="..langle; sep = "," end
     --if labelcolor ~= "" then optlab.node_options = optlab.node_options..sep.."color="..labelcolor end
     self.param.labelangle = langle
@@ -348,8 +353,9 @@ function luadraw_graph2d:Dgradline(d, options)
         end
         if #dots > 0 then self:Ddots(dots) end
     end
-    if #labelList > 0 then self:Dlabel( table.unpack(labelList) ) end
+    if #labelList > 0 then  self:Dlabel( table.unpack(labelList) ) end
     self:Linestyle(oldstyle); self:Labelangle(oldlabelangle); self:Labelcolor(oldlabelcolor)
+    siunitx = old_siunitx
     self:Restorematrix()
 end    
 
@@ -395,8 +401,11 @@ function luadraw_graph2d:DaxeX(d, options)
     options.labelangle = options.labelangle or 0 -- angle des labels en degrés par rapport à l'horizontale
     options.labelcolor = options.labelcolor or ""
     options.labelshift = options.labelshift or 0 -- décalage systématique des labels
+    options.node_options = options.node_options or ""
     options.nbdeci = options.nbdeci or 2 -- nb de décimales, 2 par défaut
-    options.numericFormat = options.numericFormat or 0 -- format d'affichage
+     if options.use_siunitx == nil then 
+        options.use_siunitx = siunitx -- format d'affichage géré par siunitx ou pas
+    end
     options.mylabels = options.mylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} or chaine vide
     
     if options.labelpos == "top" then options.labelstyle = "N" end
@@ -463,8 +472,11 @@ function luadraw_graph2d:DaxeY(d, options)
     options.labelangle = options.labelangle or 0 -- angle des labels en degrés par rapport à l'horizontale    
     options.labelcolor = options.labelcolor or ""
     options.labelshift = options.labelshift or 0 -- décalage systématique des labels
+    options.node_options = options.node_options or ""
     options.nbdeci = options.nbdeci or 2 -- nb de décimales, 2 par défaut
-    options.numericFormat = options.numericFormat or 0 -- format d'affichage
+    if options.use_siunitx == nil then 
+        options.use_siunitx = siunitx -- format d'affichage géré par siunitx ou pas
+    end
     options.mylabels = options.mylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} or chaine vide
 
     if options.labelpos == "right" then options.labelstyle = "E" end
@@ -526,8 +538,8 @@ function luadraw_graph2d:Daxes(d, options)
 
     options.originpos = options.originpos or {"right","top"} -- "none" or "center" or "left" or "right", "nonne, "bottom, or "top"
     options.originnum = options.originnum or {A.re,A.im} -- les labels sont: (originnum + unit*n)"labeltext"/labelden
-    options.originloc = options.originloc or A -- point de croisement des axes
-    
+    options.originloc = options.originloc or A -- point de "croisement" des axes pour les graduations
+    options.originloc = toComplex(options.originloc)
     options.legend = options.legend or {"",""} -- légende
     options.legendpos = options.legendpos or {0.975,0.975} -- nombre entre 0 et 1
     options.legendsep = options.legendsep or {defaultlegendsep,defaultlegendsep} 
@@ -540,14 +552,30 @@ function luadraw_graph2d:Daxes(d, options)
     options.labelstyle = options.labelstyle or {"S","W"} -- "auto"  or "E" or "W",...
     options.labelangle = options.labelangle or {0,0} -- angle des labels en degrés par rapport à l'horizontale    
     options.labelcolor = options.labelcolor or {"",""}    
-    options.labelshift = options.labelshift or {0,0} -- décalage systématique des labels
+    options.grid = options.grid or false
+    if type(options.grid) == "table" then -- {boolean, boolean}
+        options.showlines = options.grid
+        options.grid = options.grid[1] or options.grid[2]
+    elseif options.grid then
+        options.showlines = {true, true}
+    end
+    if options.grid then
+        local v, h = 0, 0
+        if options.showlines[1] then v = defaultlabelshift end
+        if options.showlines[2] then h = defaultlabelshift end
+        options.labelshift = options.labelshift or {v,h} -- décalage systématique des labels en fonction de la grille
+    else
+        options.labelshift = options.labelshift or {0,0} -- décalage systématique des labels
+    end
+    options.xynode_options = options.xynode_options or ""
+    options.xnode_options = options.xnode_options or options.xynode_options
+    options.ynode_options = options.ynode_options or options.xynode_options
     options.nbdeci = options.nbdeci or {2,2} -- nb de décimales, 2 par défaut
-    options.numericFormat = options.numericFormat or {0,0} -- format d'affichage
+    options.use_siunitx = options.use_siunitx or {siunitx,siunitx} -- format d'affichage géré par siunitx ou pas
     options.myxlabels = options.myxlabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} or chaine vide
     options.myylabels = options.myylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} or chaine vide
     
-    options.grid = options.grid or false
-    options.drawbox =options.drawbox or false
+    options.drawbox = options.drawbox or false
     options.gridstyle = options.gridstyle or "solid"
     options.subgridstyle = options.subgridstyle or "solid"
     options.gridcolor = options.gridcolor or "gray"
@@ -573,8 +601,8 @@ function luadraw_graph2d:Daxes(d, options)
         if options.grid then
             -- dessin de la grille
             -- pour que les labels ne soient pas sur les traits de la grille
-            if options.labelshift[1] == 0 then options.labelshift = {defaultlabelshift,options.labelshift[2]} end
-            if options.labelshift[2] == 0 then options.labelshift = {options.labelshift[1],defaultlabelshift} end
+            --if options.labelshift[1] == 0 then options.labelshift = {defaultlabelshift,options.labelshift[2]} end
+            --if options.labelshift[2] == 0 then options.labelshift = {options.labelshift[1],defaultlabelshift} end
             if options.gradlimits[1] == "auto" then 
                 if options.limits[1] ~= "auto" --then x1 = z1.re; x2 = z2.re
                 then x1 = options.limits[1][1]; x2 = options.limits[1][2]
@@ -595,7 +623,7 @@ function luadraw_graph2d:Daxes(d, options)
             options.unit = oldunit
         end
         -- dessin des axes
-        self:DaxeX( {options.originloc,xpas}, {
+        self:DaxeX( {Z(options.originloc.re,A.im),xpas}, {
              limits = options.limits[1],
              gradlimits = options.gradlimits[1],
              unit = options.unit[1],
@@ -618,13 +646,14 @@ function luadraw_graph2d:Daxes(d, options)
              xylabelsep = options.xylabelsep[1], 
              legendsep = options.legendsep[1],
              tickdir = options.tickdir[1],
-             numericFormat = options.numericFormat[1],
+             use_siunitx = options.use_siunitx[1],
              legendangle = options.legendangle[1],
              legendstyle = options.legendstyle[1],
              labelshift = options.labelshift[1],
+             node_options = options.xnode_options,
              mylabels = options.myxlabels})
              
-        self:DaxeY( {options.originloc,ypas}, {
+        self:DaxeY( {Z(A.re,options.originloc.im),ypas}, {
              limits = options.limits[2],
              gradlimits = options.gradlimits[2],
              unit = options.unit[2],
@@ -642,15 +671,16 @@ function luadraw_graph2d:Daxes(d, options)
              labeltext = options.labeltext[2],
              labelstyle = options.labelstyle[2],
              labelangle = options.labelangle[2],
-             labelcolor = options.labelcolor[1],
+             labelcolor = options.labelcolor[2],
              xyticks = options.xyticks[2],
              xylabelsep = options.xylabelsep[2], 
              legendsep = options.legendsep[2],
              tickdir = options.tickdir[2],
-             numericFormat = options.numericFormat[2],
+             use_siunitx = options.use_siunitx[2],
              legendangle = options.legendangle[2],
              legendstyle = options.legendstyle[2],
              labelshift = options.labelshift[2],
+             node_options = options.ynode_options,
              mylabels = options.myylabels})             
     end
 end
@@ -672,7 +702,7 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     local subgridwidth = options.subgridwidth or 2 -- epaisseur 
     local subgridstyle = options.subgridstyle or "solid"
     local originloc = options.originloc or A  -- localisation de l'origine
-
+    local show = options.showlines or {true,true}
     local xnbsubdiv = nbsubdiv[1]+1
     local ynbsubdiv = nbsubdiv[2]+1
     local xdep, ydep = A.re, A.im
@@ -693,25 +723,28 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     local ymax = y1+k*ypas
     local xdiv = math.floor((xmax-xmin)/xpas)
     local ydiv = math.floor((ymax-ymin)/ypas)
-    print(xmin, xmax, xdiv)
     self:Saveattr() --; self:Arrows("-"); self:Filloptions("none")
     --grille secondaire
     local subgridpasx = xpas/xnbsubdiv
     local subgridpasy = ypas/ynbsubdiv
     local grille = {}
-    local x = xmin
-    for k = 1, nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas) do -- 
-        if (x>=A.re) and (x<=B.re) and ((k-1)%xnbsubdiv ~= 0) then 
-            insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) 
+    if show[1] then
+        local x = xmin
+        for k = 1, nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas) do -- 
+            if (x>=A.re) and (x<=B.re) and ((k-1)%xnbsubdiv ~= 0) then 
+                insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) 
+            end
+            x = x + subgridpasx
         end
-        x = x + subgridpasx
     end
-    local y = ymin
-    for k = 1, nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas) do --
-        if (y>=A.im) and (y<=B.im) and ((k-1)%ynbsubdiv ~= 0) then  
-            insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) 
+    if show[2] then 
+        local y = ymin
+        for k = 1, nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas) do --
+            if (y>=A.im) and (y<=B.im) and ((k-1)%ynbsubdiv ~= 0) then  
+                insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) 
+            end
+            y = y + subgridpasy
         end
-        y = y + subgridpasy
     end
     if #grille > 0 then
         self:Lineoptions(subgridstyle,subgridcolor,subgridwidth)
@@ -719,19 +752,23 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     end
     -- grille principale}
     grille = {}
-    x = xmin
-    for k = 0, xdiv do 
-        if (x>=A.re) and (x<=B.re) then
-            insert(grille,{Z(x,ydep),"m",Z(x,yfin),"l"})
+    if show[1] then
+        x = xmin
+        for k = 0, xdiv do 
+            if (x>=A.re) and (x<=B.re) then
+                insert(grille,{Z(x,ydep),"m",Z(x,yfin),"l"})
+            end
+            x = x+xpas 
         end
-        x = x+xpas 
     end
-    y = ymin
-    for k = 0, ydiv do
-        if (y>=A.im) and (y<=B.im) then
-            insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"})
+    if show[2] then
+        y = ymin
+        for k = 0, ydiv do
+            if (y>=A.im) and (y<=B.im) then
+                insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"})
+            end
+            y = y+ypas 
         end
-        y = y+ypas 
     end
     if #grille > 0 then
         self:Lineoptions(gridstyle,gridcolor,gridwidth); self:Linecap("round")
@@ -785,7 +822,7 @@ function luadraw_graph2d:Dgradbox(d, options)
     options.labelcolor = options.labelcolor or {"",""}
     options.labelshift = options.labelshift or {0,0} -- décalage systématique des labels
     options.nbdeci = options.nbdeci or {2,2} -- nb de décimales, 2 par défaut
-    options.numericFormat = options.numericFormat or {0,0} -- format d'affichage
+    options.use_siunitx = options.use_siunitx or {siunitx,siunitx} -- format d'affichage
     options.myxlabels = options.myxlabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} or chaine vide
     options.myylabels = options.myylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} or chaine vide
     
@@ -823,7 +860,7 @@ function luadraw_graph2d:Dgradbox(d, options)
         originnum = options.originnum[1], labelden = options.labelden[1], labeltext = options.labeltext[1], 
         labelstyle = options.labelstyle[1], xyticks = options.xyticks[1], labelcolor = options.labelcolor[1],
         xylabelsep = options.xylabelsep[1], legendsep = options.legendsep[1], labelangle = options.labelangle[1], labelstyle = options.labelstyle[1], 
-        tickdir = options.tickdir[1], numericFormat = options.numericFormat[1], mylabels = options.myxlabels, legendangle = options.legendangle[1] })
+        tickdir = options.tickdir[1], use_siunitx = options.use_siunitx[1], mylabels = options.myxlabels, legendangle = options.legendangle[1] })
        
     self:DaxeY( {Z(x1,y1_), ypas}, -- axe de gauche
         {limits = options.limits[2], gradlimits = options.gradlimits[2], unit = options.unit[2], showaxe = 0, tickpos = options.tickpos[2], 
@@ -832,7 +869,7 @@ function luadraw_graph2d:Dgradbox(d, options)
         labelden = options.labelden[2], labeltext = options.labeltext[2], labelstyle = options.labelstyle[2], xyticks = options.xyticks[2],
         xylabelsep = options.xylabelsep[2], labelcolor = options.labelcolor[2], legendsep = options.legendsep[2],
         legendstyle = options.legendstyle[2], labelangle = options.labelangle[2],  
-        tickdir = options.tickdir[2], numericFormat = options.numericFormat[2],mylabels = options.myylabels, legendangle = options.legendangle[2] })
+        tickdir = options.tickdir[2], use_siunitx = options.use_siunitx[2],mylabels = options.myylabels, legendangle = options.legendangle[2] })
         
     self:DaxeY( {Z(x2,y1_), ypas},  -- axe de droite
         {legend = "", limits = options.limits[2], gradlimits = options.gradlimits[2], unit = options.unit[2], showaxe = 0, 

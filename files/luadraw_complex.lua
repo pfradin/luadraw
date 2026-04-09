@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2026/03/12
--- version 2.7
+-- date 2026/04/09
+-- version 2.8
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -148,6 +148,49 @@ function complex.exp(u)
     if (u == nil) then return end    
     local r = math.exp(u.re)
     return complex:new( r*math.cos(u.im), r*math.sin(u.im) )
+end
+
+function complex.cosh(u)
+    u = toComplex(u)
+    if (u == nil) then return end    
+    local r1, r2 = complex.exp(u), complex.exp(-u)
+    return (r1+r2)/2
+end
+
+function complex.sinh(u)
+    u = toComplex(u)
+    if (u == nil) then return end    
+    local r1, r2 = complex.exp(u), complex.exp(-u)
+    return (r1-r2)/2
+end
+
+local powint
+powint = function(z,n)
+    if n == 0 then return 1
+    elseif n < 0 then
+        return powint(1/z,-n)
+    elseif n%2 == 0 then
+        return powint(z*z,n//2)
+    elseif n == 1 then return z
+    else
+        return z*powint(z*z,n//2)
+    end
+end
+
+function complex.pow(z,n)
+    if type(n) ~= "number" then return end
+    z = toComplex(z)
+    if complex.isNul(z) then
+        if n > 0 then return 0 else return end
+    end
+    if math.floor(n) == n then
+        return powint(z,n)
+    else
+        local r, theta = complex.abs(z), complex.arg(z)
+        if theta ~= nil then
+            return Zp(r^n,n*theta)
+        end
+    end
 end
 
 -- arrondir

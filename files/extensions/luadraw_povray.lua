@@ -1,6 +1,6 @@
 -- luadraw_povray.lua
--- date 2026/03/12
--- version 2.7
+-- date 2026/04/09
+-- version 2.8
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -77,6 +77,7 @@ function graph3d:Pov_new(options)
     Pov_shadow = options.shadow
     if Pov_shadow == nil then Pov_shadow = Pov_default_shadow end
     Pov_includefiles = options.include or Pov_default_includefiles  -- "{file1.inc", "file2.inc", ...}
+    if type(Pov_includefiles) == "string" then Pov_includefiles = {Pov_includefiles} end
     Pov_cmd_ext = options.pov_cmd_ext or Pov_default_cmd_ext
     Pov_param = options.param or Pov_default_param
     if os.type == "windows" then
@@ -92,6 +93,16 @@ function graph3d:Pov_include(...) -- "file1.inc", "file2.inc", ...
     for _, incfile in ipairs{...} do
         table.insert(Pov_includefiles, incfile)
     end
+end
+
+local full_name = function(filename)
+    local lfs = require "lfs"
+    local cwd = lfs.currentdir()
+    local name = cwd..'/'..filename
+    if os.type == "windows" then
+        name = string.gsub(name, "/", "\\")
+    end
+    return name    
 end
 
 function graph3d:Pov_save(filename) -- filename without path, without extension
@@ -127,7 +138,7 @@ function graph3d:Pov_exec(filename) -- filename without path, without extension
         param = param .. " +UA" --transparent background
     end  
     if os.type == "windows" then
-        cmd = Pov_cmd_win.." "..Pov_size..param.." "..filename.." "..Pov_param_ext..Pov_cmd_ext
+        cmd = Pov_cmd_win.." "..Pov_size..param..' "'..full_name(filename)..'" '..Pov_param_ext..Pov_cmd_ext
     else
         cmd = Pov_cmd_unix.." "..Pov_size..param.." "..filename..Pov_cmd_ext
     end
@@ -159,7 +170,7 @@ end
 
 local pov_writeln = function(str)
 --  écrit la chaîne str avec retour à la ligne
-    pov_write(str)
+    if str ~= nil then pov_write(str) end
     table.insert(Pov_export,"") -- on démarre une nouvelle ligne   
 end
 
@@ -175,31 +186,33 @@ local strdot = function(A)
     return "<"..tostring(-A.x)..","..tostring(A.y)..","..tostring(A.z)..">"
 end
 
+local strfacet = function(f) 
+    return "<"..tostring(f[1]-1)..","..tostring(f[2]-1)..","..tostring(f[3]-1)..">"
+end
+
 local strdot2 = function(A) -- without changing x-coordinate
     return "<"..tostring(A.x)..","..tostring(A.y)..","..tostring(A.z)..">"
 end
 
-
-local write_rendering = function(name,color,opacity,ambient,diffuse,phong,shadow,mytexture)
-    Pov_export = Pov_renderings
-    pov_writeln("\nobject{ "..name)
-    if mytexture ~= nil then
-        pov_writeln("  "..mytexture)
+local define_options = function(self,options) -- common options
+    options = options or {}
+    if options.render == nil then options.render = true end
+    options.name = options.name or "object"..get_num()
+    options.matrix = options.matrix
+    options.color = options.color or White
+    options.opacity = options.opacity or 1
+    options.ambient = options.ambient or 0.35
+    options.diffuse = options.diffuse or 0.8
+    options.phong = options.phong or 0.5
+    options.shadow = options.shadow
+    if options.shadow == nil then options.shadow = true end
+    if options.matrix == nil then options.matrix = self.matrix3d
     else
-        pov_writeln("  texture{ ")
-        if type(color) == "string" then -- pigment can come from a file as textures.inc
-            pov_writeln("         pigment{ "..color.."}") -- transmit "..tostring(1-opacity).."}")
-        else
-            pov_writeln("         pigment{ color rgbt<"..tostring(color[1])..","..tostring(color[2])..","..tostring(color[3])..","..tostring(1-opacity)..">}")
-        end
-        pov_writeln("         finish{ ambient "..tostring(ambient).." diffuse "..tostring(diffuse).." phong "..tostring(phong).."} }")
+        options.matrix = composematrix3d(self.matrix3d,options.matrix)
     end
-    if not shadow then pov_writeln("  no_shadow}") 
-    else
-        pov_writeln("      }")
-    end
-    Pov_export = Pov_declarations
+    return options
 end
+
 
 local write_matrix2 = function(matrix) -- with changing of x-coordinate
         local V4, V1, V2, V3 = matrix[1], matrix[2], matrix[3], matrix[4]
@@ -246,6 +259,37 @@ local write_clip = function(cliplist,box)
                 pov_writeln("  clipped_by { plane{ "..f(-M2)..", "..tostring(d).." } }")
             end
         end
+    end
+end
+
+local write_rendering = function(options) --function(name,color,opacity,ambient,diffuse,phong,shadow,mytexture)
+     local name, color, opacity, ambient, diffuse, phong, shadow, mytexture = options.name, options.color, options.opacity, options.ambient, options.diffuse, options.phong, options.shadow,mytexture
+    Pov_export = Pov_renderings
+    pov_writeln("\nobject{ "..name)
+    if mytexture ~= nil then
+        pov_writeln("  "..mytexture)
+    else
+        pov_writeln("  texture{ ")
+        if type(color) == "string" then -- pigment can come from a file as textures.inc
+            pov_writeln("         pigment{ "..color.."}") -- transmit "..tostring(1-opacity).."}")
+        else
+            pov_writeln("         pigment{ color rgbt<"..tostring(color[1])..","..tostring(color[2])..","..tostring(color[3])..","..tostring(1-opacity)..">}")
+        end
+        pov_writeln("         finish{ ambient "..tostring(ambient).." diffuse "..tostring(diffuse).." phong "..tostring(phong).."} }")
+    end
+    if not shadow then pov_writeln("  no_shadow}") 
+    else
+        pov_writeln("      }")
+    end
+    Pov_export = Pov_declarations
+end
+
+local write_modifiers_rendering = function(options) --function(name,color,opacity,ambient,diffuse,phong,shadow,mytexture)
+        --modifiers
+    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
+    if options.clipplane ~= nil then  write_clip(options.clipplane,false) end
+    if options.render then -- rendering
+        write_rendering(options)
     end
 end
 
@@ -303,29 +347,57 @@ function graph3d:Pov_strdot(A)
     return strdot(A)
 end
 
+local writedotlist = function(dotlist)
+    local nbcol = 3
+    local nb = #dotlist
+    local nblg = nb//nbcol
+    local sep = ""
+    for k = 1, nblg do
+        local dep = nbcol*(k-1)+1
+        local str = "      "
+        for j = 0, nbcol-1 do
+            str = str..sep..strdot(dotlist[dep+j]); sep= ", "
+        end
+        pov_writeln( str )
+    end
+    if nb%nbcol ~= 0 then
+        pov_write("      ")
+        for k = nbcol*nblg+1, nb do
+            pov_write( sep..strdot(dotlist[k]))
+        end
+        pov_writeln()
+    end
+end
+
+local writefacetlist = function(facetlist)
+    local nbcol = 6
+    local nb = #facetlist
+    local nblg = nb//nbcol
+    local sep = ""
+    for k = 1, nblg do
+        local dep = nbcol*(k-1)+1
+        local str = "      "
+        for j = 0, nbcol-1 do
+            str = str..sep..strfacet(facetlist[dep+j]); sep= ", "
+        end
+        pov_writeln( str )
+    end
+    if nb%nbcol ~= 0 then
+        pov_write("      ")
+        for k = nbcol*nblg+1, nb do
+            pov_write( sep..strfacet(facetlist[k]))
+        end
+        pov_writeln()
+    end
+end
 ------------------------------- implicit surf f(x,y,z)=0 ------------------------------
 
 function graph3d:Pov_implicit( povfunc, luafunc, options)
 -- luafunc : lua function of (x,y,z), to draw luafunc(x,y,z)=0
 -- povfunc : povray version of the function (string)
 -- options = {clipbox= default, clipplane, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil,containedby = default win 3d }
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    local containedby = options.containedby
+    options = define_options(self,options)
+     local containedby = options.containedby
     if containedby == nil then 
         local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
         containedby = {M(x1,y1,z1), M(x2,y2,z2)}
@@ -355,7 +427,7 @@ function graph3d:Pov_implicit( povfunc, luafunc, options)
     end
     
     local M1, M2 = table.unpack( containedby )
-    pov_writeln("\n#declare "..name.." =  isosurface{ ")
+    pov_writeln("\n#declare "..options.name.." =  isosurface{ ")
     pov_writeln("   function{"..povfunc.."}")
     if isPoint3d(M2) then 
         pov_writeln("    contained_by{ box{ ".. strdot2(M1).." "..strdot2(M2).."} }")
@@ -364,45 +436,25 @@ function graph3d:Pov_implicit( povfunc, luafunc, options)
     end
     pov_writeln("    open") 
     pov_writeln("    evaluate "..max_grad(luafunc,containedby)..", 1.5, 0.7") 
-    write_matrix2(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane,false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix2(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
 
 --------------- parametric surface ----------------------------
 
-function graph3d:Pov_surface( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)
+function graph3d:Pov_surface1( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)
 -- xfunc = string representing x(u,v), yfunc = string representing y(u,v), zfunc = string representing z(u,v)
 -- options = {clipbox= default, clipplane, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, max_grad=default, containedby=default win3d}
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local shadow = options.shadow
-    local max_grad = options.max_grad
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
+    options = define_options(self,options)
     local containedby = options.containedby
     if containedby == nil then 
         local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
         containedby = {M(x1,y1,z1), M(x2,y2,z2)}
     end
     local M1, M2 = table.unpack( containedby )
-    pov_writeln("\n#declare "..name.." = parametric{")
+    pov_writeln("\n#declare "..options.name.." = parametric{")
     pov_writeln("    function{"..xfunc.."},")
     pov_writeln("    function{"..yfunc.."},")
     pov_writeln("    function{"..zfunc.."}")
@@ -415,13 +467,45 @@ function graph3d:Pov_surface( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)
     if max_grad ~= nil then
         pov_writeln("    max_gradient "..tostring(max_grad)) 
     end
-    write_matrix2(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane,false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix2(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
+end
+
+function graph3d:Pov_surface2(f,u1,u2,v1,v2,options)
+-- draw the surface (u,v) -> f(u,v) dans R^3 using normals
+-- u1 et u2 sont les bornes pour u, et v1, v2 pour v
+-- options = {grid={25,25}, clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, clip=false}
+    options = define_options(self,options)
+    local grid = options.grid or {25,25}
+    local F = obj_surface(f,u1,u2,v1,v2,grid)
+    if F == nil then return end
+    local clip = options.clip or false
+    if clip then 
+        local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
+        options.clipbox = {M(x1,y1,z1), M(x2,y2,z2)}
+    end
+    pov_writeln("\n#declare "..options.name.." = mesh2{")
+    pov_writeln("         vertex_vectors{ "..tostring(#F.vertices)..",")
+    writedotlist(F.vertices)
+    pov_writeln("                       }")
+    pov_writeln("         normal_vectors{ "..tostring(#F.normals)..",")
+    writedotlist(F.normals)
+    pov_writeln("                       }")
+    pov_writeln("         face_indices{ "..tostring(#F.facets)..",")
+    writefacetlist(F.facets)
+    pov_writeln("                       }")
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
+    pov_writeln("  }")
+end
+
+function graph3d:Pov_surface( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)
+    if type(yfunc) == "string" then
+        self:Pov_surface1( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)
+    else
+        self:Pov_surface2( xfunc, yfunc, zfunc, u1, u2, v1) -- ici f=xfunc, u1=yfunc, u2=zfunc, v1=u1, v2=u2 et options=v1
+    end
 end
 
 ------------------- plane ------------------------------------------
@@ -440,7 +524,7 @@ function graph3d:Pov_plane(P, options) -- plane as facet
         A = mtransform3d(A,matrix)
         n = mLtransform3d(n,matrix)
     end
-    options.matrix = ID3d
+    options.matrix = nil
     local face = self:Plane2facet({A,n},options.scale)
     if face ~= nil then 
         self:Pov_facet(face, options)
@@ -451,22 +535,7 @@ end
 function graph3d:Pov_plane2( P, options)
 -- P = {A, N} A = dot on plane, N = normal vector
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil}
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
+    options = define_options(self,options)
     local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
     if options.clipbox == nil then 
         options.clipbox = {M(x1,y1,z1), M(x2,y2,z2)}
@@ -478,14 +547,10 @@ function graph3d:Pov_plane2( P, options)
     local O = proj3d(Origin, P)
     local d = pt3d.abs(O)
     if pt3d.dot(O,N) < 0 then d = -d end -- distance à l'origine
-    pov_writeln("\n#declare "..name.." = plane{")
+    pov_writeln("\n#declare "..options.name.." = plane{")
     pov_writeln("    "..strdot(N)..", "..tostring(d))    
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")    
 end
 
@@ -495,24 +560,10 @@ end
 function graph3d:Pov_facet(F,options)
 -- F: polyhedron or list of facets
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, edge=false, edgecolor=default, edgewidth=default, hidden=default, hiddenstyle=default}
-    options = options or {}
+    options = define_options(self,options)
     if F == nil then return end
     if isPoint3d(F[1]) then F = {F} end
     local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
     local edge = options.edge or false
     local edgecolor = options.edgecolor or Black
     local edgewidth = options.edgewidth or self.param.linewidth
@@ -522,48 +573,63 @@ function graph3d:Pov_facet(F,options)
         if F == nil then return end
         local rep = {}
         if F.vertices ~= nil then --polyhedron
-            rep.vertices = table.copy(F.vertices)
-            rep.facets = {}
+            --rep.vertices = table.copy(F.vertices)
+            --rep.facets = {}
             for _,f in ipairs(F.facets) do
-                local a, c, b = f[1], f[2]
-                for k = 3, #f do
-                    b = c; c = f[k]
-                    table.insert(rep.facets,{a,b,c})
+                if #f == 3 then table.insert(rep,f)
+                else
+                    local a, c, b = f[1], f[2]
+                    for k = 3, #f do
+                        b = c; c = f[k]
+                        table.insert(rep,{a,b,c})
+                    end
                 end
             end
         else  -- facets
             for _,f in ipairs(F) do
-                local a, c, b = f[1], f[2]
-                for k = 3, #f do
-                    b = c; c = f[k]
-                    table.insert(rep,{a,b,c})
+                local n= #f
+                if n == 3 then table.insert(rep, f) --triangle
+                elseif n == 4 then -- quad
+                    local a, b, c, d = f[1], f[2], f[3], f[4]
+                    if pt3d.abs(c-a) < pt3d.abs(d-b) then
+                        table.insert(rep, {a,c,d}); table.insert(rep, {c,a,b});
+                    else
+                        table.insert(rep, {b,d,a}); table.insert(rep, {d,b,c});
+                    end
+                else --more than 4 vertices
+                    local a, c, b = f[1], f[2]
+                    for k = 3, #f do
+                        b = c; c = f[k]
+                        table.insert(rep,{a,b,c})
+                    end
                 end
             end
-            rep = facet2poly(rep)
         end
         return rep
     end
     
     local F1 = triangulate(F)
-    pov_writeln("\n#declare "..name.." = mesh2{")
-    pov_writeln("         vertex_vectors{ "..tostring(#F1.vertices)..",")
-    local sep = ""
-    for _, S in ipairs(F1.vertices) do
-        pov_writeln("          "..sep..strdot(S)); sep = ","
+    if F.vertices ~= nil then -- polyhedron
+        pov_writeln("\n#declare "..options.name.." = mesh2{")
+        pov_writeln("         vertex_vectors{ "..tostring(#F.vertices)..",")
+        writedotlist(F.vertices)
+        pov_writeln("                       }")
+        if F.normals ~= nil then
+            pov_writeln("         normal_vectors{ "..tostring(#F.normals)..",")
+            writedotlist(F.normals)
+            pov_writeln("                       }")
+        end
+        pov_writeln("         face_indices{ "..tostring(#F1)..",")
+        writefacetlist(F1)
+        pov_writeln("                       }")
+    else
+        pov_writeln("\n#declare "..options.name.." = union{")
+        for _, f in ipairs(F1) do
+            pov_writeln("           triangle{ "..strdot(f[1]).." , "..strdot(f[2]).." , "..strdot(f[3]).." }")
+        end
     end
-    pov_writeln("                       }")
-    pov_writeln("         face_indices{ "..tostring(#F1.facets)..",")
-    sep = ""
-    for _,f in ipairs(F1.facets) do
-        pov_writeln("           "..sep.."<"..tostring(f[1]-1)..","..tostring(f[2]-1)..","..tostring(f[3]-1)..">"); sep = ","
-    end
-    pov_writeln("                       }")
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
     if edge then
         local L = facetedges(F)
@@ -571,102 +637,44 @@ function graph3d:Pov_facet(F,options)
     end
 end
 
-
 ------------------------- geometric forms ----------------------------
 function graph3d:Pov_box(A,B,options)
 -- A = M(xmin,ymin,zmin), B = M(xmax,ymax,zmax)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil}
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = box{")
+    options = define_options(self,options)
+    pov_writeln("\n#declare "..options.name.." = box{")
     pov_writeln("    "..strdot(A).." "..strdot(B))
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
 function graph3d:Pov_torus( A,R,r,N,options)
 -- A = center, R = big radius, r = small radius, N = normal vector
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil}
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    local V, mat = pt3d.normalize(N) -- mat = matrix to correctly orient the torus
+    options = define_options(self,options)
+     local V, mat = pt3d.normalize(N) -- mat = matrix to correctly orient the torus
     if math.abs(V.y) == 1 then 
         mat = {A,vecI,vecJ,vecK} 
     else
         mat = matrix3dof( function(X) return A+rotate3d(X, math.acos(V.y)*rad,{Origin, pt3d.prod(vecJ,V)}) end)
     end
-    matrix = composematrix3d(matrix, mat)
-    pov_writeln("\n#declare "..name.." = torus{")
+    options.matrix = composematrix3d(options.matrix, mat)
+    pov_writeln("\n#declare "..options.name.." = torus{")
     pov_writeln("    ".. tostring(R)..", "..tostring(r))
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")    
 end
 
 function graph3d:Pov_sphere(A,R,options)
 -- A = center, R = big radius, r = small radius, N = normal vector
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil}
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = sphere{")
+    options = define_options(self,options)
+    pov_writeln("\n#declare "..options.name.." = sphere{")
     pov_writeln("    "..strdot(A).." "..tostring(R))
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
@@ -674,32 +682,13 @@ end
 function graph3d:Pov_cylinder(A,R,B, options)
 -- A = center, R = big radius, r = small radius
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, hollow=false}
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
+    options = define_options(self,options)
     local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = cylinder{")
+    pov_writeln("\n#declare "..options.name.." = cylinder{")
     pov_writeln("    "..strdot(A).." "..strdot(B).." "..tostring(R))
     if hollow then pov_writeln("    open") end
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
@@ -707,32 +696,13 @@ function graph3d:Pov_cone(A,R,B,r,options)
 -- A = center, R = big radius, r = small radius
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, hollow=false}
     if type(r) == "table" then options = r; r = 0 end
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
+    options = define_options(self,options)
     local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = cone{")
+    pov_writeln("\n#declare "..options.name.." = cone{")
     pov_writeln("    "..strdot(A).." "..tostring(R).." "..strdot(B).." "..tostring(r))
     if hollow then pov_writeln("    open") end
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
@@ -753,22 +723,8 @@ function graph3d:Pov_polyline(L, options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, width=8, close=false, arrows=0, hidden=default,hiddenstyle=defaut}
     if L == nil then return end
     options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or Black
-    local opacity = options.opacity or self.param.lineopacity
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
+    options.color = options.color or Black
+    options = define_options(self,options)
     local width = options.width or self.param.linewidth
     width = width*pt/10
     local arrows = options.arrows or 0
@@ -780,7 +736,7 @@ function graph3d:Pov_polyline(L, options)
     local hiddenstyle = options.hiddenstyle or Hiddenlinestyle
 
     if isPoint3d(L[1]) then L = {L} end
-    if not isID3d(matrix) then L = mtransform3d(L,matrix) end
+    if not isID3d(options.matrix) then L = mtransform3d(L,options.matrix) end
     local listarrows, listdots
     local arrows_radius = arrowscale*(width+0.075)
     
@@ -813,7 +769,7 @@ function graph3d:Pov_polyline(L, options)
     if options.clipplane ~= nil then 
         L = cutpolyline3d(L,options.clipplane,close)
     end
-    pov_writeln("\n#declare "..name.." =  union{")
+    pov_writeln("\n#declare "..options.name.." =  union{")
     for _, cp in ipairs(L) do
         prepare_cp(cp)
         for _,arr in ipairs(listarrows) do
@@ -867,9 +823,7 @@ function graph3d:Pov_polyline(L, options)
             end
         end
     end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    if options.render then write_rendering(options) end
     pov_writeln("  }")
     if hidden then
         options.hidden = false; options.style = hiddenstyle
@@ -892,28 +846,15 @@ function graph3d:Pov_dots(L, options)
     if L == nil then return end
     if isPoint3d(L) then L = {L} end
     options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local color = options.color or Black
+    options.color = options.color or Black
+    options = define_options(self,options)
     local style = options.style or "ball"
     local dotscale = options.dotscale or 1
     local opacity = options.opacity or self.param.lineopacity
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    local matrix = options.matrix    
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    if not isID3d(matrix) then L = mtransform3d(L,matrix) end
+    if not isID3d(options.matrix) then L = mtransform3d(L,options.matrix) end
     local deb, fin = "", ""
     if #L > 1 then deb = "union{"; fin = "}" end
-    pov_writeln("\n#declare "..name.." =  "..deb)
+    pov_writeln("\n#declare "..options.name.." =  "..deb)
     if style == "ball" then
         local r = dotscale*0.075
         for _, A in ipairs(L) do 
@@ -925,143 +866,56 @@ function graph3d:Pov_dots(L, options)
             pov_writeln("    box{"..strdot(M(A.x-d,A.y-d,A.z-d)).." "..strdot(M(A.x+d,A.y+d,A.z+d))..fin)
         end
     end
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end    
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
 ----------------- CSG : union, intersection, difference, merge ---------
 function graph3d:Pov_union(list, options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil}
-    if type(r) == "table" then options = r; r = 0 end
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = union{")
+    options = define_options(self,options)
+    pov_writeln("\n#declare "..options.name.." = union{")
     for _,obj in ipairs(list) do
         pov_writeln("    object { "..obj.." }")
     end
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
 function graph3d:Pov_intersection(list, options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, hollow=false}
-    if type(r) == "table" then options = r; r = 0 end
-    options = options or {}
+    options = define_options(self,options)
     local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = intersection{")
+     pov_writeln("\n#declare "..options.name.." = intersection{")
     for _,obj in ipairs(list) do
         pov_writeln("    object { "..obj.." }")
     end
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
 function graph3d:Pov_merge(list, options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, hollow=false}
-    if type(r) == "table" then options = r; r = 0 end
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = merge{")
+    options = define_options(self,options)
+    pov_writeln("\n#declare "..options.name.." = merge{")
     for _,obj in ipairs(list) do
         pov_writeln("    object { "..obj.." }")
     end
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
 function graph3d:Pov_difference(list, options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, hollow=false}
-    if type(r) == "table" then options = r; r = 0 end
-    options = options or {}
-    local render = options.render
-    if render == nil then render = true end
-    local name = options.name or "object"..get_num()
-    local matrix = options.matrix
-    local color = options.color or White
-    local opacity = options.opacity or 1
-    local ambient = options.ambient or 0.35
-    local diffuse = options.diffuse or 0.8
-    local phong = options.phong or 0.5
-    local hollow = options.hollow or false
-    local shadow = options.shadow
-    if shadow == nil then shadow = true end
-    if matrix == nil then matrix = self.matrix3d
-    else
-        matrix = composematrix3d(self.matrix3d,matrix)
-    end
-    pov_writeln("\n#declare "..name.." = difference{")
+    options = define_options(self,options)
+    pov_writeln("\n#declare "..options.name.." = difference{")
     pov_writeln("    object { "..list[1].." }")
     pov_writeln("    object { "..list[2].." }")
-    write_matrix(matrix)
-    if options.clipbox ~= nil then  write_clip(options.clipbox, true) end
-    if options.clipplane ~= nil then  write_clip(options.clipplane, false) end
-    if render then
-        write_rendering(name,color,opacity,ambient,diffuse,phong,shadow,options.mytexture)
-    end
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
 end
 
@@ -1070,6 +924,6 @@ function graph3d:Pov_comment(comment) -- writes comment in pov source
     pov_writeln("//"..comment)
 end    
 
-function graph3d:Pov_special(user_content) -- written directly into the source code.
+function graph3d:Pov_special(user_content) -- writes directly into the source code.
     pov_writeln(user_content)
 end
