@@ -1,6 +1,6 @@
 -- luadraw_shadedforms.lua 
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -10,7 +10,11 @@
 
 -- to draw shaded polylines, shaded rectangles, shaded regions, color bars
 
-require 'luadraw_palettes'
+
+local ld = luadraw
+local graph = ld.graph
+local cpx = ld.cpx
+local Z = cpx.Z
 
 function graph:Dshadedpolyline(L1,pal,options)
 -- L1 is a list of complex numbers or a list of list od complex numbers
@@ -21,13 +25,15 @@ function graph:Dshadedpolyline(L1,pal,options)
     -- close = false (boolean indicating whether the line should be close)
     -- clip = {x1,x2,y1,y2} clipping window, or nil for the default window
     options = options or {}
+    local oldepsilon = ld.epsilon
+    ld.epsilon = 1e-10
     local values = options.values or "x"
     local wd = options.width or self.param.linewidth
     local close = options.close or false
     local clip = options.clip or nil
     local x1,x2,y1,y2
     if clip ~= nil then x1,x2,y1,y2 = table.unpack(clip) end
-    local ep = wd/20*pt
+    local ep = wd/20*ld.pt
     local f -- function applied at each point of L
     if values == "x" then f = function(x,y) return x end 
     elseif values == "y" then f = function(x,y) return y end 
@@ -38,14 +44,14 @@ function graph:Dshadedpolyline(L1,pal,options)
     local L = table.copy(L1)
     local i = cpx.I
 
-    if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
+    if (type(L[1]) == "number") or cpx.isComplex(L[1]) then L = {L} end
     if clip ~= nil then
-        L = clippolyline(table.copy(L),x1,x2,y1,y2,close)
+        L = ld.clippolyline(table.copy(L),x1,x2,y1,y2,close)
     end
     local mat = self.matrix
     local transf
-    if isID(mat) then transf = function(l) return l end
-    else transf = function(l) return mtransform(l,mat) end
+    if ld.isID(mat) then transf = function(l) return l end
+    else transf = function(l) return ld.mtransform(l,mat) end
     end
     self:Savematrix(); self:IDmatrix()
     local bord, aux, a, b, c, u, v, w, color_index
@@ -70,13 +76,13 @@ function graph:Dshadedpolyline(L1,pal,options)
         end
         local m2, m1, angle = f(a.re,a.im)
         if Max == Min then color_index = 0 else  color_index = (m2-Min)/(Max-Min) end
-        local c2, c1 = palette(pal,color_index)
+        local c2, c1 = ld.palette(pal,color_index)
         v = cpx.normalize(b-a)
         bord = {a-ep*i*v,a+ep*i*v}
         aux = bord
         c = b; b = a
         for _, z in ipairs(cp) do
-            angle = self:Arg(v)*rad+90
+            angle = self:Arg(v)*ld.rad+90
             a = b; b = c; c = z; u  =-v; v = cpx.normalize(c-b)
             if v == nil then
                 c = b; b = a; v = -u
@@ -85,12 +91,12 @@ function graph:Dshadedpolyline(L1,pal,options)
                 if w == nil then
                     bord = {b+ep*i*u, b-ep*i*u}
                 else
-                    bord = projO( bord,{b,w},u)
+                    bord = ld.projO( bord,{b,w},u)
                 end
                 m1 = m2; m2 = f(b.re,b.im)
                 if Max == Min then color_index = 0 else  color_index = (m2-Min)/(Max-Min) end
-                c1 = c2; c2 = palette(pal,color_index)
-                self:Dpolyline( transf(concat(reverse(aux),bord)), true, "draw=none,left color="..c1..",right color="..c2..",shading angle="..strReal(angle))
+                c1 = c2; c2 = ld.palette(pal,color_index)
+                self:Dpolyline( transf(ld.concat(ld.reverse(aux),bord)), true, "draw=none,left color="..c1..",right color="..c2..",shading angle="..ld.strReal(angle))
                 aux = bord
                 self:Dseg( transf(bord), "arrows=-,line width=0.1pt,color="..c2) -- pour masquer les séparations
             end
@@ -98,13 +104,15 @@ function graph:Dshadedpolyline(L1,pal,options)
         --last one
         m1 = m2; m2 = f(c.re,c.im)
         if Max == Min then color_index = 0 else color_index = (m2-Min)/(Max-Min) end
-        c1 = c2; c2 = palette(pal, color_index)
-        angle = self:Arg(v)*rad+90
+        c1 = c2; c2 = ld.palette(pal, color_index)
+        angle = self:Arg(v)*ld.rad+90
         bord = {c-ep*i*v, c+ep*i*v}
-        self:Dpolyline( transf(concat(reverse(aux),bord)), true,
-           "draw=none,left color="..c1..",right color="..c2..",shading angle="..strReal(angle))
+        self:Dpolyline( transf(ld.concat(ld.reverse(aux),bord)), true,
+           "draw=none,left color="..c1..",right color="..c2..",shading angle="..ld.strReal(angle))
+        if close then self:Dseg( transf(bord), "arrows=-,line width=0.1pt,color="..c2) end -- pour masquer les séparations
     end
     self:Restorematrix()
+    ld.epsilon = oldepsilon
 end
 
 function graph:Dcolorbar(A,pal,options)
@@ -127,7 +135,7 @@ function graph:Dcolorbar(A,pal,options)
         values = addvalues
     end
     if type(values) == "number" then
-        values = linspace(min,max,values)
+        values = ld.linspace(min,max,values)
     else -- table
         table.sort(values)
     end
@@ -136,17 +144,17 @@ function graph:Dcolorbar(A,pal,options)
     local N = #pal
     local dl = L/(N-1)
     local a = A
-    local shadingangle = self:Arg(L)*rad+90
-    local colorB, colorA = rgb(pal[1])
-    local anchors = map(function(v) return A+L*(v-min)/(max-min) end, values)
+    local shadingangle = self:Arg(L)*ld.rad+90
+    local colorB, colorA = ld.rgb(pal[1])
+    local anchors = ld.map(function(v) return A+L*(v-min)/(max-min) end, values)
     for k = 1, N-1 do
-        colorA = colorB; colorB = rgb(pal[k+1])
+        colorA = colorB; colorB = ld.rgb(pal[k+1])
         self:Drectangle(a,a+h,a+h+dl,"line width=0.1pt,color="..colorA..",left color="..colorA..",right color="..colorB..",shading angle="..shadingangle)
         a = a+dl
     end
     local labels, seg = {}, {}
     for k = 1, #values do
-        insert(labels,{"$"..num(values[k],digit).."$", anchors[k], {pos=labelpos}})
+        ld.insert(labels,{"$"..ld.num(values[k],digit).."$", anchors[k], {pos=labelpos}})
         table.insert(seg, {anchors[k], anchors[k]+h})
     end
     self:Drectangle(A,A+L,A+h+L); self:Dpolyline(seg); self:Dlabel(table.unpack(labels))
@@ -188,7 +196,7 @@ function graph:Dshadedrectangle(x1,x2,y1,y2,pal,options)
     local left_colors, right_colors, color = {}, {}
     for j = 0, grid[2] do 
         key = "0/"..j
-        color = palette(pal,(values[key]-Min)/(Max-Min))
+        color = ld.palette(pal,(values[key]-Min)/(Max-Min))
         table.insert(right_colors, color)
     end
     -- paint
@@ -199,7 +207,7 @@ function graph:Dshadedrectangle(x1,x2,y1,y2,pal,options)
         right_colors = {}
         for j = 0, grid[2] do 
             key = (i+1).."/"..j
-            color = palette(pal,(values[key]-Min)/(Max-Min))
+            color = ld.palette(pal,(values[key]-Min)/(Max-Min))
             table.insert(right_colors, color)
         end
         for j = 0, grid[2]-1 do
@@ -250,7 +258,7 @@ end
 function graph:Dshadedregion(apath,pal,options)
     -- options are the Dshadedrectangle options
     -- apath is a path
-    local x1,x2,y1,y2 = getbounds(path(apath))
+    local x1,x2,y1,y2 = ld.getbounds(ld.path(apath))
     self:Beginclip( apath )
     self:Dshadedrectangle(x1,x2,y1,y2,pal,options)
     self:Endclip()

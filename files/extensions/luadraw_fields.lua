@@ -1,6 +1,6 @@
 -- luadraw_fields2d.lua
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -9,7 +9,12 @@
 
 -- to draw vector fields or gradient fields
 
-function field(f,x1,x2,y1,y2,grid,long)
+local ld = luadraw
+local graph = ld.graph
+local cpx = ld.cpx
+local Z = cpx.Z
+
+function ld.field(f,x1,x2,y1,y2,grid,long)
 -- champ de vecteurs dans le pavé [x1,x2]x[y1,y2]
 -- f fonction de deux variables à valeurs dans R^2
 -- grid = {nbx, nby} : nombre de vecteurs suivant x et suivant y
@@ -42,7 +47,7 @@ function graph:Dvectorfield(f,args)
 -- { view={x1,x2,y1,y2}, grid={nbx,nby}, length=, draw_options=""}
     args = args or {}
     local view = args.view or {self:Xinf(),self:Xsup(),self:Yinf(),self:Ysup()} -- repère utilisateur par défaut
-    local vectors = field(f,view[1],view[2],view[3],view[4],args.grid,args.length) -- calcul du champ
+    local vectors = ld.field(f,view[1],view[2],view[3],view[4],args.grid,args.length) -- calcul du champ
     self:Dpolyline(vectors,false,args.draw_options,view) -- le dessin (ligne polygonale non fermée)
 end
 
@@ -71,7 +76,7 @@ function graph:DplotXY(X,Y,draw_options)
         local noms = {} -- liste des labels à placer
         for k = 1, #X do
             table.insert(L,Z(k,Y[k]))
-            insert(noms,{X[k],k,{pos="E",node_options="rotate=-90"}})
+            ld.insert(noms,{X[k],k,{pos="E",node_options="rotate=-90"}})
         end
         self:Dlabel(table.unpack(noms))
     end

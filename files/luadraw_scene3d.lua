@@ -1,17 +1,19 @@
 --- luadraw_scene3d.lua
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
+local ld = luadraw
+local pt3d = ld.pt3d
 
 local Tscene3d = {}
 Tscene3d.__index = Tscene3d
 
-nbsplit = 0
+ld.nbsplit = 0
 
 --- Constructeur
 function Tscene3d:new()
@@ -33,44 +35,6 @@ function Tscene3d:new()
 end
 
 --------------- ajouter des cloisons
-function Tscene3d:rightRot()
-    local T = self
-    local d = T.der
-    T.der = d.dev
-    d.dev = T
-    T = d
-    return T
-end
-
-function Tscene3d:leftRot()
-    local T = self
-    local d = T.dev
-    T.dev = d.der
-    d.der = T
-    T = d
-    return T
-end
-
-function equilibrer(T)
-    local h1, h2 = Hight(T.dev), Hight(T.der)
-    if h2 > h1+1 then -- penche à droite
-        local h3, h4 = Hight(T.der.dev), Hight(T.der.der)
-        if h3 > h4 then
-            T.der = T.der:leftRot()
-        end    
-        T = T:rightRot()
-    elseif h1 > h2+1 then -- penche à gauche
-        local h3, h4 = Hight(T.dev.dev), Hight(T.dev.der)
-        if h4 > h3 then
-            T.dev = T.dev:rightRot()
-        end
-        T = T:leftRot()
-    else
-        T.hight = 1+math.max(Hight(T.dev), Hight(T.der))
-    end 
-    return T
-end
-
 function Tscene3d:Addsep(facet,plane) -- facette séparatrice (non dessinée)
 -- il n'y a que des cloisons pour le moment
     local T = self
@@ -88,7 +52,7 @@ function Tscene3d:Addsep(facet,plane) -- facette séparatrice (non dessinée)
                 --if T.dev == nil then T.dev = Tscene3d:new() end
                 --T.dev:Addsep(facet,plane) -- {dev[1],plane[2]}
         else
-            local dev, der = splitfacet(facet,T.plane)
+            local dev, der = ld.splitfacet(facet,T.plane)
             if #dev ~= 0 then
                 if T.dev == nil then T.dev = Tscene3d:new() end
                 T.dev:Addsep(dev,plane) -- {dev[1],plane[2]}
@@ -123,8 +87,8 @@ function Tscene3d:Addfacet(facet,plane,color,opacity) -- les sommets ont déjà 
                 if T.dev == nil then T.dev = Tscene3d:new() end
                 T.dev:Addfacet(facet,plane,color,opacity) -- {dev[1],plane[2]}
         else
-            local dev, der = splitfacet(facet,T.plane)
-            if (#dev ~= 0) and (#der ~= 0) then nbsplit = nbsplit +1 end            
+            local dev, der = ld.splitfacet(facet,T.plane)
+            if (#dev ~= 0) and (#der ~= 0) then ld.nbsplit = ld.nbsplit +1 end            
             if #dev ~= 0 then
                 if T.dev == nil then T.dev = Tscene3d:new() end
                 T.dev:Addfacet(dev,plane,color,opacity) -- {dev[1],plane[2]}
@@ -151,7 +115,7 @@ function Tscene3d:Addseg(seg,style,color,width,opacity,n) -- les sommets ont dé
         T.dev = nil
         T.der = nil
     elseif (T.type == "facet") or (T.type == "wall") then
-        local dev, der = splitseg(seg,T.plane)
+        local dev, der = ld.splitseg(seg,T.plane)
         if #dev ~= 0 then
             if T.dev == nil then T.dev = Tscene3d:new() end
             T.dev:Addseg(dev,style,color,width,opacity,n)
@@ -163,7 +127,7 @@ function Tscene3d:Addseg(seg,style,color,width,opacity,n) -- les sommets ont dé
     else -- on a un segment {A,A+u} déjà inséré, on veut insérer {C,C+v}
         local A, B = table.unpack(T.data)
         local u = B-A
-        local dev, der = splitseg(seg,{A, pt3d.prod(u,pt3d.prod(n,u))})
+        local dev, der = ld.splitseg(seg,{A, pt3d.prod(u,pt3d.prod(n,u))})
         if #dev ~= 0 then
             if T.dev == nil then T.dev = Tscene3d:new() end
             T.dev:Addseg(dev,style,color,width,opacity,n)
@@ -334,18 +298,19 @@ function Tscene3d:Display(g) -- g est un graphe 3d
     end
 end
 
-function test(tree) -- teste l'équilibrage de l'arbre
+local test = function(tree) -- teste l'équilibrage de l'arbre
     if tree == nil then return true
     else
         return test(tree.dev) and test(tree.der) and (math.abs(Hight(tree.dev)-Hight(tree.der))<2)
     end
 end
 
-function Hight(T)
+local Hight = function(T)
     if T == nil then return 0
     else return T:haut()
     end
 end
+
 function Tscene3d:haut() -- calcule la hauteur de l'arbre
     if self.data == nil then return 0 end
     local h1, h2

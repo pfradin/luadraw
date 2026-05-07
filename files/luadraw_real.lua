@@ -1,24 +1,24 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
-luadraw = {}
-digits = 4 -- nombre de décimales dans les exports
-epsilon = 1e-12
-mm = math.floor(7227/254) -- conversion en dixième de point, ex: Linewidth(2*mm) pour une épaisseur de 2 millimètres
-pt = 254/7227  -- conversion en cm, ex : 2*pt pour une longueur en cm équivalente à 2 points
-deg = math.pi/180 -- conversion en radians, ex 180*deg = pi
-rad = 180/math.pi -- conversion en degrés, ex : pi*rad = 180
-siunitx = false  -- utilisé dans la fonction num
+local ld = luadraw
+ld.digits = 4 -- nombre de décimales dans les exports
+ld.epsilon = 1e-16
+ld.mm = math.floor(7227/254) -- conversion en dixième de point, ex: Linewidth(2*mm) pour une épaisseur de 2 millimètres
+ld.pt = 254/7227  -- conversion en cm, ex : 2*pt pour une longueur en cm équivalente à 2 points
+ld.deg = math.pi/180 -- conversion en radians, ex 180*deg = pi
+ld.rad = 180/math.pi -- conversion en degrés, ex : pi*rad = 180
+ld.siunitx = false  -- utilisé dans la fonction num
 
 
-function strReal(reel,dgt) -- convertit un réel en chaîne avec dgt décimales
-    dgt = dgt or digits
+function ld.strReal(reel,dgt) -- convertit un réel en chaîne avec dgt décimales
+    dgt = dgt or ld.digits
     local str = string.format("%." ..dgt.."f",reel)
     local n = #str
     while string.sub(str,n,n) == "0" do
@@ -30,39 +30,39 @@ function strReal(reel,dgt) -- convertit un réel en chaîne avec dgt décimales
     return rep
 end
 
-function num(x,dgt) -- x is a real, returns a string
-    local rep = strReal(x,dgt)
-    if siunitx then rep = "\\num{"..rep.."}" end --needs \usepackage{siunitx}
+function ld.num(x,dgt) -- x is a real, returns a string
+    local rep = ld.strReal(x,dgt)
+    if ld.siunitx then rep = "\\num{"..rep.."}" end --needs \usepackage{siunitx}
     return rep
 end
 
-function isNaN(reel)  -- reel est supposé être un nombre
+function ld.isNaN(reel)  -- reel est supposé être un nombre
     return reel ~= reel
 end
 
-function isInf(reel) -- reel est supposée être un nombre
+function ld.isInf(reel) -- reel est supposée être un nombre
     return (reel == math.huge) or (reel == -math.huge)
 end
 
-function notDef(reel) -- reel est supposée être un nombre
-    return (reel==nil) or isNaN(reel) or isInf(reel)
+function ld.notDef(reel) -- reel est supposée être un nombre
+    return (reel==nil) or ld.isNaN(reel) or ld.isInf(reel)
 end 
 
-function isNul(reel)
-    return math.abs(reel) < epsilon
+function ld.isNul(reel)
+    return math.abs(reel) < ld.epsilon
 end
 
-function round(num, nbDeci)
+function ld.round(num, nbDeci)
   local mult = 10^(nbDeci or 0)
   return math.floor(num * mult + 0.5) / mult
 end
 
-function nearest(x) -- nearest integer
+function ld.nearest(x) -- nearest integer
     local a, b = math.floor(x), math.ceil(x)
     if x <= (a+b)/2 then return a else return b end
 end
 
-function range(a, b, step)
+function ld.range(a, b, step)
     step = step or 1
     local res = {}
     for k = a, b, step do
@@ -71,7 +71,7 @@ function range(a, b, step)
     return res
 end
 
-function linspace(a,b,nbdots)
+function ld.linspace(a,b,nbdots)
     local res = {}
     nbdots = nbdots or 50
     local pas = (b-a)/(nbdots-1)
@@ -83,7 +83,7 @@ function linspace(a,b,nbdots)
     return res
 end
 
-function reverse(list)
+function ld.reverse(list)
     local rep = {}
     for _,x in ipairs(list) do
         table.insert(rep,1,x)
@@ -91,7 +91,7 @@ function reverse(list)
     return rep
 end
 
-function luadraw.gcd(a,b)
+function ld.gcd(a,b)
     a = math.abs(a)
     b = math.abs(b)
     local igcd
@@ -103,13 +103,11 @@ function luadraw.gcd(a,b)
     return igcd(a,b)
 end
 
-gcd = luadraw.gcd
-
-function lcm(a,b)
-    return math.abs(a*b) // luadraw.gcd(a,b)
+function ld.lcm(a,b)
+    return math.abs(a*b) // ld.gcd(a,b)
 end
 
-function solve(f,a,b,n,df) -- version 2.4 of luadraw
+function ld.solve(f,a,b,n,df) -- version 2.4 of luadraw
     n = n or 25
     if a > b then a, b = b, a end
     local x, delta, S = a, (b-a)/n, {}
@@ -125,7 +123,7 @@ function solve(f,a,b,n,df) -- version 2.4 of luadraw
     while x < b do
         r = x+delta/2
         for i = 1,5 do
-            if r ~= nil then r = evalf(iter,r) end
+            if r ~= nil then r = ld.evalf(iter,r) end
             if (r==nil) then break end
         end
         if (r ~= nil) and (r >= x) and (r < fin) and (math.abs(f(r)) < 1e-6) then
@@ -136,7 +134,7 @@ function solve(f,a,b,n,df) -- version 2.4 of luadraw
     if #S > 0 then return S end
 end
 
-function int(f,a,b)
+function ld.int(f,a,b)
 -- calcule numériquement l'intégrale de la fonction f de a à b,
 -- f est une fonction à variable réelle mais peut être à valeurs complexes
 -- a et b sont deux réels.
@@ -164,12 +162,12 @@ function int(f,a,b)
         if not error then S1 = S0/2+2*M1/3-M0/6; error = (S1 == nil) end
         if not error then U1 = (16*S1-S0)/15; error = (U1 == nil) end
         if (not error) and (compt > 1) then V1 = (64*U1-U0)/63; error = (V1 == nil) end
-        stop = error or ( (compt >= 3) and (V0 ~= nil) and (V1 ~= nil) and (cpx.abs(V0-V1) < 1e-6) )
+        stop = error or ( (compt >= 3) and (V0 ~= nil) and (V1 ~= nil) and (ld.cpx.abs(V0-V1) < 1e-6) )
     end
     if not error then return V1 end
 end
 
-function nth_root(n,x)
+function ld.nth_root(n,x)
 -- n is a positive integer with n>1
 -- x is a real
     if x>=0 then return x^(1/n)

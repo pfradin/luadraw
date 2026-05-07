@@ -1,6 +1,6 @@
 -- luadraw_polyhdron_net.lua (chargé par luadraw_graph2d.lua)
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,6 +8,11 @@
 --   https://www.ctan.org/license/lppl
 
 -- net of convex polyhedrons
+
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Z, M, vecI, vecJ, vecK = cpx.Z, pt3d.M, pt3d.vecI, pt3d.vecJ, pt3d.vecK
+local graph3d = ld.graph3d
 
 local getpos = function(elt, L)
 -- renvoie la position de elt dans la liste L
@@ -32,7 +37,7 @@ end
 
 local test_model = function(F,model)
     -- F = facets (with vertices numbers), model = list of lists or facet numbers
-    local visited = map(function(k) return false end, range(1,#F))
+    local visited = ld.map(function(k) return false end, ld.range(1,#F))
     local neighbor = function(F1,F2)
         local A = common_edge(F1,F2)
         return (A~= nil)
@@ -67,7 +72,7 @@ local test_model = function(F,model)
     return true
 end
 
-function unfold_tree(tree, factor, num)
+function ld.unfold_tree(tree, factor, num)
 -- tree = { {ancestor, n1, n2, angle, vertices}, ...}
 -- num est le numéro de facette (rang d'apparition dans P.facets)
     local rep = {}
@@ -88,7 +93,7 @@ function unfold_tree(tree, factor, num)
             else
                 local F = arbre[parent][5] -- sommets du parent
                 local axe = {F[a1], F[a2]-F[a1]}
-                local S1 = rotate3d(S,angle,axe) -- rotation de la facette
+                local S1 = ld.rotate3d(S,angle,axe) -- rotation de la facette
                 Z[5] = S1
                 table.insert(rep, S1)
                 --rep[index] = S1
@@ -96,7 +101,7 @@ function unfold_tree(tree, factor, num)
                 for _, Y in ipairs(arbre) do
                     j = j+1
                     if getpos(Y[1],ancestors) ~= nil then -- Y fait partie des descendants de Z
-                        Y[5] = rotate3d(Y[5],angle,axe) -- on tourne Y
+                        Y[5] = ld.rotate3d(Y[5],angle,axe) -- on tourne Y
                         table.insert(ancestors,j)  --les descendants de Y doivent tourner eux aussi, ils sont après Y dans l'arbre
                     end
                     end
@@ -108,7 +113,7 @@ function unfold_tree(tree, factor, num)
 end
 
 
-unfold_polyhedron = function(P,options)
+function ld.unfold_polyhedron(P,options)
 -- P = polyèdre, options = {opening= dans [0,1], root = n° facette, to2d=false, tabs=false, tabs_wd=0.2, tabs_lg=0.5, rotate=0}
 -- renvoie le patron ouvert au taux d'ouverture voulu (entre 0 et 1), le patron est une liste de facettes avec sommets 2d ou 3d.
     options = options or {}
@@ -128,8 +133,8 @@ unfold_polyhedron = function(P,options)
     local S = P.vertices
     local F = P.facets
     local nb_facet = #F
-    local visited_facet = map(function() return false end, F)
-    local tree_index = range(1,#F)
+    local visited_facet = ld.map(function() return false end, F)
+    local tree_index = ld.range(1,#F)
     local edges_list = {}
     local arbre
     
@@ -149,7 +154,7 @@ unfold_polyhedron = function(P,options)
                 A = common_edge(face,Z)
                 if A ~= nil then
                     N = normal_vector(Z)
-                    table.insert(arbre, {num, A[1],A[2], angle3d(N,n)*rad, N, Z, k} ) -- on ajoute k, le numéro de la facette dans P
+                    table.insert(arbre, {num, A[1],A[2], pt3d.angle3d(N,n)*ld.rad, N, Z, k} ) -- on ajoute k, le numéro de la facette dans P
                     tree_index[k] = #arbre -- position de la face k dans l'arbre
                     visited_facet[k] = true
                 end
@@ -179,7 +184,7 @@ unfold_polyhedron = function(P,options)
         end
         local rep = {}
         for _, Z in ipairs(arbre) do --on renvoie l'arbre sans les vecteurs normaux 
-            local t =  { Z[1], Z[2], Z[3], Z[4], map(function(k) return S[k] end, Z[6]), Z[7]} -- {ancetre,axe1,axe2,angle,sommets, index initial}
+            local t =  { Z[1], Z[2], Z[3], Z[4], ld.map(function(k) return S[k] end, Z[6]), Z[7]} -- {ancetre,axe1,axe2,angle,sommets, index initial}
             if out ~= nil  then
                 table.insert(out, table.copy(t))
             end
@@ -193,7 +198,7 @@ unfold_polyhedron = function(P,options)
         -- model = { {f1,f2,...fn}, {f2,f4,...},...} les fi sont des numéros de facettes, chaque facette est précédée de son ancêtre (qui doit être une facette adjacente) sauf la facette racine, chaque facette doit avoir exactement un ancêtre (sauf la facette racine). La fonction ne vérifie pas si ces conditions sont remplies, c'est au risque de l'utilisateur...
         local read_model = function()
             local rep = {}
-            local visited = map(function(f) return false end, F)
+            local visited = ld.map(function(f) return false end, F)
             for _, L in ipairs(model) do
                 local b, a = L[1]
                 for k = 2, #L do
@@ -211,7 +216,7 @@ unfold_polyhedron = function(P,options)
         model = read_model()
         -- mintenant model = { {0,i1}, {i2,i3}, ...} où les i1, i2, ... sont des n°s de facettes dans F par paires : {ancêtre, descendant}
         -- on fait un tri du modèle (les descendants d'une facette doivent être à droite)
-        local visited = map( function(k) return false end, model)
+        local visited = ld.map( function(k) return false end, model)
         local a, d, m
         local rep = {}
         while #model > 0 do
@@ -222,7 +227,7 @@ unfold_polyhedron = function(P,options)
             end
         end
         model = rep
-        local normals = map( function(f) return normal_vector(f) end, F)
+        local normals = ld.map( function(f) return normal_vector(f) end, F)
         --local index_tree = map(function(k) return 0 end,model)
         arbre = {}
         for k, m in ipairs(model) do
@@ -237,7 +242,7 @@ unfold_polyhedron = function(P,options)
                 face = F[a]; n = normals[a]
                 A = common_edge(face,Z)
                 if A ~= nil then
-                    table.insert(arbre, {a, A[1],A[2], angle3d(N,n)*rad, N, Z, d} )
+                    table.insert(arbre, {a, A[1],A[2], pt3d.angle3d(N,n)*ld.rad, N, Z, d} )
                     --index_tree[d] = #arbre
                     tree_index[d] = #arbre -- position de la face k dans l'arbre
                 else
@@ -250,7 +255,7 @@ unfold_polyhedron = function(P,options)
         for m, Z in ipairs(arbre) do --on renvoie l'arbre sans les vecteurs normaux
             local index
             if Z[1] == 0 then index = 0 else index = tree_index[Z[1]] end
-            local t =  {index, Z[2], Z[3], Z[4], map(function(k) return S[k] end, Z[6]), Z[7]} -- {ancetre,axe1,axe2,angle,sommets, index initial}
+            local t =  {index, Z[2], Z[3], Z[4], ld.map(function(k) return S[k] end, Z[6]), Z[7]} -- {ancetre,axe1,axe2,angle,sommets, index initial}
             if out ~= nil  then
                 table.insert(out, table.copy(t))
             end
@@ -264,15 +269,15 @@ unfold_polyhedron = function(P,options)
     if arbre == nil then return end
     if opening == 0 then return poly2facet(P)  end -- rien à faire, on renvoie les facettes de P  
     local rep, tabs_list, twin_edges = {}
-    rep = unfold_tree(arbre,opening) -- on ouvre le polyèdre
+    rep = ld.unfold_tree(arbre,opening) -- on ouvre le polyèdre
     if to2d then -- conversion en 2d, le patron est à plat dans le plan de l'écran
-        local x1,x2,y1,y2,z1,z2 = getbounds3d(rep)
+        local x1,x2,y1,y2,z1,z2 = ld.getbounds3d(rep)
         local G = M((x1+x2)/2, (y1+y2)/2, (z1+z2)/2 )
-        local P = facet2plane( rep[1] )
-        local A, u, v = orthoframe({G,-P[2]})
-        rep = ftransform3d( rep, function(N) return Z(pt3d.dot(u,N-A), pt3d.dot(v,N-A)) end)
+        local P = ld.facet2plane( rep[1] )
+        local A, u, v = ld.orthoframe({G,-P[2]})
+        rep = ld.ftransform3d( rep, function(N) return Z(pt3d.dot(u,N-A), pt3d.dot(v,N-A)) end)
         if rotangle ~= 0 then
-            rep = rotate(rep,rotangle)
+            rep = ld.rotate(rep,rotangle)
         end
         if tabs then
             tabs_list = {}
@@ -288,7 +293,7 @@ unfold_polyhedron = function(P,options)
                     else ab = b..";"..a
                     end
                     if edges_list[ab] == nil then edges_list[ab] = {id1,id2,tree_index[num]}
-                    else insert(edges_list[ab], {id1,id2,tree_index[num]})
+                    else ld.insert(edges_list[ab], {id1,id2,tree_index[num]})
                     end
                 end
             end
@@ -308,17 +313,17 @@ unfold_polyhedron = function(P,options)
         end
     elseif rotangle ~= 0 then
         local f = rep[1] -- root facet
-        rep = rotate3d(rep, rotangle, {isobar3d(f), pt3d.prod(f[2]-f[1],f[3]-f[1])}) 
+        rep = ld.rotate3d(rep, rotangle, {pt3d.isobar3d(f), pt3d.prod(f[2]-f[1],f[3]-f[1])}) 
     end
-    local rep2 = map(function(k) return {} end, range(1,#rep))
+    local rep2 = ld.map(function(k) return {} end, ld.range(1,#rep))
     for k,f in ipairs(arbre) do
         rep2[f[6]] = rep[k]
     end
     local bounds
     if to2d then
-        bounds = {getbounds( concat(rep2,tabs_list) )}
+        bounds = {ld.getbounds( ld.concat(rep2,tabs_list) )}
     else
-        bounds = {getbounds3d( rep2 )}
+        bounds = {ld.getbounds3d( rep2 )}
     end
     if bounds == nil then bounds= {} end
     local ret = {["facets"]=rep2, ["tree"]=out, ["bounds"]=bounds}
@@ -339,7 +344,7 @@ function graph3d:Dpolyhedron_net(P,options)
     local tabs_options = options.tabs_options or ""
     -- end
     local facet_options = options.facet_options
-    local net = unfold_polyhedron(P, {tabs=tabs, to2d=to2d, opening=options.opening, root=options.root, model=options.model, tabs_wd=options.tabs_wd, tabs_lg=options.tabs_lg, rotate=options.rotate})
+    local net = ld.unfold_polyhedron(P, {tabs=tabs, to2d=to2d, opening=options.opening, root=options.root, model=options.model, tabs_wd=options.tabs_wd, tabs_lg=options.tabs_lg, rotate=options.rotate})
     if net == nil then return end
     local F = net.facets
     if to2d then
@@ -356,14 +361,14 @@ function graph3d:Dpolyhedron_net(P,options)
         end
         if facet_name then
             for k,f in ipairs(F) do
-                self:Dlabel("F"..k, isobar(F[k]), {node_options="font=\\footnotesize"})
+                self:Dlabel("F"..k, cpx.isobar(F[k]), {node_options="font=\\footnotesize"})
             end
         end
         print("bounds of net =", table.unpack(net.bounds))
     else --3d version
        self:Dfacet(F,facet_options) 
        local x1,x2,y1,y2,z1,z2 = table.unpack(net.bounds)
-       print("bounds of net =",getbounds( self:Proj3d( parallelep(M(x1,y1,z1),(x2-x1)*vecI, (y2-y1)*vecJ, (z2-z1)*vecK).vertices) ) )
+       print("bounds of net =",ld.getbounds( self:Proj3d( ld.parallelep(M(x1,y1,z1),(x2-x1)*vecI, (y2-y1)*vecJ, (z2-z1)*vecK).vertices) ) )
     end
     
 end

@@ -1,6 +1,6 @@
 -- luadraw_compile_tex.lua
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -11,14 +11,27 @@
 -- de lire le contenu de ce fichier sous forme d'une liste de chemins (avec épaisseur en tête de chaque chemin, et instruction de remplissage à la fin), cette liste L peut être affichée avec la méthode g:Dcompiled_tex(anchor,L, options)
 -- ces chemins peuvent aussi être traduits en chemins 3d (path3d) dans un plan donné et être affichés avec la méthode Dcompiled_tex3d(L, options), ou bien traduits en lignes polygonales 3d (on perd alors l'épaisseur et la commande de remplissage).
 
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Z = cpx.Z
+local graph = ld.graph
 
-preamble = "\\documentclass[12pt]{article}\n"
-usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"
-pdflatexcmd = "pdflatex"
-pstoeditcmd = "pstoedit"
-pdf2pscmd = "pdf2ps"
+local preamble = "\\documentclass[12pt]{article}\n"
+local usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"
+local pdflatexcmd = "pdflatex"
+local pstoeditcmd = "pstoedit"
+local pdf2pscmd = "pdf2ps"
 
-function compile_tex(text,out)
+function ld.compile_tex_default(param)
+    param = param or {}
+    preamble = param.preamble or "\\documentclass[12pt]{article}\n"
+    usepackage = param.usepackage or "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"
+    pdflatexcmd = param.pdflatexcmd or "pdflatex"
+    pstoeditcmd = param.pstoeditcmd or "pstoedit"
+    pdf2pscmd = param.pdf2pscmd or "pdf2ps"
+end
+
+function ld.compile_tex(text,out, conv_stroke)
 -- out est le nom du fichier crée, il ne doit comporter ni chemin, ni extension, il sera créé dans le dossier de travail de luadraw (nommé cachedir)
     local name = "tex2FlatPs"
     out = out or name
@@ -38,28 +51,36 @@ function compile_tex(text,out)
         os.remove(name..".pdf")
         os.remove(name..".ps")
         os.remove(name..".log")
-        os.rename(out..".eps", cachedir..out..".eps")
+        os.rename(out..".eps", ld.cachedir..out..".eps")
         os.remove(name..".eps")
         os.remove(name..".aux")
     end
-    return read_compiled_tex(out)
+    return ld.read_compiled_tex(ld.cachedir..out..".eps",conv_stroke)
 end
 
 local tostrip = function(L, wd)
 -- renvoie une bande centrée sur la ligne, d'une largeur égale à wd cm
+    if #L <2 then return end
+    local oldEpsilon = ld.epsilon
+    ld.epsilon = 1e-10
     local ep = wd/2
     local i = cpx.I
     local a, b, c, v, u, w 
     local bord, dessus, ret = {}, {}, {}
     a = L[1]; b = L[2]
-    while b == a do table.remove(L,1); b = L[2] end
+    while cpx.equal(b,a) do table.remove(L,1); b = L[2]end
+    if b == nil then return end
     table.remove(L,1); table.remove(L,1)
+    if a == L[#L] then
+        a = (a+b)/2 
+        table.insert(L,a)
+    end
     v = i*cpx.normalize(b-a)
     bord = {a-ep*v, a+ep*v}; dessus = {bord[2]}
     table.insert(ret,bord[1])
     c = b; b = a; v = v/i
     for _,z in ipairs(L) do
-        a = b; b = c; c = z; v = cpx.normalize(c-b)
+        a = b; b = c; c = z; u = -v; v = cpx.normalize(c-b)
         if v == nil then 
             c = b; b = a; v =-u
         else
@@ -67,23 +88,47 @@ local tostrip = function(L, wd)
             if w == nil then
                 bord = {b+ep*i*u, b-ep*i*u}
             else
-                bord = projO( bord,{b,w},u)
+                bord = ld.projO( bord,{b,w},u)
             end
         end
-        table.insert(ret,bord[1]); table.insert(dessus,1,bord[2])
+        --if bord ~= nil then
+            table.insert(ret,bord[1]); table.insert(dessus,1,bord[2])
+        --end
     end
-    return concat(ret,{c-ep*v*i, c+ep*v*i}, dessus)
+    ld.epsion = oldEpsilon
+    return ld.concat(ret,{c-ep*v*i, c+ep*v*i}, dessus)
 end
+
+local split = function(str, sep) -- split a string with sep
+  local t = {}
+  local start = 1
+  while true do
+    local i, j = string.find(str, sep, start, true)
+    if not i then
+      t[#t+1] = string.sub(str, start)
+      break
+    end
+    t[#t+1] = string.sub(str, start, i - 1)
+    start = j + 1
+  end
+  return t
+end
+
  
-function read_compiled_tex(file)
--- file est le nom (sans chemin sans extension) d'un fichier eps
+function ld.read_compiled_tex(file, conv_stroke)
+-- file est le nom complet (sans chemin sans extension) d'un fichier eps
 -- créé par la fonction compile_tex() dans le dossier de travail de luadraw (nommé cachedir)
 -- la fonction lit le contenu du fichier et renvoie une liste de chemins commençant par l'épaisseur de ligne et finissant la commande de remplissage.
-    file = file or "tex2FlatPs"
-    file = cachedir..file..".eps"
+-- si conv_stroke == true, les lignes sont changées en "bandes" 
+    file = file or ld.cachedir.."tex2FlatPs.eps"
+    --file = cachedir..file..".eps"
+    conv_stroke = conv_stroke or false
     local f = io.open(file,"r")
     if f == nil then print('no file '..file..' found'); return end
-    local str, lwd -- string and linewidth
+    local str, lwd, lcap, ljoin -- string, linewidth, linecap, linejoin
+    local capstyle = {["0"]="miter", ["1"]="round", ["2"]="bevel"}
+    local joinstyle = {["0"]="butt", ["1"]="round", ["2"]="square"}
+    local style = ""
     local lines = {}
     local ret = {}
     local x1,x2,y1,y2 = math.huge, -math.huge, math.huge, -math.huge
@@ -96,6 +141,10 @@ function read_compiled_tex(file)
             if string.find(str,"setlinewidth") then
                 lwd = string.match(str,"%d*%.%d*") -- pt
                 lwd = tostring(tonumber(lwd)*10) --tostring(1+math.floor(tonumber(lwd)*10))
+            elseif string.find(str,"setlinecap") then
+                lcap = capstyle[string.match(str,"%d+")] -- 0 or 1 or 2
+            elseif string.find(str,"setlinejoin") then
+                ljoin = joinstyle[string.match(str,"%d+")] -- 0 or 1 or 2
             end
             find = (string.find(str,"newpath") ~= nil)
         end
@@ -107,7 +156,8 @@ function read_compiled_tex(file)
     
     local read_path = function()
         local finish = false
-        local cp = {lwd} -- current path begins with linewidth
+        style = table.concat({lwd,lcap,ljoin},"/")
+        local cp = {style} --{lwd} -- current path begins with style
         local nb = 1
         local u, x, y, inst
         while not finish do
@@ -143,26 +193,38 @@ function read_compiled_tex(file)
     end
     local c = Z(x1+x2,y1+y2)/2 --center
     local ratio = 2.54/72
-    local mat = matrixof( function(z) return (z-c)*ratio end )
+    local mat = ld.matrixof( function(z) return (z-c)*ratio end )
     local rep =  {}
     rep.path = {}
-    ret = mtransform(ret,mat)
-    for _, cp in ipairs(ret) do --we change line to strip
+    ret = ld.mtransform(ret,mat)
+    for _, cp in ipairs(ret) do --we change line to strip if conv_stroke = true
         local ends = cp[#cp]
-        if ends == "stroke" then -- we have a line, we transform it into a strip
-            lwd = table.remove(cp,1)
+        if (ends == "stroke") and conv_stroke then -- we have a stroked path, we transform it into a strip
+            style = table.remove(cp,1)
+            lwd, lcap, ljoin = table.unpack( split(style,"/"))
             local char = table.remove(cp,2) -- remove "m"
-            table.remove(cp); table.remove(cp) -- remove "l" and "stroke"
-            local ep = tonumber(lwd)/10*pt
-            cp = tostrip(cp,ep)
-            table.insert(cp,2,char)
-            table.insert(cp,1,lwd)
-            table.insert(cp,"l"); table.insert(cp,"cl")
-            table.insert(cp,"fill")
+            table.remove(cp) -- remove "stroke"
+            local instr = table.remove(cp) -- instruction
+            local ep = tonumber(lwd)/10*ld.pt
+            if (#cp == 2) and cpx.equal(cp[1],cp[2]) then --circle
+                cp = circleb(cp[1],ep/2)
+            else
+                table.insert(cp,instr)
+                cp = ld.path(cp)[1]
+                cp = tostrip(cp,ep)
+                if cp ~= nil then
+                    table.insert(cp,"l"); table.insert(cp,"cl")
+                end
+            end
+            if cp ~= nil then
+                table.insert(cp,2,char)
+                table.insert(cp,1,style)--table.insert(cp,1,lwd)
+                table.insert(cp,"fill")
+            end
         end
         table.insert(rep.path,cp)
     end
-    rep.bb =  table.pack(getbounds(mtransform({ Z(x1,y1),Z(x2,y2)},mat) ))
+    rep.bb =  table.pack(ld.getbounds(ld.mtransform({ Z(x1,y1),Z(x2,y2)},mat) ))
     return rep
 end
 
@@ -176,16 +238,16 @@ local splitLongSeg = function(L) -- to divide segments that are too long
             A = B; B = lg[k]
             local len = cpx.abs(B-A)
             local nb = math.floor(10*len)
-            local aux = linspace(A,B,nb+2) 
+            local aux = ld.linspace(A,B,nb+2) 
             if k > 2 then table.remove(aux,1) end
-            insert(cp, aux )
+            ld.insert(cp, aux )
         end
         table.insert(ret,cp)
     end
     return ret
 end
 
-function compiled_tex2polyline(L,scale)
+function ld.compiled_tex2polyline(L,scale)
 -- L est le résultat de compile_tex()
     if L == nil then return end
     scale = scale or 1
@@ -194,17 +256,17 @@ function compiled_tex2polyline(L,scale)
         if type(scale) == "number" then scx = scale; scy = scale 
         else scx, scy = table.unpack(scale)
         end
-        local c = isobar(L.bb)
+        local c = cpx.isobar(L.bb)
         local mat = {c+Z(c.re*(1-scx),c.im*(1-scy)),Z(scx,0),scy*cpx.I} 
-        P = mtransform(P, mat)
+        P = ld.mtransform(P, mat)
     end
     local ret = {}
     for _, cp in ipairs(P) do
         local p = table.copy(cp) -- L must not be modified
-        local lwd = table.remove(p,1)
+        local style = table.remove(p,1)
         local cmd = table.remove(p) -- We remove the beginning and the end, leaving only the path
-        local C1 = splitLongSeg( path(p) )
-        insert(ret,C1)
+        local C1 = splitLongSeg( ld.path(p) )
+        ld.insert(ret,C1)
     end
     return ret -- list of list of complex numbers
 end
@@ -218,7 +280,7 @@ function graph:Dcompiled_tex(anchor, L, options) -- or graph:Dcompiled_tex(L, an
 -- draw_options=""
     if (type(L) == "number") or isComplex(L) then anchor, L = L, anchor end
     anchor = anchor or 0
-    anchor = toComplex(anchor)
+    anchor = cpx.toComplex(anchor)
     options = options or {}
     options.color = options.color or self.param.linecolor
     options.scale = options.scale or 1
@@ -227,13 +289,17 @@ function graph:Dcompiled_tex(anchor, L, options) -- or graph:Dcompiled_tex(L, an
     options.draw_options= options.draw_options or ""
     options.pos = options.pos or "center"
     if L == nil then return end
-    local lwd, cmd, scx, scy
+    local style, lwd, lcap, ljoin, cmd, scx, scy
     
     local oldfillstyle = self.param.fillstyle
     local oldfillcolor = self.param.fillcolor
+    local oldfilleo = self.param.filleo    
     local oldlinestyle = self.param.linestyle
     local oldlinecolor = self.param.linecolor
     local oldlinewidth = self.param.linewidth
+    local oldlinecap = self.param.linecap
+    local oldlinejoin = self.param.linejoin
+
     
     if type(options.scale) == "number" then 
         scx = options.scale; scy = options.scale
@@ -266,14 +332,16 @@ function graph:Dcompiled_tex(anchor, L, options) -- or graph:Dcompiled_tex(L, an
     if options.dir ~= nil then
         u, v = table.unpack(options.dir)
         u = u/cpx.abs(u); v = v/cpx.abs(v)
-        mat = composematrix(mat,{0,u,v})
+        mat = ld.composematrix(mat,{0,u,v})
     end
     if t ~= nil then mat = composematrix(mat,{t,1,cpx.I}) end
-    local C = mtransform(L.path,mat)
-    local bb = mtransform( {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2)}, mat) -- boite englobante
+    local C = ld.mtransform(L.path,mat)
+    local bb = ld.mtransform( {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2)}, mat) -- boite englobante
      for _, p in ipairs(C) do
-        lwd = table.remove(p,1)
+        style = table.remove(p,1)
+        lwd, lcap, ljoin = table.unpack(split(style,"/"))
         cmd = table.remove(p)
+        self:Linecap(lcap); self:Linejoin(ljoin)
         if (cmd == "eofill") or (cmd == "fill") then
             if options.hollow then
                 self:Lineoptions("solid",options.color,oldlinewidth); self:Filloptions("none")
@@ -282,12 +350,13 @@ function graph:Dcompiled_tex(anchor, L, options) -- or graph:Dcompiled_tex(L, an
             end
             self:Dpath(p,options.draw_options)
         elseif cmd == "stroke" then
-            self:Lineoptions("solid",options.color,lwd*scx); self:Filloptions("none")
+            self:Lineoptions("solid",options.color,tonumber(lwd)*scx); self:Filloptions("none",nil,nil,false)
             self:Dpath(p,options.draw_options)
         end
     end
-    self:Filloptions(oldfillstyle,oldfillcolor)
+    self:Filloptions(oldfillstyle,oldfillcolor, nil, oldfilleo)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
+    self:Linecap(oldlinecap); self:Linejoin(oldlinejoin)
     if options.drawbox then
         self:Dpolyline(bb,true)
     end
@@ -307,7 +376,7 @@ local splitLongSeg3d = function(L) -- to divide segments that are too long
             A = B; B = lg[k]
             local len = pt3d.abs(B-A)
             local nb = math.floor(10*len)
-            insert(cp, linspace(A,B,nb+2) )
+            ld.insert(cp, ld.linspace(A,B,nb+2) )
         end
         table.insert(ret,cp)
     end
@@ -358,26 +427,27 @@ function graph:Compiled_tex2path3d(L,options)
     local u = pt3d.normalize(options.dir[1])
     local v = pt3d.normalize(options.dir[2])
     local mat = {-c+t,Z(1,0),cpx.I} 
-    local C = mtransform(L.path,mat)
+    local C = ld.mtransform(L.path,mat)
     local f = function(z)
         if type(z)=="string" then return z else return A+scx*z.re*u+scy*z.im*v end
     end
     local ret = {}
     if not options.polyline then
-        ret.bb = ftransform({Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2),"l","cl"},f) -- boite englobante
+        ret.bb = ld.ftransform({Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2),"l","cl"},f) -- boite englobante
         for _,p in ipairs(C) do
-            local lwd = tonumber(p[1])*pt
+            local lwd, lcap, ljoin = table.unpack( split(p[1],"/") )
+            lwd = tonumber(p[1])*pt
             lwd = self:Abs(self:Proj3dV(lwd*v))*mm
-            p[1] = tostring( lwd*scx ) -- line width adaptation
+            p[1] = table.concat( {tostring( lwd*scx ), lcap, ljoin}, "/") -- line width adaptation
         end
-        ret.path = ftransform(C,f)
+        ret.path = ld.ftransform(C,f)
         return ret
     else
         for _,p in ipairs(C) do
             local lwd = table.remove(p,1)
             local cmd = table.remove(p) -- We remove the beginning and the end, leaving only the path
-            local C1 = splitLongSeg3d( path3d( ftransform(p,f) ) )
-            insert(ret,C1)
+            local C1 = splitLongSeg3d( ld.path3d( ld.ftransform(p,f) ) )
+            ld.insert(ret,C1)
         end
         return ret -- list of list of 3d points
     end
@@ -391,16 +461,21 @@ function graph:Dcompiled_tex3d(L, options)
     options.color = options.color or self.param.linecolor
     options.drawbox = options.drawbox or false
     options.hollow = options.hollow or false
-    local lwd, cmd
+    local style, lwd, ljoin, lcap, cmd
     if L == nil then return end
     local oldfillstyle = self.param.fillstyle
     local oldfillcolor = self.param.fillcolor
+    local oldfilleo = self.param.filleo    
     local oldlinestyle = self.param.linestyle
     local oldlinecolor = self.param.linecolor
     local oldlinewidth = self.param.linewidth
+    local oldlinecap = self.param.linecap
+    local oldlinejoin = self.param.linejoin
     for _, p in ipairs(L.path) do
-        lwd = table.remove(p,1)
+        style = table.remove(p,1)
+        lwd, lcap, ljoin = table.unpack(split(style,"/"))
         cmd = table.remove(p)
+        self:Linecap(lcap); self:Linejoin(ljoin)
         if (cmd == "eofill") or (cmd == "fill") then
             if options.hollow then
                 self:Lineoptions("solid",options.color,oldlinewidth); self:Filloptions("none")
@@ -413,8 +488,9 @@ function graph:Dcompiled_tex3d(L, options)
             self:Dpath3d(p,options.draw_options)
         end
     end
-    self:Filloptions(oldfillstyle,oldfillcolor)
+    self:Filloptions(oldfillstyle,oldfillcolor, nil, oldfilleo)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
+    self:Linecap(oldlinecap); self:Linejoin(oldlinejoin)
     if options.drawbox then
         self:Dpath3d(L.bb)
     end

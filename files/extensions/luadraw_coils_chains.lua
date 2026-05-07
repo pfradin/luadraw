@@ -1,6 +1,6 @@
 -- luadraw_coils_chains.lua 
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -9,6 +9,10 @@
 
 
 -- draw coils and chains
+local ld = luadraw
+local graph = ld.graph
+local cpx = ld.cpx
+local Z = cpx.Z
 
 function graph:Dcoil(list,R,options)
 -- list = {start, nb1, end1, nb2, end2, ...} or list = {polygonale line, nb turns}
@@ -35,13 +39,13 @@ function graph:Dcoil(list,R,options)
     local rightC = options.rightC or 50 
     d = d/2
     if mirror then
-        list = reverse(list)
+        list = ld.reverse(list)
     end
     if curve then
         local n = table.remove(list)
         list = list[1]
-        if not isComplex(list[1]) then list = list[1] end -- first component
-        local f, Len = curvilinear_param(list)
+        if not cpx.isComplex(list[1]) then list = list[1] end -- first component
+        local f, Len = ld.curvilinear_param(list)
         local L1 = {list[1]}
         for k = 1, n do
             table.insert(L1,1); table.insert(L1,f(k/n))
@@ -82,16 +86,16 @@ function graph:Dcoil(list,R,options)
         else
             C = {a+v1, "m", b+v2,"l"}
         end
-        insert(C, {b,b-v2,r,-1,"ca",b-v2+u2,a-v1+u1,a-v1,"b"})
-        if endb%2 == 1 then insert(C,{a,a+v1,r,-1,"ca"}) end
+        ld.insert(C, {b,b-v2,r,-1,"ca",b-v2+u2,a-v1+u1,a-v1,"b"})
+        if endb%2 == 1 then ld.insert(C,{a,a+v1,r,-1,"ca"}) end
         if endb == 2 then table.insert(C,"cl") end
-        local angle = (cpx.arg(v)*rad )--%180
+        local angle = (cpx.arg(v)*ld.rad )--%180
         if wireframe then
             local col = color
             if back then col= colorB end
             self:Dpath(C, "fill="..col)
         else
-            self:Dpath(C, options..",shading angle="..strReal(angle))
+            self:Dpath(C, options..",shading angle="..ld.strReal(angle))
         end
     end 
 
@@ -104,18 +108,18 @@ function graph:Dcoil(list,R,options)
         A = B; B = list[i+1]; n = list[i]; --alphA = alphaB 
         if i > 3 then
             C = list[i-3]; 
-            local theta = cpx.angle(B-A,A-C)*rad
+            local theta = cpx.angle(B-A,A-C)*ld.rad
             if math.abs(theta) < 0.1 then
                 alphaA = alphaB+ theta
                 alphaB = 0
             end
         else 
-            if alphaA == nil then alphaA = math.atan(cpx.abs(B-A)/(4*R*n))*rad end
+            if alphaA == nil then alphaA = math.atan(cpx.abs(B-A)/(4*R*n))*ld.rad end
             if alphaB == nil then alphaB = alphaA end
         end
         local t = cpx.normalize(B-A)
-        local distA = R*math.tan(alphaA*deg)
-        local distB = R*math.tan(alphaB*deg)
+        local distA = R*math.tan(alphaA*ld.deg)
+        local distB = R*math.tan(alphaB*ld.deg)
         local A1,B1 = A+distA*t, B-distB*t
         local a, u, b = A1, (B1-A1)/(2*n-1), B1
         local v = -sens*R*cpx.I*t
@@ -163,27 +167,27 @@ function graph:Dcoil(list,R,options)
 end
 
 
-function coil2(list, R, direction)
+local coil2 = function(list, R, direction)
     direction= direction or 1
     local end_angle = 0
     
     local spire_base = function(angle)
-    angle = angle or 0
-    local a, a1, a2 = Z(0,0), Z(0,1.44), Z(0.555,2)
-    local b, b1, b2 = Z(1,2), Z(1.455,2), Z(2,1.44)
-    local c, c1, c2 = Z(2,0), Z(2,-1.11), Z(1.55,-2)
-    local d, d1, d2 = Z(1,-2), Z(0.455,-2), Z(0,-1.11)
-    local mat = {Z(0,0), Z(0.5,0), Z(0,1) }
-    local k = 1/math.sqrt(2)/2
-    a1,a2,b,b1,b2,c,c1,c2,d,d1,d2 = table.unpack( mtransform({a1,a2,b,b1,b2,c,c1,c2,d,d1,d2}, mat) )
-    local ap = a
-    c1, c2 , d, d1, d2, ap = table.unpack( map(function(z) z=toComplex(z); return Z( k*(z.re-1)+1,z.im) end, {c1,c2,d,d1,d2,a}) )
-    if angle ~= 0 then
-        local mat2 = matrixof( function(z) return ap+(z-ap)*cpx.exp(cpx.I*angle*2/3) end )
-        a2,b,b1,b2,c,c1,c2,d,d1,d2 = table.unpack( mtransform({a2,b,b1,b2,c,c1,c2,d,d1,d2}, mat2) )
+        angle = angle or 0
+        local a, a1, a2 = Z(0,0), Z(0,1.44), Z(0.555,2)
+        local b, b1, b2 = Z(1,2), Z(1.455,2), Z(2,1.44)
+        local c, c1, c2 = Z(2,0), Z(2,-1.11), Z(1.55,-2)
+        local d, d1, d2 = Z(1,-2), Z(0.455,-2), Z(0,-1.11)
+        local mat = {Z(0,0), Z(0.5,0), Z(0,1) }
+        local k = 1/math.sqrt(2)/2
+        a1,a2,b,b1,b2,c,c1,c2,d,d1,d2 = table.unpack( ld.mtransform({a1,a2,b,b1,b2,c,c1,c2,d,d1,d2}, mat) )
+        local ap = a
+        c1, c2 , d, d1, d2, ap = table.unpack( ld.map(function(z) z=cpx.toComplex(z); return Z( k*(z.re-1)+1,z.im) end, {c1,c2,d,d1,d2,a}) )
+        if angle ~= 0 then
+            local mat2 = ld.matrixof( function(z) return ap+(z-ap)*cpx.exp(cpx.I*angle*2/3) end )
+            a2,b,b1,b2,c,c1,c2,d,d1,d2 = table.unpack( ld.mtransform({a2,b,b1,b2,c,c1,c2,d,d1,d2}, mat2) )
+        end
+        return {a,"m",a1,a2,b, "b", b1, b2, c,"b", c1, c2, d, "b", d1, d2, ap, "b"}
     end
-    return {a,"m",a1,a2,b, "b", b1, b2, c,"b", c1, c2, d, "b", d1, d2, ap, "b"}
-end
     
     local spring = function(A, nb, B)
         local Len = cpx.abs(B-A)
@@ -194,15 +198,15 @@ end
         local mat = {Z(0,0), Z(sc,0), Z(0,sc)}
         local tr_mat = {Z(tr,0), Z(1,0), Z(0,1)}
         local Len_mat = {Z(0,0), Z(Len/(nb*tr),0), Z(0,1)}
-        local rot_mat = matrixof( function(z) return A+cpx.exp(cpx.I*angle)*z end )
-        sp = mtransform(sp, mat)
+        local rot_mat = ld.matrixof( function(z) return A+cpx.exp(cpx.I*angle)*z end )
+        sp = ld.mtransform(sp, mat)
         local rep = {sp}
         for i = 2, nb do
-            sp = mtransform(sp, tr_mat)
+            sp = ld.mtransform(sp, tr_mat)
             table.insert(rep, sp)
         end
-        rep = mtransform(rep,Len_mat)
-        return mtransform(rep,rot_mat)
+        rep = ld.mtransform(rep,Len_mat)
+        return ld.mtransform(rep,rot_mat)
     end
 
     local ret = {}
@@ -210,8 +214,8 @@ end
     if curve then
         local n = table.remove(list)
         list = list[1]
-        if not isComplex(list[1]) then list = list[1] end -- first component
-        local f, Len = curvilinear_param(list)
+        if not cpx.isComplex(list[1]) then list = list[1] end -- first component
+        local f, Len = ld.curvilinear_param(list)
         local L1 = {list[1]}
         for k = 1, n do
             table.insert(L1,1); table.insert(L1,f(k/n))
@@ -228,9 +232,9 @@ end
             end_angle = cpx.angle(B-A,C-B)
         else end_angle = 0
         end
-        insert(ret, spring(A, sp, B))
+        ld.insert(ret, spring(A, sp, B))
     end
-    if direction == 1 then ret = reverse(ret) end
+    if direction == 1 then ret = ld.reverse(ret) end
     return ret
 end
 
@@ -262,7 +266,7 @@ end
 --------------------- chains -------------------------------------------
 
 local chain = function(list, rx, ry, ep)  
-    local f, Len = curvilinear_param(list)
+    local f, Len = ld.curvilinear_param(list)
     local n = math.floor( (Len/rx+1)/2 )
     n = 2*n-1
     rx = Len/n/2
@@ -276,13 +280,13 @@ local chain = function(list, rx, ry, ep)
         local u = b-a
         local r = cpx.abs(u)/2
         u = cpx.normalize(u)
-        local c, alpha = (a+b)/2, cpx.arg(b-a)*rad 
+        local c, alpha = (a+b)/2, cpx.arg(b-a)*ld.rad 
         return {a, "m", c, r, ry, alpha, "e", a-ep*u, "m", c, r+ep, ry+ep, alpha, "e"}
     end
     
     local mailleB = function(a,b)
         local v = ep*cpx.I*cpx.normalize(b-a)/2
-        local alpha = cpx.arg(b-a)*rad
+        local alpha = cpx.arg(b-a)*ld.rad
         return {a+v, "m", b+v, "l", b, b-v, ep, ep/2, -1, alpha, "ea", a-v, "l", a, a+v, ep, ep/2, -1, alpha, "ea", "cl"}
     end
     
@@ -343,12 +347,12 @@ function graph:Dchain(list, link_length, options)
 end
 
 
-function chain2(L,h)
+local chain2 = function(L,h)
 -- a and b are two 2d points (complex numbers)
 -- h = height  of wave
 -- returns a back and front (two lists of paths)
     
-    local f, Len = curvilinear_param(L)
+    local f, Len = ld.curvilinear_param(L)
     local closed = cpx.abs(f(1)-f(0))<1e-4
     h = h or 0.0625
     local n = math.floor(Len/(4*h)) -- number of zigzag
@@ -360,7 +364,7 @@ function chain2(L,h)
         local w = (x2-x1)/12
         local v = h*cpx.I*cpx.normalize(x2-x1)
         c, d = (3*x1+x2)/4, (x1+3*x2)/4
-        insert(lastfront, {c-w+v,c-w+v,c+v,"b"})
+        ld.insert(lastfront, {c-w+v,c-w+v,c+v,"b"})
         if (k > 1) or closed then 
             table.insert(front, lastfront)
         else
@@ -369,16 +373,16 @@ function chain2(L,h)
         table.insert(front, {c-v,"m",c-v+w,d+v-w,d+v,"b"})
         lastfront = {d-v,"m",d-v+w,d-v+w,x2,"b"}
         
-        insert(lastback, {c-v-w,c-v-w,c-v,"b"})
+        ld.insert(lastback, {c-v-w,c-v-w,c-v,"b"})
         table.insert(back, lastback)
         table.insert(back, {c+v,"m",c+v+w,d-v-w,d-v,"b"})
         lastback = {d+v,"m",d+v+w,d+v+w,x2,"b"}
     end
     if closed then
         table.remove(back[1],1)
-        back[1] = concat(lastback, back[1])
+        back[1] = ld.concat(lastback, back[1])
         table.remove(front[1],1)
-        front[1] = concat(lastfront, front[1])
+        front[1] = ld.concat(lastfront, front[1])
     else
         table.insert(back, lastback)
         table.insert(back, lastfront)

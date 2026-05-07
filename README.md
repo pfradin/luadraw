@@ -10,40 +10,25 @@ Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requi
  copier le contenu de *files* dans : texmf/tex/lualatex/luadraw/  
  et copier le contenu de *doc*  : texmf/doc/lualatex/
  
-**Version 2.8**
+**Version 3.0**
 
-* Added the *luadraw_decorations* extension, which enhances certain drawing methods by adding options. Currently, there is *g:Ddecoratedarc()* for 2D arcs and *g:Ddecoratedarc3d()* for 3D arcs.
-* Added the *luadraw_coils_chains* extension which allows drawing springs and chains.
-* Added the *luadraw_log_axes* extension which allows you to create and draw on a logarithmic grid in *x*, or in *y*, or in *x* and *y*.
-* Added functions: *nth_root(n,x)* (nth root of a real *x*, defined on **R** when *n* is odd); *cpx.cosh()*, *cpx.sinh()* (complex hyperbolic cosine and sine) and *cpx.pow(z,a)* (for calculating *z^a* with *z* a complex number and *a* a real number).
-* Added the *use_siunitx* option for the *g:Daxes()*, *g:DaxeX()*, *g:DaxeY()*, *g:Dgradbox()*, *g:Dgradline()* methods. This allows you to locally use or not use the formatting of numeric values ​​by the *siunitx* package.
-* Added the *showlines* option for the *g:Dgrid()* method which allows you to show or hide horizontal and/or vertical lines.
-* For the methods *g:Dpoly()*, *g:Dfacet()*, *g:Dmixfacet()*, and *g:addFacet()*, in the option *usepalette=*{palette, mode}*, the second argument can now be a function, *mode: f -> mode(f)* in **R**, where *f* denotes a facet (a list of 3D points). Facets with the smallest value have the first color of the palette, those with the smallest value have the last color of the palette, and for the others, the color is calculated by linear interpolation.
-* Added the function *obj_surface(f,u1,u2,v1,v2, grid)* which returns the surface parameterized by *f* in *obj* format, that is, a table with three fields {vertices={...}, facets={{...},{...}}}, normals={...}}. The first two fields are identical to the case of polyhedra, and the third field contains the unit vectors normal to the surface at each vertex. The facets are triangular.
-* In the *luadraw_povray* module: a second syntax has been added for drawing smooth parametric surfaces: *g:Pov_surface(f,u1,u2,v1,v2,options)* where *f* is the parameterization. This method is faster than the previous one.
-* In the *{luadraw_spherical* module: add the global variable *Hiddendelayed = false*. With the value *false*, hidden parts are drawn at the end of the *g:Dspherical()* instruction; with the value *true*, they are drawn at the very end of the current graph, which can be useful if you have added elements after the sphere that hide part of it.
-* For the *g:Daxes()* method: the \opt{originloc} option is still the point used as the origin for the graduations, but it is no longer automatically the point of intersection of the two axes.
-* For the method *g:Daxes()*: addition of the options *xynode_options = ""*, *xnode_options = xynode_options* and *ynode_options = xynode_options* which allow passing options to the instruction *\node{}* for all labels (except legends).
-* For the *g:addAaxes()* method, add the option *labels={"$x$", "$y$","$z$"}* to manage the labels displayed at the end of each axis.
-* Bug fixes...
- 
-**Version 2.7**
-* The basic solid drawing methods: *g:Dcylinder()*, *g:Dcone()* and *g:Dfrustum()* now have two additional options: *edgestyle* and *edgewidth* (as for the *g:Dsphere()* method).
-* In the *luadraw_compile_tex* module, for the methods: *g:Dcompiled_tex(L, anchor, options)* and *g:Compiled\_tex2path3d(L, options)*, add the option *pos* identical to the labels.
-* In the *luadraw_compile_tex* module, three global variables are added to manage access to the *pdflatex*, *pdf2ps* and *pstoedit* programs. These variables are *pdflatexcmd*, *pdf2pscmd* and *pstoeditcmd*, they allow you to optionally add a path to the program, for example: *pstoeditcmd = "/usr/bin/pstoedit"*.
-* New syntax for the function *circle(data, nbdots)*, where *data* is a list (center and radius, or three points on the circle) and *nbdots* is the desired number of points. The old syntaxes remain valid.
-* New syntax for the function *ellipse(data, nbdots)*, where *data* is a list: {center, rx, ry, incline}, and *nbdots* is the desired number of points. The old syntaxes remain valid.
-* Added the function *mixpalette(pal, percent, color)* which returns a new palette after mixing each color of the palette *pal* with *color*.
-* Correction of numerous typos in the documentation.
-* Bug fixes...
- 
-**Version 2.6**
-* Added the *luadraw_povray* extension which allows you to create an image with Pov-Ray and include it in the current graphic to draw over it.
-* Added the *luadraw_fields* extension which allows drawing vector fields or gradient fields.
-* Added the *luadraw_shadedforms* extension, which allows drawing 2D polygonal lines or filling a shape with a color gradient based on the chosen calculation method and palette.
-* The *g:Dshadedpolyline()* method is now part of the *luadraw_shadedforms* extension.    
-* Added the methods *g:Dimage()* and *g:Dmapimage()*. The first allows you to include an image in the graph, and the second allows you to map an image onto a parallelogram.
-* Added the function *parallelogram()*, which returns the vertices of a parallelogram constructed from a vertex and two vectors. Also added is the corresponding drawing method *g:Dparallelogram()*.
-* Added the options *gradside* and *gradsection* which allow modification of gradient parameters in the drawing of cylinders, cones and truncated cones (methods *g:Dcylinder()*, *g:Dcone()* and *g:Dfrustum()*).
-* Extension of the method *g:Newcolor(name,color)*, the second argument can now be eiher a table of three RGB components, or a string representing a color.
+This version introduces a major change: all data related to the *luadraw* package is now stored in the namespace (table) named *luadraw*. This necessitates the use of dot notation, for example, *luadraw.graph* instead of *graph*. However, it is possible to create shortcuts; for instance, the instruction `local ld = luadraw` will allow you to use *ld* instead of *luadraw* in dot notation. Refer to the very beginning of this document for more details.
+
+This change results in incompatibility with previous versions; however, the changes required to adapt older code are minimal, especially since there are no changes to the graphics methods (they were already encapsulated in two classes).
+
+This change also brings some (minor) modifications to extensions; refer to the documentation for more details.
+
+
+* Added a second possible syntax for the functions *ld.surface()* and *ld.obj_surface()*: *ld.surface(f, mesh)* and *ld.obj_surface(f, mesh)* where *mesh={{u1,...,u_n}, {v1,...,vm}}* (increasing list of values ​​of parameter *u* and increasing list of values ​​of parameter *v*).
+
+* In the *luadraw_decorations* module: the 2D and 3D line drawing methods have been overridden so that the *draw_options* argument, which is normally a string passed to the *\draw* instruction, can be replaced by a table whose fields represent possible options (such as adding a label). The method names remain unchanged, and the old syntax is still valid.
+
+* In the functions *ld.curve2cone()*, *ld.curve2cylinder()*, *ld.line2tube()*, *ld.section2tube()*, *ld.rotcurve()* and *ld.rotline()*, add the option *obj=true/false*; with the value *false* (default) the functions return a list of facets, with the value *true* they return a table {vertices={3D points}, facets=\{{index1,...},...}, normals={3D vectors}}}. If the *g:Dpoly()* method does not take into account the *normals* field, the *g:Pov_facet()* method of the *luadraw_povray* module, on the other hand, uses this field when it is present.
+
+* Added the function *ld.cutpolyline2(P,f,sg,close)* where *P* is a polygon (list of complex numbers), *f* is a function (x-> f(x) real), and *sg* is a string equal to ">" or "<". This function returns the outline of the part of the polygon satisfying the constraint *y>f(x)* or *y<f(x)* depending on the value of *sg*.
+
+* Added the method *g:Dinequalities(constraints, options)* which draws the set of points satisfying a constraint system of the type *y>fi(x)* or *y<fi(x)*.
+
+* In the *luadraw_povray* module: added the option *usepalette={palette, mode, minmax}*.
+
 * Bug fixes...

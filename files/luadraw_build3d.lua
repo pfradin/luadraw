@@ -1,16 +1,26 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
-
 -- construction d'objets 3d
 
-function plane(A,B,C)
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local pt3d = ld.pt3d
+local toPoint3d = pt3d.toPoint3d
+local isPoint3d = pt3d.isPoint3d
+local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
+local M, Mc, Ms = pt3d.M, pt3d.Mc, pt3d.Ms
+local map = ld.map
+
+
+function ld.plane(A,B,C)
 -- renvoie leplan passant par A, B et C
     local n = pt3d.prod(B-A,C-A)
     if pt3d.N1(n) > 1e-12 then 
@@ -18,10 +28,10 @@ function plane(A,B,C)
     end
 end
 
-function orthoframe(P, u) -- returns an orthonormal frame of the plane P={A,n}
+function ld.orthoframe(P, u) -- returns an orthonormal frame of the plane P={A,n}
     local A, n = table.unpack(P)
     n = pt3d.normalize(n)
-    if u ~= nil then u = proj3d(u,{Origin,n}) end
+    if u ~= nil then u = ld.proj3d(u,{Origin,n}) end
     if (u == nil) or (pt3d.N1(u) < 1e-12) then u = pt3d.prod(n,vecI) end
     if pt3d.N1(u) < 1e-12 then -- u = 0
         u = pt3d.prod(n,vecJ)
@@ -31,12 +41,12 @@ function orthoframe(P, u) -- returns an orthonormal frame of the plane P={A,n}
     return A, u, v
 end
 
-function plane2ABC(P) -- returns 3 points of plane P={A,n}
-    local A,u,v = orthoframe(P)
+function ld.plane2ABC(P) -- returns 3 points of plane P={A,n}
+    local A,u,v = ld.orthoframe(P)
     return A, A+u, A+v
 end
 
-function planeEq(a,b,c,d)
+function ld.planeEq(a,b,c,d)
 -- renvoie le plan d'équation ax+by+cz+d=0
     local A, n
     n = M(a,b,c)
@@ -51,15 +61,15 @@ function planeEq(a,b,c,d)
     return {A,n}
 end
 
-function planeEqn(a,b,c,d) -- old version
-    return planeEq(a,b,c,d)
+function ld.planeEqn(a,b,c,d) -- old version
+    return ld.planeEq(a,b,c,d)
 end    
 
-function classify3d(L, n)
+function ld.classify3d(L, n)
 -- classe les points 3d de la liste L (supposés coplanaires) pour former une facette orientée par n
 -- cette facette est supposée CONVEXE
     if (L == nil) or (type(L) ~= "table")  or (#L == 0) then return end
-    local G = isobar3d(L)
+    local G = pt3d.isobar3d(L)
     local u1 = L[1]
     u1 = pt3d.normalize(u1-G)
     local v = pt3d.normalize(n)
@@ -78,13 +88,13 @@ function classify3d(L, n)
     return res
 end
 
-function getfacet(P,L)
+function ld.getfacet(P,L)
 -- renvoie la liste des facettes du polyèdre P = { vertices={sommets}, facets = {facettes avec n° de sommets} }, dont le numéro est dans la liste L
 -- si L est un entier alors on renvoie la facette numéro L
 -- si L vaut nil, on renvoie toutes les facettes
 -- les facettes renvoyées ont des coordonnées 3d
     local n = #P.facets
-    if L == nil then L = range(1,n) end
+    if L == nil then L = ld.range(1,n) end
     local rep = {}
     if (type(L) == "number") and (L <= n) then 
         for _,k in ipairs(P.facets[L]) do
@@ -104,7 +114,7 @@ function getfacet(P,L)
     if #rep > 0 then return rep end
 end
 
-function facet2plane(L)
+function ld.facet2plane(L)
 -- L est une facette ou une liste de facettes
 -- renvoie le plan contenant chaque facette
     local rep
@@ -122,7 +132,7 @@ function facet2plane(L)
     return rep
 end
     
-function poly2facet(P) -- conversion polyèdre -> liste facettes 3d
+function ld.poly2facet(P) -- conversion polyèdre -> liste facettes 3d
 -- cette commande prend en entrée un polyèdre P = { vertices={sommets}, facets = {facettes avec n° de sommets} }
 -- La fonction renvoie une liste de facettes avec coordonnées 3d
 -- les facettes sont orientées par l'ordre d'apparition des sommets.
@@ -138,7 +148,7 @@ function poly2facet(P) -- conversion polyèdre -> liste facettes 3d
     return rep
 end
 
-function facet2poly(facetlist,eps)
+function ld.facet2poly(facetlist,eps)
 -- facetlist est une liste de facettes avec coordonnées 3d
 -- la fonction renvoie un polyèdre P = { vertices={sommets}, facets = {facettes avec n° de sommets} }
     local poly = {}
@@ -147,32 +157,32 @@ function facet2poly(facetlist,eps)
     for _, facet in ipairs(facetlist) do
         local aux = {}
         for _, A in ipairs(facet) do
-            table.insert(aux, insert3d(poly.vertices,A,eps))
+            table.insert(aux, pt3d.insert3d(poly.vertices,A,eps))
         end
         table.insert(poly.facets,aux)
     end
     return poly
 end
 
-function reverse_face_orientation(F)
+function ld.reverse_face_orientation(F)
 -- F est une facette, une liste de facettes, ou un polyèdre
     if (F == nil) or (type(F) ~= "table") then return end
     local rep = {}
     if isPoint3d(F[1]) then -- une facette
-        return reverse(F)
+        return ld.reverse(F)
     elseif (F.vertices == nil) then -- liste de facettes
         for _,f in ipairs(F) do 
-            table.insert(rep,reverse(f))
+            table.insert(rep, ld.reverse(f))
         end
         return rep
     else -- polyèdre
         rep.vertices = F.vertices
-        rep.facets = map(reverse,F.facets)
+        rep.facets = map(ld.reverse,F.facets)
         return rep
     end    
 end
 
-function splitseg(F,plane)
+function ld.splitseg(F,plane)
 -- cette fonction coupe le segment F (points 3d) avec le plan plane = {A,n}
 -- la fonction renvoie la partie devant (segment), la partie derrière (segment),
     local S,n = table.unpack(plane)
@@ -194,7 +204,7 @@ function splitseg(F,plane)
         elseif p2 > 0 then -- B du bon coté
             dev = F
         else -- B du mauvais côté
-            I = proj3dO(A,plane,B-A)
+            I = ld.proj3dO(A,plane,B-A)
             der = {I,B}
             dev = {A,I}
         end
@@ -204,7 +214,7 @@ function splitseg(F,plane)
         elseif p2 < 0 then -- B du mauvais coté
             der = F
         else -- B du bon côté
-            I = proj3dO(A,plane,B-A)
+            I = ld.proj3dO(A,plane,B-A)
             dev = {I,B}
             der = {A,I}
         end
@@ -212,7 +222,7 @@ function splitseg(F,plane)
     return dev, der --sec -- on renvoie le 
 end
 
-function splitfacet(F,plane)
+function ld.splitfacet(F,plane)
 -- cette fonction coupe la facette F (points 3d) avec le plan plane = {S,n}
 -- la fonction renvoie la partie devant (facette), la partie derrière (facette)
     local S,n = table.unpack(plane)
@@ -225,7 +235,7 @@ function splitfacet(F,plane)
         A1 = B1; p1 = p2; B1 = F[k]; p2 = pt3d.dot(B1-S,n)
         if math.abs(p2) < 1e-8 then p2 = 0 end
         if (p1*p2 < 0) or (p2 == 0) then
-            if p2 == 0 then I = B1 else I = proj3dO(A1,plane,B1-A1) end
+            if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
             if I ~= nil then 
                 table.insert(dev,I) ; table.insert(der,I)
             end
@@ -239,7 +249,7 @@ function splitfacet(F,plane)
     return dev, der --sec -- on renvoie le devant et le derrière
 end
 
-function clipplane(plane,P)
+function ld.clipplane(plane,P)
 --cette fonction clippe le plan avec le polyèdre P et renvoie la facette obtenue
     local S,n = table.unpack(plane)
     if (S == nil) or (n == nil) then return end
@@ -254,17 +264,17 @@ function clipplane(plane,P)
             A1 = B1; p1 = p2; B1 = P.vertices[F[k]]; p2 = pt3d.dot(B1-S,n)
             if math.abs(p2) < 1e-8 then p2 = 0 end
             if (p1*p2 < 0) or (p2 == 0) then
-                if p2 == 0 then I = B1 else I = proj3dO(A1,plane,B1-A1) end
+                if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
                 if I ~= nil then 
-                    insert3d(coupe,I,1e-10)
+                    pt3d.insert3d(coupe,I,1e-10)
                 end
             end
         end
     end
-    return classify3d(coupe,n) -- on renvoie la section (facette orientée par n) 
+    return ld.classify3d(coupe,n) -- on renvoie la section (facette orientée par n) 
 end
 
-function cutpoly(P,plane,close)
+function ld.cutpoly(P,plane,close)
 -- cette fonction coupe le polyèdre P = { vertices={sommets}, facets = {facettes avec n° de sommets} }
 -- avec le plan plane = {A,n}
 -- la partie contenant n est conservée 
@@ -283,10 +293,10 @@ function cutpoly(P,plane,close)
             A1 = B1; p1 = p2; B1 = P.vertices[F[k]]; p2 = pt3d.dot(B1-S,n)
             if math.abs(p2) < 1e-8 then p2 = 0 end
             if (p1*p2 < 0) or (p2 == 0) then
-                if p2 == 0 then I = B1 else I = proj3dO(A1,plane,B1-A1) end
+                if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
                 if I ~= nil then 
                     table.insert(aux,I) ; table.insert(aux2,I)
-                    insert3d(coupe,I,1e-10)
+                    pt3d.insert3d(coupe,I,1e-10)
                 end
             end
             if (p2 > 0) and (p1 ~= nil) then table.insert(aux,B1) end
@@ -295,15 +305,15 @@ function cutpoly(P,plane,close)
         if #aux>2 then table.insert(res,aux) end
         if #aux2>2 then table.insert(res2,aux2) end
     end
-    local sec = classify3d(coupe,-n)
+    local sec = ld.classify3d(coupe,-n)
     if (#coupe > 2) and close then
         table.insert(res,sec)
-        table.insert(res2,reverse(sec))
+        table.insert(res2,ld.reverse(sec))
     end
-    return facet2poly(res), facet2poly(res2), sec -- on renvoie des polyèdres et la section (facette orientée par -n) 
+    return ld.facet2poly(res), ld.facet2poly(res2), sec -- on renvoie des polyèdres et la section (facette orientée par -n) 
 end
 
-function cutfacet(L,plane,close)
+function ld.cutfacet(L,plane,close)
 -- cette fonction coupe les facettes de L (L est une facette ou une liste de facettes)
 -- avec le plan plane = {A,n}
 -- la partie contenant n est conservée 
@@ -311,7 +321,7 @@ function cutfacet(L,plane,close)
 -- la fonction renvoie la partie conservée (facettes), la partie non conservée (facettes), et la section (liste de point3d orientée par -n)
     if isPoint3d(L[1]) then L = {L} end -- pour avoir une liste de facettes
     if L.vertices ~= nil then -- polyèdre
-        L = poly2facet(L)
+        L = ld.poly2facet(L)
     end
     local S,n = table.unpack(plane)
     close = close or false
@@ -326,10 +336,10 @@ function cutfacet(L,plane,close)
             A1 = B1; p1 = p2; B1 = F[k]; p2 = pt3d.dot(B1-S,n)
             if math.abs(p2) < 1e-8 then p2 = 0 end
             if (p1*p2 < 0) or (p2 == 0) then
-                if p2 == 0 then I = B1 else I = proj3dO(A1,plane,B1-A1) end
+                if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
                 if I ~= nil then 
                     table.insert(aux,I) ; table.insert(aux2,I)
-                    insert3d(coupe,I,1e-10)
+                    pt3d.insert3d(coupe,I,1e-10)
                 end
             end
             if (p2 > 0) and (p1 ~= nil) then table.insert(aux,B1) end
@@ -338,10 +348,10 @@ function cutfacet(L,plane,close)
         if #aux>2 then table.insert(res,aux) end
         if #aux2>2 then table.insert(res2,aux2) end
     end
-    local sec = classify3d(coupe,-n)
+    local sec = ld.classify3d(coupe,-n)
     if (#coupe > 2) and close then
         table.insert(res,sec)
-        table.insert(res2,reverse(sec))
+        table.insert(res2,ld.reverse(sec))
     end
     return res, res2, sec -- on renvoie des listes de facettes et la section (facette orientée par -n) 
 end
@@ -358,7 +368,7 @@ local clipfacetfacet = function(S, poly, exterior)
             C = facet[3]
             u = pt3d.prod(B-A,C-A)
             if u ~= nil then
-                S = cutfacet(S,{A,-u})
+                S = ld.cutfacet(S,{A,-u})
             end
         end
         return S
@@ -370,7 +380,7 @@ local clipfacetfacet = function(S, poly, exterior)
             C = facet[3]
             u = pt3d.prod(B-A,C-A)
             if u ~= nil then
-                S1, S = cutfacet(S,{A,u})
+                S1, S = ld.cutfacet(S,{A,u})
                 insert(rep,S1)
             end
         end
@@ -378,12 +388,12 @@ local clipfacetfacet = function(S, poly, exterior)
     end
 end    
 
-function clip3d(S, poly, exterior)
+function ld.clip3d(S, poly, exterior)
 -- clippe la liste de facettes S avec le polyèdre convexe poly (polyèdre)
 -- exterior (true/false) indique si on conserve l'extérieur ou pas
 -- renvoie une liste de facettes
     if S.vertices ~= nil then --S est sous forme de polyèdre
-        S = poly2facet(S)
+        S = ld.poly2facet(S)
     end
     if poly.vertices == nil then -- poly est une liste de facettes
         return clipfacetfacet(S,poly,exterior)
@@ -397,7 +407,7 @@ function clip3d(S, poly, exterior)
             C = poly.vertices[facet[3]]
             u = pt3d.prod(B-A,C-A)
             if u ~= nil then
-                S = cutfacet(S,{A,-u})
+                S = ld.cutfacet(S,{A,-u})
             end
         end
         return S
@@ -409,19 +419,19 @@ function clip3d(S, poly, exterior)
             C = poly.vertices[facet[3]]
             u = pt3d.prod(B-A,C-A)
             if u ~= nil then
-                S1, S = cutfacet(S,{A,u})
-                insert(rep,S1)
+                S1, S = ld.cutfacet(S,{A,u})
+                ld.insert(rep,S1)
             end
         end
         return rep
     end
 end    
 
-function facetedges(F)
+function ld.facetedges(F)
 -- F est une liste de facettes avec point3d ou bien un polyedre
 -- la fonction renvoie la liste des arêtes (ligne polygonale 3d)
     local P = F
-    if P.vertices == nil then P = facet2poly(F) end
+    if P.vertices == nil then P = ld.facet2poly(F) end
     local rep = {}
     local a, b, ab, n
     for _,facet in ipairs(P.facets) do -- parcours du polyèdre par facette
@@ -443,7 +453,7 @@ function facetedges(F)
     return aux  -- liste de segments 3d
 end
 
-function facetvertices(F)
+function ld.facetvertices(F)
 -- F est une liste de facettes avec point3d ou bien un polyèdre
 -- la fonction renvoie la liste des sommets (liste de points 3d)
     if (F == nil) or (type(F) ~= "table") or (#F == 0) then return end
@@ -453,18 +463,18 @@ function facetvertices(F)
     eps = eps or 1e-8
     for _, facet in ipairs(F) do
         for _, A in ipairs(facet) do
-            insert3d(S,A,eps) -- insertion sans répétition
+            pt3d.insert3d(S,A,eps) -- insertion sans répétition
         end
     end
     return S
 end
 
-function border(P)
+function ld.border(P)
 -- P est un polyèdre ou une liste de facettes
 -- la fonction renvoie une ligne polygonale 3d
 -- qui correspond au bord de P, c'est à dire les arêtes appartenant à une seule face.
     if (P == nil) or (type(P) ~= "table") then return end
-    if P.vertices == nil then P = facet2poly(P) end -- si P est une liste de facettes
+    if P.vertices == nil then P = ld.facet2poly(P) end -- si P est une liste de facettes
     local rep = {}
     local inserer = function(a,b) -- arete = {a,b} deux entiers n° de sommets
         if a > b then a, b = b, a end
@@ -491,7 +501,7 @@ function border(P)
             table.insert(aux,{a,b})
         end
     end
-    aux = merge(aux)
+    aux = ld.merge(aux)
     rep = {}
     for _,F in ipairs(aux) do
         local cp = {}
@@ -506,20 +516,20 @@ end
 
 -- fonctions revoyant un polyèdre
 
-function tetra(S,v1,v2,v3)
+function ld.tetra(S,v1,v2,v3)
 -- construit un tétraèdre de sommet S et des trois vecteurs v1, v2, v3 supposés dans le sens direct
 -- la fonction renvoie une liste de sommets (point3d) suivie d'une liste de facettes avec les numéros des sommets
    return { ["vertices"] = {S,S+v1,S+v2,S+v3}, ["facets"] = {{1,3,2},{1,2,4},{2,3,4},{1,4,3}} }
 end   
 
-function parallelep(A,v1,v2,v3)
+function ld.parallelep(A,v1,v2,v3)
 -- construit un parallélépipède à partir d'un sommet A et de 3 vecteurs, supposés dans le sens direct
     local B, C, D, E, F, G, H 
     B = A+v1; C = B+v2; D = A+v2; E = A+v3; F = E+v1; G = F+v2; H = E+v2
     return { ["vertices"]={A,B,C,D,E,F,G,H}, ["facets"]={{1,4,3,2},{5,6,7,8},{1,2,6,5},{8,7,3,4},{1,5,8,4},{6,2,3,7}} }
 end
 
-function prism(base, vector, open)
+function ld.prism(base, vector, open)
 -- construit un prisme, base est liste de point3d, vector est un vecteur 3d de translation
 -- open est un booléen indiquant si le prisme est ouvert ou non, false par défaut
 -- la base doit être orientée par le vector
@@ -548,7 +558,7 @@ function prism(base, vector, open)
     return P
 end
 
-function pyramid(base,vertex,open)
+function ld.pyramid(base,vertex,open)
 -- construit une pyramide, base est liste de point3d, vertex est le sommet (point3d)
 -- open est un booléen indiquant si la base est ouverte ou non, false par défaut
 -- la base doit être orientée par le sommet
@@ -570,20 +580,20 @@ function pyramid(base,vertex,open)
     return P
 end
 
-function truncated_pyramid(base,vertex,height,open)
+function ld.truncated_pyramid(base,vertex,height,open)
 -- construit une pyramide tronquée, base est liste de point3d, vertex est le sommet (point3d)
 -- height indique la hauteur partant de la base
 -- open est un booléen indiquant si la base est ouverte ou non, false par défaut
 -- la base doit être orientée par le sommet
-    local Pyr = pyramid(base,vertex,open)
-    local Pb = facet2plane(base)
+    local Pyr = ld.pyramid(base,vertex,open)
+    local Pb = ld.facet2plane(base)
     local n = pt3d.normalize(Pb[2])
-    local A = proj3d(vertex,Pb)
+    local A = ld.proj3d(vertex,Pb)
     local B = A+height*n
-    return cutpoly(Pyr,{B,-n},not open)
+    return ld.cutpoly(Pyr,{B,-n},not open)
 end
 
-function regular_pyramid(n,side,height,open,center,axe)
+function ld.regular_pyramid(n,side,height,open,center,axe)
 -- pyramide régulière
 -- n = nombre de côtés, side = longueur d'un côté, center= centre de la base, axe = vecteur directeur de l'axe
 -- open est un booléen indiquant si la base est ouverte ou non, false par défaut
@@ -592,17 +602,17 @@ function regular_pyramid(n,side,height,open,center,axe)
     axe = axe or vecK
     axe = pt3d.normalize(axe)
     local X = side/(2*math.sin(math.pi/n))
-    local base = polyreg(0,X,n) -- regular n-sided 2d polygon 
+    local base = ld.polyreg(0,X,n) -- regular n-sided 2d polygon 
     local A, u, v = center, vecI, vecJ
     if axe ~= vecK then 
-        A, u, v = orthoframe({center,axe})
+        A, u, v = ld.orthoframe({center,axe})
     end
     base = map( function(z) return A+z.re*u+z.im*v end, base) -- conversion 2d -> 3d 
     local S = height*axe
-    if (base ~= nil) and (S ~= nil) then return pyramid(base,S,open) end
+    if (base ~= nil) and (S ~= nil) then return ld.pyramid(base,S,open) end
 end
 
-function cylinder(A,V,R,nbfacet,open,aux) -- ou cylinder(C,R,A,nbfacet,open) ou cylinder(C,R,V,A,nbfacet,open)
+function ld.cylinder(A,V,R,nbfacet,open,aux) -- ou cylinder(C,R,A,nbfacet,open) ou cylinder(C,R,V,A,nbfacet,open)
 -- construit un cylindre de rayon R, d'axe {A,V} (V vecteur 3d non nul)
 -- nbfacet vaut 35 par défaut
 -- open=true/false vaut false par défaut
@@ -653,7 +663,7 @@ function cylinder(A,V,R,nbfacet,open,aux) -- ou cylinder(C,R,A,nbfacet,open) ou 
 end
 
 
-function cone(A,V,R,nbfacet,open,aux) -- ou cone(C,R,A,nbfacet,open) ou cone(C,R,V,A,nbfacet,open)
+function ld.cone(A,V,R,nbfacet,open,aux) -- ou cone(C,R,A,nbfacet,open) ou cone(C,R,V,A,nbfacet,open)
 -- construit un cône de rayon A, base en A+V et de rayon R à la base (V vecteur 3d non nul)
 -- nbfacet vaut 35 par défaut
 -- open=true/false vaut false par défaut
@@ -698,32 +708,32 @@ function cone(A,V,R,nbfacet,open,aux) -- ou cone(C,R,A,nbfacet,open) ou cone(C,R
     return P    
 end
 
-function frustum(C,R,r,V,A,nb,open) -- ou frustum(C,R,r,V,nb,open), frustum build with facets (tronc de cône droit ou penché)
+function ld.frustum(C,R,r,V,A,nb,open) -- ou frustum(C,R,r,V,nb,open), frustum build with facets (tronc de cône droit ou penché)
     if type(A) == "number" then -- syntaxe C,V,R,nb,open
         open = nb; nb = A; A = nil
-    elseif isPoint3d(A) then V = dproj3d(A,{C,V}) - C -- frustum penché
+    elseif isPoint3d(A) then V = ld.dproj3d(A,{C,V}) - C -- frustum penché
     end
     nb = nb or 35
     open = open or false
     if R == r then -- cylinder
-        if A == nil then return cylinder(C,V,R,nb,open)
-        else return cylinder(C,V,R,A,nb,open)
+        if A == nil then return ld.cylinder(C,V,R,nb,open)
+        else return ld.cylinder(C,V,R,A,nb,open)
         end
     end
     local k = R/(R-r)
     local H = k*V
     local Co
-    if A == nil then Co = cone(C,R,C+H,nb,open) --cone(C+H,-H,R,nb,open)
+    if A == nil then Co = ld.cone(C,R,C+H,nb,open) --cone(C+H,-H,R,nb,open)
     else 
         local S = k*(A-r/R*C)
-        Co = cone(C,R,V,S,nb,open)
+        Co = ld.cone(C,R,V,S,nb,open)
     end
     local P = {C+V,-V}
-    local rep = cutpoly(Co, P, not open)
+    local rep = ld.cutpoly(Co, P, not open)
     return rep
 end
 
-function sphere(A,R,nbu,nbv)
+function ld.sphere(A,R,nbu,nbv)
 -- construit une sphère de rayon A de rayonR
 --  nbu est le nb de fuseaux, et nbv le nb de tranches
     nbu = nbu or 36
@@ -764,13 +774,26 @@ end
 
 
 -- fonctions renvoyant une liste de facettes
+local eval_uvmesh = function(F, uvmesh)
+-- F =(u,v) -> F(u,v) in R^3
+-- uvmesh = {{u1,u2,...u,N}, {v1,v2,...,vM}}
+    local S = {}
+    for _,u in ipairs(uvmesh[1]) do
+        local aux = {}
+        for _,v in ipairs(uvmesh[2]) do
+            table.insert(aux,F(u,v))
+        end
+        table.insert(S,aux)
+    end
+    return S
+end
 
-function surface(f,u1,u2,v1,v2,grid)
+function ld.surface(f,u1,u2,v1,v2,grid) -- or surface(f, uvmesh) with uvmesh = {uvalues, vvalues}
 -- renvoie les facettes (point 3d) représentant la surface paramétrée par (u,v) -> f(u,v) dans R^3
 -- u1 et u2 sont les bornes pour u, et v1, v2 pour v
 -- grid={nbu,nbv} donne le nombre de points suivant u et suivant v
     local F = function(u,v)
-        local R = evalf(f,u,v) -- protected evaluation
+        local R = ld.evalf(f,u,v) -- protected evaluation
         if (R == nil) then return cpx.Jump
         else return R
         end
@@ -778,21 +801,16 @@ function surface(f,u1,u2,v1,v2,grid)
     local different = function(A,B)
         return pt3d.N1(B-A)>1e-10
     end
-    local S = {}
-    grid = grid or {25,25}
-    local nbu, nbv = table.unpack(grid)
-    local upas, vpas = (u2-u1)/(nbu-1), (v2-v1)/(nbv-1)
-    local u, v, aux = u1
-    for i = 1, nbu do
-        aux = {}
-        v = v1
-        for j = 1, nbv do
-            table.insert(aux,F(u,v))
-            v = v+vpas
-        end
-        table.insert(S,aux)
-        u = u+upas
+    local uvmesh, nbu, nbv
+    if type(u1) ~= "number" then 
+        uvmesh = u1
+        nbu, nbv = #uvmesh[1], #uvmesh[2]
+    else
+        grid = grid or {25,25}
+        nbu, nbv = table.unpack(grid)
+        uvmesh = {ld.linspace(u1,u2,nbu), ld.linspace(v1,v2,nbv)}
     end
+    local S = eval_uvmesh(F, uvmesh)
     local rep = {}
     local A, last
     for i = 1, nbu-1 do
@@ -812,7 +830,7 @@ function surface(f,u1,u2,v1,v2,grid)
     return rep
 end
 
-function cartesian3d(f,x1,x2,y1,y2,grid,addWall)
+function ld.cartesian3d(f,x1,x2,y1,y2,grid,addWall)
 -- cartesian surface z=f(x,y) with (x,y) in [x1,x2]x[y1,y2]
 -- default grid = {25,25} 
 -- addWall = 0 (none), "x", "y", "xy" (partition walls for Dscene3d)
@@ -821,17 +839,17 @@ function cartesian3d(f,x1,x2,y1,y2,grid,addWall)
     local F = function(u,v)
         return M(u,v,f(u,v))
     end
-    local rep = surface(F,x1,x2,y1,y2,grid)
+    local rep = ld.surface(F,x1,x2,y1,y2,grid)
     local u1,u2,v1,v2,w1,w2, cube 
     if addWall ~= 0 then
-        u1,u2,v1,v2,w1,w2 = getbounds3d(rep)
-        cube = parallelep(M(u1,v1,w1),(u2-u1)*vecI,(v2-v1)*vecJ,(w2-w1)*vecK)
+        u1,u2,v1,v2,w1,w2 = ld.getbounds3d(rep)
+        cube = ld.parallelep(M(u1,v1,w1),(u2-u1)*vecI,(v2-v1)*vecJ,(w2-w1)*vecK)
     end
     local wall = {}
     if string.find(addWall,"x") ~= nil then
         local x, xpas = x1, (x2-x1)/(grid[1]-1)
         for k = 1, grid[1] do
-            local clp = clipplane({x*vecI,vecI},cube)
+            local clp = ld.clipplane({x*vecI,vecI},cube)
             if clp ~= nil then table.insert(wall, clp) end 
             x = x+xpas
         end
@@ -839,7 +857,7 @@ function cartesian3d(f,x1,x2,y1,y2,grid,addWall)
     if string.find(addWall,"y") ~= nil then
         local y, ypas = y1, (y2-y1)/(grid[2]-1)
         for k = 1, grid[2] do
-            local clp = clipplane({y*vecJ,vecJ},cube)
+            local clp = ld.clipplane({y*vecJ,vecJ},cube)
             if clp ~= nil then table.insert(wall, clp) end
             y = y+ypas
         end
@@ -847,7 +865,7 @@ function cartesian3d(f,x1,x2,y1,y2,grid,addWall)
     return rep, wall
 end
 
-function cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
+function ld.cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
 -- functions r:(u,v) -> r(u,v) and z:(u,v) -> z(u,v)
 -- cylindrical surface parametrized by Mc(r(u,v),v,z(u,v)) with (u,v) in [u1,u2]x[v1,v2]
 -- default grid = {25,25} 
@@ -857,15 +875,15 @@ function cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
     local F = function(u,v)
         return Mc(r(v,u),u,z(v,u))
     end
-    local rep = surface(F,v1,v2,u1,u2,reverse(grid))
+    local rep = ld.surface(F,v1,v2,u1,u2,ld.reverse(grid))
     local wall = {}
     if addWall ~= 0 then
-        local x1,x2,y1,y2,z1,z2 = getbounds3d(rep)
-        local cube = parallelep(M(x1,y1,z1),(x2-x1)*vecI,(y2-y1)*vecJ,(z2-z1)*vecK)
+        local x1,x2,y1,y2,z1,z2 = ld.getbounds3d(rep)
+        local cube = ld.parallelep(M(x1,y1,z1),(x2-x1)*vecI,(y2-y1)*vecJ,(z2-z1)*vecK)
         if string.find(addWall,"z") ~= nil then
             local u, upas = u1, (u2-u1)/(grid[1]-1)
             for k = 1, grid[1] do
-                local clp = clipplane({z(u,v1)*vecK,vecK},cube)
+                local clp = ld.clipplane({z(u,v1)*vecK,vecK},cube)
                 if clp ~= nil then table.insert(wall, clp) end
                 u = u+upas
             end
@@ -874,7 +892,7 @@ function cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
             local v, vpas = v1, (v2-v1)/(grid[2]-1)
             --for k = 1, grid[2] do
             while v < math.min(v2,v1+math.pi) do
-                local clp = clipplane({Origin,-math.sin(v)*vecI+math.cos(v)*vecJ},cube)
+                local clp = ld.clipplane({Origin,-math.sin(v)*vecI+math.cos(v)*vecJ},cube)
                 if clp ~= nil then table.insert(wall, clp) end
                 v = v+vpas
             end
@@ -885,9 +903,9 @@ function cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
 end
 
 
-function curve2cone(f,t1,t2,S,args)
+function ld.curve2cone(f,t1,t2,S,args)
 -- construit un cône de sommet S sur une courbe paramétrée par f sur l'intervalle [t1,t2]
--- args est une table à 3 champs: { nbdots = 15, nbdiv = 0, ratio = 0 }
+-- args est une table à 4 champs: { nbdots = 15, nbdiv = 0, ratio = 0, obj=false }
 -- nbdots est le nombre de points minimal.
 -- ratio est un nombre qui est le ratio d'homothétie pour construire l'autre partie du cône
 -- la fonction renvoie une liste de facettes et les bords du cône (ligne polygonale 3d)
@@ -895,14 +913,15 @@ function curve2cone(f,t1,t2,S,args)
     local nbdots = args.nbdots or 15
     local ratio = args.ratio or 0
     local nbdiv = args.nbdiv or 0
-    local base = parametric3d(f,t1,t2,nbdots,false,nbdiv)[1] -- première composante connexe de la courbe
+    local obj = args.obj or false
+    local base = ld.parametric3d(f,t1,t2,nbdots,false,nbdiv)[1] -- première composante connexe de la courbe
     local nb = #base -- nombre de points
     local cone = {}
     local bords = {}
     table.insert(bords,table.copy(base))
     if ratio ~= 0 then -- il y a une autre partie
-        insert(base,concat({S},scale3d(base,ratio,S))) -- on ajoute le sommet S et les images par l'homothétie de centre S
-        table.insert(bords,scale3d(bords[1],ratio,S))
+        ld.insert(base,ld.concat({S}, ld.scale3d(base,ratio,S))) -- on ajoute le sommet S et les images par l'homothétie de centre S
+        table.insert(bords, ld.scale3d(bords[1],ratio,S))
     else
         table.insert(base,S)
     end
@@ -916,57 +935,77 @@ function curve2cone(f,t1,t2,S,args)
             table.insert(cone.facets,{k+1,k,nb+1})
         end
     end
-    return poly2facet(cone), bords
+    if obj then
+        return ld.facet2obj(cone), bords
+    else
+        return ld.poly2facet(cone), bords
+    end
 end
 
 
-function curve2cylinder(f,t1,t2,V,args)
+function ld.curve2cylinder(f,t1,t2,V,args)
 -- construit un cylindre sur une courbe paramétrée par f sur l'intervalle [t1,t2] translatée avec V
--- args est une table à 2 champs: { nbdots = 15, nbdiv = 0}
+-- args est une table à 3 champs: { nbdots = 15, nbdiv = 0, obj=false}
 -- nbdots est le nombre de points minimal.
 -- la fonction renvoie une liste de facettes et les bords du cylindre (ligne polygonale 3d)
     args = args or {}
     local nbdots = args.nbdots or 15
     local nbdiv = args.nbdiv or 0
-    local base = parametric3d(f,t1,t2,nbdots,false,nbdiv)[1] -- première composante connexe de la courbe
+    local obj = args.obj or false
+    local base = ld.parametric3d(f,t1,t2,nbdots,false,nbdiv)[1] -- première composante connexe de la courbe
     local nb = #base -- nombre de points
     local cyl = {}
     local bords = {}
     table.insert(bords,table.copy(base))
-    insert(base,shift3d(base,V)) -- on ajoute les images par la translation de vecteur V
-    table.insert(bords,shift3d(bords[1],V))
+    ld.insert(base,ld.shift3d(base,V)) -- on ajoute les images par la translation de vecteur V
+    table.insert(bords,ld.shift3d(bords[1],V))
     cyl.vertices = base
     cyl.facets = {}
     for k = 1, nb-1 do 
         table.insert(cyl.facets, {k,k+1,k+nb+1,k+nb})
     end
-    return poly2facet(cyl), bords
+    if obj then
+        return ld.facet2obj(cyl), bords
+    else
+        return ld.poly2facet(cyl), bords
+    end
 end
 
-function section2tube(section,L,args)
+
+function ld.section2tube(section,L,args)
 -- section est une facette 3d qui doit être centrée sur le premier point de L
 -- L est une liste de points 3d 
--- la fonction renvoie un "tube" centré sur L (liste de facettes)
--- args est une table à 3 champs:
+-- la fonction renvoie un "tube" centré sur L 
+-- args est une table à 4 champs:
 -- close=true/false indique si la ligne doit être refermée
 -- hollow=true/false indique si le tube a ses extrémités ouvertes (true) ou fermées
+-- obj = true/false format obj ou  format facettes
 -- addwall=0 (ou 1) permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "tronçon" du tube
     if (L == nil) or (type(L) ~= "table") then return end
+    
     args = args or {}
     local nbfacet = #section
     local close = args.close or false
     local hollow = args.hollow or false
+    local obj = args.obj or false
     if close then hollow = true end
     local addwall = args.addwall or 0
-    local rep, sep = {}, {}
-    local list, list1, firstList, P, a, b, c = {}, {}
+    local poly, sep = {}, {}
+    poly.vertices = {}
+    poly.facets = {}
     -- orientation de la section
-    a, b = L[1], L[2]
+    local a, b, c = L[1], L[2]
     local v = pt3d.prod(section[2]-section[1],section[3]-section[1])
-    if pt3d.dot(b-a,v) < 0 then section = reverse(section) end
+    if pt3d.dot(b-a,v) < 0 then section = ld.reverse(section) end
     
-    local cp2tube = function(cp) -- traitement de la composante 
-        local last, u, b1, v, theta, face = nil,nil,nil,nil,{},{}
+    local num = function(num_section, index)
+        return (num_section-1)*nbfacet + (index-1)%nbfacet+1
+    end
+    -- construction des sections
+    local cp = table.copy(L)-- cp is modified
+    local nb_sections = 0
+    if #cp > 1 then
+        local last, crt_section, aux_section, P
         if pt3d.abs(cp[1]-cp[#cp])<1e-8 then table.remove(cp); close = true end
         if close then last = cp[#cp]; table.insert(cp,cp[1]) end
         a = nil; b = nil; c = nil
@@ -974,114 +1013,119 @@ function section2tube(section,L,args)
             a = b; b = c; c = m
             if a == nil then 
                 if b ~= nil then -- première section au début de cp
-                    list = section
+                    crt_section = section
                     if close then
                         P = {b, pt3d.normalize(last-b)-pt3d.normalize(c-b)} --plan bissecteur last/b/c en b
-                        list1 = proj3dO(list,P,b-c)
-                        if list1 ~= nil then list = list1 end
+                        aux_section = ld.proj3dO(crt_section,P,b-c)
+                        if aux_section ~= nil then 
+                            crt_section = aux_section
+                        end
                     end
-                    firstList = list -- première section
-                    if (not close) and (addwall == 1) then table.insert(sep,list) end
+                    if (not close) and (addwall == 1) then table.insert(sep,crt_section) end
+                    ld.insert(poly.vertices, crt_section); nb_sections= nb_sections+1
                     if not hollow then 
-                        table.insert(rep, reverse(section))
+                        table.insert(poly.facets, ld.range(nbfacet,1,-1))
                     end
                 end
             else -- on a trois points consécutifs
                 P = {b, pt3d.normalize(a-b)-pt3d.normalize(c-b)} --plan bissecteur
-                list1 = proj3dO(list,P,b-a) --projection de la list courante sur le plan P
-                if list1 == nil then list1 = shift3d(list,b-a) end
-                for k = 1, nbfacet-1 do
-                    table.insert(rep, {list[k],list[k+1],list1[k+1],list1[k]})
+                aux_section = ld.proj3dO(crt_section,P,b-a) --projection de la liste courante sur le plan P
+                if aux_section == nil then 
+                    aux_section = ld.shift3d(crt_section,b-a)
                 end
-                table.insert(rep, {list[nbfacet],list[1],list1[1],list1[nbfacet]})
-                list = list1 -- list actuelle
-                if addwall == 1 then table.insert(sep,list) end
+                ld.insert(poly.vertices, aux_section); nb_sections = nb_sections+1
+                crt_section = aux_section -- list actuelle
+                if addwall == 1 then table.insert(sep,aux_section) end
             end
+        end
+        if not close then --dernière section
+            P = {c,b-c} -- plan de la dernière section
+            aux_section = ld.proj3dO(crt_section,P,b-c)
+            if aux_section == nil then 
+                aux_section = ld.shift3d(crt_section,c-b)
+            end
+            crt_section = aux_section
+            ld.insert(poly.vertices, crt_section); nb_sections= nb_sections+1
+            if addwall == 1 then table.insert(sep,crt_section) end -- facette séparatrice
         end
     end
-    
-    local cp = table.copy(L)-- cp is modified
-    if #cp > 1 then
-        cp2tube(cp) 
-        if close then
-            for k = 1, nbfacet-1 do
-                table.insert(rep, {list1[k],list1[k+1],firstList[k+1],firstList[k]})
-            end
-            table.insert(rep, {list1[nbfacet],list1[1],firstList[1],firstList[nbfacet]})
-        else
-            P = {c,b-c} -- plan de la dernière section
-            list1 = proj3dO(list,P,b-c)
-            if list1 == nil then list1 = shift3d(list,c-b) end
-            for k = 1, nbfacet-1 do
-                table.insert(rep, {list[k],list[k+1],list1[k+1],list1[k]})
-            end
-            table.insert(rep, {list[nbfacet],list[1],list1[1],list1[nbfacet]})
-            if not hollow then 
-                table.insert(rep, list1)
-            end
+    -- construction des facettes
+    for s = 1, nb_sections-1 do
+        for k = 1, nbfacet do
+            table.insert(poly.facets,  {num(s,k), num(s,k+1), num(s+1,k+1), num(s+1,k)})
         end
-        if addwall == 1 then table.insert(sep,list1) end -- facette séparatrice
+    end
+    if close then
+        for k = 1, nbfacet do
+            table.insert(poly.facets, {num(nb_sections,k), num(nb_sections,k+1), num(1,k+1), num(1,k)})
+        end
+    end
+    if not hollow then
+       table.insert(poly.facets,  map(function(k) return num(nb_sections,k) end, ld.range(1,nbfacet)))
     end
     if #sep == 0 then sep = nil end
-    return rep, sep
-end
+    if obj then
+        return ld.facet2obj(poly), sep
+    else
+        return ld.poly2facet(poly), sep
+    end 
+end    
 
-function line2tube(L,r,args)
+
+function ld.line2tube(L,r,args)
 -- L est une liste de points 3d 
 -- la fonction renvoie un tube centré sur L (liste de facettes)
 -- args est une table à 4 champs:
 -- nbfacet = 4 par défaut
 -- close = true/false indique si la ligne doit être refermée
 -- hollow = true/false indique si le tube a ses extrémités ouvertes (true) ou fermées
+-- obj = true/false format obj ou  non
 -- addwall = 0 (ou 1) permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "tronçon" du tube
-    if (L == nil) or (type(L) ~= "table") then return end
+    if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
+    if not isPoint3d(L[1])  then L = L[1] end -- liste de liste de points 3d, on prend la première composante
     args = args or {}
     local nbfacet = args.nbfacet or 3
     local close = args.close or false
     local hollow = args.hollow or false
     if close then hollow = true end
+    local obj = args.obj or false
     local addwall = args.addwall or 0
-    local rep, sep = {}, {}
    
     local cp2section = function(cp) -- traitement d'une composante connexe
         local b, c = cp[1], cp[2]
         local u = pt3d.prod(b-c,vecI)
         if pt3d.isNul(u) then u = pt3d.prod(b-c,vecJ) end
         u = r*pt3d.normalize(u)
-        local b1, v, theta = b+u, c-b, 2*math.pi/nbfacet*rad
+        local b1, v, theta = b+u, c-b, 2*math.pi/nbfacet*ld.rad
         local list = {b1}
         for k = 1, nbfacet-1 do
-            table.insert(list,rotate3d(b1,k*theta,{b,v}))
+            table.insert(list, ld.rotate3d(b1,k*theta,{b,v}))
         end
         return list
     end
     
-    if isPoint3d(L[1]) then L = {L} end
-    for _, cp in ipairs(L) do
-        if #cp > 1 then
-            local ret, wall = section2tube( cp2section(cp), cp, {hollow = hollow, close = close, addwall= addwall})
-            insert(rep, ret); insert(sep, wall)
-        end
+    if #L > 1 then
+        return ld.section2tube( cp2section(L), L, {hollow = hollow, close = close, addwall = addwall, obj = obj})
     end
-    if #sep == 0 then sep = nil end
-    return rep, sep
 end
 
-function rotcurve(p,t1,t2,axe,angle1,angle2,args)
+function ld.rotcurve(p,t1,t2,axe,angle1,angle2,args)
 -- renvoie la surface (liste de facettes) balayée par la courbe de la 
 -- fonction t ->p(t) sur l'intervalle [t1,t2] en la faisant tourner autour de axe = {point3d, vecteur 3d}
 -- d'un angle allant de angle1 (degrés) à angle2
--- args est une table à deux champs :
+-- args est une table à 3 champs :
 -- grid = {25,25} : subdivision pour t et pour l'angle.
+-- obj = true/false sortie au format obj ou non
 --addwall=0/1/2 permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "couche" de facettes (valeur 1) ou chaque "tranche" de rotatation (valeur 2, lorsque L est dans un même plan que l'axe de rotation)
     angle1 = angle1 or -180
     angle2 = angle2 or 180
     args = args or {}
     local grid = args.grid or {25,25}
+    local obj = args.obj or false
     local addwall = args.addwall or 0
     --axe[2] = -axe[2]
     local f = function(u,v)
-        return rotate3d(p(u),v,axe)
+        return ld.rotate3d(p(u),v,axe)
     end
     local sep
     if addwall == 1 then 
@@ -1096,23 +1140,28 @@ function rotcurve(p,t1,t2,axe,angle1,angle2,args)
         sep = {}
         local A, B, nb = axe[1], p((t1+t2)/2), grid[2]
         local t, dt = angle1, (angle2-angle1)/(nb-1)
-        local B1 = rotate3d(B,t,axe)
+        local B1 = ld.rotate3d(B,t,axe)
         for k = 1, nb do
             table.insert(sep, {A,A+axe[2],B1}) -- facette séparatrice
-            B1 = rotate3d(B,t,axe)
+            B1 = ld.rotate3d(B,t,axe)
             t = t+dt
         end
     end
-    return surface(f,t1,t2,angle1,angle2,grid), sep
+    if obj then 
+        return ld.obj_surface(f,t1,t2,angle1,angle2,grid), sep
+    else 
+        return ld.surface(f,t1,t2,angle1,angle2,grid), sep
+    end
 end
 
-function rotline(L,axe,angle1,angle2,args)
+function ld.rotline(L,axe,angle1,angle2,args)
 -- renvoie la surface (liste de facettes) balayée par la liste de points 3d L
 -- en la faisant tourner autour de axe = {point3d, vecteur 3d}
 -- d'un angle allant de angle1 (degrés) à angle2
 -- agrs est une table à 3 champs :
 -- nbdots est le nombre de subdivisions pour l'angle
 -- close qui indique si la ligne doit être refermée
+-- obj = true/false sortie au format obj ou non
 --addwall=0/1/2 permet d'ajouter (pour Dscene3d) des séparations (murs) entre chaque "couche" de facettes (valeur 1) ou chaque "tranche" de rotatation (valeur 2, lorsque L est dans un même plan que l'axe de rotation)
     if (L == nil) or (type(L) ~= "table") or (not isPoint3d(L[1])) then return end
     args = args or {}
@@ -1121,12 +1170,13 @@ function rotline(L,axe,angle1,angle2,args)
     angle1 = angle1 or -180
     angle2 = angle2 or 180
     local close = args.close or false
+    local obj = args.obj or false
     local addwall = args.addwall or 0
     local L1 = table.copy(L)
     if close then table.insert(L1,L[1]) end
 
     local f = function(u,v)
-        return rotate3d(L1[u],v,axe)
+        return ld.rotate3d(L1[u],v,axe)
     end
     local n = #L1
     local sep
@@ -1140,17 +1190,24 @@ function rotline(L,axe,angle1,angle2,args)
         sep = {}
         local A, B = axe[1], L[2]
         local t, dt = angle1, (angle2-angle1)/(nb-1)
-        local B1 = rotate3d(B,t,axe)
+        local B1 = ld.rotate3d(B,t,axe)
         for k = 1, nb do
             table.insert(sep, {A,A+axe[2],B1}) -- facette séparatrice
-            B1 = rotate3d(B,t,axe)
+            B1 = ld.rotate3d(B,t,axe)
             t = t+dt
         end
     end
-    return surface(f,1,n,angle1,angle2,{n,nb}), sep
+    if obj then 
+        return ld.obj_surface(f,1,n,angle1,angle2,{n,nb}), sep
+    else 
+        return ld.surface(f,1,n,angle1,angle2,{n,nb}), sep
+    end    
 end
 
-function read_obj_file(file, triangulate) -- Contribution de Christophe BAL 2025/09/02
+
+ --------------- obj -------------------------
+ 
+function ld.read_obj_file(file, triangulate) -- Contribution de Christophe BAL 2025/09/02
 -- prototype::
 --    file : le chemin d'un fichier ext::''OBJ'' au format \wavefront
 --           simplifié (non gestion des textures, ni des normales).
@@ -1245,16 +1302,49 @@ function read_obj_file(file, triangulate) -- Contribution de Christophe BAL 2025
     return polyhedron, {xmin, xmax, ymin, ymax, zmin, zmax}  -- polyhedron first
 end
 
+function ld.facet2obj(F)
+    -- F : list of facets (with 3D points) or polyhedron
+    -- returns { vertices={}, facets={}, normals={} }
+    if F.vertices == nil then F = facet2poly(F) end
+    local res = {}
+    res.vertices = table.copy(F.vertices)
+    local Tfacets = {}
+    local normals = {}
+    for _, f in ipairs(F.facets) do --
+        if #f == 3 then table.insert(Tfacets,f)
+        else
+            local a, c, b = f[1], f[2]
+            for k = 3, #f do
+                b = c; c = f[k]
+                table.insert(Tfacets,{a,b,c})
+            end
+        end
+    end
+    for k = 1, #F.vertices do table.insert(normals,Origin) end
+    for _,f in ipairs(Tfacets) do
+        local a, b, c = table.unpack(f)
+        local A,B,C = F.vertices[a], F.vertices[b], F.vertices[c]
+        local N = pt3d.normalize( pt3d.prod(B-A,C-A) )
+        normals[a] = normals[a] + N; normals[b] = normals[b] + N; normals[c] = normals[c] + N
+    end
+    for k = 1, #normals do
+        normals[k] = pt3d.normalize( normals[k] )
+    end
+    res.normals = normals
+    res.facets = Tfacets
+    return res
+end    
 
-function obj_surface(f,u1,u2,v1,v2,grid) -- surface à facettes triangulaires au format obj
--- surface paramétrée par (u,v) -> f(u,v) dans R^3
+
+function ld.obj_surface(f,u1,u2,v1,v2,grid) -- or obj_surface(f, uvmesh) with uvmesh= {uvalues, vvalues}
+-- surface paramétrée par (u,v) -> f(u,v) dans R^3,  à facettes triangulaires au format obj
 -- u1 et u2 sont les bornes pour u, et v1, v2 pour v
 -- grid={nbu,nbv} donne le nombre de points suivant u et suivant v
 -- renvoie une table à 3champs {vertices = {sommets (3D}, normals = {vecteurs (3D)}, facets = { {1,2,3},...} }
 -- les facettes sont triangulaires.
-    grid = grid or {25,25}
+    --grid = grid or {25,25}
     local F = function(u,v)
-        local R = evalf(f,u,v) -- protected evaluation
+        local R = ld.evalf(f,u,v) -- protected evaluation
         if (R == nil) then return cpx.Jump
         else return R
         end
@@ -1275,21 +1365,22 @@ function obj_surface(f,u1,u2,v1,v2,grid) -- surface à facettes triangulaires au
         end
         return rep
     end
-
-    local nbu, nbv = table.unpack(grid)
-    local upas, vpas = (u2-u1)/(nbu-1), (v2-v1)/(nbv-1)
-    local u, v, aux, auxN = u1
-    for i = 1, nbu do
-        aux = {}; auxN = {}
-        v = v1
-        for j = 1, nbv do
-            local R = F(u,v)
-            table.insert(aux,R)
+    local uvmesh, nbu, nbv
+    if type(u1) ~= "number" then 
+        uvmesh = u1
+        nbu, nbv = #uvmesh[1], #uvmesh[2]
+    else
+        grid = grid or {25,25}
+        nbu, nbv = table.unpack(grid)
+        uvmesh = {ld.linspace(u1,u2,nbu), ld.linspace(v1,v2,nbv)}
+    end
+    for _,u in ipairs(uvmesh[1]) do
+        local aux, auxN = {}, {}
+        for _,v in ipairs(uvmesh[2]) do
+            table.insert(aux,F(u,v))
             table.insert(auxN, 0)
-            v = v+vpas
         end
         table.insert(S,aux); table.insert(posvertices,auxN)
-        u = u+upas
     end
     local rep = {}
     local A, last
@@ -1342,7 +1433,9 @@ function obj_surface(f,u1,u2,v1,v2,grid) -- surface à facettes triangulaires au
     return result
 end
 
-function read_csv_file(file, options)
+------------------------- csv -------------------------------------------
+
+function ld.read_csv_file(file, options)
 -- file is the name of the csv file: "<name>.csv"
 -- options is a table with fields:
     -- header = true (indcates if the first line is the column names)

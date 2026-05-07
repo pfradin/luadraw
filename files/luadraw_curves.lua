@@ -1,14 +1,22 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
-bezier_nbdots = 12 -- Minimum number of points calculated when converting a Bézier curve into a polygonal line.
-function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local Zp = cpx.Zp
+local toComplex = cpx.toComplex
+local isComplex = cpx.isComplex
+
+ld.bezier_nbdots = 12 -- Minimum number of points calculated when converting a Bézier curve into a polygonal line.
+
+function ld.parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
 -- le paramétrage p est une fonction : t (réel) -> p(t) (cpx)
     local saut = (discont or false)
     local niveau = (nbdiv or 5)
@@ -23,7 +31,7 @@ function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
     local count = 0
     local seuil = math.abs(pas)*5 --empirique
 
-    local closeCp = function ()
+    local closeCp = function()
             if count > 1 then
                 table.insert(curve, cp)
             end
@@ -32,7 +40,7 @@ function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
             cp ={}
         end
     
-    local addCp = function (z)
+    local addCp = function(z)
             lastJump = false
             table.insert(cp, z)
             count = count + 1
@@ -70,8 +78,8 @@ function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
     local tPrec = nil -- valeur de t précédente
     local z = nil -- point courant
     for _ = 1, nb do
-        z = evalf(p,t)
-        if (z == nil) or notDef(z.re) or notDef(z.im) then z = nil end
+        z = ld.evalf(p,t)
+        if (z == nil) or ld.notDef(z.re) or ld.notDef(z.im) then z = nil end
         if (z ~= nil) then
             if (prec ~= nil) or ( (prec == nil) and (t > dep) ) then -- and test(tPrec,t,prec,z)
                 middle(tPrec,t,prec,z,1,nil)
@@ -90,107 +98,32 @@ function parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
     if #curve > 0 then return curve end
 end
 
-function OLDparametric(p,t1,t2,nbdots,discont,nbdiv) 
--- le paramétrage p est une fonction : t (réel) -> p(t) (cpx)
-    local saut = (discont or false)
-    local niveau = (nbdiv or 5)
-    local curve = {}
-    local lastJump = true
-    local dep = t1
-    local fin = t2
-    local nb = (nbdots or 50)
-    local pas = (fin - dep) / (nb-1)
-    local cp = {} -- composante connexe courante
-    local t = dep
-    local count = 0
-    local seuil = math.abs(pas)
 
-    local closeCp = function ()
-            if count > 1 then
-                table.insert(curve, cp)
-            end
-            lastJump = true
-            count = 0
-            cp ={}
-        end
-    
-    local addCp = function (z)
-            lastJump = false
-            table.insert(cp, z)
-            count = count + 1
-        end
-        
-    local middle -- fonction récursive middle    
-    middle = function(t1,t2,f1,f2,n)
-        if (n > niveau) then 
-            if saut then closeCp() end -- fermer la composante connexe
-        else
-           local tm = (t1 + t2) / 2  -- dichotomie
-           local fm = evalf(p,tm)
-           if (fm ~= nil) then
-                if (f1 == nil) or (cpx.N1(f1-fm) > seuil) then
-                    middle(t1,tm,f1,fm,n+1)
-                end
-                addCp(fm)
-                if (f2 == nil) or (cpx.N1(f2-fm) > seuil) then
-                    middle(tm,t2,fm,f2,n+1)
-                end
-            else -- fm = nil
-                if (f1 ~= nil) then middle(t1,tm,f1,fm,n+1) else closeCp() end
-                if (f2 ~= nil) then middle(tm,t2,fm,f2,n+1) else closeCp() end
-            end
-        end        
-    end
-    --corps de la fonction parametric
-    local prec = nil -- point précédent le point courant
-    local tPrec = nil -- valeur de t précédente
-    local z = nil -- point courant
-    for _ = 1, nb do
-        z = evalf(p,t)
-        if (z == nil) or notDef(z.re) or notDef(z.im) then z = nil end
-        if (z ~= nil) then
-            if ( (prec ~= nil) and (cpx.N1(prec-z) > seuil) ) or ( (prec == nil) and (t > dep) ) then
-                middle(tPrec,t,prec,z,1)
-            end
-            addCp(z)
-        else -- z = nil
-            if (prec ~= nil) then middle(tPrec,t,prec,z,1) 
-            else closeCp()
-            end
-        end
-        tPrec = t
-        prec = z
-        t = t + pas
-    end
-    if (not lastJump) and (count > 1) then table.insert(curve, cp) end -- dernière composante
-    if #curve > 0 then return curve end
-end
-
-function polar(rho,t1,t2,nbdots,discont,nbdiv) -- le paramétrage rho(t) renvoie un réel
-    local p = function (t)
+function ld.polar(rho,t1,t2,nbdots,discont,nbdiv) -- le paramétrage rho(t) renvoie un réel
+    local p = function(t)
         return Zp(rho(t),t) 
     end
-    return parametric(p,t1,t2,nbdots,discont,nbdiv)
+    return ld.parametric(p,t1,t2,nbdots,discont,nbdiv)
 end   
 
-function cartesian(f,x1,x2,nbdots,discont,nbdiv)
+function ld.cartesian(f,x1,x2,nbdots,discont,nbdiv)
 -- f doit être une fonction x (réel) -> f(x) (réel)
-    local p = function (x)
+    local p = function(x)
         return Z( x, f(x) ) 
     end
-    return parametric(p,x1,x2,nbdots,discont,nbdiv)
+    return ld.parametric(p,x1,x2,nbdots,discont,nbdiv)
 end
 
  
-function periodic(f,period,x1,x2,nbdots,discont,nbdiv)
+function ld.periodic(f,period,x1,x2,nbdots,discont,nbdiv)
 -- courbe d'une fonction f périodique de période period={a,b}
 -- f doit être une fonction x (réel) -> f(x) (réel)
-    local p = function (x)
+    local p = function(x)
         return Z( x, f(x) )
     end
     local tmin, tmax = period[1], period[2]
     local T = tmax - tmin
-    local C = parametric(p,tmin,tmax,nbdots,discont,nbdiv)
+    local C = ld.parametric(p,tmin,tmax,nbdots,discont,nbdiv)
     if C == nil then return end
     local k1, k2 = math.floor( (x1-tmin)/T ), math.floor( (x2-tmax)/T )+1
     local rep = {}
@@ -203,12 +136,12 @@ function periodic(f,period,x1,x2,nbdots,discont,nbdiv)
             table.insert(rep, aux)
         end
     end
-    rep = cutpolyline(rep,{x1,-cpx.I}); rep = cutpolyline(rep,{x2,cpx.I})
+    rep = ld.cutpolyline(rep,{x1,-cpx.I}); rep = ld.cutpolyline(rep,{x2,cpx.I})
     return rep
 end
 
 
-function affinebypiece(def,discont)
+function ld.affinebypiece(def,discont)
 -- courbe d'une fonction affine par morceaux
 -- def est une table permettant la définition de la fonction def = { {x1,x2,x3,...,xn}, {{a1,b1}, {a2,b2},...} }
 --{x1,x2,...,xn} forme une subdivision de l'intervalle [x1,xn] où est calculée la courbe
@@ -226,7 +159,7 @@ function affinebypiece(def,discont)
         else 
             if #crt > 0 then  
                 if discont then table.insert(res,crt)
-                else Insert(res,crt)
+                else ld.insert(res,crt)
                 end
                 crt = {} 
             end
@@ -237,13 +170,13 @@ function affinebypiece(def,discont)
     end
     if #crt > 0 then  
         if discont then table.insert(res,crt)
-        else Insert(res,crt)
+        else ld.insert(res,crt)
         end
     end    
     if #res > 0 then return res end
 end
 
-function stepfunction(def,discont)
+function ld.stepfunction(def,discont)
 -- courbe d'une fonction en escalier
 -- def est une table permettant la définition de la fonction def = { {x1,x2,x3,...,xn}, {c1,c2,...} }
 --{x1,x2,...,xn} forme une subdivision de l'intervalle [x1,xn] où est calculée la courbe
@@ -259,7 +192,7 @@ function stepfunction(def,discont)
         else 
             if #crt > 0 then  
                 if discont then table.insert(res,crt)
-                else Insert(res,crt)
+                else ld.insert(res,crt)
                 end
                 crt = {} 
             end
@@ -270,13 +203,13 @@ function stepfunction(def,discont)
     end
     if #crt > 0 then  
         if discont then table.insert(res,crt)
-        else Insert(res,crt)
+        else ld.insert(res,crt)
         end
     end    
     if #res > 0 then return res end
 end
 
-function implicit(f,x1,x2,y1,y2,grid)
+function ld.implicit(f,x1,x2,y1,y2,grid)
 -- renvoie une liste de segments constituant la courbe implicite d'équation f(x,y)=0 dans le pavé [x1,x2]X[y1,y2]
 -- grid = {n1, n2} ce qui signifie que l'intervalle [x1,x2] est découpé en n1 morceaux, et l'intervalle [y1,y2] en n2 morceaux.
     local tolerance = 1e-6
@@ -363,11 +296,11 @@ function implicit(f,x1,x2,y1,y2,grid)
             end
         end
     end
-    if #rep > 0 then return merge(rep) end -- on renvoie le résultat en recollant les segments avec merge
+    if #rep > 0 then return ld.merge(rep) end -- on renvoie le résultat en recollant les segments avec merge
 end
 
 
-function odeRK4(f,t0,Y0,tmin,tmax,nbdots)
+function ld.odeRK4(f,t0,Y0,tmin,tmax,nbdots)
 -- résolution dans l'intervalle [tmin,tmax] (contenant t0) de Y'(t)=f(t,Y(t)) où f: (t,Y) -> f(t,Y) dans R^n avec Y(t)={y1(t),...,yn(t)} (liste de réels)
 --t0 et Y0 donnent les conditions initiales, nbdots le nombre de points calculés (50 par défaut)
 -- la fonction renvoie une liste { {tmin,...,tmax}, {y1(tmin),..., y1(tmax)}, ..., {yn(tmin),..., yn(tmax)} }
@@ -392,7 +325,7 @@ function odeRK4(f,t0,Y0,tmin,tmax,nbdots)
             local rep = {}
             for k,y in ipairs(Y1) do
                 local r = y+Y2[k]
-                if notDef(r) then calcError = true; return end
+                if ld.notDef(r) then calcError = true; return end
                 table.insert(rep,r)
             end
             return rep
@@ -403,7 +336,7 @@ function odeRK4(f,t0,Y0,tmin,tmax,nbdots)
             if (Y == nil) then calcError = true; return end
             for _,y in ipairs(Y) do
                 local r = k*y
-                if notDef(r) then calcError = true; return end
+                if ld.notDef(r) then calcError = true; return end
                 table.insert(rep,r)
             end
             return rep
@@ -453,7 +386,7 @@ function odeRK4(f,t0,Y0,tmin,tmax,nbdots)
     return rep
 end
 
-function odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
+function ld.odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
 -- résolution dans l'intervalle [tmin,tmax] (contenant t0) de Y'(t)=f(t,Y(t)) où f: (t,Y) -> f(t,Y) dans R^n avec Y(t)={y1(t),...,yn(t)} (liste de réels)
 --t0 et Y0 donnent les conditions initiales, nbdots le nombre de points calculés (50 par défaut)
 -- la fonction renvoie une liste { {tmin,...,tmax}, {y1(tmin),..., y1(tmax)}, ..., {yn(tmin),..., yn(tmax)} }
@@ -479,7 +412,7 @@ function odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
             local rep = {}
             for k,y in ipairs(Y1) do
                 local r = y+Y2[k]
-                if notDef(r) then calcError = true; return end
+                if ld.notDef(r) then calcError = true; return end
                 table.insert(rep,r)
             end
             return rep
@@ -490,7 +423,7 @@ function odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
             if (Y == nil) then calcError = true; return end
             for _,y in ipairs(Y) do
                 local r = k*y
-                if notDef(r) then calcError = true; return end
+                if ld.notDef(r) then calcError = true; return end
                 table.insert(rep,r)
             end
             return rep
@@ -574,15 +507,15 @@ function odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
     return rep
 end
 
-function odesolve(f,t0,Y0,tmin,tmax,nbdots,method)
+function ld.odesolve(f,t0,Y0,tmin,tmax,nbdots,method)
     if (method == nil) or (method == "rkf45") then 
-        return odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
+        return ld.odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
     elseif method == "rk4" then
-        return odeRK4(f,t0,Y0,tmin,tmax,nbdots)
+        return ld.odeRK4(f,t0,Y0,tmin,tmax,nbdots)
     end
 end
 
-function bezier(a,c1,c2,b,nbdots)
+function ld.bezier(a,c1,c2,b,nbdots)
 --renvoie les points de la courbe de Bézier allant de a à b ayant comme points de contrôle c1 et c2
 -- a,c1,c2,b sont des complexes.
     a = toComplex(a)
@@ -594,10 +527,10 @@ function bezier(a,c1,c2,b,nbdots)
     local p = function(t)
             return a+t*(w+t*(v+t*u))
         end
-    return parametric(p,0,1,nbdots or bezier_nbdots,false,2)
+    return ld.parametric(p,0,1,nbdots or ld.bezier_nbdots,false,2)
 end
 
-function spline(liste,v1,v2)
+function ld.spline(liste,v1,v2)
 -- liste : liste de points
 -- v1 et v2 vecteurs tangents(complexes) aux extrémités ou bien nil pour une spline naturelle
 -- renvoie un chemin à dessiner avec Dpath
@@ -681,7 +614,7 @@ function spline(liste,v1,v2)
     return res
 end
 
-function tcurve(L)
+function ld.tcurve(L)
 -- renvoie sous forme de chemin une courbe passant par des points donnés avec des tangentes imposées à gauche et à droite.
 -- L = {pt1, {t1,a1,t2,a2}, pt2, {t1,a1,t2,a2}, ... }
 -- t1 est la norme du vecteur tangent à gauche, a1 est l'angle en degré par rapport à l'horizontale du vecteur tangent à gauche
@@ -704,17 +637,17 @@ function tcurve(L)
     local res = {b} -- premier point
     for k = 2, #L/2 do
         a, val, var, b, vbl, vbr = b, vbl, vbr, L[2*k-1], Vdir(table.unpack(L[2*k]))
-        insert(res,{a+var/3,b-vbl/3,b,"b"}) -- courbe de Bézier de a à b respectant les contraintes
+        ld.insert(res,{a+var/3,b-vbl/3,b,"b"}) -- courbe de Bézier de a à b respectant les contraintes
     end
     return res
 end
 
-function curvilinear_param(L,close) -- curvilinear parametrization
+function ld.curvilinear_param(L,close) -- curvilinear parametrization
 -- L is a list of complex numbers
 -- close=true/false, true if L must be closed
--- returns a function f:t -> f(t) with t in [0;1] and f(t) is a point on L, f(0) is the first point, f(1) the last point.
+-- returns a function ld.f:t -> f(t) with t in [0;1] and f(t) is a point on L, f(0) is the first point, f(1) the last point.
     if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
-    if not isComplex(L[1])  then L = L[1] end -- liste de liste de complexes, on prend la première composante
+    if (type(L[1]) == "table") and (not isComplex(L[1]))  then L = L[1] end -- liste de listes de complexes, on prend la première composante
     close = close or false
     local a, b, n, p = nil, toComplex(L[1]), #L
     local L2, L1, s = {b}, {0}, 0 -- L2=points, L1 = length    

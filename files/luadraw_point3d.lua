@@ -1,12 +1,18 @@
 --- luadraw_point3d.lua
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
+local ld = luadraw
+local cpx = ld.cpx
+local isComplex = cpx.isComplex
+local notDef = ld.notDef
+local concat = ld.concat
+local map = ld.map
 
 local point3d = {}
 point3d.__index = point3d
@@ -25,13 +31,13 @@ function point3d:new(x,y,z)
 end
 
 -- Fonction pour tester si une variable est de type point3d
-function isPoint3d(a)
+function point3d.isPoint3d(a)
     return getmetatable(a) == point3d
 end
 
-function toPoint3d(a)
+function point3d.toPoint3d(a)
 -- conversion affixe vers point3d
-    if isPoint3d(a) then return a
+    if point3d.isPoint3d(a) then return a
     elseif isComplex(a) then return point3d:new(a.re,a.im,0)
     elseif type(a) == "number" then return point3d:new(a,0,0)
     end
@@ -110,7 +116,7 @@ end
 function point3d.dot(u,v)
     if (u == nil) or (v == nil) then return end    
     local rep = u.x*v.x + u.y*v.y + u.z*v.z
-    if isNul(rep) then return 0 -- nullité à epsilon près
+    if ld.isNul(rep) then return 0 -- nullité à epsilon près
     else return rep
     end
 end
@@ -132,7 +138,7 @@ end
 function point3d.det(u,v,w)
     if (u == nil) or (v == nil) or (w == nil) then return end        
     local rep = u.x*v.y*w.z + v.x*w.y*u.z + w.x*u.y*v.z - w.x*v.y*u.z - v.x*u.y*w.z - u.x*w.y*v.z
-    if isNul(rep) then return 0 -- nullité à epsilon près
+    if ld.isNul(rep) then return 0 -- nullité à epsilon près
     else return rep
     end
 end
@@ -145,7 +151,7 @@ end
 
 function point3d.isNul(u)
     if (u == nil) then return
-    else return isNul(u.x) and isNul(u.y) and isNul(u.z)
+    else return ld.isNul(u.x) and ld.isNul(u.y) and ld.isNul(u.z)
     end
 end    
 
@@ -170,38 +176,38 @@ function point3d:dup()
 end
 
 -- création simplifiée en cartésien
-function M(x,y,z)
+function point3d.M(x,y,z)
     return point3d:new(x,y,z)
 end
 
 -- création simplifiée en sphérique
-function Ms(r,theta,phi) -- theta et phi en radians
+function point3d.Ms(r,theta,phi) -- theta et phi en radians
     if (r == nil) or (theta == nil) or (phi == nil) or notDef(r) or notDef(theta) or notDef(phi) then return end
     return point3d:new(r*math.cos(theta)*math.sin(phi), r*math.sin(theta)*math.sin(phi), r*math.cos(phi))
 end
 
 -- création simplifiée en cylindrique
-function Mc(r,theta,z)
+function point3d.Mc(r,theta,z)
     if (r == nil) or (theta == nil) or (z == nil) or notDef(r) or notDef(theta) then return end
     return point3d:new(r*math.cos(theta), r*math.sin(theta), z)
 end
 
-function angle3d(V1,V2,epsilon)
+function point3d.angle3d(V1,V2,epsilon)
     return point3d.angle(V1,V2,epsilon)
 end
 
-function isobar3d(L)
+function point3d.isobar3d(L)
 -- renvoie le centre de gravité de la liste L de point3d
     local x, y, z, n = 0, 0, 0, 0
     for _,A in ipairs(L) do
-        if isPoint3d(A) then
+        if point3d.isPoint3d(A) then
             x = x+A.x; y = y+A.y; z = z+A.z; n = n+1
         end
     end
     return point3d:new(x/n,y/n,z/n)
 end
 
-function insert3d(L,A,eps)
+function point3d.insert3d(L,A,eps)
 -- L est une variable représentant une séquence de point3d distincts, A est un point 3d
 -- la fonction insère A dans la liste L sans doublon renvoie sa position dans la liste.
 -- les comparaisons se font à eps(ilon) près (qui vaut 0 par défaut)
@@ -215,27 +221,27 @@ function insert3d(L,A,eps)
     return n+1
 end
 
-function isListOfPt3d(S) -- tests if S is a list of 3d points
+function point3d.isListOfPt3d(S) -- tests if S is a list of 3d points
     local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
-    while ret and (k<=#S) do ret = isPoint3d(S[k]); k = k+1 end
+    while ret and (k<=#S) do ret = point3d.isPoint3d(S[k]); k = k+1 end
     return ret
 end
 
-function isListOfListOfPt3d(S) -- tests if S is a list of lists 3d points
+function point3d.isListOfListOfPt3d(S) -- tests if S is a list of lists 3d points
     local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
-    while ret and (k<=#S) do ret = isListOfPt3d(S[k]); k = k+1 end
+    while ret and (k<=#S) do ret = point3d.isListOfPt3d(S[k]); k = k+1 end
     return ret
 end
 
 local var2string
 var2string = function(T)
-    if (type(T) ~= "table") or isComplex(T) or isPoint3d(T) then return tostring(T)
+    if (type(T) ~= "table") or isComplex(T) or point3d.isPoint3d(T) then return tostring(T)
     else
         return "{ "..table.concat(map(var2string,T),", ").." }"
     end
 end
 
-function whatis(x,msg)
+function ld.whatis(x,msg)
     msg = msg or "It"
     msg = "\n"..msg.." "
     if x == nil then print(msg.."is nil")
@@ -244,14 +250,14 @@ function whatis(x,msg)
     elseif type(x) == "string" then print(msg.."is a string =", x)
     elseif type(x) == "function" then print(msg.."is a function")
     elseif isComplex(x) then print(msg.."is a complex number =",x)
-    elseif isPoint3d(x) then print(msg.."is a 3d point =",x)
-    elseif isListOfCpx(x) then 
+    elseif point3d.isPoint3d(x) then print(msg.."is a 3d point =",x)
+    elseif cpx.isListOfCpx(x) then 
         print(msg.."is a list of numbers/complex numbers\nvalue = "..var2string(x))
-    elseif isListOfListOfCpx(x) then 
+    elseif cpx.isListOfListOfCpx(x) then 
         print(msg.."is a list of lists of numbers/complex numbers\nvalue = "..var2string(x))
-    elseif isListOfPt3d(x) then 
+    elseif point3d.isListOfPt3d(x) then 
         print(msg.."is a list of 3d points\nvalue = "..var2string(x))
-    elseif isListOfListOfPt3d(x) then 
+    elseif point3d.isListOfListOfPt3d(x) then 
         print(msg.."is a list of lists of 3d points\nvalue = "..var2string(x))
     else
         print(msg.."is a "..type(x).."\n value ="..var2string(x) )
@@ -260,10 +266,9 @@ end
 
 
 -- constantes
-Origin = M(0,0,0)
-vecI = M(1,0,0)
-vecJ = M(0,1,0)
-vecK = M(0,0,1)
-ID3d = {Origin, vecI, vecJ, vecK} -- matrice identité 3d
+point3d.Origin = point3d:new(0,0,0)
+point3d.vecI = point3d:new(1,0,0)
+point3d.vecJ = point3d:new(0,1,0)
+point3d.vecK = point3d:new(0,0,1)
 
 return point3d

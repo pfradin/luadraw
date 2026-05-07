@@ -1,6 +1,6 @@
 -- luadraw_graph2d.lua
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,41 +8,47 @@
 --   https://www.ctan.org/license/lppl
 
 -- ce module ajoute le tracé d'axes divers ou de grilles au module luadraw_graph
-
 local luadraw_graph2d = require "luadraw_graph"
 
-maxGrad = 100 -- nombre max de graduations
-defaultlabelshift = 0.1875
-defaultxylabelsep = 0
-defaultlegendsep = 0.2
-dollar = true -- pour les labels des graduations, ajout ou on des dollars
+local ld = luadraw
+local cpx = ld.cpx -- complex
+local Z = cpx.Z
+local toComplex = cpx.toComplex
+local isComplex = cpx.isComplex
 
-function simplifyFrac(a,b)
+
+ld.maxGrad = 100 -- nombre max de graduations
+ld.defaultlabelshift = 0.1875
+ld.defaultxylabelsep = 0
+ld.defaultlegendsep = 0.2
+ld.dollar = true -- pour les labels des graduations, ajout ou on des dollars
+
+function ld.simplifyFrac(a,b)
 -- renvoie la fraction d'entiers a/b simplifiée
     local sg = 1
     if ((a < 0) and (b > 0)) or ((a > 0) and (b < 0)) then sg = -1 end
     a, b = math.abs(a), math.abs(b)
     if (math.floor(a) == a) and (math.floor(b) == b) then 
-        local d = luadraw.gcd(a,b)
+        local d = ld.gcd(a,b)
         return sg*a//d, b//d
     else return sg*a, b
     end
 end
 
-function addFrac(a,b,c,d)
+function ld.addFrac(a,b,c,d)
 -- renvoie la somme a/b + c/d sous forme de fraction
 -- a, b, c, d sont supposés être des entiers avec b et d non nuls.
     local num, den = a*d+b*c, b*d
-    return simplifyFrac(num, den)
+    return ld.simplifyFrac(num, den)
 end
 
-function gradLabel(a,b,text)
+function ld.gradLabel(a,b,text)
 -- mise en forme d'un label pour une graduation : a*text/b, renvoie une chaîne
 -- dollar = true/false indique s'il faut des dollars ou non
     function label(x)
             local str
-            if type(x) == "number" then str = num(x) else str = x end
-            if dollar then return "$"..str.."$"
+            if type(x) == "number" then str = ld.num(x) else str = x end
+            if ld.dollar then return "$"..str.."$"
             else return str
             end
         end
@@ -52,12 +58,12 @@ function gradLabel(a,b,text)
             if b == 1 then return label(a)
             else
                 if a > 0 then
-                    if dollar then return "$\\frac{".. num(a).."}{"..num(b).."}$" 
-                    else return num(a).."/"..num(b) 
+                    if ld.dollar then return "$\\frac{".. ld.num(a).."}{"..ld.num(b).."}$" 
+                    else return ld.num(a).."/"..ld.num(b) 
                     end 
                 else -- a < 0
-                    if dollar then return "$-\\frac{".. num(-a).."}{"..num(b).."}$" 
-                    else return num(a).."/"..num(b) 
+                    if ld.dollar then return "$-\\frac{".. ld.num(-a).."}{"..ld.num(b).."}$" 
+                    else return ld.num(a).."/"..ld.num(b) 
                     end
                 end
             end
@@ -66,28 +72,28 @@ function gradLabel(a,b,text)
                         if a == -1 then return label("-"..text)
                         else 
                             if  a == 1 then return label(text)
-                            else return label(num(a)..text)
+                            else return label(ld.num(a)..text)
                             end
                         end
             else -- b différent de 1 
                 if  a > 0 then 
-                        if dollar then 
-                            if a ~= 1 then return "$\\frac{"..num(a)..text.."}{"..num(b).."}$"
-                            else return "$\\frac{"..text.."}{"..num(b).."}$"
+                        if ld.dollar then 
+                            if a ~= 1 then return "$\\frac{"..ld.num(a)..text.."}{"..ld.num(b).."}$"
+                            else return "$\\frac{"..text.."}{"..ld.num(b).."}$"
                             end
                         else 
-                            if a ~= 1 then return num(a)..text.."/"..num(b)
-                            else return text.."/"..num(b)
+                            if a ~= 1 then return ld.num(a)..text.."/"..ld.num(b)
+                            else return text.."/"..ld.num(b)
                             end
                         end 
                 else  -- a < 0    
-                        if dollar then 
-                            if a ~= -1 then return "$-\\frac{"..num(-a)..text.."}{"..num(b).."}$"
-                            else return "$-\\frac{"..text.."}{"..num(b).."}$"
+                        if ld.dollar then 
+                            if a ~= -1 then return "$-\\frac{"..ld.num(-a)..text.."}{"..ld.num(b).."}$"
+                            else return "$-\\frac{"..text.."}{"..ld.num(b).."}$"
                             end
                         else 
-                            if a ~= -1 then return num(a)..text.."/"..num(b)
-                            else return "-"..text.."/"..num(b)
+                            if a ~= -1 then return ld.num(a)..text.."/"..ld.num(b)
+                            else return "-"..text.."/"..ld.num(b)
                             end
                         end 
                 end
@@ -127,14 +133,14 @@ function luadraw_graph2d:Dgradline(d, options)
     local tickpos = options.tickpos or 0.5 -- nombre entre 0 et 1
     local tickdir = options.tickdir or "auto" -- direction graduations (ortho par défaut)
     local xyticks = options.xyticks or 0.2 -- longueur des graduations
-    local xylabelsep = options.xylabelsep or defaultxylabelsep -- distance labels-graduations
+    local xylabelsep = options.xylabelsep or ld.defaultxylabelsep -- distance labels-graduations
 
     local originpos = options.originpos or "center" -- "none" or "center" or "left" or "right"
     local originnum = options.originnum or 0 -- les labels sont: (originnum + unit*n)"labeltext"/labelden
     
     local legend = options.legend or "" -- légende
     local legendpos = options.legendpos or 0.975 -- nombre entre 0 et 1
-    local legendsep = options.legendsep or defaultlegendsep 
+    local legendsep = options.legendsep or ld.defaultlegendsep 
     local legendangle = options.legendangle or "auto"  -- "auto" pour angle automatique
     local legendstyle = options.legendstyle or "auto" -- "auto" "top" ou "bottom" légende au dessus par défaut
 
@@ -148,7 +154,7 @@ function luadraw_graph2d:Dgradline(d, options)
     local labelshift = options.labelshift or 0 -- décalage systématique des labels
     local nbdeci = options.nbdeci or 2 -- nb de décimales, 2 par défaut
      if options.use_siunitx == nil then 
-        options.use_siunitx = siunitx -- format d'affichage géré par siunitx ou pas
+        options.use_siunitx = ld.siunitx -- format d'affichage géré par siunitx ou pas
     end
     local mylabels = options.mylabels or "" -- labels personnels, liste {pos1,texte1, pos2,texte2,...} ATTENTION : pos est l'abscisse sur l'axe (A,u)
     
@@ -158,17 +164,17 @@ function luadraw_graph2d:Dgradline(d, options)
     u = d[2]
     A = toComplex(A) ; u = toComplex(u)
     if (A == nil) or (u == nil) then return end
-    A = applymatrix(A,self.matrix)
-    if tickdir ~= "auto" then tickdir = applyLmatrix(tickdir,self.matrix) end
-    local v = applyLmatrix(cpx.I*u,self.matrix)
-    u = applyLmatrix(u,self.matrix)
+    A = ld.applymatrix(A,self.matrix)
+    if tickdir ~= "auto" then tickdir = ld.applyLmatrix(tickdir,self.matrix) end
+    local v = ld.applyLmatrix(cpx.I*u,self.matrix)
+    u = ld.applyLmatrix(u,self.matrix)
     if cpx.det(u,v) < 0 then v = -v end
     nbsubdiv = math.floor(math.abs(nbsubdiv))
     local pas, L = u/(nbsubdiv+1)
     if limits == "auto" then
         local ep = 0.01 -- pour élargir la fenêtre de clipping
         local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-        L = clipline({A,u},X1-ep/self.Xscale,X2+ep/self.Xscale,Y1-ep/self.Yscale,Y2+ep/self.Yscale)
+        L = ld.clipline({A,u},X1-ep/self.Xscale,X2+ep/self.Xscale,Y1-ep/self.Yscale,Y2+ep/self.Yscale)
     else 
         L = { A+limits[1]*u, A+limits[2]*u }
     end
@@ -190,7 +196,7 @@ function luadraw_graph2d:Dgradline(d, options)
         if k1 < q1 then k1 = q1 end
         if q2 < k2 then k2 = q2 end
     end
-    if (k2-k1+1)/(1+nbsubdiv) > maxGrad then k1 = 0; k2 = 0 end --trop de graduations principales
+    if (k2-k1+1)/(1+nbsubdiv) > ld.maxGrad then k1 = 0; k2 = 0 end --trop de graduations principales
     if k1*k2 > 0 then originpos = "none" end --origine non visible car hors segment
     local n
     if tickdir == "auto" then n = v 
@@ -233,7 +239,7 @@ function luadraw_graph2d:Dgradline(d, options)
             end
         end
         if legendstyle == "auto" then legendstyle = self:Poslab(ldir,legendangle) end
-        local lpos = getdot(legendpos,L)+legendsep*ldir/self:Abs(ldir) -- position de la légende
+        local lpos = ld.getdot(legendpos,L)+legendsep*ldir/self:Abs(ldir) -- position de la légende
         if legendangle ~= 0 then
             self:Dlabel(legend,lpos, {pos = legendstyle, node_options="rotate="..legendangle})
         else
@@ -246,15 +252,15 @@ function luadraw_graph2d:Dgradline(d, options)
     for k = k1, k2-1 do
         O = O + pas
         if k%(1+nbsubdiv) == 0 
-            then insert(graduations, {O-n1,"m", O+n2,"l"})
-            else insert(graduations, {O-n1/2,"m", O+n2/2,"l"} )
+            then ld.insert(graduations, {O-n1,"m", O+n2,"l"})
+            else ld.insert(graduations, {O-n1/2,"m", O+n2/2,"l"} )
         end
     end
     if (arrows == "-") or (self:Abs(O+pas-L[2]) > 0.2) 
     then 
         O = O + pas
-        if k2%(1+nbsubdiv) == 0 then  insert(graduations, {O-n1,"m", O+n2,"l"})
-        else insert(graduations, {O-n1/2,"m", O+n2/2,"l"} )
+        if k2%(1+nbsubdiv) == 0 then  ld.insert(graduations, {O-n1,"m", O+n2,"l"})
+        else ld.insert(graduations, {O-n1/2,"m", O+n2/2,"l"} )
         end
     end
     self:Dpath(graduations,"-")
@@ -297,47 +303,47 @@ function luadraw_graph2d:Dgradline(d, options)
          if originpos == "center" then dec = 0
          else
             if originpos == "right" then 
-                if labelshift == 0 then dec = math.abs(defaultlabelshift)*uDir else dec = 0 end
+                if labelshift == 0 then dec = math.abs(ld.defaultlabelshift)*uDir else dec = 0 end
             else
                 if originpos == "left" then 
-                    if labelshift == 0 then dec = -math.abs(defaultlabelshift)*uDir else dec = 0 end
+                    if labelshift == 0 then dec = -math.abs(ld.defaultlabelshift)*uDir else dec = 0 end
                 else dec = ""
                 end
             end
          end
          local texte, fracN, fracD
          if dec ~= "" then
-            fracN, fracD = simplifyFrac(originnum,labelden)
-            texte = gradLabel(fracN,fracD,labeltext)
-            insert(labelList, {texte,O+dec,optlab})
+            fracN, fracD = ld.simplifyFrac(originnum,labelden)
+            texte = ld.gradLabel(fracN,fracD,labeltext)
+            ld.insert(labelList, {texte,O+dec,optlab})
             --self:Dlabel(texte,O+dec,optlab)
         end
         -- labels sur graduations à droite
         local fracN, fracD = originnum, labelden
-        O = O+u;  fracN, fracD = addFrac(fracN,fracD,unit,labelden)
+        O = O+u;  fracN, fracD = ld.addFrac(fracN,fracD,unit,labelden)
         local k2_, k1_ = k2//(1+nbsubdiv), k1//(1+nbsubdiv)
         for k = 1, k2_-1 do
             if k >= k1_ then
-                texte = gradLabel(fracN, fracD,labeltext)
-                insert(labelList, {texte,O,optlab})
+                texte = ld.gradLabel(fracN, fracD,labeltext)
+                ld.insert(labelList, {texte,O,optlab})
                 --self:Dlabel(texte,O,optlab)
             end
-            O = O+u; fracN, fracD = addFrac(fracN, fracD,unit,labelden)
+            O = O+u; fracN, fracD = ld.addFrac(fracN, fracD,unit,labelden)
         end
         if (k2_ >= 1) and (arrows == "-") or (self:Abs(A+k2_*u-L[2]) > 0.2) 
         then 
-            texte = gradLabel(fracN, fracD,labeltext)
-            insert(labelList, {texte,O,optlab})
+            texte = ld.gradLabel(fracN, fracD,labeltext)
+            ld.insert(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
         end
         -- labels sur graduations à gauche
-        O = dep-u+labelshift*uDir; fracN, fracD = originnum, labelden; fracN, fracD = addFrac(fracN, fracD,-unit,labelden)
+        O = dep-u+labelshift*uDir; fracN, fracD = originnum, labelden; fracN, fracD = ld.addFrac(fracN, fracD,-unit,labelden)
         k1_ = (-k1)//(1+nbsubdiv)
         for k = 1, k1_ do
-            texte = gradLabel(fracN, fracD,labeltext)
-            insert(labelList, {texte,O,optlab})
+            texte = ld.gradLabel(fracN, fracD,labeltext)
+            ld.insert(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
-            O = O-u; fracN, fracD = addFrac(fracN, fracD,-unit,labelden)
+            O = O-u; fracN, fracD = ld.addFrac(fracN, fracD,-unit,labelden)
         end
     end
     -- labels personnels
@@ -347,7 +353,7 @@ function luadraw_graph2d:Dgradline(d, options)
             local z, texte = toComplex(mylabels[2*k-1]), mylabels[2*k]
             local x_, sdot = z.re, (z.im ~= 0) -- si la partie imaginaire n'est pas nulle, on affiche un point
             O = dep+labelshift*uDir+x_*u
-            insert(labelList, {texte,O,optlab})
+            ld.insert(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
             if sdot then table.insert(dots, A+x_*u) end
         end
@@ -383,14 +389,14 @@ function luadraw_graph2d:DaxeX(d, options)
     options.tickpos = options.tickpos or 0.5 -- nombre entre 0 et 1
     options.tickdir = options.tickdir or "auto" -- direction graduations (ortho par défaut)
     options.xyticks = options.xyticks or 0.2 -- longueur des graduations
-    options.xylabelsep = options.xylabelsep or defaultxylabelsep -- distance labels-graduations
+    options.xylabelsep = options.xylabelsep or ld.defaultxylabelsep -- distance labels-graduations
 
     options.originpos = options.originpos or "center" -- "none" or "center" or "left" or "right"
     options.originnum = options.originnum or A.re -- les labels sont: (originnum + unit*n)"labeltext"/labelden
     
     options.legend = options.legend or "" -- légende
     options.legendpos = options.legendpos or 0.975 -- nombre entre 0 et 1
-    options.legendsep = options.legendsep or defaultlegendsep 
+    options.legendsep = options.legendsep or ld.defaultlegendsep 
     options.legendangle = options.legendangle or "auto" 
     options.legendstyle = options.legendstyle or "auto" 
 
@@ -420,7 +426,7 @@ function luadraw_graph2d:DaxeX(d, options)
     if options.gradlimits ~= "auto" then 
         local x1, x2 = options.gradlimits[1], options.gradlimits[2]
         --options.gradlimits = { math.ceil( (x1-A.re)/xpas ), math.floor( (x2-A.re)/xpas) }
-        options.gradlimits = { nearest( (x1-A.re)/xpas ), nearest( (x2-A.re)/xpas) }
+        options.gradlimits = { ld.nearest( (x1-A.re)/xpas ), ld.nearest( (x2-A.re)/xpas) }
     end
     if (xpas < 0) and (options.labelpos ~= "none") then 
             if options.labelpos == "top" then options.labelpos = "bottom" else options.labelpos = "top" end
@@ -454,14 +460,14 @@ function luadraw_graph2d:DaxeY(d, options)
     options.tickpos = options.tickpos or 0.5 -- nombre entre 0 et 1
     options.tickdir = options.tickdir or "auto" -- direction graduations (ortho par défaut)
     options.xyticks = options.xyticks or 0.2 -- longueur des graduations
-    options.xylabelsep = options.xylabelsep or defaultxylabelsep -- distance labels-graduations
+    options.xylabelsep = options.xylabelsep or ld.defaultxylabelsep -- distance labels-graduations
 
     options.originpos = options.originpos or "center" -- "none" or "center" or "left" or "right"
     options.originnum = options.originnum or A.im -- les labels sont: (originnum + unit*n)"labeltext"/labelden
     
     options.legend = options.legend or "" -- légende
     options.legendpos = options.legendpos or 0.975 -- nombre entre 0 et 1
-    options.legendsep = options.legendsep or defaultlegendsep 
+    options.legendsep = options.legendsep or ld.defaultlegendsep 
     options.legendangle = options.legendangle or "auto" 
     options.legendstyle = options.legendstyle or "auto" 
 
@@ -491,7 +497,7 @@ function luadraw_graph2d:DaxeY(d, options)
     if options.gradlimits ~= "auto" then 
         local x1, x2 = options.gradlimits[1], options.gradlimits[2]
         --options.gradlimits = { math.ceil( (x1-A.im)/ypas ), math.floor( (x2-A.im)/ypas) }
-        options.gradlimits = { nearest( (x1-A.im)/ypas ), nearest( (x2-A.im)/ypas) }
+        options.gradlimits = { ld.nearest( (x1-A.im)/ypas ), ld.nearest( (x2-A.im)/ypas) }
     end
     if (options.originpos ~= "none") and (options.originpos ~= "center") then 
         if options.originpos == "top" then options.originpos = "right" else options.originpos = "left" end
@@ -534,7 +540,7 @@ function luadraw_graph2d:Daxes(d, options)
     options.tickpos = options.tickpos or {0.5,0.5} -- nombre entre 0 et 1
     options.tickdir = options.tickdir or {"auto","auto"} -- direction graduations (ortho par défaut)
     options.xyticks = options.xyticks or {0.2,0.2} -- longueur des graduations
-    options.xylabelsep = options.xylabelsep or {defaultxylabelsep,defaultxylabelsep} -- distance labels-graduations
+    options.xylabelsep = options.xylabelsep or {ld.defaultxylabelsep,ld.defaultxylabelsep} -- distance labels-graduations
 
     options.originpos = options.originpos or {"right","top"} -- "none" or "center" or "left" or "right", "nonne, "bottom, or "top"
     options.originnum = options.originnum or {A.re,A.im} -- les labels sont: (originnum + unit*n)"labeltext"/labelden
@@ -542,7 +548,7 @@ function luadraw_graph2d:Daxes(d, options)
     options.originloc = toComplex(options.originloc)
     options.legend = options.legend or {"",""} -- légende
     options.legendpos = options.legendpos or {0.975,0.975} -- nombre entre 0 et 1
-    options.legendsep = options.legendsep or {defaultlegendsep,defaultlegendsep} 
+    options.legendsep = options.legendsep or {ld.defaultlegendsep,ld.defaultlegendsep} 
     options.legendangle = options.legendangle or {"auto" ,"auto"}
     options.legendstyle = options.legendstyle or {"auto" ,"auto"}
 
@@ -561,8 +567,8 @@ function luadraw_graph2d:Daxes(d, options)
     end
     if options.grid then
         local v, h = 0, 0
-        if options.showlines[1] then v = defaultlabelshift end
-        if options.showlines[2] then h = defaultlabelshift end
+        if options.showlines[1] then v = ld.defaultlabelshift end
+        if options.showlines[2] then h = ld.defaultlabelshift end
         options.labelshift = options.labelshift or {v,h} -- décalage systématique des labels en fonction de la grille
     else
         options.labelshift = options.labelshift or {0,0} -- décalage systématique des labels
@@ -713,13 +719,13 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     xpas = math.abs(xpas); ypas = math.abs(ypas)
     originloc = toComplex(originloc)
     local x1, y1 = originloc.re, originloc.im
-    local k = nearest( (x1-xdep)/xpas ) -- math.floor( (x1-xdep)/xpas ) --
+    local k = ld.nearest( (x1-xdep)/xpas ) -- math.floor( (x1-xdep)/xpas ) --
     local xmin = x1-k*xpas
-    k = nearest( (xfin-x1)/xpas ) -- math.floor( (xfin-x1)/xpas ) --
+    k = ld.nearest( (xfin-x1)/xpas ) -- math.floor( (xfin-x1)/xpas ) --
     local xmax = x1+k*xpas
-    k = nearest( (y1-ydep)/ypas ) -- math.floor( (y1-ydep)/ypas ) --
+    k = ld.nearest( (y1-ydep)/ypas ) -- math.floor( (y1-ydep)/ypas ) --
     local ymin = y1-k*ypas
-    k = nearest( (yfin-y1)/ypas ) --math.floor( (yfin-y1)/ypas ) --
+    k = ld.nearest( (yfin-y1)/ypas ) --math.floor( (yfin-y1)/ypas ) --
     local ymax = y1+k*ypas
     local xdiv = math.floor((xmax-xmin)/xpas)
     local ydiv = math.floor((ymax-ymin)/ypas)
@@ -730,18 +736,18 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
     local grille = {}
     if show[1] then
         local x = xmin
-        for k = 1, nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas) do -- 
+        for k = 1, ld.nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas) do -- 
             if (x>=A.re) and (x<=B.re) and ((k-1)%xnbsubdiv ~= 0) then 
-                insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) 
+                ld.insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) 
             end
             x = x + subgridpasx
         end
     end
     if show[2] then 
         local y = ymin
-        for k = 1, nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas) do --
+        for k = 1, ld.nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas) do --
             if (y>=A.im) and (y<=B.im) and ((k-1)%ynbsubdiv ~= 0) then  
-                insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) 
+                ld.insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) 
             end
             y = y + subgridpasy
         end
@@ -756,7 +762,7 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
         x = xmin
         for k = 0, xdiv do 
             if (x>=A.re) and (x<=B.re) then
-                insert(grille,{Z(x,ydep),"m",Z(x,yfin),"l"})
+                ld.insert(grille,{Z(x,ydep),"m",Z(x,yfin),"l"})
             end
             x = x+xpas 
         end
@@ -765,7 +771,7 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
         y = ymin
         for k = 0, ydiv do
             if (y>=A.im) and (y<=B.im) then
-                insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"})
+                ld.insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"})
             end
             y = y+ypas 
         end
@@ -801,7 +807,7 @@ function luadraw_graph2d:Dgradbox(d, options)
     options.tickpos = options.tickpos or {0,1} -- nombre entre 0 et 1
     options.tickdir = options.tickdir or {"auto","auto"} -- direction graduations (ortho par défaut)
     options.xyticks = options.xyticks or {0.2,0.2} -- longueur des graduations
-    options.xylabelsep = options.xylabelsep or {defaultxylabelsep,defaultxylabelsep} -- distance labels-graduations
+    options.xylabelsep = options.xylabelsep or {ld.defaultxylabelsep,ld.defaultxylabelsep} -- distance labels-graduations
 
     options.originpos = options.originpos or {"center","center"} -- "none" or "center" or "left" or "right", "nonne, "bottom, or "top"
     options.originnum = options.originnum or {A.re,A.im} -- les labels sont: (originnum + unit*n)"labeltext"/labelden

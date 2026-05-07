@@ -1,4 +1,4 @@
-% luadraw.sty version 2.8 du 09/04/2026%
+% luadraw.sty version 3.0 du 07/05/2026%
 %% ---------------------------------------%
 %% Copyright (C) 2026 Patrick Fradin%
 %% ---------------------------------------%
@@ -31,7 +31,7 @@
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2026/04/09 version 2.8, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2026/05/07 version 3.0, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%
@@ -44,7 +44,8 @@
 \usetikzlibrary{backgrounds}%%
 %
 \def\luadraw@TkzDir{_luadraw/}% répertoire de travail par défaut%
-\directlua{cachedir = ""}
+\directlua{luadraw = {}}
+\directlua{luadraw.cachedir = ""}
 \newif\ifluaDraw@DefaultExec\luaDraw@DefaultExectrue%%
 \newif\ifluaDraw@DefaultThreeD\luaDraw@DefaultThreeDfalse%%
 \define@key{luadraw.sty}{noexec}[]{\luaDraw@DefaultExecfalse}%%
@@ -52,20 +53,22 @@
 \define@key{luadraw.sty}{cachedir}[]{%%
 \def\luadraw@TkzDir{#1/}%
 \directlua{
-    cachedir = \luastring{\luadraw@TkzDir}
+    luadraw.cachedir = \luastring{\luadraw@TkzDir}
     local lfs = require 'lfs'
-    lfs.mkdir(cachedir)
+    lfs.mkdir(luadraw.cachedir)
 }}%%
 \ProcessOptionsX%%
 %
 \define@key{luaDraw}{name}{%%
     \def\luaDraw@nom{\luadraw@TkzDir#1}%%
-    \directlua{graph_name = \luastring{\luaDraw@nom}..".tkz"}%
+    \directlua{luadraw.graph_name = \luastring{\luaDraw@nom}..".tkz"}%
 }%%
 \define@boolkey{luaDraw}{exec}[true]{%%
 \ifKV@luaDraw@exec%%
-\def\luaDraw@dep{\luacodestar}%%
-\def\luaDraw@enddep{\endluacodestar}%%
+\def\luaDraw@dep{\luacode}%star}%%
+\def\luaDraw@depstar{\luacodestar}%%
+\def\luaDraw@enddep{\endluacode}%star}%%
+\def\luaDraw@enddepstar{\endluacodestar}%%
 \else%%
 \def\luaDraw@dep{\comment}%%
 \def\luaDraw@enddep{\endcomment}%%
@@ -91,13 +94,13 @@
 \ifKV@luaDraw@exec% code lua exécuté%
 \directlua{% on efface l'ancien fichier tkz s'il existe%
     print()
-    print("graph file = "..graph_name)
-    local file = io.open(graph_name, "r")
+    print("graph file = "..luadraw.graph_name)
+    local file = io.open(luadraw.graph_name, "r")
     if not file then 
         return
     else 
         file:close()
-        os.remove(graph_name)
+        os.remove(luadraw.graph_name)
     end
 }%%
 \else% code lua non exécuté%
@@ -115,26 +118,58 @@
 \egroup%%
 \luaDraw@loading%%
 }%%
+%%%%% environnement étoilé
+\newenvironment*{luadraw*}[2][]{%%
+\addtocounter{luaDraw@progcount}{1}%%
+\setkeys{luaDraw}{#2}%%
+\ifKV@luaDraw@exec% code lua exécuté%
+\directlua{% on efface l'ancien fichier tkz s'il existe%
+    print()
+    print("graph file = "..luadraw.graph_name)
+    local file = io.open(luadraw.graph_name, "r")
+    if not file then 
+        return
+    else 
+        file:close()
+        os.remove(luadraw.graph_name)
+    end
+}%%
+\else% code lua non exécuté%
+\ifKV@luaDraw@auto% -- chargement automatique du fichier tkz%
+\def\luaDraw@loading{\input{\luaDraw@nom.tkz}}%%
+\else%%
+\def\luaDraw@loading{}%%
+\fi%%
+\fi%%
+\bgroup%%
+\luaDraw@depstar%%
+}%%
+{%%
+\luaDraw@enddepstar%%
+\egroup%%
+\luaDraw@loading%%
+}%%
 % code exécuté au lancement
 \begin{luacode*}
-if cachedir == "" then 
-    cachedir = "_luadraw/"
+if luadraw.cachedir == "" then 
+    luadraw.cachedir = "_luadraw/"
     local lfs = require 'lfs'
-    lfs.mkdir(cachedir)
+    lfs.mkdir(luadraw.cachedir)
 end    
-graph = require 'luadraw_graph2d'  -- définition de la classe graph
-graph_name = "" -- nom du graphique (l'extension .tkz a été ajoutée)
-function graph:Show() -- on écrit la méthode Show pour afficher et faire une sauvegarde du fichier tkz
+luadraw.graph = require 'luadraw_graph2d'  -- définition de la classe graph
+luadraw.graph_name = "" -- nom du graphique (l'extension .tkz a été ajoutée)
+
+function luadraw.graph:Show() -- on écrit la méthode Show pour afficher et faire une sauvegarde du fichier tkz
     self:Sendtotex()
-    self:Savetofile(graph_name)
+    self:Savetofile(luadraw.graph_name)
 end
-function graph:Save() -- on écrit la méthode Save pour faire une sauvegarde du fichier tkz uniquement
-    self:Savetofile(graph_name)
+function luadraw.graph:Save() -- on écrit la méthode Save pour faire une sauvegarde du fichier tkz uniquement
+    self:Savetofile(luadraw.graph_name)
 end
 \end{luacode*}
 \ifluaDraw@DefaultThreeD%
 \begin{luacode*}
-graph3d = require 'luadraw_graph3d' -- définition de la classe graph3d
+luadraw.graph3d = require 'luadraw_graph3d' -- définition de la classe graph3d
 require 'luadraw_central_perspective' -- chargement de la perspective centrale
 \end{luacode*}
 \fi%

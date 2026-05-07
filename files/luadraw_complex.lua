@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,6 +8,7 @@
 --   https://www.ctan.org/license/lppl
 
 require 'luadraw_real'
+local ld = luadraw
 
 local complex = {}
 complex.__index = complex
@@ -18,29 +19,29 @@ function complex:new(re, im)
     cplx.re = re
     cplx.im = im
     setmetatable(cplx, self)  -- obligatoire, permet d'utiliser self
-    if (re == nil) or (im == nil) or notDef(re) or notDef(im) then return 
+    if (re == nil) or (im == nil) or ld.notDef(re) or ld.notDef(im) then return 
     else return cplx
     end
 end
 
 -- Fonction pour tester si une variable est de type Complex
 -- ATTENTION : la fonction renvoie false pour les réels !
-function isComplex(a)
+function complex.isComplex(a)
     return getmetatable(a) == complex
 end
 
 -- Pour transformer un nombre en complexe si possible
-function toComplex(a)
-    if isComplex(a) then return a 
+function complex.toComplex(a)
+    if complex.isComplex(a) then return a 
     else
-        if type(a) == "number" then return Z(a,0) end
+        if type(a) == "number" then return complex:new(a,0) end
     end
 end    
 
 -- Méthode pour ajouter, surcharge de +
 function complex.__add(u,v)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end
     return complex:new(u.re + v.re, u.im + v.im)
 end
@@ -48,27 +49,27 @@ end
 
 --- Méthode pour soustraire deux nombres complexes, surcharge de -
 function complex.__sub(u,v)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end
     return complex:new(u.re - v.re, u.im - v.im)
 end
 
 --- Méthode pour multiplier deux nombres complexes, surcharge de *
 function complex.__mul(u,v)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end
     return complex:new(u.re * v.re - u.im * v.im, u.re * v.im + u.im * v.re)
 end
 
 --- Méthode pour diviser deux nombres complexes, surcharge de /
 function complex.__div(u,v)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end
     local denominateur = v.re * v.re + v.im * v.im
-    if notDef(denominateur) then return
+    if ld.notDef(denominateur) then return
     else
         return complex:new(
         (u.re * v.re + u.im * v.im) / denominateur,
@@ -78,16 +79,22 @@ end
 
 --- Méthode pour tester l'égalité deux nombres complexes, surcharge de =
 function complex.__eq(u,v)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end
-    --return (u.re == v.re) and (u.im == v.im)
     return complex.isNul(u-v) -- égalité à epsilon près
+end
+
+function complex.equal(u,v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
+    if (u == nil) or (v == nil) then return end
+    return (u.re == v.re) and (u.im == v.im)
 end
 
 -- opposé (surcharge de l'opérateur '-c')
 function complex.__unm(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end    
     return complex:new(-u.re, -u.im)
 end
@@ -96,7 +103,7 @@ end
 --  module
 function complex.abs(u)
     if type(u) == "number" then return math.abs(u) end
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end
     local x, y = math.abs(u.re), math.abs(u.im)
     if x < y then x, y = y, x end
@@ -105,14 +112,14 @@ end
 
 function complex.abs2(u) -- module au carré
     if type(u) == "number" then return math.abs(u) end
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end
     return u.re^2 + u.im^2
 end
 
 -- argument principal 
 function complex.arg(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end    
     local x, y = u.re, u.im
     if (x == 0) and (y == 0) then return 0 end -- argument indéfini, 0 par convention
@@ -129,36 +136,36 @@ function complex.arg(u)
 end
 
 function complex.angle(u,v) -- return angle between vectors u and v (radians)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end  
     return complex.arg(v/u)
 end
 
 -- conjugué 
 function complex.bar(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end    
     return complex:new(u.re, -u.im)
 end
 
 -- exponentielle 
 function complex.exp(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end    
     local r = math.exp(u.re)
     return complex:new( r*math.cos(u.im), r*math.sin(u.im) )
 end
 
 function complex.cosh(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end    
     local r1, r2 = complex.exp(u), complex.exp(-u)
     return (r1+r2)/2
 end
 
 function complex.sinh(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end    
     local r1, r2 = complex.exp(u), complex.exp(-u)
     return (r1-r2)/2
@@ -179,7 +186,7 @@ end
 
 function complex.pow(z,n)
     if type(n) ~= "number" then return end
-    z = toComplex(z)
+    z = complex.toComplex(z)
     if complex.isNul(z) then
         if n > 0 then return 0 else return end
     end
@@ -195,20 +202,21 @@ end
 
 -- arrondir
 function complex.round(u, nbDeci)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return end    
     return complex:new( round(u.re,nbDeci), round(u.im,nbDeci) )
 end
 
 -- normaliser
 function complex.normalize(z)
-    z = toComplex(z)
+    if z == nil then return end
+    z = complex.toComplex(z)
     if not complex.isNul(z) then return z/complex.abs(z) end
 end
 
 -- norme 1
 function complex.N1(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if type(u) == "number" then return math.abs(u)
     else return math.abs(u.re) + math.abs(u.im)
     end
@@ -216,30 +224,30 @@ end
 
 -- produit scalaire
 function complex.dot(u,v)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end    
     local rep = u.re*v.re + u.im*v.im
-    if isNul(rep) then return 0 -- nullité à epsilon près
+    if ld.isNul(rep) then return 0 -- nullité à epsilon près
     else return rep
     end
 end
 
 -- déterminant    
 function complex.det(u,v)
-    u = toComplex(u)
-    v = toComplex(v)
+    u = complex.toComplex(u)
+    v = complex.toComplex(v)
     if (u == nil) or (v == nil) then return end        
     local rep = u.re*v.im - u.im*v.re
-    if isNul(rep) then return 0 -- nullité à epsilon près
+    if ld.isNul(rep) then return 0 -- nullité à epsilon près
     else return rep
     end
 end
 
 function complex.isNul(u)
-    u = toComplex(u)
+    u = complex.toComplex(u)
     if (u == nil) then return
-    else return isNul(u.re) and isNul(u.im)
+    else return ld.isNul(u.re) and ld.isNul(u.im)
     end
 end    
 -------------------------- Méthodes 
@@ -248,7 +256,7 @@ function complex:tostring()
     local x = self.re
     local y = self.im
     
-    if notDef(x) or notDef(y) then return "nan" end
+    if ld.notDef(x) or ld.notDef(y) then return "nan" end
     if (x == 0) and (y == 0) then return "0" end
     if x == 1e+308 then return "jump" end
     if x > 0 then str = str..x 
@@ -256,13 +264,13 @@ function complex:tostring()
     end
     if y > 0 then 
         if y == 1 then
-            if str == "" then str = "I" else str = str .. "+I" end
+            if str == "" then str = "i" else str = str .. "+i" end
         else 
-            if str == "" then str = y.."*I" else str = str.."+"..y.."*I" end 
+            if str == "" then str = y.."*i" else str = str.."+"..y.."*i" end 
         end
     elseif y < 0 then
-        if y == -1 then str = str.."-I" 
-        else str = str.."-"..math.abs(y).."*I"
+        if y == -1 then str = str.."-i" 
+        else str = str.."-"..math.abs(y).."*i"
         end
     end
     return str
@@ -278,17 +286,17 @@ function complex:dup()
 end
 
 -- création simplifiée en cartésien
-function Z(x,y)
+function complex.Z(x,y)
     return complex:new(x,y)
 end
 
 -- création simplifiée en polaire
-function Zp(r,theta)
-    if (r == nil) or (theta == nil) or notDef(r) or notDef(theta) then return end
+function complex.Zp(r,theta)
+    if (r == nil) or (theta == nil) or ld.notDef(r) or ld.notDef(theta) then return end
     return complex:new(r*math.cos(theta), r*math.sin(theta))
 end
 
-function insert(t1,t2,pos)
+function ld.insert(t1,t2,pos)
 -- insère les éléments de t2 dans la table t1 (qui est donc modifiée)
 -- si pos vaut nil l'insertion se fait à la fin de t1
     local inserer = function(x)
@@ -299,7 +307,7 @@ function insert(t1,t2,pos)
     if (type(t1) ~= "table") then return end
     if type(t2) == "number" then inserer(Z(t2,0)) 
     else
-        if isComplex(t2) then inserer(t2) 
+        if complex.isComplex(t2) then inserer(t2) 
         else
             if type(t2) == "table" then
                 for _,x in ipairs(t2) do
@@ -311,30 +319,30 @@ function insert(t1,t2,pos)
     end
 end
 
-function concat(...)
+function ld.concat(...)
 -- concatène les tables passées en arguments et renvoie la table résultante
     local res = {}
     for k,x in ipairs{...} do
-        insert(res,x)
+        ld.insert(res,x)
     end
     if #res > 0 then return res end
 end
 
-function map(f,list)
+function ld.map(f,list)
     local res = {}
     for _, x in ipairs(list) do
         local y = f(x)
-        if y == nil then y = Z(1e+308,0) end -- on insère jump si résultat nil
+        if y == nil then y = complex:new(1e+308,0) end -- on insère jump si résultat nil
         table.insert(res,y)
     end
     return res
 end   
 
-function isobar(L)
+function complex.isobar(L)
 -- renvoie le centre de gravité de la liste L de complexes
     local x, y, n = 0, 0, 0
     for _,z in ipairs(L) do
-        local z1 = toComplex(z)
+        local z1 = complex.toComplex(z)
         if z1 ~= nil then
             x = x+z1.re; y = y+z1.im; n = n+1
         end
@@ -343,37 +351,37 @@ function isobar(L)
 end
 
 
-function evalf(f,...)
+function ld.evalf(f,...)
 -- cette fonction évalue f(...) et renvoie le résultat si pas d'erreur d'exécution, nil sinon.
     local success, result = pcall(f,...)
     if success then return result end
 end
 
 
-function isListOfCpx(S) -- tests if S is a list of complex numbers
+function complex.isListOfCpx(S) -- tests if S is a list of complex numbers
     local ok = function(z)
-        return (type(z)=="number") or isComplex(z)
+        return (type(z)=="number") or complex.isComplex(z)
     end
     local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
     while ret and (k<=#S) do ret = ok(S[k]); k = k+1 end
     return ret
 end
 
-function isListOfListOfCpx(S) -- tests if S is a list of lists complex numbers
+function complex.isListOfListOfCpx(S) -- tests if S is a list of lists complex numbers
     local ret, k = (S ~= nil) and (type(S)=="table") and (#S>0), 1
-    while ret and (k<=#S) do ret = isListOfCpx(S[k]); k = k+1 end
+    while ret and (k<=#S) do ret = complex.isListOfCpx(S[k]); k = k+1 end
     return ret
 end
 
 local var2string
 var2string = function(T)
-    if (type(T) ~= "table") or isComplex(T) then return tostring(T)
+    if (type(T) ~= "table") or complex.isComplex(T) then return complex.tostring(T)
     else
-        return "{ "..table.concat(map(var2string,T),", ").." }"
+        return "{ "..table.concat(ld.map(var2string,T),", ").." }"
     end
 end
 
-function whatis(x,msg)
+function ld.whatis(x,msg)
     msg = msg or "It"
     msg = "\n"..msg.." "
     if x == nil then print(msg.."is nil")
@@ -381,14 +389,17 @@ function whatis(x,msg)
     elseif type(x) == "boolean" then print(msg.."is a boolean =",x)
     elseif type(x) == "string" then print(msg.."is a string =", x)
     elseif type(x) == "function" then print(msg.."is a function")
-    elseif isComplex(x) then print(msg.."is a complex number =",x)
-    elseif isListOfCpx(x) then 
+    elseif complex.isComplex(x) then print(msg.."is a complex number =",x)
+    elseif complex.isListOfCpx(x) then 
         print(msg.."is a list of numbers/complex numbers\nvalue = "..var2string(x))
-    elseif isListOfListOfCpx(x) then 
+    elseif complex.isListOfListOfCpx(x) then 
         print(msg.."is a list of lists of numbers/complex numbers\nvalue = "..var2string(x))
     else
         print(msg.."is a "..type(x).."\n value ="..var2string(x) )
     end
 end
+
+complex.I = complex:new(0,1)
+complex.Jump = complex:new(1e+308,0)
 
 return complex

@@ -1,13 +1,20 @@
 -- luadraw_transformations.lua (chargé par luadraw_calc.lua)
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
-function ftransform(L,f)
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local toComplex = cpx.toComplex
+local isComplex = cpx.isComplex
+local notDef = ld.notDef
+
+function ld.ftransform(L,f)
 -- image de L par la fonction f (l'image du complexe cpx.Jump est lui-même)
 -- f doit être une fonction de la variable complexe 
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
@@ -37,7 +44,7 @@ function ftransform(L,f)
 end    
 
 
-function proj(L,d)
+function ld.proj(L,d)
 -- image de L par la projection orthogonale sur la droite d = {point, vecteur directeur}
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
@@ -59,10 +66,10 @@ function proj(L,d)
         end
     end
     
-    return ftransform(L,proj1)
+    return ld.ftransform(L,proj1)
 end     
 
-function projO(L,d,v)
+function ld.projO(L,d,v)
 -- image de L par la projection oblique sur la droite d = {point, vecteur directeur} parallèlement au vecteur v
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
@@ -71,7 +78,7 @@ function projO(L,d,v)
     if (B ==nil) or (u == nil) or (v == nil) or ((u.re == 0) and (u.im == 0)) or ((v.re == 0) and (v.im == 0)) then return end
     local D = cpx.det(u,v)
     
-    local projO1 = function (A)  -- image  d'un point
+    local projO1 = function(A)  -- image  d'un point
         A = toComplex(A)
         if (A == nil) then return end
         local t = cpx.det(A-B,v) / D
@@ -80,10 +87,10 @@ function projO(L,d,v)
         end
     end
     
-    return ftransform(L,projO1)
+    return ld.ftransform(L,projO1)
 end
 
-function sym(L,d)
+function ld.sym(L,d)
 -- image de L par la symétrie orthogonale d'axe la droite d = {point, vecteur directeur}
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
 
@@ -105,10 +112,10 @@ function sym(L,d)
         end
     end
     
-    return ftransform(L,sym1)
+    return ld.ftransform(L,sym1)
 end
 
-function symO(L,d,v)
+function ld.symO(L,d,v)
 -- image de L par la symétrie oblique d'axe la droite d = {point, vecteur directeur} parallèlement au vecteur v
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
@@ -117,7 +124,7 @@ function symO(L,d,v)
     if (B ==nil) or (u == nil) or (v == nil) or ((u.re == 0) and (u.im == 0)) or ((v.re == 0) and (v.im == 0)) then return end
     local D = cpx.det(u,v)
     
-    local symO1 = function (A)  -- image  d'un point
+    local symO1 = function(A)  -- image  d'un point
         A = toComplex(A)
         if (A == nil) then return end
         local t = cpx.det(A-B,v) / D
@@ -126,10 +133,10 @@ function symO(L,d,v)
         end
     end
     
-    return ftransform(L,symO1)
+    return ld.ftransform(L,symO1)
 end
 
-function symG(L,d,v)
+function ld.symG(L,d,v)
 -- image de L par la symétrie glissée d'axe la droite d = {point, vecteur directeur} et de vecteur v
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
@@ -150,11 +157,11 @@ function symG(L,d,v)
         end
     end    
     
-    return ftransform(L,symG1)
+    return ld.ftransform(L,symG1)
 end
 
 
-function simil(L,factor,angle,center) 
+function ld.simil(L,factor,angle,center) 
 -- image de L par une similitude (angle en degrés)
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     center = center or 0
@@ -168,16 +175,16 @@ function simil(L,factor,angle,center)
         return cpx.exp(cpx.I*angle)*factor*(A-center) + center
     end
     
-    return ftransform(L,simil1)
+    return ld.ftransform(L,simil1)
 end
 
-function rotate(L,angle,center)
+function ld.rotate(L,angle,center)
 -- image de L par une rotation (angle en degrés)
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
-    return simil(L,1,angle,center)
+    return ld.simil(L,1,angle,center)
 end
 
-function shift(L,u)
+function ld.shift(L,u)
 -- image de L par la translation de vecteur u
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     u = toComplex(u)
@@ -189,16 +196,16 @@ function shift(L,u)
         return A + u
     end
     
-    return ftransform(L,shift1)
+    return ld.ftransform(L,shift1)
 end
 
-function hom(L,factor,center)
+function ld.hom(L,factor,center)
 -- image de L par une homothétie
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
-    return simil(L,factor,0,center)
+    return ld.simil(L,factor,0,center)
 end
 
-function affin(L,d,v,k)
+function ld.affin(L,d,v,k)
 -- image de  L par l'affinité de base la droite d, parallèlement au vecteur v (non nul) et de rapport k
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
@@ -218,10 +225,10 @@ function affin(L,d,v,k)
         end
     end
     
-    return ftransform(L,affin1)
+    return ld.ftransform(L,affin1)
 end
 
-function inv(L, rayon, centre)
+function ld.inv(L, rayon, centre)
 -- image de  L par l'inversion
 -- L est un complexe ou une liste de complexes ou une liste de listes de complexes
     centre = centre or 0
@@ -236,5 +243,5 @@ function inv(L, rayon, centre)
             return centre + rayon*rayon / cpx.bar(A-centre)
         end
     end    
-    return ftransform(L,inv1)
+    return ld.ftransform(L,inv1)
 end    

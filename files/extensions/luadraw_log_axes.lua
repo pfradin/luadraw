@@ -1,18 +1,22 @@
 -- luadraw_log_axes.lua 
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
+local ld = luadraw
+local graph = ld.graph
+local cpx = ld.cpx
+local Z = cpx.Z
 
 -- draw logarithmic axes
 local logtype = "logy" -- or "logx" or "logxy"
 local xmin, xmax, ymin, ymax
 local powerminx, powerminy, decadex, decadey
-defaultloglabels = {2,3,5,10}
+local defaultloglabels = {2,3,5,10}
 local nbdivy, nbdivx
 local grid ,gridwidth, gridcolor, gridstyle, subgridwidth, subgridcolor, subgridstyle = true, 4, "gray", "solid", 2, "lightgray", "solid"
 local clip, clipbox
@@ -22,6 +26,7 @@ function graph:Beginlogview(type,x1,x2,y1,y2,options)
     local error = false
     options = options or {}
     clip = options.clip
+    defaultloglabels = options.defaultloglabels or {2,3,5,10}
     local viewport = options.viewport
     --local u1,u2,v1,v2 = table.unpack(self.param.viewport)
     if clip == nil then clip = true end
@@ -126,8 +131,8 @@ function graph:Dlogaxe(type,options)
     local xylabelsep = options.xylabelsep or defaultxylabelsep -- longueur des graduations 
     local exponent = options.exponent or 0
     if exponent ~= 0 then options.legend = options.legend.." ($\\times10^{"..exponent.."}$) " end
-    local old_siunitx = siunitx
-    siunitx = options.use_siunitx
+    local old_siunitx = ld.siunitx
+    ld.siunitx = options.use_siunitx
     local n1 = n/self:Abs(n)*xyticks*tickpos
     local n2 = n/self:Abs(n)*xyticks*(1-tickpos)
     local pasU
@@ -149,7 +154,7 @@ function graph:Dlogaxe(type,options)
             table.insert(decadeloglabel, umin*v)
         end
     end
-    local ulabels = {0, gradLabel(umin*10^(-exponent),1,"")}
+    local ulabels = {0, ld.gradLabel(umin*10^(-exponent),1,"")}
     local ticks = {{O-n1, O+n2}}
     local maxval = umax*10^(-exponent)
     Ueps = Ueps*10^(-exponent)
@@ -159,7 +164,7 @@ function graph:Dlogaxe(type,options)
             local y0 = v*10^(k-exponent)
             if y0 < maxval+Ueps then
                 table.insert(ulabels, y)
-                table.insert(ulabels, gradLabel(y0,1,""))
+                table.insert(ulabels, ld.gradLabel(y0,1,""))
                 table.insert(ticks, {O+y*dir-n1, O+y*dir+n2})
             end
         end
@@ -170,12 +175,12 @@ function graph:Dlogaxe(type,options)
             local y0 = v*10^(-exponent)
             if y0 < maxval+Ueps then
                 table.insert(ulabels, y)
-                table.insert(ulabels, gradLabel(y0,1,""))
+                table.insert(ulabels, ld.gradLabel(y0,1,""))
                 table.insert(ticks, {O+y*dir-n1, O+y*dir+n2})
             end
         end
     end
-    siunitx = old_siunitx
+    ld.siunitx = old_siunitx
     self:Dgradline({O,dir}, {limits={0,decade}, originpos="center", 
             labelpos=pos, mylabels=ulabels, labelstyle=style, labelangle=angle, xyticks=0, xylabelsep=options.xylabelsep,
             legend=options.legend, legendpos=options.legendpos, legendstyle=options.legendstyle ,
@@ -226,7 +231,7 @@ function graph:Dlogaxes(options)
     options.labelstyle = options.labelstyle or {"S","W"} -- "auto"  or "E" or "W",...
     options.labelangle = options.labelangle or {0,0} -- angle des labels en degrés par rapport à l'horizontale    
     options.labelcolor = options.labelcolor or {"",""}
-    options.use_siunitx = options.use_siunitx or {siunitx,siunitx} -- format d'affichage géré par siunitx ou pas 
+    options.use_siunitx = options.use_siunitx or {ld.siunitx,ld.siunitx} -- format d'affichage géré par siunitx ou pas 
     
     options.xynode_options = options.xynode_options or ""
     options.xnode_options = options.xnode_options or options.xynode_options
@@ -241,7 +246,7 @@ function graph:Dlogaxes(options)
     
     options.tickpos = options.tickpos or {0.5,0.5} -- nombre entre 0 et 1
     options.xyticks = options.xyticks or {0.2,0.2} -- longueur des graduations
-    options.xylabelsep = options.xylabelsep or {defaultxylabelsep,defaultxylabelsep} 
+    options.xylabelsep = options.xylabelsep or {ld.defaultxylabelsep,ld.defaultxylabelsep} 
     options.arrows = "-"
     
     if logtype == "logx" then
@@ -251,7 +256,7 @@ function graph:Dlogaxes(options)
         options.nbsubdiv = options.nbsubdiv or {3,0}
         options.limits = {ymin-eps,ymax+eps}
         options.gradlimits = {ymin,ymax}
-        options.originloc = toComplex( options.originloc or Z(0,ymin) )
+        options.originloc = cpx.toComplex( options.originloc or Z(0,ymin) )
         options.ystep = options.ystep or 1
         options.labelpos = options.labelpos or {"bottom","left"} -- "none" or "right" or "left"
         local unit = options.unit or {"",""} 
@@ -292,7 +297,7 @@ function graph:Dlogaxes(options)
         options.nbsubdiv = options.nbsubdiv or {0,3}
         options.limits = {xmin-eps,xmax+eps}
         options.gradlimits = {xmin,xmax}
-        options.originloc = toComplex( options.originloc or Z(xmin,0) )
+        options.originloc = cpx.toComplex( options.originloc or Z(xmin,0) )
         options.xstep = options.xstep or 1
         options.labelpos = options.labelpos or {"bottom","left"} -- "none" or "right" or "left"
         local unit = options.unit or {"",""} 
@@ -349,9 +354,9 @@ function graph:Dlogaxes(options)
 end
 
 ------------------------------------------------------------------------
-function Zlog(z) -- a and b and real
+function ld.Zlog(z) -- a and b and real
 -- returns the complex affix on the log grid
-    z = toComplex(z)
+    z = cpx.toComplex(z)
     local a, b = z.re, z.im
     if logtype == "logx" then
         if a > 0 then return cpx:new(log(a)-powerminx, b) end
@@ -368,8 +373,8 @@ local conv2log = function (L)
     local conv
     if logtype == "logx" then
         conv = function(z)
-            if type(z) == "number" then z = toComplex(z) end
-            if isComplex(z) then 
+            if type(z) == "number" then z = cpx.toComplex(z) end
+            if cpx.isComplex(z) then 
                 local a, b = z.re, z.im
                 if a > 0 then return cpx:new(log(a)-powerminx, b) end
             else
@@ -378,8 +383,8 @@ local conv2log = function (L)
         end
     elseif logtype == "logy" then
         conv = function(z)
-            if type(z) == "number" then z = toComplex(z) end
-            if isComplex(z) then 
+            if type(z) == "number" then z = cpx.toComplex(z) end
+            if cpx.isComplex(z) then 
                 local a, b = z.re, z.im
                 if b > 0 then return cpx:new(a,log(b)-powerminy) end
             else
@@ -388,8 +393,8 @@ local conv2log = function (L)
         end
     elseif logtype == "logxy" then
         conv = function(z)
-            if type(z) == "number" then z = toComplex(z) end
-            if isComplex(z) then 
+            if type(z) == "number" then z = cpx.toComplex(z) end
+            if cpx.isComplex(z) then 
                 local a, b = z.re, z.im
                 if (a > 0) and (b > 0) then return cpx:new(log(a)-powerminx,log(b)-powerminy) end
             else
@@ -397,7 +402,7 @@ local conv2log = function (L)
             end
         end
     end
-    return ftransform(L,conv)
+    return ld.ftransform(L,conv)
 
 end
 
@@ -410,17 +415,17 @@ function graph:Dlogdots(L,mark_options)
     local epsx, epsy = (xmax-xmin)*1e-7, (ymax-ymin)*1e-7
     if clip then
         local x1,x2,y1,y2 = table.unpack(clipbox)
-        self:Ddots( clipdots(L1,x1-epsx,x2+epsx,y1-epsy,y2+epsy), mark_options)
+        self:Ddots( ld.clipdots(L1,x1-epsx,x2+epsx,y1-epsy,y2+epsy), mark_options)
     else
         self:Ddots(L1,mark_options)
     end
 end
     
 function graph:Dlogline(A,B,draw_options)
-    local a, b = Zlog(A), Zlog(B)
+    local a, b = ld.Zlog(A), ld.Zlog(B)
     if clip then
         local x1,x2,y1,y2 = table.unpack(clipbox)
-        self:Dseg(clipline({a,b-a},x1,x2,y1,y2),1,draw_options)
+        self:Dseg(ld.clipline({a,b-a},x1,x2,y1,y2),1,draw_options)
     else
         self:Dline(a,b,draw_options)
     end
@@ -432,7 +437,7 @@ function graph:Dloglabel(...)
     for i = 1, n-2, 3 do   -- Pas de 3 (1,4,7...)
         texte, anchor, args = select(i, ...)  -- Récupère les 3 args
         if anchor ~= nil then 
-            table.insert(argslst,texte); table.insert(argslst,Zlog(anchor)); table.insert(argslst,args)
+            table.insert(argslst,texte); table.insert(argslst,ld.Zlog(anchor)); table.insert(argslst,args)
         else
             print("Dloglabel Warning : the anchor point associated with the text "..texte.." is equal to nil")
         end

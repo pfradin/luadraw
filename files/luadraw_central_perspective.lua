@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,8 +8,18 @@
 --   https://www.ctan.org/license/lppl
 
 --functions to be redefined
-local old_circle3db = circle3db
-local old_arc3db = arc3db
+local graph3d = luadraw.graph3d
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local pt3d = ld.pt3d
+local toPoint3d = pt3d.toPoint3d
+local isPoint3d = pt3d.isPoint3d
+local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
+local M, Mc, Ms = pt3d.M, pt3d.Mc, pt3d.Ms
+local map = ld.map
+local notDef = ld.notDef
+
 local old_Dcone = graph3d.Dcone
 local old_Dcylinder = graph3d.Dcylinder
 local old_Dfrustum = graph3d.Dfrustum
@@ -21,11 +31,11 @@ local old_Isvisible = graph3d.Isvisible
 local old_Screenpos = graph3d.Screenpos
 local old_Observer_distance = graph3d.Observer_distance
 
-camera = nil
-target = Origin
+local camera = nil
+local target = Origin
 
 --This function is automatically called by the perspective function.
-function central_perspective(theta,phi,d,look) -- or central_perspective(camera, look)
+function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective(camera, look)
     local N
     local cos, sin, tet, ph = math.cos, math.sin
     if isPoint3d(theta) then
@@ -34,9 +44,9 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         if type(target) == "number" then target = Origin end
         N = pt3d.normalize(camera-target)
         ph = pt3d.angle(vecK, N) 
-        phi = ph*rad -- phi en degrés
-        tet = pt3d.angle(vecI, pxy(N))
-        theta = tet*rad -- theta en degrés
+        phi = ph*ld.rad -- phi en degrés
+        tet = pt3d.angle(vecI, ld.pxy(N))
+        theta = tet*ld.rad -- theta en degrés
         d = pt3d.abs(camera-target)
     else
         camera = nil
@@ -45,20 +55,21 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         d = d or 15
         target = look or Origin
         d = math.abs(d)
-        tet, ph = theta*deg, phi*deg
+        tet, ph = theta*ld.deg, phi*ld.deg
     end
     local cosTheta, sinTheta, cosPhi, sinPhi = cos(tet), sin(tet), cos(ph), sin(ph)
     if N == nil then N = M(cosTheta*sinPhi,sinTheta*sinPhi,cosPhi) end
     local mat = {Origin, M(-sinTheta,-cosPhi*cosTheta,cosTheta*sinPhi), M(cosTheta,-cosPhi*sinTheta,sinTheta*sinPhi), M(0,sinPhi,cosPhi) } -- mat.A(x,y,z) gives (a,b,c), and Z(a,b) is the affix of the projection of A on screen
-    local invmat = invmatrix3d(mat) -- if Z(a,b) is the affix of the projection on screen, invmat.(a,b,0) gives A(x,y,z) on the screen so that the projection of A has the affix Z(a,b)
+    local invmat = ld.invmatrix3d(mat) -- if Z(a,b) is the affix of the projection on screen, invmat.(a,b,0) gives A(x,y,z) on the screen so that the projection of A has the affix Z(a,b)
     if camera == nil then camera = target+d*N end -- camera
     local Zlookat = Z( cosTheta*target.y-sinTheta*target.x, -cosPhi*cosTheta*target.x-cosPhi*sinTheta*target.y+sinPhi*target.z)
+    
     
     function graph3d:Isvisible(facet)
     -- facet est une liste de points 3d coplanaires
     -- la fonction renvoie true si la facette est visible (vecteur normal de même sens que n)
         local N = pt3d.prod(facet[2]-facet[1], facet[3]-facet[1])
-        return self:Cosine_incidence(N,isobar3d(facet)) > 0 
+        return self:Cosine_incidence(N, pt3d.isobar3d(facet)) > 0 
     end    
 
     function graph3d:Proj3d(L) -- we redefine Proj3d
@@ -75,7 +86,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         end
         
         L = self:Mtransform3d(L) -- we apply the 3D matrix of the graph
-        return ftransform3d(L,f) -- we return the projection on screen
+        return ld.ftransform3d(L,f) -- we return the projection on screen
     end 
     
     function graph3d:Proj3dV(L,A) -- we redefine Proj3dV, the origin for the vectors is the point A (target by defaut)
@@ -87,14 +98,14 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             else return v
             end
         end
-        return ftransform3d(L,f) -- we return the projection on screen
+        return ld.ftransform3d(L,f) -- we return the projection on screen
     end 
     
     function graph3d:Screenpos(z,d)
     -- renvoie les coordonnées spatiales d'un point ayant comme projeté sur l'écran le point d'affixe z,
     -- et se trouvant à une distance d (algébrique) du plan de l'écran
-        z = toComplex(z)
-        return applymatrix3d(M(z.re+Zlookat.re, z.im+Zlookat.im, pt3d.dot(target,N)), invmat)
+        z = cpx.toComplex(z)
+        return ld.applymatrix3d(M(z.re+Zlookat.re, z.im+Zlookat.im, pt3d.dot(target,N)), invmat)
     end
     
     function graph3d:Cosine_incidence(n,A)
@@ -107,44 +118,6 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         return -pt3d.abs(camera-A)
     end
     
-    function graph3d:circle3db(O,r,n)
-        local U = pt3d.prod(n,self.Normal)
-        if pt3d.abs(U) < 1e-8 then -- U est nul
-            U = pt3d.prod(n,vecJ)
-            if pt3d.abs(U) < 1e-8 then -- U est nul
-                U = pt3d.prod(n,vecI)
-            end
-        end
-        U = O+r*pt3d.normalize(U)
-        return self:arc3db(U,O,U,r,1,n)
-    end
-    
-    function graph3d:circle3db2(O,r,n)
-        local U = pt3d.prod(n,self.Normal)
-        if pt3d.abs(U) < 1e-8 then -- U est nul
-            U = pt3d.prod(n,vecJ)
-            if pt3d.abs(U) < 1e-8 then -- U est nul
-                U = pt3d.prod(n,vecI)
-            end
-        end
-        U = pt3d.normalize(U)
-        local V = pt3d.normalize( pt3d.prod(n,U) )
-        local a, b, c, d = table.unpack( self:Proj3d({O-r*V, O+r*V, O-r*U,O+r*U}) )
-        -- a et b sont des points où les tangentes sont des lignes de fuite, parallèles à (cd)
-        -- les projetés ont également des tangentes parallèles ce qui permet de déterminer le centre
-        local o = (a+b)/2 -- centre de l'ellipse
-        local u, v = cpx.normalize(d-c), a-o
-        local mat = {o, cpx.abs(v)*u, v}
-        local a1,b1,c1,d1 = table.unpack(mtransform({a,b,c,d}, invmatrix(mat)))
-        -- dans le nouveau repère on a une ellipse de centre 0, passant par i (qui correspond à a1)
-        -- et la droite (c1d1) est l'axe Ox et (a1b1) est l'axe Oy
-        -- l'ellipse est l'image du cercle C(0,1) par une affinité d'axe Oy
-        local alpha = d1.re/math.sqrt(1-d1.im^2)
-        mat = multiplymatrix(mat,{0,alpha,cpx.I}) -- affinité d'axe Oy et de rapport alpha
-        local L = circleb(0,1) -- cercle unité
-        return map(function(z) if type(z) == "string" then return z else return self:Screenpos(z) end end, L) 
-    end
-    
     function graph3d:arc3db(B,A,C,r,sens,n)
         local n1, n2, V = pt3d.normalize(B-A), pt3d.normalize(C-A)
         if n == nil then V = pt3d.normalize(pt3d.prod(n1,n2)) else V = pt3d.normalize(n) end
@@ -152,7 +125,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         B = A+r*n1; C = A+r*n2
         local U = pt3d.prod(V, self.Normal)
         if pt3d.abs(U)<1e-12 then --plans parallèles
-            local A1 = interDP( {camera,A-camera},{Origin,g.Normal})
+            local A1 = ld.interDP( {camera,A-camera},{Origin,N})
             local alpha = pt3d.abs(A1-camera)/pt3d.abs(A-camera)
             --self:Darc(self:Proj3d(B), self:Proj3d(A), self:Proj3d(C),r*alpha,sens,draw_options)
             return {B,A,C,r*alpha,sens,"ca"}
@@ -165,17 +138,29 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             a1,a2,a3,a4,b,c = table.unpack( self:Proj3d({A-r*N2, A+r*N2, A-r*N1, A+r*N1, B, C}) )
             O = (a1+a2)/2;  u = cpx.normalize(a4-a3); v = a1-O
             local mat = {O,cpx.abs(v)*u,v}            
-            if cpx.det(mat[2],mat[3]) < 1e-3 then  
+            if math.abs(cpx.det(mat[2],mat[3])) < 1e-8 then 
                 return {B,C,"l"} -- segment [C,B]
             end
-            local invm = invmatrix(mat)
-            a4,b,c = table.unpack( mtransform({a4,b,c},invmatrix(mat)) ) 
+            local invm = ld.invmatrix(mat)
+            a4,b,c = table.unpack( ld.mtransform({a4,b,c}, ld.invmatrix(mat)) ) 
             local y = a4.im 
             local x = a4.re
             local alpha = x/math.sqrt(1-y^2)
-            local L = mtransform(ellipticarcb(b,0,c,alpha,1,sens), mat)
+            local L = ld.mtransform(ld.ellipticarcb(b,0,c,alpha,1,sens), mat)
             return map(function(z) if type(z) == "string" then return z else return self:Screenpos(z) end end, L)
          end
+    end
+    
+    function graph3d:circle3db(O,r,n)
+        local U = pt3d.prod(n,self.Normal)
+        if pt3d.abs(U) < 1e-8 then -- U est nul
+            U = pt3d.prod(n,vecJ)
+            if pt3d.abs(U) < 1e-8 then -- U est nul
+                U = pt3d.prod(n,vecI)
+            end
+        end
+        U = O+r*pt3d.normalize(U)
+        return self:arc3db(U,O,U,r,1,n)
     end
     
     function graph3d:Dcone(C,r,V,A,args) 
@@ -200,10 +185,10 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         color = color or ""
         color = self:Define_temp_color(color)
         local edgecolor = args.edgecolor or self.param.linecolor
-        local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+        local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
         --if not Hiddenlines then hiddenstyle = "noline" end        
-        local mode = args.mode or mWireframe
+        local mode = args.mode or ld.mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
         local edgestyle = args.edgestyle or self.param.linestyle
@@ -215,13 +200,13 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
         local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
                 
-        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*rad
+        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*ld.rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
         end
-        local P = cone(C,r,V,A,50,true)
+        local P = ld.cone(C,r,V,A,50,true)
         local Pv, Ph = self:Classifyfacet(P)
-        local BPv, BPh = border(Pv), border(Ph)
+        local BPv, BPh = ld.border(Pv), ld.border(Ph)
         
         local oldfillstyle = self.param.fillstyle
         local oldfillopacity = self.param.fillopacity
@@ -230,29 +215,29 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local oldlinecolor = self.param.linecolor
         local oldlinewidth = self.param.linewidth
         self:Lineoptions(edgestyle,edgecolor,edgewidth)
-        if mode == mGrid then self:Linestyle("noline") end
+        if mode == ld.mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
         end
-        if mode ~= mWireframe  then self:Dpolyline3d(BPh, true) end
+        if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
         --visible part
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSide..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSide..",shading angle="..ld.strReal(angle),args.opacity)
         end
         self:Dpolyline3d(BPv, true)
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
         end
         if self:Cosine_incidence(-V,C) > 0 then self:Dcircle3d(C,r,V) end
         -- hidden edges
-        if (mode ~= mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
+        if (mode ~= ld.mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
             self:Filloptions("none"); self:Linestyle(hiddenstyle)
             self:Dpolyline3d(BPh, true)
         end
-        if mode == mGrid then -- edges
+        if mode == ld.mGrid then -- edges
             --self:Linestyle(oldlinestyle)
-            self:Dpoly(cone(C,r,V,A,35,true), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
+            self:Dpoly(ld.cone(C,r,V,A,35,true), {mode=ld.mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
         end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
@@ -280,10 +265,10 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         color = color or ""
         color = self:Define_temp_color(color)
         local edgecolor = args.edgecolor or self.param.linecolor
-        local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+        local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
         --if not Hiddenlines then hiddenstyle = "noline" end
-        local mode = args.mode or mWireframe
+        local mode = args.mode or ld.mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
         local edgestyle = args.edgestyle or self.param.linestyle
@@ -295,13 +280,13 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
         local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
         
-        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*rad
+        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*ld.rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
         end
-        local P = cylinder(C,r,V,A,50,true)
+        local P = ld.cylinder(C,r,V,A,50,true)
         local Pv, Ph = self:Classifyfacet(P)
-        local BPv, BPh = border(Pv), border(Ph)
+        local BPv, BPh = ld.border(Pv), ld.border(Ph)
         local oldfillstyle = self.param.fillstyle
         local oldfillopacity = self.param.fillopacity
         local oldfillcolor = self.param.fillcolor
@@ -309,30 +294,30 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local oldlinecolor = self.param.linecolor
         local oldlinewidth = self.param.linewidth
         self:Lineoptions(edgestyle,edgecolor,edgewidth)
-        if mode == mGrid then self:Linestyle("noline") end
+        if mode == ld.mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
         end
-        if mode ~= mWireframe  then self:Dpolyline3d(BPh, true) end
+        if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
         --visible part
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSide..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSide..",shading angle="..ld.strReal(angle),args.opacity)
         end
         self:Dpolyline3d(BPv,true)
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
         end
         if self:Cosine_incidence(V,A) > 0 then self:Dcircle3d(A,r,V) end
         if self:Cosine_incidence(-V,C) > 0 then self:Dcircle3d(C,r,V) end
         -- hidden edges
-        if (mode ~= mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
+        if (mode ~= ld.mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
             self:Filloptions("none"); self:Linestyle(hiddenstyle)
             self:Dpolyline3d(BPh, true)
         end
-        if mode == mGrid then -- edges
+        if mode == ld.mGrid then -- edges
             --self:Linestyle(oldlinestyle)
-            self:Dpoly(cylinder(C,r,V,A,35,false), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor, edgewidth=edgewidth, edgestyle=edgestyle})
+            self:Dpoly(ld.cylinder(C,r,V,A,35,false), {mode=ld.mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor, edgewidth=edgewidth, edgestyle=edgestyle})
         end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
@@ -355,7 +340,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         end
         local C
         if isPoint3d(B) then -- slanted frustum
-            C = dproj3d(B,{A,V})
+            C = ld.dproj3d(B,{A,V})
             V = C-A
         else C = A+V; args = B; B = C
         end
@@ -365,10 +350,10 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         color = color or ""
         color = self:Define_temp_color(color)
         local edgecolor = args.edgecolor or self.param.linecolor
-        local hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+        local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
         local hiddencolor = args.hiddencolor or self.param.linecolor
         --if not Hiddenlines then hiddenstyle = "noline" end        
-        local mode = args.mode or mWireframe
+        local mode = args.mode or ld.mWireframe
         local opacity = args.opacity or 1
         local edgewidth = args.edgewidth or self.param.linewidth
         local edgestyle = args.edgestyle or self.param.linestyle
@@ -380,14 +365,13 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
         local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
                 
-        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(B))*rad
+        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(B))*ld.rad
         if angle < 0 then angle = angle+180
         elseif angle > 180 then angle = angle-180 
         end
-        local P = frustum(A,R,r,V,B,50,true)
+        local P = ld.frustum(A,R,r,V,B,50,true)
         local Pv, Ph = self:Classifyfacet(P)
-        local BPv, BPh = border(Pv), border(Ph)
-        
+        local BPv, BPh = ld.border(Pv), ld.border(Ph)
         local oldfillstyle = self.param.fillstyle
         local oldfillopacity = self.param.fillopacity
         local oldfillcolor = self.param.fillcolor
@@ -395,30 +379,30 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         local oldlinecolor = self.param.linecolor
         local oldlinewidth = self.param.linewidth
         self:Lineoptions(edgestyle,edgecolor,edgewidth)
-        if mode == mGrid then self:Linestyle("noline") end
+        if mode == ld.mGrid then self:Linestyle("noline") end
         -- hidden part
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
         end
-        if mode ~= mWireframe  then self:Dpolyline3d(BPh, true) end
+        if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
         --visible part
         if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSide..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSide..",shading angle="..ld.strReal(angle),args.opacity)
         end
         self:Dpolyline3d(BPv, true)
        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..strReal(angle),args.opacity)
+            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
         end
         if self:Cosine_incidence(V,B) > 0 then self:Dcircle3d(B,r,V) end
         if self:Cosine_incidence(-V,A) > 0 then self:Dcircle3d(A,R,V) end
         -- hidden edges
-        if (mode ~= mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
+        if (mode ~= ld.mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
             self:Filloptions("none"); self:Linestyle(hiddenstyle)
             self:Dpolyline3d(BPh, true)
         end
-        if mode == mGrid then -- edges
+        if mode == ld.mGrid then -- edges
             --self:Linestyle(oldlinestyle)
-            self:Dpoly(frustum(A,R,r,V,B,35,false), {mode=mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
+            self:Dpoly(ld.frustum(A,R,r,V,B,35,false), {mode=ld.mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
         end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
@@ -438,7 +422,7 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
         args.color = args.color or ""
         args.edgecolor = args.edgecolor or self.param.linecolor
         args.hiddencolor = args.hiddencolor or args.edgecolor
-        args.hiddenstyle = args.hiddenstyle or Hiddenlinestyle
+        args.hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
         args.edgestyle = args.edgestyle or self.param.linestyle
         args.edgecolor = args.edgecolor or self.param.linecolor
         args.edgewidth = args.edgewidth or self.param.linewidth    
@@ -460,15 +444,15 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             self:Filloptions("none")
         end
         local S = {A,r}
-        local mat = invmatrix3d( self.matrix3d )
-        local cam = mtransform3d(camera,mat)
+        local mat = ld.invmatrix3d( self.matrix3d )
+        local cam = ld.mtransform3d(camera,mat)
         local S1 = { (cam+S[1])/2, pt3d.abs(S[1]-cam)/2}
-        local I,R,n = interSS(S,S1)
+        local I,R,n = ld.interSS(S,S1)
         self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
         self:Dcircle3d(I,R,n)
         if  args.mode == 0 then -- équateur
-            local M1, M2 = interCS({A,r,V},S1)
-            local M3 = rotate3d(M1,90,{A,vecK})
+            local M1, M2 = ld.interCS({A,r,V},S1)
+            local M3 = ld.rotate3d(M1,90,{A,vecK})
             local sens
             if self:Cosine_incidence(M3-A,M3) > 0 then sens = 1 else sens = -1 end
             self:Filloptions("none") --; self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
@@ -476,20 +460,20 @@ function central_perspective(theta,phi,d,look) -- or central_perspective(camera,
             self:Lineoptions(args.hiddenstyle,args.hiddencolor)
             self:Darc3d(M1,A,M2,r,-sens,V)
         elseif args.mode == 1 then -- grille
-            self:Dpoly(sphere(A,r),{mode=0,hiddenstyle=args.hiddenstyle,hiddencolor=args.hiddencolor,edgestyle=args.edgestyle,edgecolor=args.edgecolor,edgewidth=args.edgewidth})
+            self:Dpoly(ld.sphere(A,r),{mode=0,hiddenstyle=args.hiddenstyle,hiddencolor=args.hiddencolor,edgestyle=args.edgestyle,edgecolor=args.edgecolor,edgewidth=args.edgewidth})
         end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
         self:Lineopacity(oldlineopacity)
     end
+    ld.camera = camera
+    ld.target = target
 
     return {theta,phi,"central"}
 end
 
 --This function is automatically called at the next perspective change.
-function close_central()
-    circle3db = old_circle3db
-    arc3db = old_arc3db
+function luadraw.close_central()
     graph3d.Dcone = old_Dcone
     graph3d.Dcylinder = old_Dcylinder
     graph3d.Dfrustum = old_Dfrustum

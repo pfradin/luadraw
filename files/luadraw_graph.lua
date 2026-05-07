@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -9,6 +9,13 @@
 
 -- Tout ce qui touche au dessin de base, sans les axes
 local luadraw_calc = require 'luadraw_calc'
+local ld = luadraw
+require 'luadraw_colors'
+local cpx = ld.cpx -- complex
+local Z = cpx.Z
+local toComplex = cpx.toComplex
+local isComplex = cpx.isComplex
+local strReal = ld.strReal
 
 local luadraw_graph = {}
 setmetatable(luadraw_graph, {__index = luadraw_calc}) -- obligatoire pour l'héritage
@@ -70,7 +77,7 @@ function luadraw_graph:new(args) -- argument de la forme :
     if graph.pictureoptions ~= "" then
         graph.tikzpictureoptions = graph.tikzpictureoptions..","..graph.pictureoptions
     end
-    graph.matrix = ID -- matrice de transformation [f(0), Lf(1), Lf(i) ], identité par défaut
+    graph.matrix = ld.ID -- matrice de transformation [f(0), Lf(1), Lf(i) ], identité par défaut
     
     graph.pile = {} -- pour sauvegarder la fenêtre, les styles et la matrice
     graph.pilematrix = {} -- sauvegarde de la matrice uniquement
@@ -139,7 +146,7 @@ function luadraw_graph:Viewport(x1,x2,y1,y2) -- sélectionne une zone de la fen�
     if (x1 == nil) or (x2 == nil) or (y1 == nil) or (y2 == nil) then return end
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
-    self.matrix = ID -- ancienne matrice perdue donc il faut sauver avant
+    self.matrix = ld.ID -- ancienne matrice perdue donc il faut sauver avant
     self.param.viewport = {x1,x2,y1,y2}
     self.param.coordsystem = {x1,x2,y1,y2}
     --self:Writeln("\\clip "..self:strCoord(x1,y1).." -- "..self:strCoord(x2,y1).." -- "..self:strCoord(x2,y2).." -- "..self:strCoord(x1,y2).."-- cycle;") --> clipping donc il faut sauver avant
@@ -235,7 +242,7 @@ function luadraw_graph:Sendtotex()
     local before, after = {""}, {""}
     if self.advanced then before = {"\\end{scope}%","\\begin{scope}%"} end
     if self.deferred then after = {"\\end{scope}%","\\begin{scope}%"} end
-    local str = concat(self:beginDraw(),self.advancedexport,before,self.currentexport,after,self.deferredexport,self:endDraw())
+    local str = ld.concat(self:beginDraw(),self.advancedexport,before,self.currentexport,after,self.deferredexport,self:endDraw())
     tex.sprint(table.unpack(str))
 end
 
@@ -575,12 +582,12 @@ function luadraw_graph:Dpolyline(L,close,draw_options,clip) -- close vaut true o
         local len = #cp
         if len > 1 then
             if clip ~= nil then
-                cp, clippee = clippolyline(cp,X1,X2,Y1,Y2,close)
+                cp, clippee = ld.clippolyline(cp,X1,X2,Y1,Y2,close)
             end
-            if not isID(self.matrix) then
+            if not ld.isID(self.matrix) then
                 cp = self:Mtransform(cp)
             end
-            if clip == nil then cp, clippee = clippolyline(cp,X1,X2,Y1,Y2,close) end
+            if clip == nil then cp, clippee = ld.clippolyline(cp,X1,X2,Y1,Y2,close) end
             if (cp[1] ~= nil) and (not clippee) and close then table.remove(cp[1]) end
             for _, cpp in ipairs(cp) do
                 len = #cpp
@@ -612,7 +619,7 @@ function luadraw_graph:Dcartesian(f,args)
     local draw_options = args.draw_options or ""
     local x1, x2 = table.unpack(x)
     if x1 > x2 then x1, x2 = x2, x1 end
-    local C = cartesian(f,x1,x2,nbdots,discont,nbdiv)
+    local C = ld.cartesian(f,x1,x2,nbdots,discont,nbdiv)
     self:Dpolyline(C,false,draw_options,args.clip)
 end
 
@@ -630,7 +637,7 @@ function luadraw_graph:Dparametric(p,args)
     else draw_options = "line join=round,"..draw_options end -- jointure arrondie
     local t1, t2 = table.unpack(t)
     if t1 > t2 then t1, t2 = t2, t1 end
-    local C = parametric(p,t1,t2,nbdots,discont,nbdiv)
+    local C = ld.parametric(p,t1,t2,nbdots,discont,nbdiv)
     self:Dpolyline(C,false,draw_options,args.clip)
 end
 
@@ -646,7 +653,7 @@ function luadraw_graph:Dpolar(rho,args)
     local draw_options = args.draw_options or ""
     local t1, t2 = table.unpack(t)
     if t1 > t2 then t1, t2 = t2, t1 end
-    local C = polar(rho,t1,t2,nbdots,discont,nbdiv)
+    local C = ld.polar(rho,t1,t2,nbdots,discont,nbdiv)
     self:Dpolyline(C,false,draw_options,args.clip)
 end
 
@@ -664,7 +671,7 @@ function luadraw_graph:Dperiodic(f,period,args)
     local draw_options = args.draw_options or ""
     local x1, x2 = table.unpack(x)
     if x1 > x2 then x1, x2 = x2, x1 end
-    local C = periodic(f,period,x1,x2,nbdots,discont,nbdiv)
+    local C = ld.periodic(f,period,x1,x2,nbdots,discont,nbdiv)
     self:Dpolyline(C,false,draw_options,args.clip)
 end
 
@@ -679,7 +686,7 @@ function luadraw_graph:Dstepfunction(def, args)
     args = args or {}
     local discont = args.discont
     local draw_options = args.draw_options or ""
-    local C = stepfunction(def,discont)
+    local C = ld.stepfunction(def,discont)
     if C ~= nil then
         self:Dpolyline(C,false,draw_options,args.clip)
     end
@@ -696,7 +703,7 @@ function luadraw_graph:Daffinebypiece(def, args)
     args = args or {}
     local discont = args.discont or true
     local draw_options = args.draw_options or ""
-    local C = affinebypiece(def,discont)
+    local C = ld.affinebypiece(def,discont)
     if C ~= nil then
         self:Dpolyline(C,false,draw_options,args.clip)
     end
@@ -733,7 +740,7 @@ function luadraw_graph:Dodesolve(f,t0,Y0,args)
     if t1 > t2 then t1, t2 = t2, t1 end
     t0 = (t0 or 0)
     if (t0 < t1) or (t0 > t2) then return end
-    local C = odesolve(f,t0,Y0,t1,t2,nbdots,method)
+    local C = ld.odesolve(f,t0,Y0,t1,t2,nbdots,method)
     if C ~= nil then 
         self:DplotXY( C[out[1]], C[out[2]],draw_options,args.clip)
     end
@@ -750,7 +757,7 @@ function luadraw_graph:Dimplicit(f,args)
     local x1, x2, y1, y2 = table.unpack(win)
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
-    local C = implicit(f,x1,x2,y1,y2,grid)
+    local C = ld.implicit(f,x1,x2,y1,y2,grid)
     if C ~= nil then self:Dpolyline(C,false,draw_options) end
 end
 
@@ -780,7 +787,7 @@ function luadraw_graph:Dcontour(f,z,args)
             self:Linecolor(colors[i])
         end
         a = k
-       local C = implicit(F,x1,x2,y1,y2,grid) 
+       local C = ld.implicit(F,x1,x2,y1,y2,grid) 
        if C ~= nil then self:Dpolyline(C,draw_options) end
     end
     self:Linecolor(oldC)
@@ -797,7 +804,7 @@ function luadraw_graph:Ddomain1(f,args)
     local nbdiv = (args.nbdiv or 4)
     local draw_options = args.draw_options or ""
     local a, b = table.unpack(x)
-    local C = domain1(f,a,b,nbdots,discont,nbdiv)
+    local C = ld.domain1(f,a,b,nbdots,discont,nbdiv)
     if C ~= nil then
         self:Dpolyline(C,true,draw_options)
     end
@@ -814,7 +821,7 @@ function luadraw_graph:Ddomain2(f,g,args)
     local nbdiv = (args.nbdiv or 4)
     local draw_options = args.draw_options or ""
     local a, b = table.unpack(x)
-    local C = domain2(f,g,a,b,nbdots,discont,nbdiv)
+    local C = ld.domain2(f,g,a,b,nbdots,discont,nbdiv)
     if C ~= nil then
         self:Dpolyline(C,true,draw_options)
     end
@@ -831,10 +838,22 @@ function luadraw_graph:Ddomain3(f,g,args)
     local nbdiv = (args.nbdiv or 4)
     local draw_options = args.draw_options or ""
     local a, b = table.unpack(x)
-    local C = domain3(f,g,a,b,nbdots,discont,nbdiv)
+    local C = ld.domain3(f,g,a,b,nbdots,discont,nbdiv)
     if C ~= nil then
         self:Dpolyline(C,true,draw_options)
     end
+end
+
+-- inequalities
+function luadraw_graph:Dinequalities(constraints, args)
+    -- Inequalities( f1, sg1, f2, sg2, ...) where fi are functions (x->fi(x) real) and sgi = '>' or'<'
+    -- returns the outline of the region satisfying the conditions: y>fi(x) or y<fi(x)
+    args = args or {}
+    local win = args.view or {self:Xinf(), self:Xsup(), self:Yinf(), self:Ysup()}
+    local x1,x2,y1,y2 =table.unpack(win)
+    local draw_options = args.draw_options or ""
+    local P = ld.inequalities(constraints,x1,x2,y1,y2)
+    self:Dpolyline(P, true, draw_options)
 end
 
 -- segments
@@ -848,14 +867,14 @@ function luadraw_graph:Dseg(segm,scale,draw_options) -- Dseg({a,b}, scale, draw_
     if (a == nil) or (b == nil) then return end
     local u = b-a
     if (u.re == 0) and (u.im == 0) then return end
-    if not isID(self.matrix) then
-        a, b = applymatrix(a,self.matrix), applymatrix(b,self.matrix)
+    if not ld.isID(self.matrix) then
+        a, b = ld.applymatrix(a,self.matrix), ld.applymatrix(b,self.matrix)
     end
     if scale ~= 1 then
-        a,b = table.unpack(seg(a,b,scale))
+        a,b = table.unpack(ld.seg(a,b,scale))
     end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-    local res = clipseg(a,b,X1,X2,Y1,Y2)
+    local res = ld.clipseg(a,b,X1,X2,Y1,Y2)
     if res ~= nil then -- res est une table à deux points
         local commande = self:drawcmd(draw_options)
         if cpx.dot(u,res[2]-res[1]) > 0 then -- le sens est important s'il y a une flèche
@@ -913,22 +932,22 @@ end
     
 -- polygone régulier
 function luadraw_graph:Dpolyreg(sommet1, sommet2, nbcotes,sens,draw_options) -- ou (centre, sommet, nbcotes,draw_options)
-    if type(sens) == "string" then draw_options = sens; sens = nil end
-    local S = polyreg(sommet1, sommet2, nbcotes, sens)
+    if type(sens) ~= "number" then draw_options = sens; sens = nil end
+    local S = ld.polyreg(sommet1, sommet2, nbcotes, sens)
     self:Dpolyline(S,true,draw_options)
 end 
 
 -- carre
 function luadraw_graph:Dsquare(a,b,sens,draw_options)
-    if type(sens) == "string" then draw_options = sens; sens = nil end
-    local S = square(a,b,sens or 1)
+    if type(sens) ~= "number" then draw_options = sens; sens = nil end
+    local S = ld.square(a,b,sens or 1)
     self:Dpolyline(S,true,draw_options)
 end 
 
 -- rectangle
 function luadraw_graph:Drectangle(a,b,c,draw_options)
 -- dessine le rectangle ayant comme sommets  consécutifs a et b (complexe) tel que le côté opposé passe par c.
-    local S = rectangle(a,b,c)
+    local S = ld.rectangle(a,b,c)
     self:Dpolyline(S,true,draw_options)
 end
 
@@ -939,25 +958,24 @@ function luadraw_graph:Dparallelogram(a,u,v,draw_options)
         draw_options = u
         a,u,v = table.unpack(a)
     end
-    local S = parallelogram(a,u,v)
+    local S = ld.parallelogram(a,u,v)
     self:Dpolyline(S,true,draw_options)
 end
 
 -- suite récurrente u_(n+1)=f(u_n)
 function luadraw_graph:Dsequence(f,u0,n,draw_options)
 -- dessin des escaliers d'une suite récurrente
-    local S = sequence(f,u0,n)
+    local S = ld.sequence(f,u0,n)
     if S ~= nil then self:Dpolyline(S,false,draw_options) end
 end    
 
 --courbe de bézier
 function luadraw_graph:Dbezier(L,draw_options) -- où L = {A1,c1,c2,A2,c3,c4,A3,...}
 -- dessine une série de courbes de Bézier passant par A1, A1,... et ayant comme points de contrôle c1 et c2, puis c3,c4, ...
-
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
     local a, c1, c2, b
     local i = 1
-    if not isID(self.matrix) then
+    if not ld.isID(self.matrix) then
         L = self:Mtransform(L) -- image des points de L par la matrice de transformation courante
         if L == nil then return end
     end
@@ -992,7 +1010,7 @@ function luadraw_graph:Dspline(points,v1,v2,draw_options)
 -- dessine une spline passant par les points de la liste points
 -- v1 et v2 sont les vecteurs tangents aux extrémités, s'ils sont égaux à nil alors c'est une spline naturelle
     if (points == nil) or (type(points) ~= "table") or (#points < 3) then return end
-    self:Dpath( spline(points,v1,v2), draw_options)
+    self:Dpath( ld.spline(points,v1,v2), draw_options)
 end
 
 function luadraw_graph:Dtcurve(L,options)
@@ -1006,7 +1024,7 @@ function luadraw_graph:Dtcurve(L,options)
     options.showdots = options.showdots or false
     options.draw_options = options.draw_options or ""
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
-    local S = tcurve(L)
+    local S = ld.tcurve(L)
     if options.showdots then
         local line, dots, ctrl, k = {}, {L[1]}, {}, 0
         for _,z in ipairs(S) do
@@ -1043,11 +1061,11 @@ function luadraw_graph:Dline(d,B,draw_options)
     end
     A = toComplex(A) ; u = toComplex(u)
     if(A == nil) or (u == nil) or (u.re == 0) and (u.im == 0) then return end
-    if not isID(self.matrix) then
-        A, u = applymatrix(A,self.matrix), applyLmatrix(u,self.matrix)
+    if not ld.isID(self.matrix) then
+        A, u = ld.applymatrix(A,self.matrix), ld.applyLmatrix(u,self.matrix)
     end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-    local res = clipline({A,u},X1,X2,Y1,Y2)
+    local res = ld.clipline({A,u},X1,X2,Y1,Y2)
     if res ~= nil then
         local commande = self:drawcmd(draw_options)
         if cpx.dot(u,res[2]-res[1]) > 0 then -- le sens est important s'il y a une flèche
@@ -1062,27 +1080,13 @@ end
 
 -- tracer une droite d par une équation cartésienne ax+by+c=0
 function luadraw_graph:DlineEq(a, b, c,draw_options)
-    local d = lineEq(a,b,c)
+    local d = ld.lineEq(a,b,c)
     local A = d[1]
     local u = d[2]
     A = toComplex(A)
     u = toComplex(u)
     if (A == nil) or (u == nil) or ((u.re == 0) and (u.im == 0)) then return end
-    if not isID(self.matrix) then
-        A, u = applymatrix(A,self.matrix), applyLmatrix(u,self.matrix)
-    end
-    local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-    local res = clipline({A,u},X1,X2,Y1,Y2)
-    if res ~= nil then
-        local commande = self:drawcmd(draw_options)
-        if cpx.dot(u,res[2]-res[1]) > 0 then -- le sens est important s'il y a une flèche
-            self:Write(commande..self:Coord(res[1]))
-            self:Writeln(" -- "..self:Coord(res[2])..";")
-        else
-            self:Write(commande..self:Coord(res[2]))
-            self:Writeln(" -- "..self:Coord(res[1])..";")
-        end
-    end
+    self:Dline({A,u},draw_options)
 end
 
 -- dessiner une demi-droite
@@ -1090,7 +1094,7 @@ function luadraw_graph:Dhline(d,B,draw_options)
 --trace la demi-droite [A,A+u) si d={A,u} (si B=nil) ou bien la demi-droite [d,B) si B non nil
     local A, u = nil, nil
     if (d == nil) then return end
-    if type(B) == "string" then draw_options = B; B = nil end
+    if (type(B) ~= "number") and (not isComplex(B)) then draw_options = B; B = nil end
     if (B ~= nil) then 
         B = toComplex(B)
         d = toComplex(d)
@@ -1103,13 +1107,13 @@ function luadraw_graph:Dhline(d,B,draw_options)
         u = d[2]
     end
     A = toComplex(A) ; u = toComplex(u)
-    if(A == nil) or (u == nil) or (u.re == 0) and (u.im == 0) then return end        
-    if not isID(self.matrix) then
-        A, u = applymatrix(A,self.matrix), applyLmatrix(u,self.matrix)
+    if(A == nil) or (u == nil) or (u.re == 0) and (u.im == 0) then return end 
+    if not ld.isID(self.matrix) then
+        A, u = ld.applymatrix(A,self.matrix), ld.applyLmatrix(u,self.matrix)
     end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
     local M = self.matrix  
-    self.matrix = ID --la transformation a déjà été faite
+    self.matrix = ld.ID --la transformation a déjà été faite
     if (A.re < X1) or (A.re > X2) or (A.im < Y1) or (A.im > Y2) then -- A est hors de la vue courante
         self:Dline(A,A+u,draw_options) -- on dessine la droite 
     else -- A est dans la fenêtre
@@ -1122,33 +1126,33 @@ end
 function luadraw_graph:Dperp(d,A,draw_options)
 -- dessine la perpendiculaire à la d passant par A
 -- d est soit une droite (un point et un vecteur directeur), soir un vecteur non nul
-    self:Dline(perp(d,A))
+    self:Dline(ld.perp(d,A),draw_options)
 end
 
 function luadraw_graph:Dparallel(d,A,draw_options)
 -- dessine la parallèle à la d passant par A
 -- d est soit une droite (un point et un vecteur directeur), soir un vecteur non nul
-    self:Dline(parallel(d,A),draw_options)
+    self:Dline(ld.parallel(d,A),draw_options)
 end
 
 function luadraw_graph:Dmed(A,B,draw_options) -- ou Dmed(seg,draw_options)
 -- dessine la médiatrice du segment seg ou [A;B]
-    if (type(B) == "string") then draw_options = B; B = nil end
-    self:Dline(med(A,B),draw_options)
+    if (type(B) ~= "number") and (not isComplex(B)) then draw_options = B; B = nil end
+    self:Dline(ld.med(A,B),draw_options)
 end
 
 function luadraw_graph:Dbissec(B,A,C,interior,draw_options)
 -- dessine une bissectrice de l'angle géométrique BAC
-    if (type(interior) == "string") then draw_options = interiorB; interior = nil end
-    self:Dline(bissec(B,A,C,interior),draw_options)
+    if (type(interior) ~= "boolean") then draw_options = interior; interior = nil end
+    self:Dline(ld.bissec(B,A,C,interior),draw_options)
 end
 
 function luadraw_graph:Dtangent(p,t0,long,draw_options)
 -- dessin de la tangente à la courbe paramétrée par t->p(t) (à valeurs complexes)
 -- au point de paramètre t0. 
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) == "string" then draw_options = long; long = nil end
-    local S = tangent(p,t0,long)
+    if type(long) ~= "number" then draw_options = long; long = nil end
+    local S = ld.tangent(p,t0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
     end
@@ -1158,8 +1162,8 @@ function luadraw_graph:DtangentC(f,x0,long,draw_options)
 -- dessin de la tangente à la courbe cartésienne d'équation y=f(x)
 -- au point d'abscisse x0
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) == "string" then draw_options = long; long = nil end
-    local S = tangentC(f,x0,long)
+    if type(long) ~= "number" then draw_options = long; long = nil end
+    local S = ld.tangentC(f,x0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
     end
@@ -1169,8 +1173,8 @@ function luadraw_graph:DtangentI(f,x0,y0,long,draw_options)
 -- dessin de la tangente à la courbe implicite d'équation f(x,y)=0
 -- au point (x0,y0) supposé sur la courbe
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) == "string" then draw_options = long; long = nil end
-    local S = tangentI(f,x0,y0,long)
+    if type(long) ~= "number" then draw_options = long; long = nil end
+    local S = ld.tangentI(f,x0,y0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
     end
@@ -1181,9 +1185,9 @@ function luadraw_graph:Dtangent_from(A,p,t1,t2,dp,draw_options,out)
 -- t1,t2 :bornes d el'intervalle de recherche
 -- dp (optionnel) fonction dérivée de p
 -- out doit être une table, elle permet de récupérer les points de contacts
-    if type(dp) == "string" then out = draw_options; draw_options = dp; dp = nil end
+    if type(dp) ~= "function" then out = draw_options; draw_options = dp; dp = nil end
     out = out or {}
-    local S = tangent_from(A,p,t1,t2,dp)
+    local S = ld.tangent_from(A,p,t1,t2,dp)
     for _,B in ipairs(S) do
         table.insert(out,B)
         self:Dline(A,B,draw_options)
@@ -1194,8 +1198,8 @@ function luadraw_graph:Dnormal(p,t0,long,draw_options)
 -- dessin de la normale à la courbe paramétrée par t->p(t) (à valeurs complexes)
 -- au point de paramètre t0. 
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) == "string" then draw_options = long; long = nil end
-    local S = normal(p,t0,long)
+    if type(long) ~= "number" then draw_options = long; long = nil end
+    local S = ld.normal(p,t0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
     end
@@ -1205,8 +1209,8 @@ function luadraw_graph:DnormalC(f,x0,long,draw_options)
 -- dessin de la normale à la courbe cartésienne d'équation y=f(x)
 -- au point d'abscisse x0
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) == "string" then draw_options = long; long = nil end
-    local S = normalC(f,x0,long)
+    if type(long) ~= "number" then draw_options = long; long = nil end
+    local S = ld.normalC(f,x0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
     end
@@ -1216,8 +1220,8 @@ function luadraw_graph:DnormalI(f,x0,y0,long,draw_options)
 -- dessin de la normale à la courbe implicite d'équation f(x,y)=0
 -- au point (x0,y0) supposé sur la courbe
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) == "string" then draw_options = long; long = nil end
-    local S = normalI(f,x0,y0,long)
+    if type(long) ~= "number" then draw_options = long; long = nil end
+    local S = ld.normalI(f,x0,y0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
     end
@@ -1241,7 +1245,7 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
     local node_options = ""
     local args = {}
     local x1,x2,y1,y2 = table.unpack(self:Getview())
-    local pt = 0.4/mm -- épaisseur de 0.4pt exprimée en cm
+    local pt = 0.4/ld.mm -- épaisseur de 0.4pt exprimée en cm
     local epX, epY = pt/self.Xscale, pt/self.Yscale
     
     local alabel=function() -- dessiner un label
@@ -1250,6 +1254,7 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
         pos = args.pos or pos
         dist = args.dist or dist
         dir = args.dir or dir
+        if (type(dir) == "number") or isComplex(dir) then dir = {dir} end
         node_options = args.node_options or node_options
         anchor = toComplex(anchor)
         if (anchor == nil) then return end
@@ -1260,7 +1265,7 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
             if v == nil then v = cpx.I*u else v = toComplex(v) end
             if dep == nil then dep = 0 end
             dep = toComplex(dep)
-            if not isID(self.matrix) then
+            if not ld.isID(self.matrix) then
                 u, v = table.unpack( self:MLtransform({u,v}) )
             end
             u, v = cpx.normalize(u), cpx.normalize(v)
@@ -1270,8 +1275,8 @@ function luadraw_graph:Dlabel(...) -- Dlabel(texte,anchor,options, texte,anchor,
         sep = ""
         if tikz_pos ~= nil then sep = "," else tikz_pos = "" end
         if (dist > 0) and (tikz_pos ~= "") then tikz_pos = tikz_pos.."="..dist.."cm" end
-        if not isID(self.matrix) then
-            anchor = applymatrix(anchor,self.matrix)
+        if not ld.isID(self.matrix) then
+            anchor = ld.applymatrix(anchor,self.matrix)
         end
         if (anchor.re < x1-epX) or (anchor.re > x2+epX) or (anchor.im < y1-epY) or (anchor.im > y2+epY) then return end -- point en dehors de la vue courante
         if (self.param.labelangle ~= 0) then tikz_pos = tikz_pos..sep.."rotate="..self.param.labelangle end
@@ -1322,11 +1327,11 @@ function luadraw_graph:Ddots(L, mark_options)
     for _, aux in ipairs(L) do
         local len = #aux
         if len > 0 then
-            if not isID(self.matrix) then
+            if not ld.isID(self.matrix) then
                 aux = self:Mtransform(aux)  --application de la matrice courante
             end
             local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-            aux = clipdots(aux,X1,X2,Y1,Y2) -- élimination des "trop grands" et conversion reel -> complexe, on récupère une liste de listes
+            aux = ld.clipdots(aux,X1,X2,Y1,Y2) -- élimination des "trop grands" et conversion reel -> complexe, on récupère une liste de listes
             for _,cp in ipairs(aux) do 
                 drawdot(cp) 
             end
@@ -1351,8 +1356,8 @@ end
 function luadraw_graph:Dangle(B,A,C,r,draw_options)
     A, B, C = toComplex(A), toComplex(B), toComplex(C)
     if (A == nil) or (B == nil) or (C == nil) then return end
-    if type(r) == "string" then draw_optiopns = r; r = 0.25 end
-    local D, E, F = angleD(B,A,C,r)
+    if type(r) ~= "number" then draw_optiopns = r; r = 0.25 end
+    local D, E, F = ld.angleD(B,A,C,r)
     if (D == nil) or (E == nil) or (F == nil) then return end
     if self.param.fillstyle ~= "none" then
         local oldL = self.param.linestyle
@@ -1392,10 +1397,10 @@ function luadraw_graph:Dpath(L,draw_options,clip)
     local Mcoord = function(z) return self:Coord(z) end
     
     local Tcoord = function(z) -- applique la matrice courante à z
-        return self:Coord(applymatrix(z,self.matrix))
+        return self:Coord(ld.applymatrix(z,self.matrix))
     end
     
-    if not isID(self.matrix) then Mcoord = Tcoord end -- transformation des points par la matrice courante
+    if not ld.isID(self.matrix) then Mcoord = Tcoord end -- transformation des points par la matrice courante
     
     local lineto = function() -- traitement du lineto
         -- on relie les points par une ligne
@@ -1450,7 +1455,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
             if first ~= nil then 
             table.insert(aux,1,first)
         end
-        aux = spline(aux) -- spline naturelle
+        aux = ld.spline(aux) -- spline naturelle
         if aux ~= nil then
             if first ~= nil then table.remove(aux,1) end -- le premier point est déjà exporté
             Bezier()
@@ -1468,13 +1473,13 @@ function luadraw_graph:Dpath(L,draw_options,clip)
             c = aux[2]; r = cpx.abs(a-c)
         else
             if #aux == 3 then -- on a trois points du cercle
-                c = interD(med(a,aux[2]), med(a,aux[3]))
+                c = ld.interD(ld.med(a,aux[2]), ld.med(a,aux[3]))
                 if c == nil then aux = {}; return end
                 r = cpx.abs(a - c)
             else aux = {}; return
             end
         end
-        aux = arcb(a,c,a,r,1)
+        aux = ld.arcb(a,c,a,r,1)
         if aux ~= nil then
             if first ~= nil then table.remove(aux,1) end -- le premier point est déjà exporté
             Bezier()
@@ -1488,7 +1493,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         if first ~= nil then 
             table.insert(aux,1,first)
         end
-        aux = arcb(table.unpack(aux))
+        aux = ld.arcb(table.unpack(aux))
         if aux ~= nil then
             if first ~= nil then self:Write(" -- "); first = nil end -- pour relier le premier point de l'arc au précédent
             local newfirst = aux[#aux-1]
@@ -1504,7 +1509,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         if first ~= nil then 
             table.insert(aux,1,first)
         end
-        aux = ellipticarcb(table.unpack(aux))
+        aux = ld.ellipticarcb(table.unpack(aux))
         if aux ~= nil then
             if first ~= nil then self:Write(" -- "); first = nil end -- pour relier le premier point de l'arc au précédent
             local newfirst = aux[#aux-1]
@@ -1521,7 +1526,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
             table.insert(aux,1,first)
         end
         local p, c, rx, ry, inclin = table.unpack(aux)
-        aux = ellipticarcb(p,c,p,rx,ry,1,inclin)
+        aux = ld.ellipticarcb(p,c,p,rx,ry,1,inclin)
         if aux ~= nil then
             if first ~= nil then self:Write(" -- "); first = nil end -- pour relier le premier point de l'arc au précédent
             local newfirst = aux[#aux-1]
@@ -1538,7 +1543,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         end
         local r = table.remove(aux)
         if (type(r) ~= "number") or (r <= 0) then aux = {}; return end
-        local C = roundline(aux,r,close,true)
+        local C = ld.roundline(aux,r,close,true)
         if C ~= nil then
             if first ~= nil then 
                 if not close then table.remove(C,1) -- le premier point est déjà exporté
@@ -1560,10 +1565,10 @@ function luadraw_graph:Dpath(L,draw_options,clip)
     end
 -- corps de la fonction dpath
     local clippee
-    local aux2 = path(L)
-    if not isID(self.matrix) then aux2 = self:Mtransform(aux2) end
+    local aux2 = ld.path(L)
+    if not ld.isID(self.matrix) then aux2 = self:Mtransform(aux2) end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-    clippee = (not clip) and needclip(aux2,X1,X2,Y1,Y2)
+    clippee = (not clip) and ld.needclip(aux2,X1,X2,Y1,Y2)
     if clippee and self.bbox then
         self:Writeln("\\begin{scope}")
         self:Writeln("\\clip "..self:strCoord(X1,Y1).." rectangle "..self:strCoord(X2,Y2)..";")
@@ -1587,12 +1592,12 @@ function luadraw_graph:Beginclip(p,inverse) -- p = path
         local chem = self:Box2d()
         --local chem = reverse(self:Box2d())
         local L = path(p)[1]
-        local G = isobar(L)
+        local G = cpx.isobar(L)
         local A, B = L[1], L[2]
         if cpx.det(A-B,B-G) >= 0 then chem = reverse(chem) end
         insert(chem,{"l","cl"})
         table.insert(p,2,"m")
-        self:Dpath( concat(chem,p),"",true) -- path doit être dans le sens trigonométrique
+        self:Dpath( ld.concat(chem,p),"",true) -- path doit être dans le sens trigonométrique
     else self:Dpath(p,"",true)
     end
 end
@@ -1605,13 +1610,13 @@ end
 function luadraw_graph:Darc(B,A,C,r,sens,draw_options)
 -- dessine un arc de cercle de centre A, allant de B à C avec un rayon de r en cm
 -- sens = 1 pour sens trigo ou -1 sinon
-    local S = arcb(B,A,C,r,sens or 1) -- arc en courbes de Bézier
+    local S = ld.arcb(B,A,C,r,sens or 1) -- arc en courbes de Bézier
     if S == nil then return end
     if self.param.fillstyle ~= "none" then
         local oldL = self.param.linestyle
         local oldF = self.param.fillstyle
         self:Linestyle("noline")
-        self:Dpath(concat(S,{A,"l","cl"}),draw_options)
+        self:Dpath(ld.concat(S,{A,"l","cl"}),draw_options)
         self:Linestyle(oldL)
         self.param.fillstyle = "none"
         self:Dpath(S,draw_options)
@@ -1629,19 +1634,19 @@ end
 function luadraw_graph:Dcircle(c,r,d,draw_options) -- ou Dcircle({c,r,d},draw_options)
 -- dessine le cercle de centre c et de rayon r (si d=nil) ou bien passant par les points c, r et d
     if (type(c) == "table") and (not isComplex(c)) then
-        if type(r) == "string" then draw_options = r end
+        if type(r) ~= "number" then draw_options = r end
         c,r,d = table.unpack(c)
     else
-        if type(d) == "string" then draw_options = d; d = nil end
+        if (type(d) ~= "number") and (not isComplex(d)) then draw_options = d; d = nil end
     end
-    local S = circleb(c,r,d)
+    local S = ld.circleb(c,r,d)
     self:Dpath(S,draw_options) -- cercle en courbes de Bézier
 end
 
 --ellipse
 function luadraw_graph:Dellipse(c,rx,ry,inclin,draw_options)
 -- renvoie les points de l'ellipse de centre c et de rayons rx et ry, inclin est l'inclinaison en degrés par rapport à l'horizontale (0 par défaut)
-   local S = ellipseb(c,rx,ry,inclin)
+   local S = ld.ellipseb(c,rx,ry,inclin)
    self:Dpath(S,draw_options) -- ellipse en courbes de Bézier
 end
 
@@ -1650,14 +1655,12 @@ function luadraw_graph:Dellipticarc(B, A, C, rx, ry, sens, inclin,draw_options)
 -- dessine un arc d'ellipse de centre A, et de AB vers AC
 -- rx et ry sont en cm
 -- sens = +/-1 (1 pour le sens trigo), inclin est l'inclinaison en degrés par rapport à l'horizontale
-    if type(inclin) == "string" then draw_options = inclin; inclin = nil end
-    local S = ellipticarcb(B, A, C, rx, ry, sens or 1, inclin or 0)
+    if type(inclin) ~= "number" then draw_options = inclin; inclin = nil end
+    local S = ld.ellipticarcb(B, A, C, rx, ry, sens or 1, inclin or 0)
     self:Dpath(S,draw_options) -- arc d'ellipse en courbes de Bézier
 end   
 
 -- gestion des couleurs ------------------------------------------------
-
-require("luadraw_colors.lua")
 
 function luadraw_graph:Newcolor(name, color)
 -- definit dans l'export tikz une nouvelle couleur
@@ -1680,22 +1683,22 @@ function luadraw_graph:Dimage(file,anchor,options)
                     ["W"] = "left", ["E"] = "right" }
     options = options or {}
     anchor = toComplex(anchor)
-    anchor = applymatrix(anchor,self.matrix)
+    anchor = ld.applymatrix(anchor,self.matrix)
     local pos = options.pos or "center"
     pos = style[pos]
     local name = options.name or ""
     if name ~= "" then name = "("..name..") " end
     local graphics_options = options.graphics_options or ""
     local mat 
-    if isID(self.matrix) then
+    if ld.isID(self.matrix) then
         mat = options.matrix 
-        if mat == nil then mat = ID end
+        if mat == nil then mat = ld.ID end
     else
         mat = {Z(0,0), self.matrix[2], self.matrix[3]}
-        if options.matrix ~=nil then mat = composematrix(mat, options.matrix) end
+        if options.matrix ~=nil then mat = ld.composematrix(mat, options.matrix) end
     end
-    if not isID(mat) then
-        local t,u,v = table.unpack( map(toComplex,mat) )
+    if not ld.isID(mat) then
+        local t,u,v = table.unpack( ld.map(toComplex,mat) )
         t = Z(t.re*self.Xscale, t.im*self.Yscale)
         u = Z(u.re*self.Xscale, u.im*self.Xscale)
         v = Z(v.re*self.Xscale, v.im*self.Yscale)
@@ -1720,7 +1723,7 @@ function luadraw_graph:Dmapimage(file, parallelo, options)
             graphics_options="width=1cm,height=1cm"})
     if clip then self:Endclip() end
     if border ~= nil then
-        self:Dpolyline(parallelogram(a,u,v), true, border)
+        self:Dpolyline(ld.parallelogram(a,u,v), true, border)
     end
 end
 

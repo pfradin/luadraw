@@ -1,15 +1,24 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/04/09
--- version 2.8
+-- luadraw_lines.lua (chargé par luadraw__calc)
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
 -- The latest version of this license is in
 --   https://www.ctan.org/license/lppl
 
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local Zp = cpx.Zp
+local toComplex = cpx.toComplex
+local isComplex = cpx.isComplex
+local notDef = ld.notDef
+local concat = ld.concat
 
 -- utilitaires sur les liste de complexes (composantes connexes)
-function len(L)
+function ld.len(L)
 -- renvoie la longueur de L  qui doit être une liste de complexes
     local long = 0
     local b,a = L[1]
@@ -20,9 +29,9 @@ function len(L)
     return long
 end
 
-function getdot(x,L) -- abscisse  dans [0;1], L composante connexe
+function ld.getdot(x,L) -- abscisse  dans [0;1], L composante connexe
 -- renvoie le point d'abscisse curviligne demandée le long de la ligne polygonale (0=premier, 1=dernier).}
-    local d = x*len(L)
+    local d = x*ld.len(L)
     if x == 0 then return L[1] 
     else
         if x == 1 then return L[#L] 
@@ -41,7 +50,7 @@ function getdot(x,L) -- abscisse  dans [0;1], L composante connexe
     end
 end
 
-function getbounds(L)
+function ld.getbounds(L)
 -- renvoie les limites xmin,xmax,ymin,ymax de la ligne polygone L
     if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
     if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end -- liste de réels/complexes
@@ -60,7 +69,7 @@ function getbounds(L)
     return xmin, xmax, ymin, ymax
 end
 
-function cut(L,A,before)
+function ld.cut(L,A,before)
 -- renvoie la ligne polygonale L coupée au point A
 -- la partie qui suit A est renvoyée si before vaut true (coupure avant A), sinon c'est la partie située avant.
     if (L == nil) or (type(L) ~= "table") or (#L == 0) or (A == nil) then return end
@@ -79,7 +88,7 @@ function cut(L,A,before)
             table.insert(av,B)
             -- on teste si A est dans le segment [B,C]
             local z = cpx.bar(A-B)*(C-A)
-            if (z.re >= 0) and isNul(z.im) then -- c'est bon
+            if (z.re >= 0) and ld.isNul(z.im) then -- c'est bon math.abs(z.im) < 1e-4 then --
                 if A ~= B then table.insert(av,A) end
                 if A ~= C then table.insert(ap,A) end
                 for j = k, #cp do 
@@ -107,7 +116,7 @@ function cut(L,A,before)
     end
 end
 
-function sequence(f, u0, n)
+function ld.sequence(f, u0, n)
 -- représentation graphique (escalier ou colimaçon) de la suite définie par $u_{n+1}=f(u_n)$.}
 -- la fonction renvoie une liste de points
     if (f == nil) or (u0 == nil) or (n == nil) then return end
@@ -122,7 +131,7 @@ function sequence(f, u0, n)
 end
 
 ---- arc de cercle
-function arc(B,A,C,r,sens) 
+function ld.arc(B,A,C,r,sens) 
 -- renvoie la liste des points de l'arc de cercle de centre A, allant de B à C avec r le rayon en cm, et sens qui vaut +/-1 ( 1 = sens trigo).
     A, B, C = toComplex(A), toComplex(B), toComplex(C)
     if (A == nil) or (B == nil) or (C == nil) or (r == nil) or (type(r) ~= "number") or (r <= 0) then return end
@@ -140,11 +149,11 @@ function arc(B,A,C,r,sens)
             return A + r*cpx.exp(cpx.I*t)
         end
     local nbdots = math.ceil(math.abs(fin-deb)*12/math.pi)
-    return parametric(p,deb,fin,nbdots)
+    return ld.parametric(p,deb,fin,nbdots)
 end
 
 
-function arcb(b,a,c,r,sens) --renvoie un arc de cercle sous forme de chemin avec des courbes de Bézier
+function ld.arcb(b,a,c,r,sens) --renvoie un arc de cercle sous forme de chemin avec des courbes de Bézier
 -- arc de cercle, la fonction renvoie un chemin
     a, b, c = toComplex(a), toComplex(b), toComplex(c)
     if (a == nil) or (b == nil) or (c == nil) or (r == nil) or (type(r) ~= "number") or (r <= 0) then return end
@@ -162,20 +171,20 @@ function arcb(b,a,c,r,sens) --renvoie un arc de cercle sous forme de chemin avec
     local du, dn = u*0.555, n*0.555
     local chemin = {a+u}
     while angle >= math.pi/2 do
-        insert(chemin,{a+u+dn,a+du+n,a+n,"b"})
+        ld.insert(chemin,{a+u+dn,a+du+n,a+n,"b"})
         angle = angle - math.pi/2
         v = u; dv = du; u = n; du = dn; n = -v; dn = -dv
     end
     local d, ca, sa = a+r*(c-a)/cpx.abs(c-a), math.cos(angle/2), math.sin(angle/2)
     local k = 4*(1-ca)*ca/(3*sa^2)*1.005
-    local e = interD({a+u,n},{d,cpx.I*(d-a)})
+    local e = ld.interD({a+u,n},{d,cpx.I*(d-a)})
     if e ~= nil then
-        insert(chemin, {a+u+k*(e-a-u), d+k*(e-d), d,"b"})
+        ld.insert(chemin, {a+u+k*(e-a-u), d+k*(e-d), d,"b"})
     end
     return chemin
 end
 
-function angleD(B,A,C,r) -- appelée par la méthode Dangle
+function ld.angleD(B,A,C,r) -- appelée par la méthode Dangle
 -- A,B,C trois complexes et r une distance (cm)
 -- renvoie 3 points pour dessiner l'angle (AB,AC) sous forme de parallélogramme
     local u, v = B-A, C-A
@@ -186,7 +195,7 @@ function angleD(B,A,C,r) -- appelée par la méthode Dangle
     return A+u,A+u+v,A+v
 end
 
-function seg(a,b,scale) -- appelée par la méthode Dseg
+function ld.seg(a,b,scale) -- appelée par la méthode Dseg
 -- scale permet de jouer sur la longueur du segment
     a = toComplex(a)
     b = toComplex(b)
@@ -203,7 +212,7 @@ function seg(a,b,scale) -- appelée par la méthode Dseg
 
 end
 
-function square(a, b, sens) -- appelée par la méthode Dsquare
+function ld.square(a, b, sens) -- appelée par la méthode Dsquare
 -- renvoie une ligne polygonale représentant un carré de sommets consécutifs les complexes a et b 
 -- sens = 1 (sens trigo) ou -1 
     a = toComplex(a)
@@ -214,19 +223,19 @@ function square(a, b, sens) -- appelée par la méthode Dsquare
     return {a,b,b+u,a+u}
 end 
 
-function rectangle(a,b,c)
+function ld.rectangle(a,b,c)
 -- renvoie le rectangle ayant comme sommets  consécutifs a et b (complexe) tel que le côté opposé passe par c.
     a = toComplex(a)
     b = toComplex(b)
     c = toComplex(c)
     if (a == nil) or (b == nil) or (c == nil) or (a == b) then return end
     local u = b-a
-    local a1, b1 = proj(a,{c,u}), proj(b,{c,u})
+    local a1, b1 = ld.proj(a,{c,u}), ld.proj(b,{c,u})
     if (a1 == nil) or (b1 == nil) then return end
     return {a,b,b1,a1}
 end
 
-function parallelogram(a,u,v)
+function ld.parallelogram(a,u,v)
 -- renvoie le parallélogramme ayant comme sommet a et construit sur les deux vecteurs u et v
     a = toComplex(a)
     u = toComplex(u)
@@ -236,7 +245,7 @@ function parallelogram(a,u,v)
 end
 
 
-function ellipse(c,rx,ry,inclin) -- or ellipse({c,rx,ry,inclin},nbdots)
+function ld.ellipse(c,rx,ry,inclin) -- or ellipse({c,rx,ry,inclin},nbdots)
 -- renvoie les points de l'ellipse de centre c et de rayons rx et ry
     local nbdots
     if (not isComplex(c)) and (type(c) == "table") then
@@ -255,13 +264,13 @@ function ellipse(c,rx,ry,inclin) -- or ellipse({c,rx,ry,inclin},nbdots)
             return c + f*Z(rx*math.cos(t),ry*math.sin(t))
         end
     if nbdots ~= nil then 
-        return parametric(p,-math.pi,math.pi,nbdots,false,0)
+        return ld.parametric(p,-math.pi,math.pi,nbdots,false,0)
     else
-        return parametric(p,-math.pi,math.pi)
+        return ld.parametric(p,-math.pi,math.pi)
     end
 end
 
-function ellipseb(c,rx,ry,inclin)
+function ld.ellipseb(c,rx,ry,inclin)
 -- renvoie l'ellipse de centre c et de rayons rx et ry sous forme de chemin avec des courbes de Bézier
     inclin = (inclin or 0) -- inclinaison en degrés par rapport à l'horizontale
     c = toComplex(c)
@@ -279,7 +288,7 @@ function ellipseb(c,rx,ry,inclin)
             c-n+du, c-dn+u, c+u, "b"}
 end
 
-function circle(c,r,d)  -- circle(center,radius) ou circle(a,b,c) (3 points) ou circle({data},nbdots)
+function ld.circle(c,r,d)  -- circle(center,radius) ou circle(a,b,c) (3 points) ou circle({data},nbdots)
 -- renvoie les points du cercle de centre c et de rayon r ou passant par les trois points c,r et d
     local nbdots
     if (not isComplex(c)) and (type(c) == "table") then
@@ -293,7 +302,7 @@ function circle(c,r,d)  -- circle(center,radius) ou circle(a,b,c) (3 points) ou 
     else -- cercle passant par c, r et d
         r, d = toComplex(r), toComplex(d)
         if (r == nil) or (d == nil) then return end
-        c = interD(med(c,r), med(c,d))
+        c = ld.interD(ld.med(c,r), ld.med(c,d))
         if c == nil then return end
         r = cpx.abs(c-r)
     end
@@ -302,13 +311,13 @@ function circle(c,r,d)  -- circle(center,radius) ou circle(a,b,c) (3 points) ou 
         return c + r*cpx.exp(cpx.I*t)
     end
     if nbdots ~= nil then
-        return parametric(p,-math.pi,math.pi,nbdots,false,0)
+        return ld.parametric(p,-math.pi,math.pi,nbdots,false,0)
     else
-        return parametric(p,-math.pi,math.pi)
+        return ld.parametric(p,-math.pi,math.pi)
     end
 end
 
-function circleb(c,r,d)  -- circleb(center,radius) ou circleb(a,b,c) (3 points)
+function ld.circleb(c,r,d)  -- circleb(center,radius) ou circleb(a,b,c) (3 points)
 -- renvoie le cercle de centre c et de rayon r ou passant par les trois points c,r et d sous forme de chemin avec des courbes de Bézier
     c = toComplex(c)
     if (c == nil) or (r == nil) then return end
@@ -317,7 +326,7 @@ function circleb(c,r,d)  -- circleb(center,radius) ou circleb(a,b,c) (3 points)
     else -- cercle passant par c, r et d
         r, d = toComplex(r), toComplex(d)
         if (r == nil) or (d == nil) then return end
-        c = interD(med(c,r), med(c,d))
+        c = ld.interD(ld.med(c,r), ld.med(c,d))
         if c == nil then return end
         r = cpx.abs(c-r)
     end
@@ -330,25 +339,25 @@ function circleb(c,r,d)  -- circleb(center,radius) ou circleb(a,b,c) (3 points)
             c-n+du, c-dn+u, c+u, "b"}
 end
 
-function circumcircle(a,b,c) -- ou circumcircle({a,b,c})
+function ld.circumcircle(a,b,c) -- ou circumcircle({a,b,c})
 -- renvoie le centre et le rayon du cercle circonscrit
     if b == nil then 
         a, b, c = table.unpack(a)
     end
-    local Ce = interD(med(a,b),med(b,c)) -- centre du cercle circonscrit
+    local Ce = ld.interD(ld.med(a,b),ld.med(b,c)) -- centre du cercle circonscrit
     if Ce ~= nil then
         return Ce, cpx.abs(Ce-a) -- centre et rayon
     end
 end
 
-function incircle(a,b,c) -- ou incircle({a,b,c})
+function ld.incircle(a,b,c) -- ou incircle({a,b,c})
 -- renvoie le centre et le rayon du cercle inscrit
     if b == nil then 
         a, b, c = table.unpack(a)
     end
-    local Ce = interD(bissec(b,a,c),bissec(a,b,c)) -- centre du cercle inscrit
+    local Ce = ld.interD(ld.bissec(b,a,c),ld.bissec(a,b,c)) -- centre du cercle inscrit
     if Ce ~= nil then
-        local I =  proj(Ce,{a,b-a})
+        local I =  ld.proj(Ce,{a,b-a})
         if I ~= nil then
             return Ce, cpx.abs(Ce - I) -- centre et rayon
         end
@@ -356,7 +365,7 @@ function incircle(a,b,c) -- ou incircle({a,b,c})
 end
 
 
-function ellipticarc(b, a, c, rx, ry, sens, inclin)
+function ld.ellipticarc(b, a, c, rx, ry, sens, inclin)
 -- renvoie la liste des points constituant un arc d'ellipse de AB vers AC
 -- rx et ry sont en cm
 -- sens = +/-1 (1 pour le sens trigo), inclin est l'inclinaison en degrés par rapport à l'horizontale
@@ -388,10 +397,10 @@ function ellipticarc(b, a, c, rx, ry, sens, inclin)
             return a + f*Z(rx*math.cos(t),ry*math.sin(t))
         end
     local nbdots = math.ceil(math.abs(t2-t1)*12/math.pi)
-    return parametric(p,t1,t2,nbdots)
+    return ld.parametric(p,t1,t2,nbdots)
 end
 
-function ellipticarcb(b, a, c, rx, ry, sens, inclin)
+function ld.ellipticarcb(b, a, c, rx, ry, sens, inclin)
 -- renvoie l'arc d'ellipse de AB vers AC sous forme de chemin avec des courbes de Bézier
 -- rx et ry sont en cm
 -- sens = +/-1 (1 pour le sens trigo), inclin est l'inclinaison en degrés par rapport à l'horizontale
@@ -407,37 +416,37 @@ function ellipticarcb(b, a, c, rx, ry, sens, inclin)
         v = cpx.exp(cpx.I*theta)
     end
     local u = cpx.I*v
-    local mat1 = matrixof(function(z) return affin(z, {a,v}, u, 1/t) end)
-    local mat2 = matrixof(function(z) return affin(z, {a,v}, u, t) end)
-    local b1, c1 = table.unpack(mtransform({b,c},mat1))
-    local C = arcb(b1,a,c1,rx,sens)
-    return mtransform(C,mat2)
+    local mat1 = ld.matrixof(function(z) return ld.affin(z, {a,v}, u, 1/t) end)
+    local mat2 = ld.matrixof(function(z) return ld.affin(z, {a,v}, u, t) end)
+    local b1, c1 = table.unpack(ld.mtransform({b,c},mat1))
+    local C = ld.arcb(b1,a,c1,rx,sens)
+    return ld.mtransform(C,mat2)
 end 
 
 -- triangles
-function sss_triangle(ab,bc,ac)  -- returns 3 points A,B,C (table), the arguments are the lengths of the 3 sides.
+function ld.sss_triangle(ab,bc,ac)  -- returns 3 points A,B,C (table), the arguments are the lengths of the 3 sides.
     local A, B = 0, ab
     local alpha = math.acos((ab^2+ac^2-bc^2)/(ab*ac*2))
     local C = ac*cpx.exp(cpx.I*alpha)
     return {A,B,C} -- returns triangle with A=0 and B=ab
 end
 
-function sas_triangle(ab,gamma,ac)  -- returns 3 points A,B,C (table), the arguments are length, angle (AB,AC) (degrees), length
+function ld.sas_triangle(ab,gamma,ac)  -- returns 3 points A,B,C (table), the arguments are length, angle (AB,AC) (degrees), length
     local A, B = 0, ab
-    local C = ac*cpx.exp(cpx.I*gamma*deg) 
+    local C = ac*cpx.exp(cpx.I*gamma*ld.deg) 
     return {A,B,C} -- returns triangle with A=0 and B=ab
 end
 
-function asa_triangle(alpha,ab,beta)  -- returns 3 points A,B,C (table), the arguments are a length, angles (AB,AC) and (BA,BC)
+function ld.asa_triangle(alpha,ab,beta)  -- returns 3 points A,B,C (table), the arguments are a length, angles (AB,AC) and (BA,BC)
     local A, B = 0, ab
-    local D1 = {0,cpx.exp(cpx.I*alpha*deg)}
-    local D2 = {ab,cpx.exp(-cpx.I*beta*deg)}
-    local C = interD(D1,D2)
+    local D1 = {0,cpx.exp(cpx.I*alpha*ld.deg)}
+    local D2 = {ab,cpx.exp(-cpx.I*beta*ld.deg)}
+    local C = ld.interD(D1,D2)
     return {A,B,C} -- returns triangle with A=0 and B=ab
 end
 
 
-function polyreg(centre,sommet,nbcotes) -- ou polyreg(sommet1,sommet2,nbcotes,sens) appelée par la méthode Dpolyreg
+function ld.polyreg(centre,sommet,nbcotes) -- ou polyreg(sommet1,sommet2,nbcotes,sens) appelée par la méthode Dpolyreg
 -- renvoie une ligne polygonale représentant un polygone régulier
     if sens == nil then
         centre = toComplex(centre)
@@ -466,7 +475,7 @@ function polyreg(centre,sommet,nbcotes) -- ou polyreg(sommet1,sommet2,nbcotes,se
 end 
 
 -- tangentes
-function tangent(p,t0,long)
+function ld.tangent(p,t0,long)
 -- tangente à la courbe paramétrée par t -> p(t) (à valeurs complexes)
 -- au point de paramètre t0
 -- si long vaut nil on renvoie une droite, sinon un segment
@@ -482,7 +491,7 @@ function tangent(p,t0,long)
     end
 end
 
-function tangentC(f,x0,long)
+function ld.tangentC(f,x0,long)
 -- tangente à la courbe cartésienne d'équation y=f(x)
 -- au point d'abscisse x0
 -- si long vaut nil on renvoie une droite, sinon un segment
@@ -499,7 +508,7 @@ function tangentC(f,x0,long)
     end
 end
 
-function tangentI(f,x0,y0,long)
+function ld.tangentI(f,x0,y0,long)
 -- tangente à la courbe implicite d'équation f(x,y)=0
 -- si long vaut nil on renvoie une droite, sinon un segment
 -- on suppose que f(x0,y0)=0, donc on a bien un point de la courbe
@@ -516,7 +525,7 @@ function tangentI(f,x0,y0,long)
     end
 end
 
-function tangent_from(from,p,t1,t2,dp)
+function ld.tangent_from(from,p,t1,t2,dp)
 -- from : point on the plane from which the tangents will originate
 -- p: t -> p(t) parameterization of the curve (p(t) is a complex number)
 -- t1, t2 : interval boundaries
@@ -532,7 +541,7 @@ function tangent_from(from,p,t1,t2,dp)
         return cpx.det(p(t)-from,dp(t))
     end
     local n = math.max(25, math.floor((t2-t1)*2.5))
-    local S = solve(f,t1,t2-2*h,n) --<< here we use the solve function to solve f(t)=0
+    local S = ld.solve(f,t1,t2-2*h,n) --<< here we use the solve function to solve f(t)=0
     if S ~= nil then 
         local rep = {}
         for _,t in ipairs(S) do
@@ -545,7 +554,7 @@ end
 
 -- normales
 
-function normal(p,t0,long)
+function ld.normal(p,t0,long)
 -- normale à la courbe paramétrée par t -> p(t) (à valeurs complexes)
 -- au point de paramètre t0
 -- si long vaut nil on renvoie une droite, sinon un segment
@@ -562,7 +571,7 @@ function normal(p,t0,long)
     end
 end
 
-function normalC(f,x0,long)
+function ld.normalC(f,x0,long)
 -- normale à la courbe cartésienne d'équation y=f(x)
 -- au point d'abscisse x0
 -- si long vaut nil on renvoie une droite, sinon un segment
@@ -580,7 +589,7 @@ function normalC(f,x0,long)
     end
 end
 
-function normalI(f,x0,y0,long)
+function ld.normalI(f,x0,y0,long)
 -- normale à la courbe implicite d'équation f(x,y)=0
 -- si long vaut nil on renvoie une droite, sinon un segment
 -- on suppose que f(x0,y0)=0, donc on a bien un point de la courbe
@@ -600,7 +609,7 @@ end
 
     
 --  intersection entre 2 lignes polygonales (liste de composantes connexes)
-function interL(L1, L2)
+function ld.interL(L1, L2)
 -- calcule et renvoie la liste des points d'intersection de deux lignes polygonales L1 et L2 (listes de complexes ou liste de listes de complexes)
     local firstA
     local firstC
@@ -611,10 +620,10 @@ function interL(L1, L2)
         C = toComplex(C)
         v = toComplex(v)
         -- if (C == nil) or (v == nil) then return end
-        local E = interD({A,u}, {C,v})
+        local E = ld.interD({A,u}, {C,v})
         if E ~= nil then
-            local t1 = round(cpx.dot(E-A,u) / cpx.abs2(u),12)
-            local t2 = round(cpx.dot(E-C,v) / cpx.abs2(v),12)
+            local t1 = ld.round(cpx.dot(E-A,u) / cpx.abs2(u),12)
+            local t2 = ld.round(cpx.dot(E-C,v) / cpx.abs2(v),12)
             if (t1 ~= nil) and ( (firstA and (0 <= t1)) or ( (not firstA) and (0 < t1) ) ) and (t1 <= 1) and
             (t2 ~= nil) and ( (firstC and (0 <= t2)) or ( (not firstC) and (0 < t2) ) ) and (t2 <= 1) then
                 return E
@@ -683,36 +692,36 @@ function interL(L1, L2)
 end-- of interL
 
 -- intersection de droites
-function interD(d1, d2)
+function ld.interD(d1, d2)
 --renvoie le point d'intersection entre les droites d1 = {A,u1} et d2 = {B,u2}
     if (d1 == nil) or (type(d1) ~= "table") or (#d1 ~= 2) then return end
     if (d2 == nil) or (type(d2) ~= "table") or (#d2 ~= 2) then return end
     local A, u = table.unpack(d1)
     local B, v = table.unpack(d2)
-    return projO(A,d2,u)
+    return ld.projO(A,d2,u)
 end
 
 -- intersection de 2 chemins (path)
-function interP(P1,P2)
+function ld.interP(P1,P2)
     local L1, L2 = path(P1), path(P2) -- transformation en liste de points
-    return interL(L1,L2)
+    return ld.interL(L1,L2)
 end
 
 -- intersection entre une droite et une ligne polygonale
-function interDL(d,L)
+function ld.interDL(d,L)
 --renvoie les points d'intersection entre la droite d={A,u} et la ligne polygonale L
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
-    local xmin, xmax, ymin, ymax = getbounds(L)
-    return interL( clipline(d,xmin,xmax,ymin,ymax), L)
+    local xmin, xmax, ymin, ymax = ld.getbounds(L)
+    return ld.interL( clipline(d,xmin,xmax,ymin,ymax), L)
 end
 
 -- intersection droite - cercle
-function interDC(d,C)
+function ld.interDC(d,C)
 -- d = {A,u} droite; C = {O,r} cercle
     local rep 
     local A,u = table.unpack(d)
     local O,r = table.unpack(C)
-    local I = proj(O,d)
+    local I = ld.proj(O,d)
     local d = cpx.abs(I-O)
     if d == r  then rep = {I}
     elseif d < r then -- deux points d'intersection
@@ -726,19 +735,19 @@ function interDC(d,C)
 end
 
 -- intersection cercle - cercle
-function interCC(C1,C2)
+function ld.interCC(C1,C2)
 -- C1 = {O1,r1} cercle; C2 = {O2,r2} cercle
     local rep 
     local O1,r1 = table.unpack(C1)
     local O2,r2 = table.unpack(C2)
     if O1 == O2 then
-        if r1 == r2 then rep = circle(O1,r1)[1] -- points du cercle
+        if r1 == r2 then rep = ld.circle(O1,r1)[1] -- points du cercle
         end
     else
         O1, O2 = toComplex(O1), toComplex(O2)
         local x1,x2,y1,y2 = O1.re,O2.re,O1.im,O2.im
-        local d = lineEq(2*(x2-x1),2*(y2-y1),r2^2-r1^2+x1^2-x2^2+y1^2-y2^2)
-        rep = interDC(d,C1)
+        local d = ld.lineEq(2*(x2-x1),2*(y2-y1),r2^2-r1^2+x1^2-x2^2+y1^2-y2^2)
+        rep = ld.interDC(d,C1)
     end
     return rep
 end
@@ -746,7 +755,7 @@ end
 
 -- fonction de clipping avec une fenêtre
 
-function needclip(L,xmin,xmax,ymin,ymax)
+function ld.needclip(L,xmin,xmax,ymin,ymax)
 -- renvoie true ou false suivant que L a besoin d'être clippée
 -- L est une liste de complexes ou une liste de listes de complexes
 
@@ -773,7 +782,7 @@ function needclip(L,xmin,xmax,ymin,ymax)
     return false
 end
 
-function clipseg(A,B,xmin,xmax,ymin,ymax)
+function ld.clipseg(A,B,xmin,xmax,ymin,ymax)
 -- clippe le seg [A,B] avec la fenêtre [xmin, xmax]x[ymin, ymax]
 -- A et B sont deux points (complexes)
 -- la fonction renvoie un segment {c,d} ou nil
@@ -815,7 +824,7 @@ function clipseg(A,B,xmin,xmax,ymin,ymax)
     end
 end
 
-function clipline(d,xmin,xmax,ymin,ymax)
+function ld.clipline(d,xmin,xmax,ymin,ymax)
 -- clippe la droite d = {a,u} avec la fenêtre [xmin, xmax]x[ymin, ymax]
 -- a est un point de la droite et u un vecteur directeur (2 complexes)
 -- et renvoie un segment ou nil
@@ -841,7 +850,7 @@ function clipline(d,xmin,xmax,ymin,ymax)
     if #res == 2 then return res end
 end
 
-function clippolyline(L,xmin,xmax,ymin,ymax,close)
+function ld.clippolyline(L,xmin,xmax,ymin,ymax,close)
 -- L est une liste de complexes ou une liste de liste de complexes
     local clippee = false
     
@@ -917,7 +926,7 @@ function clippolyline(L,xmin,xmax,ymin,ymax,close)
     return res, clippee
 end
 
-function clipdots(L,xmin,xmax,ymin,ymax)
+function ld.clipdots(L,xmin,xmax,ymin,ymax)
 -- L est une liste de complexes ou une liste de listes de complexes
 -- L est clippée avec la fenêtre [xmin, xmax]x[ymin, ymax]
 
@@ -942,7 +951,7 @@ function clipdots(L,xmin,xmax,ymin,ymax)
     return res
 end
 
-function cutpolyline(L,line,close)
+function ld.cutpolyline(L,line,close)
 -- cut the polyline L (list of complex numbers or list of lists of complex numbers)
 -- with the line, where line = {A,n} (point and a direction vector)
 -- the part in the half-plane containing i*n is kept
@@ -967,7 +976,7 @@ function cutpolyline(L,line,close)
             A1 = B1; p1 = p2; B1 = F[k]; p2 = cpx.dot(B1-S,n)
             if math.abs(p2) < 1e-8 then p2 = 0 end
             if (p1*p2 < 0) or (p2 == 0) then
-                if p2 == 0 then I = B1 else I = projO(A1,line,B1-A1) end
+                if p2 == 0 then I = B1 else I = ld.projO(A1,line,B1-A1) end
                 if I ~= nil then 
                     table.insert(aux,I) ; table.insert(aux2,I)
                     table.insert(coupe,I)
@@ -984,21 +993,113 @@ function cutpolyline(L,line,close)
     return res, res2, coupe -- returns the two polygons and intersection points
 end
 
+function ld.cutpolyline2(C1,f,sg,close) 
+-- C1 is a list of complex numbers representing a region
+-- f is fonction x->f(x) real
+-- sg is ">" or "<"
+-- close = true/false to close or not C1
+-- The function returns the outline of the region contained in C1 and satisfying y>f(x) or y<f(x) depending on the value of sg
+    local oldepsilon = ld.epsilon
+    ld.epsilon = 1e-12
+    --if (type(C1[1]) ~= "number") or (not isComplex(C1[1])) then C1 = C1[1] end -- first component
+    if close and (not (C1[1] == C1[#C1])) then table.insert(C1, C1[1]) end
+    local x1,x2,y1,y2 = ld.getbounds(C1)
+    local C2
+    if sg == ">" then
+        C2 = ld.clippolyline(ld.cartesian(f, x1-0.5, x2+0.5), x1-0.5, x2+0.5,-math.huge, y2+0.5)[1]
+        table.insert(C2,1, Z(C2[1].re, math.max(C2[1].im,y2+0.5)))
+        table.insert(C2, Z(C2[#C2].re, math.max(C2[#C2].im,y2+0.5)))
+        table.insert(C2,C2[1])
+    else
+        C2 = ld.clippolyline(ld.cartesian(f, x1-0.5, x2+0.5), x1-0.5, x2+0.5, y1-0.5, math.huge)[1]
+        table.insert(C2,1, Z(C2[1].re, math.min(C2[1].im,y1-0.5)))
+        table.insert(C2, Z(C2[#C2].re, math.min(C2[#C2].im,y1-0.5)))
+        table.insert(C2,C2[1])
+        C2 = ld.reverse(C2)
+    end
+
+    local test = function(A)
+        if sg == ">" then
+            return A.im > f(A.re)
+        else
+            return A.im < f(A.re)
+        end
+    end
+    
+    local L = ld.interL(C2,C1)
+    if L == nil then
+        if test(C1[1]) then return C1
+        elseif ld.inside(C2[1],C1) then return C2
+        else return 
+        end
+    end
+    local rep = {}
+    local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
+    local C1B, C1A = ld.cut(C1,L1) -- C1B = avant L1, C1A = après L1
+    table.remove(C1A) --on enlève le dernier
+    C1 = concat(C1A, C1B)
+    local C2B, C2A = ld.cut(C2,L1) -- C2B = avant L1, C2A = après L1
+    table.remove(C2A) --on enlève le dernier
+    C2 = concat(C2A, C2B) ;   
+    -- on parcourt L par paire (L1,L2)
+    local L2 = table.remove(L,1)
+    table.insert(L,L1)
+    local aux, aux2, A, k = {}, {}
+    for j, z in ipairs(L)  do
+        L1 = L2; L2 = z
+        k = 1; A = C1[2]
+        while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1 dans C1
+        if test(A) then -- on prend la partie [L1,L2] de C1
+            aux = ld.cut(C1,L2)
+        else -- on prend la partie [L1,L2] de C2
+            aux = ld.cut( ld.cut(C2,L1,true), L2)
+            if aux == nil then
+                aux2 = ld.cut(C2,L1,true)
+                table.remove(aux2)
+                aux = concat(aux2, ld.cut(C2,L2))
+            end
+        end
+        table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
+        if #C1 == 0 then  return end
+        ld.insert(rep,aux)
+    end
+    table.insert(rep,C2[1])
+    ld.epsilon = oldepsilon
+    return rep
+end
+
+function ld.inequalities(constraints, x1,x2,y1,y2)
+    -- constraints = {f1, sg1, f2, sg2, ...} where fi are functions (x->fi(x) real) and sgi = '>' or'<'
+    -- returns the outline of the region satisfying the conditions y>fi(x) or y<fi(x) in [x1;x2]x[y1;y2]
+    local f, sg
+    local P = {Z(x1,y1), Z(x2,y1), Z(x2,y2), Z(x1,y2),Z(x1,y1)}
+    local n = #constraints  -- number of arguments
+    for i = 1, n-1, 2 do   -- step = 2
+        f, sg = constraints[i], constraints[i+1]  -- 2 args
+        if (P ~= nil)  and (#P > 0) then
+            P = ld.cutpolyline2(P, f, sg)
+        end
+    end
+    return P
+end
+
 
 -- recoller des composantes connexes, utilisé par les courbes implicites
-function merge(List,eps)
+function ld.merge(List,eps)
 -- L est une liste de liste de complexes
 -- on essaie de recoller au mieux les composantes connexes de L si possible
 -- la fonction renvoie le résultat
 -- les comparaisons se font à  eps près (par défaut eps=10^(-10) )
-    eps = eps or 1e-10
+    eps = eps or 0
     local res = {}
     local L = table.copy(List)
-    local equal = function(z1,z2)
-        return z1==z2 --cpx.abs(z1-z2) < 1e-12
+    if eps == 0 then
+        equal = cpx.equal
+    else
+        equal = function(z1,z2)
+            return cpx.abs(z1-z2) < eps
+        end
     end
-    local old_epsilon = epsilon
-    epsilon = eps
     local test = function(t1,t2)
         -- on teste si t1 se recolle à t2, si oui on modifie t1 et on renvoie true, sinon on ne range rien et on renvoie false
         local a1, b1 = t1[1], t1[#t1]
@@ -1041,19 +1142,18 @@ function merge(List,eps)
         end
         table.insert(res,t1) -- on a fait les test pour t1,on le range dans res
     end
-    epsilon = old_epsilon
     return(res)
 end
 
 -- constructions de droites
 
-function line(A,B) -- appelée par la méthode Dline
+function ld.line(A,B) -- appelée par la méthode Dline
     A, B = toComplex(A), toComplex(B)
     if (A == nil) or (B == nil) then return end
     return {A, B-A}
 end
 
-function lineEq(a,b,c) -- appelée par la méthode DlineEq
+function ld.lineEq(a,b,c) -- appelée par la méthode DlineEq
 -- renvoie la droite d'équation ax+by+c=0 sous la forme {A,u}
 -- où A est un point de u un vecteur directeur
     if (a == 0) and (b == 0) then return end
@@ -1064,7 +1164,7 @@ function lineEq(a,b,c) -- appelée par la méthode DlineEq
     end
 end
 
-function perp(d,A) -- appelée par la méthode Dperp
+function ld.perp(d,A) -- appelée par la méthode Dperp
 -- perpendiculaire à d passant par a
 -- d doit être une droite {point, vecteur directeur} (2 complexes) ou juste un vecteur directeur (1 complexe non nul)
 -- la fonction renvoie une droite
@@ -1076,7 +1176,7 @@ function perp(d,A) -- appelée par la méthode Dperp
     return {A, cpx.I*V}
 end 
 
-function parallel(d,A) -- appelée par la méthode Dparallel
+function ld.parallel(d,A) -- appelée par la méthode Dparallel
 -- parallèle à d passant par A
 -- d doit être une droite {point, vecteur directeur} (2 complexes) ou juste un vecteur directeur (1 complexe non nul)
 -- la fonction renvoie une droite
@@ -1088,7 +1188,7 @@ function parallel(d,A) -- appelée par la méthode Dparallel
     return {A, V}
 end 
 
-function med(A,B) -- ou med(seg) appelée par la méthode Dmed
+function ld.med(A,B) -- ou med(seg) appelée par la méthode Dmed
 -- renvoie la médiatrice du segment [A; B] (2 complexes)
     if B == nil then 
         local seg = A
@@ -1102,7 +1202,7 @@ function med(A,B) -- ou med(seg) appelée par la méthode Dmed
     return {C, cpx.I*(B-A)}
 end
 
-function bissec(B,A,C,interior)
+function ld.bissec(B,A,C,interior)
 -- bissectrice de l'angle géométrique BAC
     A = toComplex(A); B = toComplex(B); C = toComplex(C)
     if interior == nil then interior = true end
@@ -1121,9 +1221,9 @@ end
 
 -- contours avec courbes
 
-function domain1(f,a,b,nbdots,discont,nbdiv)
+function ld.domain1(f,a,b,nbdots,discont,nbdiv)
 -- renvoie le contour de la partie du plan comprise entre la courbe de f, l'axe Ox, et les droites x=a, x=b 
-    local C = cartesian(f,a,b,nbdots,discont,nbdiv)
+    local C = ld.cartesian(f,a,b,nbdots,discont,nbdiv)
     if C ~= nil then
         local res = {a}
         for _, cp in ipairs(C) do
@@ -1136,10 +1236,10 @@ function domain1(f,a,b,nbdots,discont,nbdiv)
     end
 end
 
-function domain2(f,g,a,b,nbdots,discont,nbdiv)
+function ld.domain2(f,g,a,b,nbdots,discont,nbdiv)
 -- renvoie le contour de la partie du plan comprise entre la courbe de f, la courbe de g, et les droites x=a, x=b 
-    local C = cartesian(f,a,b,nbdots,discont,nbdiv)
-    local D = cartesian(g,b,a,nbdots,discont,nbdiv) -- g dans l'autre sens
+    local C = ld.cartesian(f,a,b,nbdots,discont,nbdiv)
+    local D = ld.cartesian(g,b,a,nbdots,discont,nbdiv) -- g dans l'autre sens
     if (C ~= nil) and (D ~=nil) then
         local res = {}
         for _, cp in ipairs(C) do
@@ -1156,12 +1256,12 @@ function domain2(f,g,a,b,nbdots,discont,nbdiv)
     end
 end
 
-function domain3(f,g,a,b,nbdots,discont,nbdiv)
+function ld.domain3(f,g,a,b,nbdots,discont,nbdiv)
 -- renvoie le contour de la partie du plan comprise entre la courbe de f, la courbe de g, dans l'intervalle [a,b]
-    local C = cartesian(f,a,b,nbdots,discont,nbdiv)
-    local D = cartesian(g,b,a,nbdots,discont,nbdiv) -- g dans l'autre sens
+    local C = ld.cartesian(f,a,b,nbdots,discont,nbdiv)
+    local D = ld.cartesian(g,b,a,nbdots,discont,nbdiv) -- g dans l'autre sens
     if (C ~= nil) and (D ~= nil) then
-        local P = interL(C,D)
+        local P = ld.interL(C,D)
         if (P == nil) or (#P <2)  then return end
         local A, B = P[1], P[#P] -- premier et dernier point
         local C1, C2 = {}, {}
@@ -1187,7 +1287,7 @@ function domain3(f,g,a,b,nbdots,discont,nbdiv)
     end
 end
 
-function roundline(L,r,close,bezier)  -- utilisée par path
+function ld.roundline(L,r,close,bezier)  -- utilisée par path
 -- L est une liste de complexe et r un rayon (réel > 0)
 -- la fonction arrondit les angles avec un arc de cercle de rayon r 
 -- on renvoie la nouvelle liste de points si bezier vaut false, sinon on renvoie un chemin en courbes de Bézier
@@ -1213,7 +1313,7 @@ function roundline(L,r,close,bezier)  -- utilisée par path
                 local sens
                 if  cpx.det(u,v) > 0 then sens = -1 else sens = 1 end
                 if bezier then
-                   local C = arcb(a1,center,b1,r,sens)
+                   local C = ld.arcb(a1,center,b1,r,sens)
                     if C ~= nil then
                         table.insert(res,C[1])
                         if ok then table.insert(res,"l") else ok = true end -- pas de "l" après le tout premier si close est true
@@ -1223,7 +1323,7 @@ function roundline(L,r,close,bezier)  -- utilisée par path
                     else error = true
                     end
                 else
-                    local C = arc(a1,center,b1,r,sens)
+                    local C = ld.arc(a1,center,b1,r,sens)
                     if C ~= nil then
                         for _,z in ipairs(C[1]) do
                             table.insert(res,z)
@@ -1247,7 +1347,7 @@ function roundline(L,r,close,bezier)  -- utilisée par path
     if #res > 0 then return res end
 end
 
-function path(chemin,nbdots)
+function ld.path(chemin,nbdots)
 -- renvoie les points constituant le chemin
 -- celui-ci est une table de complexes et d'instructions ex: {-1,2+i,3,"l", 4, "m", -2*i,-3-3*i,"l","cl",...}
 -- "m" pour moveto, "l" pour lineto, "b" pour bézier, "c" pour cercle, "ca" pour arc de cercle, "ea" arc d'ellipse, "e" pour ellipse, "cl" pour close
@@ -1289,7 +1389,7 @@ function path(chemin,nbdots)
             table.insert(aux,1,first); table.remove(crt)
         end
         local a,c1,c2,b = table.unpack(aux)
-        local C = bezier(a,c1,c2,b,nbdots) -- renvoie une liste de listes de complexes
+        local C = ld.bezier(a,c1,c2,b,nbdots) -- renvoie une liste de listes de complexes
         for _, z in ipairs(C[1]) do
             table.insert(crt,z)
         end
@@ -1301,7 +1401,7 @@ function path(chemin,nbdots)
         if first ~= nil then 
             table.insert(aux,1,first)
         end
-        local C = spline(aux) -- renvoie un chemin
+        local C = ld.spline(aux) -- renvoie un chemin
         local a, b, c1, c2, i, L
         a = C[1]; i = 2
         if first == nil then table.insert(crt,a) end
@@ -1312,7 +1412,7 @@ function path(chemin,nbdots)
                 else
                     if i == 4 then 
                         b = C[k]
-                        L = bezier(a,c1,c2,b,nbdots)
+                        L = ld.bezier(a,c1,c2,b,nbdots)
                         for j = 2, #L[1] do
                             table.insert(crt,L[1][j])
                         end
@@ -1339,7 +1439,7 @@ function path(chemin,nbdots)
         else
             if #aux == 3 then -- on a trois points du cercle
                 local a = aux[1]
-                c = interD(med(a,aux[2]), med(a,aux[3]))
+                c = ld.interD(ld.med(a,aux[2]), ld.med(a,aux[3]))
                 if c == nil then aux = {}; return end
                 v = a - c
             else aux = {}; return
@@ -1348,7 +1448,7 @@ function path(chemin,nbdots)
         local p = function (t)
             return c + v*cpx.exp(cpx.I*t)
         end
-        local C = parametric(p,0,2*math.pi)
+        local C = ld.parametric(p,0,2*math.pi)
         if C ~= nil then
             for _, z in ipairs(C[1]) do
                 table.insert(crt,z)
@@ -1364,7 +1464,7 @@ function path(chemin,nbdots)
         if first ~= nil then 
             table.insert(aux,1,first)
         end
-        local C = arc(table.unpack(aux))
+        local C = ld.arc(table.unpack(aux))
         if C ~= nil then
             for _, z in ipairs(C[1]) do
                 table.insert(crt,z)
@@ -1380,7 +1480,7 @@ function path(chemin,nbdots)
         if first ~= nil then 
             table.insert(aux,1,first)
         end
-        local C = ellipticarc(table.unpack(aux))
+        local C = ld.ellipticarc(table.unpack(aux))
         if C ~= nil then
             for _, z in ipairs(C[1]) do
                 table.insert(crt,z)
@@ -1397,7 +1497,7 @@ function path(chemin,nbdots)
             table.insert(aux,1,first)
         end
         local p, c, rx, ry, inclin = table.unpack(aux)
-        local C = ellipticarc(p,c,p,rx,ry,1,inclin)
+        local C = ld.ellipticarc(p,c,p,rx,ry,1,inclin)
         if C ~= nil then
             for _, z in ipairs(C[1]) do
                 table.insert(crt,z)
@@ -1415,7 +1515,7 @@ function path(chemin,nbdots)
         end
         local r = table.remove(aux)
         if (type(r) ~= "number") or (r <= 0) then aux = {}; return end
-        local C = roundline(aux,r,close)
+        local C = ld.roundline(aux,r,close)
         if C ~= nil then
             for _, z in ipairs(C) do
                 table.insert(crt,z)
@@ -1441,7 +1541,170 @@ function path(chemin,nbdots)
     if #res > 0 then return  res end
 end
 
-function polyline2path(L) -- conversion list of complex numbers or a list of lists of  complex numbers (L) to path
+
+function ld.convpath(L) 
+-- converts the path L into another path using only the lineto and bezier instructions
+    if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
+    local debut = true
+    local res = {} -- résultat
+    local crt = {} -- composante courante
+    local aux = {} -- lecture en cours
+    local last, first = nil, nil -- dernier lu et premier à venir
+    local traiter
+
+    local lineto = function() -- traitement du lineto
+        -- on relie les points par une ligne
+        ld.insert(res,aux); table.insert(res,"l")
+        first = last
+        aux = {}
+    end
+    
+    local moveto = function() -- traitement du moveto
+    -- on démarre une nouvelle composante
+        ld.insert(res,aux)
+        table.insert(res,"m")
+        first = last
+        aux = {}
+    end
+    
+    local close = function() -- traitement du closepath
+        -- en principe il y a eu une instruction avant autre que move, aux doit être vide et pas crt
+        table.insert(res,"cl")
+        aux = {}
+    end
+    
+    local Bezier = function()
+        -- aux contient une ou plusieurs courbes de bézier
+        ld.insert(res,aux)
+        if aux[#aux] ~= "b" then table.insert(res,"b") end
+        first = last
+        aux = {}
+    end
+    
+    local Spline = function ()
+            if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        aux = ld.spline(aux) -- spline naturelle
+        if aux ~= nil then
+            if first ~= nil then table.remove(aux,1) end -- le premier point est déjà exporté
+            Bezier()
+        end
+        aux = {}
+    end
+    
+    local Circle = function()
+    -- il faut un point et le centre
+        if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        local a, c, r = aux[1], nil, nil
+        if #aux == 2 then -- on a un point et le centre
+            c = aux[2]; r = cpx.abs(a-c)
+        else
+            if #aux == 3 then -- on a trois points du cercle
+                c = ld.interD(ld.med(a,aux[2]), ld.med(a,aux[3]))
+                if c == nil then aux = {}; return end
+                r = cpx.abs(a - c)
+            else aux = {}; return
+            end
+        end
+        aux = ld.arcb(a,c,a,r,1)
+        if aux ~= nil then
+            if first ~= nil then table.remove(aux,1) end -- le premier point est déjà exporté
+            Bezier()
+        end
+        aux = {}
+    end
+    
+    local Arc = function()
+        local n = #aux
+        if (n < 3) or (n > 5) then aux = {}; return end
+        if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        aux = ld.arcb(table.unpack(aux))
+        if aux ~= nil then
+            if first ~= nil then table.insert(aux,2,"l"); first = nil end -- pour relier le premier point de l'arc au précédent
+            local newfirst = aux[#aux-1]
+            Bezier()
+            first = newfirst -- dernier point de l'arc
+        end
+        aux = {}
+    end
+    
+    local Earc = function() -- ellipticarc(b,a,c,rx,ry,sens,inclin)
+        local n = #aux
+        if (n < 4) or (n > 7) then aux = {}; return end
+        if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        aux = ld.ellipticarcb(table.unpack(aux))
+        if aux ~= nil then
+            if first ~= nil then table.insert(aux,2,"l"); first = nil end -- pour relier le premier point de l'arc au précédent
+            local newfirst = aux[#aux-1]
+            Bezier()
+            first = newfirst -- dernier point de l'arc
+        end
+        aux = {}
+    end    
+    
+    local Ellipse = function() -- ellipse(p,c,rx,ry,sens,inclin)
+        local n = #aux
+        if (n < 3) or (n > 5) then aux = {}; return end
+        if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        local p, c, rx, ry, inclin = table.unpack(aux)
+        aux = ld.ellipticarcb(p,c,p,rx,ry,1,inclin)
+        if aux ~= nil then
+            if first ~= nil then table.insert(aux,2,"l"); first = nil end -- pour relier le premier point de l'arc au précédent
+            local newfirst = aux[#aux-1]
+            Bezier()
+            first = newfirst -- dernier point de l'arc
+        end
+        aux = {}
+    end 
+    local Rline = function(close) --on appelle roundline(L,r)
+        local n = #aux
+        if (n < 2) then aux = {}; return end
+        if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        local r = table.remove(aux)
+        if (type(r) ~= "number") or (r <= 0) then aux = {}; return end
+        local C = ld.roundline(aux,r,close,true)
+        if C ~= nil then
+            if first ~= nil then 
+                if not close then table.remove(C,1) -- le premier point est déjà exporté
+                end
+            end 
+            aux = {}
+            for _,z in ipairs(C) do
+                if (type(z) == "number") or isComplex(z) then table.insert(aux,z); last = z 
+                else
+                    if type(z) == "string" then traiter[z]() end
+                end            
+            end
+        end
+        aux = {}
+    end
+    
+    local cRline = function()
+        Rline(true)
+    end
+-- corps de la fonction dpath
+    traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc, ["ea"]=Earc, ["e"]=Ellipse, ["la"]=Rline, ["cla"]=cRline } 
+    for _, z in ipairs(L) do
+        if (type(z) == "number") or isComplex(z) then table.insert(aux,z); last = z 
+        else
+            if type(z) == "string" then traiter[z]() end
+        end
+    end
+    return res
+end
+
+function ld.polyline2path(L) -- conversion list of complex numbers or a list of lists of  complex numbers (L) to path
     if (L==nil) or (type(L) ~= "table") or (#L == 0) then return end
     if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
     local ret = {} 
@@ -1450,14 +1713,14 @@ function polyline2path(L) -- conversion list of complex numbers or a list of lis
         aux = table.copy(cp)
         table.insert(aux,2,"m") -- move
         table.insert(aux,"l")  -- lineto
-        insert(ret,aux)
+        ld.insert(ret,aux)
     end
     return ret
 end
 
 
 -- ensembles (diagrammes de Venn), intersection, réunion, différence
-function set(center,angle,scale)
+function ld.set(center,angle,scale)
 -- renvoie un chemin représentant un ensemble centré sur center, penché de angle degrés
 -- scale permet de jouer sur la taille
     center = toComplex(center)
@@ -1465,12 +1728,12 @@ function set(center,angle,scale)
     angle = angle or 0
     scale = scale or 1
     local a, b, c, d, v = Z(0,4), Z(-3,-1/2), Z(0,-4), Z(3,-1/2), -5
-    local S = spline( {a,b,c,d,a},v,v ) -- ensemble de base, chemin constitué de courbes de Bézier
-    local M = matrixof( function(z) return center+cpx.exp(cpx.I*angle*math.pi/180)*z*scale end)
-    return mtransform(S,M)
+    local S = ld.spline( {a,b,c,d,a},v,v ) -- ensemble de base, chemin constitué de courbes de Bézier
+    local M = ld.matrixof( function(z) return center+cpx.exp(cpx.I*angle*math.pi/180)*z*scale end)
+    return ld.mtransform(S,M)
 end
 
-function inside(I,L)
+function ld.inside(I,L)
 -- L est une liste de complexes représentant les sommets d'un polygone
 -- I est un point, la fonction renvoie true si I est dans le polygone
 -- le résultat n'est pas toujours correct si I est sur le bord.
@@ -1485,7 +1748,7 @@ function inside(I,L)
     I = toComplex(I) 
     if I == nil then return false end
     if (L == nil) or (type(L) ~= "table") then return false end
-    local xmin, xmax, ymin, ymax = getbounds(L) -- rectangle englobant
+    local xmin, xmax, ymin, ymax = ld.getbounds(L) -- rectangle englobant
     if (I.re < xmin) or (I.re > xmax) or (I.im < ymin) or (I.im > ymax) then return false end
     if (type(L[1]) == "number") or isComplex(L[1]) -- on a une liste de complexes
     then L = {L} 
@@ -1499,29 +1762,29 @@ function inside(I,L)
     end
     if not stop then return true end -- ligne plate contenant I
     local R = Z(xmin-1,I.im) -- R est sur l'horizontale passant par I et hors de L
-    local res = interL({R,I}, close(L))
+    local res = ld.interL({R,I}, close(L))
     if res == nil then return false
     else
         return (#res%2 == 1)
     end
 end
 
-function cap(C1, C2) -- contour de l'intersection de C1 et C2
+function ld.cap(C1, C2) -- contour de l'intersection de C1 et C2
 -- C1 et C2 sont deux courbes fermées simples (représentant des ensembles)
 -- la fonction renvoie le contour de l'intersection (liste de complexes)
-    local L = interL(C1,C2)
+    local L = ld.interL(C1,C2)
     if L == nil then
-        if inside(C1[1],C2) then return C1
-            elseif inside(C2[1],C1) then return C2
+        if ld.inside(C1[1],C2) then return C1
+            elseif ld.inside(C2[1],C1) then return C2
             else return 
         end
     end
     local rep = {}
     local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
-    local C1B, C1A = cut(C1,L1) -- C1B = avant L1, C1A = après L1
+    local C1B, C1A = ld.cut(C1,L1) -- C1B = avant L1, C1A = après L1
     table.remove(C1A) --on enlève le dernier
     C1 = concat(C1A, C1B)
-    local C2B, C2A = cut(C2,L1) -- C2B = avant L1, C2A = après L1
+    local C2B, C2A = ld.cut(C2,L1) -- C2B = avant L1, C2A = après L1
     table.remove(C2A) --on enlève le dernier
     C2 = concat(C2A, C2B) 
     -- on parcourt L par paire (L1,L2)
@@ -1532,28 +1795,28 @@ function cap(C1, C2) -- contour de l'intersection de C1 et C2
         L1 = L2; L2 = z
         k = 1; A = C1[2]
         while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1
-        if inside(A,C2) then -- on prend la partie [L1,L2] de C1
-            aux = cut(C1,L2)
+        if ld.inside(A,C2) then -- on prend la partie [L1,L2] de C1
+            aux = ld.cut(C1,L2)
         else -- on prend la partie [L1,L2] de C2
-            aux = cut( cut(C2,L1,true), L2)
+            aux = ld.cut( ld.cut(C2,L1,true), L2)
             if aux == nil then
-                aux2 = cut(C2,L1,true)
+                aux2 = ld.cut(C2,L1,true)
                 table.remove(aux2)
-                aux = concat(aux2, cut(C2,L2))
+                aux = concat(aux2, ld.cut(C2,L2))
             end
             
         end
-        table.remove(aux); C1 = cut(C1,L2,true) -- on coupe C1 avant L2
-        insert(rep,aux)
+        table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
+        ld.insert(rep,aux)
     end
     table.insert(rep,C2[1])
     return rep
 end
 
-function cup(C1, C2)
+function ld.cup(C1, C2)
 -- C1 et C2 sont deux courbes fermées simples (listes de complexes, représentant des ensembles)
 -- la fonction renvoie le contour de la réunion (liste de complexes)
-    local L = interL(C1,C2)
+    local L = ld.interL(C1,C2)
     if L == nil then -- disjoints
         if isComplex(C1[1]) then C1 = {C1} end
         if isComplex(C2[1]) then C2 = {C2} end
@@ -1561,10 +1824,10 @@ function cup(C1, C2)
     end
     local rep = {}
     local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
-    local C1B, C1A = cut(C1,L1) -- C1B = avant L1, C1A = après L1
+    local C1B, C1A = ld.cut(C1,L1) -- C1B = avant L1, C1A = après L1
     table.remove(C1A) --on enlève le dernier
     C1 = concat(C1A, C1B)
-    local C2B, C2A = cut(C2,L1) -- C2B = avant L1, C2A = après L1
+    local C2B, C2A = ld.cut(C2,L1) -- C2B = avant L1, C2A = après L1
     table.remove(C2A) --on enlève le dernier
     C2 = concat(C2A, C2B) 
     -- on parcourt L par paire (L1,L2)
@@ -1576,28 +1839,28 @@ function cup(C1, C2)
         k = 1; A = C1[2]
         while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1
         --local A = C1[2] -- point suivant L1, est-il dans C2 ?
-        if inside(A,C2) then -- on prend la partie [L1,L2] de C2
-            aux = cut( cut(C2,L1,true), L2)
+        if ld.inside(A,C2) then -- on prend la partie [L1,L2] de C2
+            aux = ld.cut( ld.cut(C2,L1,true), L2)
             if aux == nil then
-                aux2 = cut(C2,L1,true)
+                aux2 = ld.cut(C2,L1,true)
                 table.remove(aux2)
-                aux = concat(aux2, cut(C2,L2))
+                aux = concat(aux2, ld.cut(C2,L2))
             end
         else -- on prend la partie [L1,L2] de C1
-            aux = cut(C1,L2)
+            aux = ld.cut(C1,L2)
         end
-        table.remove(aux); C1 = cut(C1,L2,true) -- on coupe C1 avant L2
-        insert(rep,aux)
+        table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
+        ld.insert(rep,aux)
     end
     table.insert(rep,C2[1])
     return rep
 end
 
 
-function setminus(C1, C2)
+function ld.setminus(C1, C2)
 -- C1 et C2 sont deux courbes fermées simples (listes de complexes, représentant des ensembles)
 -- la fonction renvoie le contour de C1-C2
-    local L = interL(C1,C2)
+    local L = ld.interL(C1,C2)
     if L == nil then -- disjoints
         if isComplex(C1[1]) then C1 = {C1} end
         if isComplex(C2[1]) then C2 = {C2} end
@@ -1605,10 +1868,10 @@ function setminus(C1, C2)
     end
     local rep = {}
     local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
-    local C1B, C1A = cut(C1,L1) -- C1B = avant L1, C1A = après L1
+    local C1B, C1A = ld.cut(C1,L1) -- C1B = avant L1, C1A = après L1
     table.remove(C1A) --on enlève le dernier
     C1 = concat(C1A, C1B)
-    local C2B, C2A = cut(C2,L1) -- C2B = avant L1, C2A = après L1
+    local C2B, C2A = ld.cut(C2,L1) -- C2B = avant L1, C2A = après L1
     table.remove(C2A) --on enlève le dernier
     C2 = concat(C2A, C2B) 
     -- on parcourt L par paire (L1,L2)
@@ -1619,19 +1882,19 @@ function setminus(C1, C2)
         L1 = L2; L2 = z
         k = 1; A = C1[2]
         while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1
-        if inside(A,C2) then -- on prend la partie [L2,L1] de C2
-            aux = cut( cut(C2,L2,true), L1)
+        if ld.inside(A,C2) then -- on prend la partie [L2,L1] de C2
+            aux = ld.cut( ld.cut(C2,L2,true), L1)
             if aux == nil then
-                aux2 = cut(C2,L1)
+                aux2 = ld.cut(C2,L1)
                 table.remove(aux2)
-                aux = concat(aux2, cut(C2,L2,true))
+                aux = concat(aux2, ld.cut(C2,L2,true))
             end
-            aux = reverse(aux)
+            aux = ld.reverse(aux)
         else -- on prend la partie [L1,L2] de C1
-            aux = cut(C1,L2)
+            aux = ld.cut(C1,L2)
         end
-        table.remove(aux); C1 = cut(C1,L2,true) -- on coupe C1 avant L2
-        insert(rep,aux)
+        table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
+        ld.insert(rep,aux)
     end
     table.insert(rep,C2[1])
     return rep
@@ -1639,11 +1902,11 @@ end
 
 -- enveloppe convexe 2d
 
-function cvx_hull2d(L)
+function ld.cvx_hull2d(L)
 -- L is a list of complex numbers
 -- returns a list of complexe numbers which is the convex hull of L (Ronald Graham algorithm)
     if (L == nil) or (type(L) ~= "table") then return end
-    L = map(toComplex,L)
+    L = ld.map(toComplex,L)
     -- on élimine les doublons
     table.sort(L, function(e1,e2) return (e1.re < e2.re) or ((e1.re == e2.re) and (e1.im < e2.im)) end)
     local old, S = L[1],{L[1]}
@@ -1655,7 +1918,7 @@ function cvx_hull2d(L)
     local N  = #S 
     if N < 3 then  return S
     elseif N == 3 then 
-        if cpx.det(S[2]-Min,S[3]-Min) < 0 then return reverse(S) else return S end
+        if cpx.det(S[2]-Min,S[3]-Min) < 0 then return ld.reverse(S) else return S end
     else
         -- recherche de l'élément le plus bas, le plus à gauche s'il y en a plusieurs
         local ymin = Min.im
@@ -1702,13 +1965,15 @@ function cvx_hull2d(L)
 end
 
 -- conversion ligne polygonale -> bande
-function line2strip(L,wd,closed,ends)
+function ld.line2strip(L,wd,closed,ends)
 -- L is a list of complex numbers or a list of list od complex numbers
 -- wd is the width of the strip (cm)
 -- closed boolean indicating whether the line should be closed
 -- ends boolean indicating whether the two end segments should be drawn
--- retrns a path
+-- returns a path
     if (L == nil) or (type(L) ~= "table") then return end
+    local oldEpsilon = ld.epsilon
+    epsilon = 1e-10
     local ep = wd/2
     local i = cpx.I
     closed = closed or false
@@ -1727,15 +1992,15 @@ function line2strip(L,wd,closed,ends)
         table.remove(cp,1); table.remove(cp,1)
         if close then
             if not cycle then table.insert(cp,a) end
-            a = (a+b)/2
+            a = (a+b)/2 
             table.insert(cp,a)
         end
-        v = i*(b-a)/cpx.abs(b-a)
-            bord = {a-ep*v,a+ep*v}; dessus= {bord[2],"l"}
+        v = i*cpx.normalize(b-a)
+        bord = {a-ep*v,a+ep*v}; dessus= {bord[2],"l"}
         first = bord[1]; table.insert(aux,first); table.insert(aux,"m")
         c = b; b = a; v = v/i
         for _, z in ipairs(cp) do
-            a = b; b = c; c = z; u  =-v; v = cpx.normalize(c-b)
+            a = b; b = c; c = z; u  = -v; v = cpx.normalize(c-b)
             if v == nil then
                 c = b; b = a; v = -u
             else
@@ -1743,29 +2008,37 @@ function line2strip(L,wd,closed,ends)
                 if w == nil then
                     bord = {b+ep*i*u, b-ep*i*u}
                 else
-                    bord = projO( bord,{b,w},u)
+                    bord = ld.projO( bord,{b,w},u)
+                    if cpx.abs(bord[1])>12 then
+                        print(a, b, c)
+                    end
                 end
-                table.insert(aux,bord[1]); table.insert(dessus,1,bord[2])
+                --if (cpx.abs(bord[1]-proj(bord[1],{a,b-a}))<=2*ep) and (cpx.abs(bord[2]-proj(bord[1],{a,b-a}))<=2*ep) then
+                    table.insert(aux,bord[1]); table.insert(dessus,1,bord[2])
+                --end
             end
         end
         if ends then
             aux = concat(aux,{c-ep*v*i, c+ep*v*i}, dessus,"cl")
-            insert(ret, aux)
+            ld.insert(ret, aux)
         else
-            insert(aux,{c-ep*i*v,"l"}); insert(dessus,{c+ep*i*v,"m"},1)
+            ld.insert(aux,{c-ep*i*v,"l"}); ld.insert(dessus,{c+ep*i*v,"m"},1)
             ret = concat(ret, aux,dessus)
         end
     end
+    ld.epsilon = oldEpsilon
     return ret
 end
 
 -- construire une ligne polygonale parallèle
-function parallel_polyline(L,wd,closed)
+function ld.parallel_polyline(L,wd,closed)
 -- L is a list of complex numbers or a list of list od complex numbers
 -- wd is the distance between the two lines
 -- closed boolean indicating whether the line should be closed
 -- returns a polyline
     if (L == nil) or (type(L) ~= "table") then return end
+    local oldEpsilon = ld.epsilon
+    epsilon = 1e-10
     local ep = wd
     local i = cpx.I
     closed = closed or false
@@ -1789,7 +2062,7 @@ function parallel_polyline(L,wd,closed)
             bord = a+ep*v; dessus= {bord}
         c = b; b = a; v = v/i
         for _, z in ipairs(cp) do
-            a = b; b = c; c = z; u  =-v; v = cpx.normalize(c-b)
+            a = b; b = c; c = z; u  = -v; v = cpx.normalize(c-b)
             if v == nil then
                 c = b; b = a; v = -u
             else
@@ -1797,7 +2070,7 @@ function parallel_polyline(L,wd,closed)
                 if w == nil then
                     bord = b-ep*i*u
                 else
-                    bord = projO( bord,{b,w},u)
+                    bord = ld.projO( bord,{b,w},u)
                 end
                 table.insert(dessus,bord)
             end
@@ -1805,21 +2078,22 @@ function parallel_polyline(L,wd,closed)
         table.insert(dessus,c+ep*i*v)
         table.insert(ret,dessus)
     end
+    ld.epsilon = oldEpsilon
     return ret
 end
 
 
 -- triangulation de Delaunay, algorithme de Bowyer-Watson
-function delaunay(points, out)  -- points is a list of distinct complex numbers
+function ld.delaunay(points, out)  -- points is a list of distinct complex numbers
 -- renvoie une liste de triangles { {u,v,w}, ... }
 -- out doit être une variable égale à une table vide,  elle recevra les données pour Voronoi (liste de triangles avec centre du cercle circoncrit)
     local superTri = function(points)
         --superTri(points) : renvoie un triangle contenant la liste de points
-        local x1,x2,y1,y2 = getbounds(points)
+        local x1,x2,y1,y2 = ld.getbounds(points)
         local a, c = Z(x1,y1) - 100*(x2-x1)*Z(1,1), Z(x2,y2) + 100*(y2-y1)*Z(1,1) -- on agrandit la boite
         local d, b = Z(a.re,c.im), Z(c.re,a.im)
         local A = (c+b)/2+c-d
-        local B, C = interD({A,c-A},{a,d-a}), interD({A,b-A},{a,d-a}) --triangle englobant la grande boite
+        local B, C = ld.interD({A,c-A},{a,d-a}), ld.interD({A,b-A},{a,d-a}) --triangle englobant la grande boite
         return {A,B,C}
     end
     
@@ -1846,7 +2120,7 @@ function delaunay(points, out)  -- points is a list of distinct complex numbers
         return contour
     end
 
-    local function contains(list, value)
+    local contains = function(list, value)
         for _, v in ipairs(list) do
             if v == value then
                 return true
@@ -1855,10 +2129,10 @@ function delaunay(points, out)  -- points is a list of distinct complex numbers
         return false
     end
 
-    points = map(toComplex,points)
+    points = ld.map(toComplex,points)
     table.sort(points, function(e1,e2) return (e1.re < e2.re) or ((e1.re == e2.re) and (e1.im < e2.im)) end) --tri suivant les x croissants
     local T = superTri(points) --triangle englobant le nuage
-    local triangles = { {T,circumcircle(T)} } -- premier triangle avec centre et rayon du cercle circonscrit
+    local triangles = { {T,ld.circumcircle(T)} } -- premier triangle avec centre et rayon du cercle circonscrit
     for _,sommet in ipairs(points) do  -- on traite sommet par sommet
         local contour = {}  -- contour défini par les "mauvais" triangles (polygone connexe)
         local index = 0        -- indice du triangle traité
@@ -1878,7 +2152,7 @@ function delaunay(points, out)  -- points is a list of distinct complex numbers
         --Chaque arête du contour donne un nouveau triangle en ajoutant le sommet en cours
         for _,z in ipairs(contour) do
             table.insert(z,sommet)
-            table.insert(triangles,{z,circumcircle(z)})
+            table.insert(triangles,{z,ld.circumcircle(z)})
         end
     end
     --finalisation : supprimer les triangles contenant un des sommets du premier triangle T (superTri)
@@ -1893,15 +2167,15 @@ function delaunay(points, out)  -- points is a list of distinct complex numbers
     return rep
 end
 
-function voronoi(points,window)
+function ld.voronoi(points,window)
 -- renvoie une liste de {centre, cellule de Voronoi (polygone)} correspondant aux points de la liste.
     local L, polyList = {}, {}
-    local aux = delaunay(points,L)
+    local aux = ld.delaunay(points,L)
     window = window or {-5,5,-5,5}
     local x1,x2,y1,y2 = table.unpack(window)
     local contour = {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2)}
     -- il faut que la boite [x1;x2]x[y1;y2] contienne les triangles, et les centres des cercles circonscrits
-    x1,x2,y1,y2 = getbounds(concat(points,contour,map(function(Z) return Z[2] end, L))) 
+    x1,x2,y1,y2 = ld.getbounds(concat(points,contour,ld.map(function(Z) return Z[2] end, L))) 
     local ep = 1 -- il ne faut pas de centre de cercle circonscrit sur le contour
     contour = {Z(x1-ep,y1-ep),Z(x2+ep,y1-ep),Z(x2+ep,y2+ep),Z(x1-ep,y2+ep),Z(x1-ep,y1-ep)}
     local diam = cpx.abs(Z(x2-x1,y2-y1))
@@ -1929,9 +2203,9 @@ function voronoi(points,window)
         local d = 2*diam
         local u = deb-cell[2]; u = d*cpx.normalize(u)
         local v = fin-cell[#cell-1]; v = d*cpx.normalize(v)
-        local x = sym(cell,{deb+u,fin+v-deb-u})
-        local aux = concat(deb+u,cell,fin+v,reverse(x))
-        return clippolyline(aux,x1,x2,y1,y2,true)[1]
+        local x = ld.sym(cell,{deb+u,fin+v-deb-u})
+        local aux = concat(deb+u,cell,fin+v,ld.reverse(x))
+        return ld.clippolyline(aux,x1,x2,y1,y2,true)[1]
     end
     
     local classify = function(sommet,edge,out)
@@ -1961,7 +2235,7 @@ function voronoi(points,window)
     --corps de la fonction voronoi
     for num,z in ipairs(L) do
         local T = z[1] -- triangle de Delaunay
-        insert(T,table.copy(T))
+        ld.insert(T,table.copy(T))
         local C = z[2] -- centre du cercle ciconscrit
         for j = 1, 3 do -- parcours par arête
             local A = {T[j],T[j+1]}; Sort(A)
@@ -1987,9 +2261,9 @@ function voronoi(points,window)
                 end
                 U = diam*cpx.normalize(U)                
                 if cpx.dot(op-V,n)*cpx.dot(C-V,n) >= 0 then -- C et op du même côté de l'arête A
-                    B = interL({C,C+U}, contour)[1]
+                    B = ld.interL({C,C+U}, contour)[1]
                 else
-                    B = interL({C,C-U}, contour)[1]
+                    B = ld.interL({C,C-U}, contour)[1]
                 end
                 seg = {C,B}; Sort(seg)
                 classify(A[1],seg,polyList)
@@ -1999,7 +2273,7 @@ function voronoi(points,window)
     end
     local ret, poly = {}
     for k,Z in ipairs(polyList) do
-        poly = merge(Z[2])[1] -- on fusionne la liste d'arêtes en un polygone
+        poly = ld.merge(Z[2])[1] -- on fusionne la liste d'arêtes en un polygone
         if poly[1] ~= poly[#poly] then -- polygone non fermé, la cellule est non bornée
             poly = close_cell(poly)
         else table.remove(poly)

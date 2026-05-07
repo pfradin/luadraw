@@ -1,6 +1,6 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,8 +8,9 @@
 --   https://www.ctan.org/license/lppl
 
 -- définition des paramètres graphiques
-luadraw_version = 2.8
-require("luadraw_real")
+luadraw_version = 3.0
+require 'luadraw_real'
+local strReal = luadraw.strReal
 
 local luadraw_base = {}
 setmetatable(luadraw_base, {__index = luadraw_base}) -- obligatoire pour l'héritage

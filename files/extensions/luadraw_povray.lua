@@ -1,6 +1,6 @@
 -- luadraw_povray.lua
--- date 2026/04/09
--- version 2.8
+-- date 2026/05/07
+-- version 3.0
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -9,10 +9,16 @@
 
 -- This module adds a (very basic) export to POV-RAY
 
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
+local Z, M = cpx.Z, pt3d.M
+local graph3d = ld.graph3d
+
 local oldtostring = tostring
 local tostring = function(x)
     if type(x) == "number" then
-        return strReal(x,6)
+        return ld.strReal(x,6)
     else
         return x
     end
@@ -51,7 +57,7 @@ function graph3d:Pov_clean()
     Pov_object = 0
 end
 
-function luadraw_povray_default(options)
+function ld.povray_default(options)
 -- options = {bg="" ,imagescale= 1, shadow=true, param="-V +A +FN", pov_cmd=default, win_param_ext=default, include={}, pov_cmd_ext=""}
     options = options or {}
     Pov_default_scale = options.imagescale or Pov_default_scale
@@ -107,16 +113,16 @@ end
 
 function graph3d:Pov_save(filename) -- filename without path, without extension
     if filename == nil then
-        local n = #graph_name
-        filename = string.sub(graph_name,1,n-3).."pov"
+        local n = #ld.graph_name
+        filename = string.sub(ld.graph_name,1,n-3).."pov"
     else
-        filename = cachedir..filename..".pov"
+        filename = ld.cachedir..filename..".pov"
     end
     local f = io.open(filename,"w")
     if f == nil then print("Can't open file "..filename..". Abort...")
     else
         self:Pov_do_preamble()
-        local str = concat(Pov_preamble, {"//declarations"},Pov_declarations,{"//renderings"},Pov_renderings)
+        local str = ld.concat(Pov_preamble, {"//declarations"},Pov_declarations,{"//renderings"},Pov_renderings)
         for _, lg in ipairs(str) do
             f:write(lg.."\n")
         end
@@ -127,10 +133,10 @@ end
 function graph3d:Pov_exec(filename) -- filename without path, without extension
     self:Pov_save(filename)
     if filename == nil then
-        local n = #graph_name
-        filename = string.sub(graph_name,1,n-3).."pov"
+        local n = #ld.graph_name
+        filename = string.sub(ld.graph_name,1,n-3).."pov"
     else
-        filename = cachedir..filename..".pov"
+        filename = ld.cachedir..filename..".pov"
     end
     local param = Pov_param
     local cmd
@@ -148,8 +154,8 @@ end
 
 function graph3d:Pov_show(filename)
     if filename == nil then
-        local n = #graph_name
-        filename = string.sub(graph_name,1,n-3).."png"
+        local n = #ld.graph_name
+        filename = string.sub(ld.graph_name,1,n-3).."png"
     end
     self:Dimage(filename, Z(self.Xmin,self.Ymin), {pos="NE", graphics_options="width="..self:Graphwidth().."cm, height="..self:Graphheight().."cm"})
 end
@@ -198,17 +204,15 @@ local define_options = function(self,options) -- common options
     options = options or {}
     if options.render == nil then options.render = true end
     options.name = options.name or "object"..get_num()
-    options.matrix = options.matrix
-    options.color = options.color or White
+    options.color = options.color or ld.White
     options.opacity = options.opacity or 1
     options.ambient = options.ambient or 0.35
     options.diffuse = options.diffuse or 0.8
     options.phong = options.phong or 0.5
-    options.shadow = options.shadow
     if options.shadow == nil then options.shadow = true end
     if options.matrix == nil then options.matrix = self.matrix3d
     else
-        options.matrix = composematrix3d(self.matrix3d,options.matrix)
+        options.matrix = ld.composematrix3d(self.matrix3d,options.matrix)
     end
     return options
 end
@@ -223,7 +227,7 @@ local write_matrix2 = function(matrix) -- with changing of x-coordinate
 end
 
 local write_matrix = function(matrix) -- without changing of x-coordinate
-    if not isID3d(matrix) then
+    if not ld.isID3d(matrix) then
         local V4, V1, V2, V3 = matrix[1], matrix[2], matrix[3], matrix[4]
         pov_writeln("    matrix <"..tostring(V1.x)..","..tostring(-V1.y)..","..tostring(-V1.z)..",")
         pov_writeln("            "..tostring(-V2.x)..","..tostring(V2.y)..","..tostring(V2.z)..",")
@@ -236,7 +240,7 @@ local write_clip = function(cliplist,box)
 -- box = true or false, 
 -- if true then data = {M(x1,y1,z1), M(x2,y2,z2)} is a box, else data = {A,n} is  a plane
     if cliplist == nil then return end
-    if (type(cliplist) ~= "table") or isPoint3d(cliplist[1]) then cliplist = {cliplist} end
+    if (type(cliplist) ~= "table") or pt3d.isPoint3d(cliplist[1]) then cliplist = {cliplist} end
     for _, data in ipairs(cliplist) do
         if type(data) == "string" then -- data must the name of an existing object
             pov_writeln("    clipped_by{ object{ "..data.."} }")
@@ -245,13 +249,13 @@ local write_clip = function(cliplist,box)
             local M1, M2 = table.unpack(data)
             if box == nil then box = true end
             if box then -- box or sphere
-               if isPoint3d(M2) then 
+               if pt3d.isPoint3d(M2) then 
                     pov_writeln("    clipped_by{ box{ ".. f(M1).." ".. f(M2).."} }")
                 else
                  pov_writeln("    clipped_by{ sphere{ ".. f(M1)..", ".. tostring(M2).."} }")
                 end 
             else -- plane
-                local O = proj3d(Origin, data)
+                local O = ld.proj3d(Origin, data)
                 M2 = pt3d.normalize(M2)
                 local d = pt3d.abs(O)
                 --M2 = -M2
@@ -262,15 +266,39 @@ local write_clip = function(cliplist,box)
     end
 end
 
+local color_map = function(pal, opacity)
+    opacity = opacity or 1
+    local cmap, n = "", #pal
+    for k = 0, n-1 do
+        local col = pal[k+1]
+        cmap = cmap.."["..(k/(n-1)).. " rgbt<"..col[1]..","..col[2]..","..col[3]..","..(1-opacity)..">]"
+    end
+    return "color_map{"..cmap.."}"
+end
+
+local pattern_type = function(func,minmax)
+    minmax = minmax or {}
+    local x1, x2 = table.unpack(minmax)
+    if (x1 == nil) or (x2 == nil) then x1, x2 = 0, 1 end
+    if (func == "x")  or (func == "y") or (func == "z")  then 
+        return "function{ ("..func.."-("..tostring(x1).."))/("..tostring(x2-x1)..") }"
+    else
+        return func
+    end
+end
+
 local write_rendering = function(options) --function(name,color,opacity,ambient,diffuse,phong,shadow,mytexture)
-     local name, color, opacity, ambient, diffuse, phong, shadow, mytexture = options.name, options.color, options.opacity, options.ambient, options.diffuse, options.phong, options.shadow,mytexture
+     local name, color, opacity, ambient, diffuse, phong, shadow, mytexture, usepalette = options.name, options.color, options.opacity, options.ambient, options.diffuse, options.phong, options.shadow, options.mytexture, options.usepalette
     Pov_export = Pov_renderings
     pov_writeln("\nobject{ "..name)
     if mytexture ~= nil then
         pov_writeln("  "..mytexture)
     else
         pov_writeln("  texture{ ")
-        if type(color) == "string" then -- pigment can come from a file as textures.inc
+        if usepalette ~= nil then --usepalette = {palette, function, minmax}
+            local pal, func, minmax = table.unpack(usepalette)
+             pov_writeln("         pigment{ "..pattern_type(func,minmax).." "..color_map(pal,opacity).."}")
+        elseif type(color) == "string" then -- pigment can come from a file as textures.inc
             pov_writeln("         pigment{ "..color.."}") -- transmit "..tostring(1-opacity).."}")
         else
             pov_writeln("         pigment{ color rgbt<"..tostring(color[1])..","..tostring(color[2])..","..tostring(color[3])..","..tostring(1-opacity)..">}")
@@ -429,7 +457,7 @@ function graph3d:Pov_implicit( povfunc, luafunc, options)
     local M1, M2 = table.unpack( containedby )
     pov_writeln("\n#declare "..options.name.." =  isosurface{ ")
     pov_writeln("   function{"..povfunc.."}")
-    if isPoint3d(M2) then 
+    if pt3d.isPoint3d(M2) then 
         pov_writeln("    contained_by{ box{ ".. strdot2(M1).." "..strdot2(M2).."} }")
     else
          pov_writeln("    contained_by{ sphere{ ".. strdot2(M1)..", ".. tostring(M2).."} }")
@@ -459,7 +487,7 @@ function graph3d:Pov_surface1( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)
     pov_writeln("    function{"..yfunc.."},")
     pov_writeln("    function{"..zfunc.."}")
     pov_writeln("    <"..tostring(u1)..","..tostring(v1)..">, <"..tostring(u2)..','..tostring(v2)..">")
-    if isPoint3d(M2) then 
+    if pt3d.isPoint3d(M2) then 
         pov_writeln("    contained_by{ box{ ".. strdot2(M1).." ".. strdot2(M2).."} }")
     else
          pov_writeln("    contained_by{ sphere{ ".. strdot2(M1)..", ".. tostring(M2).."} }")
@@ -478,7 +506,7 @@ function graph3d:Pov_surface2(f,u1,u2,v1,v2,options)
 -- options = {grid={25,25}, clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, clip=false}
     options = define_options(self,options)
     local grid = options.grid or {25,25}
-    local F = obj_surface(f,u1,u2,v1,v2,grid)
+    local F = ld.obj_surface(f,u1,u2,v1,v2,grid)
     if F == nil then return end
     local clip = options.clip or false
     if clip then 
@@ -515,14 +543,14 @@ function graph3d:Pov_plane(P, options) -- plane as facet
     if P == nil then return  end
     options = options or {}
     options.scale = options.scale or 1
-    local matrix = options.matrix or ID3d
-    matrix = composematrix3d(self.matrix3d,matrix)
+    local matrix = options.matrix or ld.ID3d
+    matrix = ld.composematrix3d(self.matrix3d,matrix)
     local oldmatrix = self.matrix3d
-    self.matrix3d = ID3d
+    self.matrix3d = ld.ID3d
     local A, n = table.unpack(P)
-    if not isID3d(matrix) then
-        A = mtransform3d(A,matrix)
-        n = mLtransform3d(n,matrix)
+    if not ld.isID3d(matrix) then
+        A = ld.mtransform3d(A,matrix)
+        n = ld.mLtransform3d(n,matrix)
     end
     options.matrix = nil
     local face = self:Plane2facet({A,n},options.scale)
@@ -544,7 +572,7 @@ function graph3d:Pov_plane2( P, options)
     end
     local A, N = table.unpack( P )
     N = pt3d.normalize(N)
-    local O = proj3d(Origin, P)
+    local O = ld.proj3d(Origin, P)
     local d = pt3d.abs(O)
     if pt3d.dot(O,N) < 0 then d = -d end -- distance à l'origine
     pov_writeln("\n#declare "..options.name.." = plane{")
@@ -562,10 +590,10 @@ function graph3d:Pov_facet(F,options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, edge=false, edgecolor=default, edgewidth=default, hidden=default, hiddenstyle=default}
     options = define_options(self,options)
     if F == nil then return end
-    if isPoint3d(F[1]) then F = {F} end
+    if pt3d.isPoint3d(F[1]) then F = {F} end
     local render = options.render
     local edge = options.edge or false
-    local edgecolor = options.edgecolor or Black
+    local edgecolor = options.edgecolor or ld.Black
     local edgewidth = options.edgewidth or self.param.linewidth
     local hidden = options.hidden or Hiddenlines
     local hiddenstyle = options.hiddenstyle or Hiddenlinestyle
@@ -632,7 +660,7 @@ function graph3d:Pov_facet(F,options)
     write_modifiers_rendering(options)
     pov_writeln("  }")
     if edge then
-        local L = facetedges(F)
+        local L = ld.facetedges(F)
         self:Pov_polyline(L, {color=edgecolor, style=edgestyle, hidden=hidden, hiddenstyle=hiddenstyle, matrix=options.matrix, clipbox = options.clipbox, clipplane=options.clipplane, shadow=options.shadow})
     end
 end
@@ -657,9 +685,9 @@ function graph3d:Pov_torus( A,R,r,N,options)
     if math.abs(V.y) == 1 then 
         mat = {A,vecI,vecJ,vecK} 
     else
-        mat = matrix3dof( function(X) return A+rotate3d(X, math.acos(V.y)*rad,{Origin, pt3d.prod(vecJ,V)}) end)
+        mat = ld.matrix3dof( function(X) return A+ld.rotate3d(X, math.acos(V.y)*ld.rad,{Origin, pt3d.prod(vecJ,V)}) end)
     end
-    options.matrix = composematrix3d(options.matrix, mat)
+    options.matrix = ld.composematrix3d(options.matrix, mat)
     pov_writeln("\n#declare "..options.name.." = torus{")
     pov_writeln("    ".. tostring(R)..", "..tostring(r))
     write_matrix(options.matrix)
@@ -711,8 +739,8 @@ function graph3d:Pov_circle(A,R,N,options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, width=8}
     options = options or {}
     local width = options.width or self.param.linewidth
-    options.color = options.color or Black
-    local r = width*pt/10
+    options.color = options.color or ld.Black
+    local r = width*ld.pt/10
     self:Pov_torus(A,R,r,N,options)
 end
 
@@ -723,10 +751,10 @@ function graph3d:Pov_polyline(L, options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, width=8, close=false, arrows=0, hidden=default,hiddenstyle=defaut}
     if L == nil then return end
     options = options or {}
-    options.color = options.color or Black
+    options.color = options.color or ld.Black
     options = define_options(self,options)
     local width = options.width or self.param.linewidth
-    width = width*pt/10
+    width = width*ld.pt/10
     local arrows = options.arrows or 0
     local arrowscale = options.arrowscale or 1
     local close = options.close or false
@@ -735,8 +763,8 @@ function graph3d:Pov_polyline(L, options)
     local hidden = options.hidden or Hiddenlines
     local hiddenstyle = options.hiddenstyle or Hiddenlinestyle
 
-    if isPoint3d(L[1]) then L = {L} end
-    if not isID3d(options.matrix) then L = mtransform3d(L,options.matrix) end
+    if pt3d.isPoint3d(L[1]) then L = {L} end
+    if not ld.isID3d(options.matrix) then L = ld.mtransform3d(L,options.matrix) end
     local listarrows, listdots
     local arrows_radius = arrowscale*(width+0.075)
     
@@ -763,11 +791,11 @@ function graph3d:Pov_polyline(L, options)
     
     if options.clippbox ~= nil then 
         local M1,M2 = table.unpack( options.clippbox )
-        local poly = parallelep(M1, (M2.x-M1.x)*vecI,(M2.y-M1.y)*vecJ,(M2.z-M1.z)*vecK)
+        local poly = ld.parallelep(M1, (M2.x-M1.x)*vecI,(M2.y-M1.y)*vecJ,(M2.z-M1.z)*vecK)
         L = clippolyline3d(L, poly, false, close)
     end
     if options.clipplane ~= nil then 
-        L = cutpolyline3d(L,options.clipplane,close)
+        L = ld.cutpolyline3d(L,options.clipplane,close)
     end
     pov_writeln("\n#declare "..options.name.." =  union{")
     for _, cp in ipairs(L) do
@@ -802,11 +830,11 @@ function graph3d:Pov_polyline(L, options)
                 end
             end
         elseif style == "dashed" then
-            local d = 8*width
+            local d = 4*width
             for k = 2, #listdots do
                 A = B; B = listdots[k]
                 local norm = pt3d.abs(B-A)
-                if pt3d.abs(B-A) > 1e-10 then
+                if norm > d then
                     local u = d*(B-A)/norm
                     local N = math.floor(pt3d.abs(B-A-4*u)/d/2)+1
                     local dep, fin = A, A+u/2
@@ -826,7 +854,8 @@ function graph3d:Pov_polyline(L, options)
     if options.render then write_rendering(options) end
     pov_writeln("  }")
     if hidden then
-        options.hidden = false; options.style = hiddenstyle
+        options.hidden = false; options.style = hiddenstyle; options.arrows = 0
+        options.name = options.name..'_hidden'
         self:Pov_polyline( shift3d(L,500*self.Normal), options)
     end
 end
@@ -844,14 +873,14 @@ function graph3d:Pov_dots(L, options)
 -- L = list of 3d points
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil,style="ball" or "box", dotscale=1}
     if L == nil then return end
-    if isPoint3d(L) then L = {L} end
+    if pt3d.isPoint3d(L) then L = {L} end
     options = options or {}
-    options.color = options.color or Black
+    options.color = options.color or ld.Black
     options = define_options(self,options)
     local style = options.style or "ball"
     local dotscale = options.dotscale or 1
     local opacity = options.opacity or self.param.lineopacity
-    if not isID3d(options.matrix) then L = mtransform3d(L,options.matrix) end
+    if not ld.isID3d(options.matrix) then L = ld.mtransform3d(L,options.matrix) end
     local deb, fin = "", ""
     if #L > 1 then deb = "union{"; fin = "}" end
     pov_writeln("\n#declare "..options.name.." =  "..deb)
