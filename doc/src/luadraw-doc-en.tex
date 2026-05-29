@@ -1,0 +1,140 @@
+\DocumentMetadata{}
+\documentclass[%
+10pt,%
+oneside,
+a4paper,%
+notitlepage
+]%
+{book}%
+
+
+\usepackage{luatextra}
+\usepackage{amsmath,amssymb,marvosym,stmaryrd,calrsfs,minted,setspace,array,caption,fvextra}%
+\usepackage{unicode-math}
+\usepackage{fourier-otf}%
+\usepackage[svgnames]{xcolor}
+\usepackage[margin=1.5cm,top=1cm,bottom=1.5cm,headheight=5mm,headsep=2mm]{geometry}
+\usepackage[unicode,pdfstartview = FitH, colorlinks, linkcolor=blue]{hyperref}
+\usepackage{babel,microtype,multicol,xspace}%
+%\usepackage{minitoc}
+\usepackage[Lenny]{fncychap}
+\usepackage{animate}
+\usepackage[noexec,3d,cachedir=tkz]{luadraw}
+\usetikzlibrary{shadings}
+\def\version{3.1}
+
+\hypersetup{
+  pdfauthor={P. Fradin},
+  pdflang={en},
+  %hidelinks,
+  pdfcreator={LuaLatex}
+}
+
+\title{\textbf{The \emph{luadraw} package (\version)}}
+
+\author{Patrick Fradin}
+%\date{}
+
+
+\onehalfspacing
+%\newminted{Lua}{bgcolor=Beige,ignorelexererrors=true,linenos,numbersep=6pt,breaklines,fontsize=\footnotesize}%
+\newminted{Lua}{bgcolor=Beige,ignorelexererrors=true,breaklines,fontsize=\footnotesize}%
+\newminted{TeX}{bgcolor=Gray!30,breaklines,fontsize=\footnotesize}%
+
+%\columnseprule 0.4pt
+\columnsep 25pt
+
+\definecolor{bgcol}{RGB}{238,240,252}% couleur de fond des listings
+
+\newenvironment*{demo}[2][]{%
+\gdef\legende{#2}%
+\gdef\lab{#1}%
+\bgroup
+\VerbatimOut{\jobname.tmp}%
+}%
+{%
+\endVerbatimOut%
+\egroup%
+%\begin{center}
+%\begin{tabular}{|m{10cm}|m{7cm}|}
+%\hline
+%\begin{minipage}{10cm}
+%\inputminted[ignorelexererrors=true,breaklines,bgcolor=Beige,linenos,numbersep=6pt,frame=single,fontsize=\footnotesize]{Lua}{\jobname.tmp}%
+\inputminted[ignorelexererrors=true,breaklines,bgcolor=Beige,frame=single,fontsize=\footnotesize]{Lua}{\jobname.tmp}%
+%\end{minipage}
+%&
+\begin{minipage}{0.9\textwidth}
+%\par\smallskip
+\begin{center}
+\captionof{figure}{\legende}\label{\lab}%
+\input{\jobname.tmp}%
+%\end{center}
+%\par\smallskip
+%\hline
+%\end{tabular}
+\end{center}
+\end{minipage}
+}
+
+\newcommand*{\opt}[1]{\texttt{\textcolor{violet}{#1}}}%option
+\newcommand*{\val}[1]{\texttt{\textcolor{blue}{#1}}}%value
+\newcommand*{\cmd}[1]{\textbf{#1}}%commande
+\newcommand*{\cmdln}[1]{\par\hfil\cmd{#1}\hfil\par}%commande sur une ligne
+\newcommand*{\code}[1]{\textbf{\texttt{#1}}}%code
+\newcommand*{\codeln}[1]{\par\hfil\code{#1}\hfil\par}%code sur une ligne
+\newcommand*{\fac}[1]{[#1]}%arguments facultatifs
+%\newcommand*{\argu}[1]{\texttt{\textcolor{Maroon}{<#1>}}}%argument
+\newcommand*{\argu}[1]{$\langle$\emph{#1}$\rangle$}%argument
+\newcommand*{\varglob}[1]{\texttt{\textcolor{DarkGreen}{#1}}}%variable globale
+\newcommand*{\true}{\val{true}\xspace}%
+\newcommand*{\false}{\val{false}\xspace}%
+\newcommand*{\nil}{\val{nil}\xspace}%
+\newcommand*{\drawcmd}{\emph{\textbackslash draw}\xspace}%
+\newcommand*{\luadrawenv}{\emph{luadraw}\xspace}%
+
+\newcommand*{\og}{«\,}
+\newcommand*{\fg}{\,»}
+
+\begin{document}
+\maketitle
+
+\hfil{\Large 2D and 3D drawing with Lua and TikZ.}\hfil\par
+
+\hfil{\small \url{https://github.com/pfradin/luadraw}}\hfil\par
+
+\vspace*{2cm}
+
+
+\begin{small}
+\hfil\textbf{Abstract}\hfil\par
+The \luadrawenv package defines the environment of the same name, which lets you create mathematical graphs using the Lua language. These graphs are ultimately drawn by TikZ (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language with good computational capabilities.
+\end{small}
+
+%\include{body-en/luadraw-doc-en-saisie.tex}% saisie d'une section ou sous-section seulement
+
+\clearpage%
+\setcounter{tocdepth}{3}%
+\setcounter{secnumdepth}{2}%
+
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+
+\listoffigures
+
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{--}
+\renewcommand{\labelitemiii}{$*$}
+%\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\Roman{section}~}
+\renewcommand{\thesubsection}{\arabic{subsection})}
+\renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
+\renewcommand{\thefigure}{\arabic{figure}}
+
+%\def\writeoptions{}%
+
+\include{body-en/luadraw-doc2d-en.tex}
+\include{body-en/luadraw-doc3d-en.tex}
+\include{body-en/luadraw-doc-en-Appendices.tex}
+
+\end{document}

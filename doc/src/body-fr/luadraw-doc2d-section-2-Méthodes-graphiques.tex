@@ -1,0 +1,1593 @@
+\section{Méthodes graphiques}
+
+On peut créer des lignes polygonales, des courbes, des chemins, des points, des labels.
+
+
+\subsection{Lignes polygonales}
+
+\subsubsection{Dpolyline}
+
+\textbf{Une ligne polygonale est une liste (table) de composantes connexes, et une composante connexe est une liste (table) de complexes qui représentent les affixes des points}. Par exemple l'instruction :
+\begin{Luacode}
+local Z = luadraw.cpx.Z -- alias
+local L = { {Z(-4,0), Z(0,2), Z(1,3)}, {Z(0,0), Z(4,-2), Z(1,-1)} }
+\end{Luacode}
+crée une ligne polygonale à deux composantes dans une variable \emph{L}.
+
+\paragraph{Dessin d'une ligne polygonale.}
+
+C'est la méthode \cmdln{g:Dpolyline(L \fac{, close, draw\_options, clip})} où \emph{g} désigne le graphique en cours de création. L'argument \argu{L} est une ligne polygonale, \argu{close} un argument facultatif qui vaut \true ou \false indiquant si la ligne doit être refermée ou non (\false par défaut), \argu{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \drawcmd dans l'export (vide par défaut). L'argument \argu{clip} doit contenir ou bien \nil (valeur par défaut) ou bien une table de la forme \code{\{x1,x2,y1,y2\}},  dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+
+\subsubsection{Options de dessin d'une ligne polygonale}
+
+On peut passer des options de dessin directement à l'instruction \drawcmd dans l'export, mais elles auront un effet local uniquement. Il est possible de modifier ces options de manière globale avec la méthode \cmdln{g:Lineoptions(style \fac{, color, width, arrows})} lorsqu'un des arguments est égal à \nil, c'est sa valeur par défaut qui est utilisée.
+
+\begin{itemize}
+\item \argu{color} est une chaîne de caractères représentant une couleur connue de TikZ (\val{"black"} par défaut),
+\item \argu{style} est une chaîne de caractères représentant le type de ligne à dessiner, ce style peut être :
+ \begin{itemize}
+  \item \val{"noline"} : trait non dessiné,
+  \item \val{"solid"} : trait plein, valeur par défaut,
+  \item \val{"dotted"} : trait pointillé,
+  \item \val{"dashed"} : tirets,
+  \item style personnalisé : l'argument \argu{style} peut être une chaîne de la forme (exemple) \code{"\{2.5pt\}\{2pt\}"} ce qui signifie : un trait de 2.5pt suivi d'un espace de 2pt, le nombre de valeurs peut être supérieur à 2, ex : \code{"\{2.5pt\}\{2pt\}\{1pt\}\{2pt\}"} (succession de on, off).
+  \end{itemize}
+\item \argu{width} est un nombre représentant l'épaisseur de ligne exprimée en dixième de points, par exemple $8$ pour une épaisseur réelle de 0.8pt (valeur de $4$ par défaut),
+\item \argu{arrows} est une chaîne qui précise le type de flèche qui sera dessiné, cela peut être :
+ \begin{itemize}
+  \item \val{"-"} qui signifie pas de flèche (valeur par défaut),
+  \item \val{"->"} qui signifie une flèche à la fin,
+  \item \val{"<-"} qui signifie une flèche au début,
+  \item \val{"<->"} qui signifie une flèche à chaque bout.\\
+  \textbf{ATTENTION} : la flèche n'est pas dessinée lorsque l'argument \argu{close} vaut \true.
+  \end{itemize}
+\end{itemize}
+
+
+On peut modifier les options individuellement avec les méthodes : 
+\begin{itemize}
+    \item \cmd{g:Linecolor(color)}, 
+    \item \cmd{g:Linestyle(style)}, 
+    \item \cmd{g:Linewidth(width)}, 
+    \item \cmd{g:Arrows(arrows)}, 
+    \item plus les méthodes suivantes : 
+        \begin{itemize}
+            \item \cmd{g:Lineopacity(opacity)} qui règle l'opacité du tracé de la ligne, l'argument \argu{opacity} doit être une
+valeur entre $0$ (totalement transparent) et $1$ (totalement opaque), par défaut la valeur est de $1$.
+            \item \cmd{g:Linecap(style)}, pour jouer sur les extrémités de la ligne, l'argument \argu{style} est une chaîne qui peut valoir :
+            \begin{itemize}
+                \item \val{"butt"} (bout droit au point d'arrêt, valeur par défaut),
+                \item \val{"round"} (bout arrondi en demi-cercle),
+                \item \val{"square"} (bout \og arrondi\fg\ en carré).
+            \end{itemize}
+          
+          \item \cmd{g:Linejoin(style)}, pour jouer sur la jointure entre segments, l'argument \argu{style} est une chaîne qui peut valoir :
+            \begin{itemize}
+                \item \val{"miter"} (coin pointu, valeur par défaut),
+                \item \val{"round"} (ou coin arrondi),
+                \item \val{"bevel"} (coin coupé).
+            \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+
+\paragraph{Options de remplissage d'une ligne polygonale.}
+
+C'est la méthode \cmdln{g:Filloptions(style \fac{, color, opacity, evenodd})} (qui utilise la librairie \emph{patterns} de TikZ, celle-ci est chargée avec le paquet). Lorsqu'un des arguments vaut \nil, c'est sa valeur par défaut qui est utilisée :
+
+\begin{itemize}
+  \item \argu{color} est une chaîne de caractères représentant une couleur connue de TikZ (\val{"black"} par défaut).
+  \item \argu{style} est une chaîne de caractères représentant le type de remplissage, ce style peut être :
+      \begin{itemize}
+      \item \val{"none"} : pas de remplissage, c'est la valeur par défaut,
+      \item \val{"full"} : remplissage plein,
+      \item \val{"bdiag"} : hachures descendantes de gauche à droite,
+      \item \val{"fdiag"} : hachures montantes de gauche à droite,
+      \item \val{"horizontal"} : hachures horizontales,
+      \item \val{"`vertical"} : hachures verticales,
+      \item \val{"hvcross"} : hachures horizontales et verticales,
+      \item \val{"diagcross"} : diagonales descendantes et montantes,
+      \item \val{"gradient"} : dans ce cas le remplissage se fait avec un gradient défini avec la méthode \cmd{g:Gradstyle(chaîne)}, ce style est passé tel quel à l'instruction \drawcmd. Par défaut la chaîne définissant le style de gradient est : \codeln{"left color = white,right color = red"}
+      \item tout autre style connu de la librairie \emph{patterns} est également possible.
+      \end{itemize}
+  \item \argu{opacity} : nombre entre $0$ et $1$ ($1$ par défaut).
+  \item \argu{evenodd} : booléen indiquant si l'option \emph{even odd rule} doit être utilisée pour le remplissage (\false par défaut).
+\end{itemize}
+
+On peut modifier certaines options individuellement avec les méthodes :
+\begin{itemize}
+    \item \cmd{g:Fillopacity(opacity)}, 
+    \item \cmd{g:Filleo(evenodd)}.
+\end{itemize}
+
+\begin{demo}{Champ de vecteurs, courbe intégrale de $y'= 1-xy^2$}
+\begin{luadraw}{name=champ}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local g = ld.graph:new{window={-5,5,-5,5},bg="Cyan!30",size={10,10}}
+local f = function(x,y) -- éq. diff. y'= 1-x*y^2=f(x,y)
+    return 1-x*y^2
+end
+local A = Z(-1,1) -- A = -1+i
+local deltaX, deltaY, long = 0.5, 0.5, 0.4
+local champ = function(f)
+    local vecteurs, v = {}
+    for y = g:Yinf(), g:Ysup(), deltaY do
+        for x = g:Xinf(), g:Xsup(), deltaX do
+            v = Z(1,f(x,y)) -- coordonnées 1 et f(x,y)
+            v = v/cpx.abs(v)*long -- normalisation de v
+            table.insert(vecteurs, {Z(x,y), Z(x,y)+v} )
+        end
+    end
+    return vecteurs -- vecteurs est une ligne polygonale
+end
+
+g:Daxes( {0,1,1}, {labelpos={"none","none"}, arrows="->"} )
+g:Dpolyline( champ(f), "->,blue")
+g:Dodesolve(f, A.re, A.im, {t={-2.75,5},draw_options="red,line width=0.8pt"})
+g:Dlabeldot("$A$", A, {pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+\label{champ}
+
+
+\subsection{Segments et droites}
+
+\textbf{Un segment est une liste (table) de deux complexes représentant les extrémités. Une droite est une liste (table) de deux complexes, le premier représente un point de la droite, et le second un vecteur directeur de la droite (celui-ci doit être non nul).}
+
+\subsubsection{Dangle}
+\begin{itemize}
+    \item La méthode \cmd{g:Dangle(B, A, C \fac{, r, draw\_options})} dessine l'angle \(BAC\) avec un parallélogramme (deux côtés seulement sont dessinés), l'argument facultatif \argu{r} précise la longueur d'un côté ($0.25$ par défaut). L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction  \drawcmd.
+    \item La fonction \cmd{ld.angleD(B, A, C, r)} renvoie la liste des points de cet angle.
+\end{itemize}
+
+\newcommand*{\arguScale}{%
+L'argument \argu{scale} (qui vaut $1$ par défaut) est soit un nombre (pourcentage) permettant de faire varier la longueur du segment affiché (à partir de son milieu), soit une table de deux nombres (pourcentages) \{scaleA, scaleB\} permettant de faire varier la longueur du segment affiché à chacune de ses extrémités.
+}%
+
+\subsubsection{Dbissec}
+\begin{itemize}
+    \item La méthode \cmd{g:Dbissec(B, A, C \fac{, interior, draw\_options, scale})} dessine une bissectrice de l'angle géométrique BAC, intérieure si l'argument facultatif \argu{interior} vaut \true (valeur par défaut), extérieure sinon. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \arguScale
+  \item La fonction \cmd{ld.bissec(B, A, C, interior)} renvoie cette bissectrice sous forme d'une liste $\{A,u\}$ où $u$ est un vecteur directeur de la droite.
+\end{itemize}
+
+\subsubsection{Dhline}
+La méthode \cmd{g:Dhline(d \fac{, draw\_options, scale})} dessine une demi-droite, l'argument \argu{d} doit être une liste de deux nombres complexes $\{A,B\}$, c'est la demi-droite $[A,B)$ qui est dessinée.
+
+Variante : \cmd{g:Dhline(A, B \fac{, draw\_options, scale})}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \arguScale
+
+
+\subsubsection{Dline}
+La méthode \cmd{g:Dline(d \fac{, draw\_options, scale})} trace la droite \argu{d}, celle-ci est une liste du type $\{A,u\}$ où $A$ représente un point de la droite (un nombre complexe) et $u$ un vecteur directeur (un nombre complexe non nul). 
+
+Variante : la méthode \cmd{g:Dline(A, B \fac{, draw\_options, scale})} trace la droite passant par les points \argu{A} et \argu{B} (deux nombres complexes). L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \arguScale
+
+\subsubsection{DlineEq}
+\begin{itemize}
+    \item La méthode \cmd{g:DlineEq(a, b, c \fac{, draw\_options, scale})} dessine la droite d'équation \(ax+by+c=0\). L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \arguScale
+    \item La fonction \cmd{ld.lineEq(a, b, c)} renvoie la droite d'équation \(ax+by+c=0\) sous la forme d'une liste $\{A,u\}$ où $A$ est un point de la droite et $u$ un vecteur directeur.
+\end{itemize}
+
+\subsubsection{Dmarkarc}
+La méthode \cmd{g:Dmarkarc(b, a, c, r, n \fac{,long,espace,draw\_options})} permet de marquer l'arc de cercle de centre \argu{a}, de rayon \argu{r}, allant de \argu{b} à \argu{c}, avec \argu{n} petits segments. Par défaut la longueur (argument \argu{long}) est de $0.25$, et l'espacement (argument \argu{espace}) et de $0.0625$. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+
+\subsubsection{Dmarkseg}
+La méthode \cmd{g:Dmarkseg(a, b, n, \fac{long, espace, angle, draw\_options})} permet de marquer le segment défini par \argu{a} et \argu{b} avec \argu{n} petits segments penchés de \argu{angle} degrés (45° par défaut). Par défaut la longueur (argument \argu{long}) est de $0.25$, et l'espacement (argument \argu{espace}) et de $0.125$. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+
+\subsubsection{Dmed}
+\begin{itemize}
+    \item La méthode \cmd{g:Dmed(A, B \fac{, draw\_options, scale})} trace la médiatrice du segment $[A;B]$.
+
+  Variante : \cmd{g:Dmed(seg \fac{, draw\_options, scale})} où segment est une liste de deux points représentant le segment. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \arguScale
+  \item La fonction \cmd{ld.med(A, B)} (ou \cmd{ld.med(seg)}) renvoie la médiatrice du segment $[A;B]$ sous la forme d'une liste $\{C,u\}$ où $C$ est un point de la droite et $u$ un vecteur directeur.
+\end{itemize}
+
+\subsubsection{Dparallel}
+\begin{itemize}
+    \item La méthode \cmd{g:Dparallel(d, A \fac{, draw\_options, scale})} trace la parallèle à \argu{d} passant par \argu{A}. L'argument \argu{d} peut être soit une droite (une liste constituée d'un point et un vecteur directeur) soit un vecteur non nul. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \arguScale
+    \item La fonction \cmd{ld.parallel(d, A)} renvoie la parallèle à \argu{d} passant par \argu{A} sous la forme d'une liste $\{B,u\}$ où $B$ est un point de la droite et $u$ un vecteur directeur.
+\end{itemize}
+
+\subsubsection{Dperp}
+\begin{itemize}
+    \item La méthode \cmd{g:Dperp(d, A \fac{, draw\_options, scale})} trace la perpendiculaire à \argu{d} passant par \argu{A}. L'argument \argu{d} peut être soit une droite (une liste constituée d'un point et un vecteur directeur) soit un vecteur non nul. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée  telle quelle à l'instruction \drawcmd. \arguScale
+    \item La fonction \cmd{ld.perp(d, A)} renvoie la perpendiculaire à \argu{d} passant par \argu{A} sous la forme d'une liste $\{B,u\}$ où $B$ est un point de la droite et $u$ un vecteur directeur.
+\end{itemize}
+
+\subsubsection{Dseg}
+La méthode \cmd{g:Dseg(seg \fac{, scale, draw\_options})} dessine le segment défini par l'argument \argu{seg} qui doit être une liste de deux complexes. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \arguScale
+
+\subsubsection{Dtangent}
+\begin{itemize}
+    \item La méthode \cmd{g:Dtangent(p, t0 \fac{, long, draw\_options})} dessine la tangente à la courbe paramétrée par \argu{p}: \(t \mapsto p(t)\) (à valeurs complexes), au point de paramètre \argu{t0}. Si l'argument \argu{long} vaut \nil (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \argu{long}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.tangent(p, t0 \fac{, long})} renvoie soit la droite, soit un segment (suivant que \argu{long} vaut \nil ou pas).
+\end{itemize}
+
+\subsubsection{DtangentC}
+\begin{itemize}
+    \item La méthode \cmd{g:DtangentC(f, x0 \fac{, long, draw\_options})} dessine la tangente à la courbe cartésienne d'équation \(y=f(x)\), au point d'abscisse \argu{x0}. Si l'argument \argu{long} vaut \nil (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \argu{long}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.tangentC(f, x0 \fac{, long})} renvoie soit la droite, soit un segment (suivant que \argu{long} vaut \nil ou pas).
+\end{itemize}
+
+\subsubsection{DtangentI}
+\begin{itemize}
+    \item La méthode \cmd{g:DtangentI(f, x0, y0 \fac{, long, draw\_options})} dessine la tangente à la courbe implicite d'équation \(f(x,y)=0\), au point \argu{(x0,y0)} supposé sur la courbe. Si l'argument \argu{long} vaut \nil (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \argu{long}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.tangentI(f, x0, y0 \fac{, long})} renvoie soit la droite, soit un segment (suivant que \argu{long} vaut \nil ou pas).
+\end{itemize}
+
+\subsubsection{Dtangent\_from}
+\begin{itemize}
+    \item La méthode \cmd{g:Dtangent\_from(A, p, t1, t2 \fac{, dp, draw\_options, out, scale})} dessine la ou les tangentes à la courbe paramétrée par \argu{p}: \(t \mapsto p(t)\) (à valeurs complexes) issue(s) du point \argu{A} (nombre complexe). Les arguments \argu{t1} et \argu{t2} représentent les bornes de l'intervalle de recherche. L'argument optionnel \argu{dp} est une fonction représentant la dérivée de la fonction \argu{p}, par défaut cet argument vaut \nil et la dérivée de \argu{p} est remplacée par une approximation. L'argument optionnel \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. L'argument optionnel \argu{out}, s'il est utilisé, doit être le nom d'une variable, celle-ci doit être une table, elle contiendra à la fin de l'exécution les points de la courbe pour lesquels la tangente passe par \argu{A}. \arguScale
+    \item La fonction \cmd{ld.tangent\_from(A, p, t1, t2 \fac{, dp})} renvoie la liste les points de la courbe paramétrée par \argu{p}, sur l'intervalle \([t_1;t_2]\) pour lesquels la tangente passe par \argu{A} (nombre complexe). S'il n'y en a pas, la fonction renvoie une liste vide.
+\end{itemize}
+
+\begin{demo}{Tangentes issues d'un point}
+\begin{luadraw}{name=tangent_from}
+local ld = luadraw
+local cpx = ld.cpx
+local i, cos, sin, pi = cpx.I, math.cos, math.sin, math.pi
+local g = ld.graph:new{window={-5,5,-5,5}, size={10,10}}
+local p1 = function(t) return t+i*(t^2/4-1) end -- parabole
+local p2 = function(t) return 1/2+i+ld.rotate(2*cos(t)+i*sin(t),15) end -- ellipse
+local p3 = function(t) return math.sinh(t)+i*math.cosh(t)-i*2 end -- branche d'hyperbole
+local p4 = function(t) return 2*cos(3*t)*cpx.exp(i*t) end -- autre
+local P = 0.5-1.25*i
+local draw = function(p,t1,t2)
+    local axis_style = { arrows='-Stealth', legend={'$x$','$y$'} }
+    local S = {}
+    g:Daxes({0, 1, 1}, axis_style)
+    g:Dparametric(p,{t={t1,t2}, draw_options="line width=0.8pt, Crimson"})
+    g:Dtangent_from(P,p,t1,t2,"blue",S)
+    g:Ddots(S,"Crimson"); g:Ddots(P); g:Dlabel("$A$",P,{pos="S"})
+end
+g:Saveattr(); g:Viewport(-5,-0.25,0.25,5); g:Coordsystem(-3,4,-3,4); draw(p1,-4,4); g:Restoreattr()
+g:Saveattr(); g:Viewport(0.25,5,0.25,5); g:Coordsystem(-3,3,-3,3); draw(p2,-pi,pi); g:Restoreattr()
+g:Saveattr(); g:Viewport(-5,-0.25,-5,-0.25); g:Coordsystem(-3,4,-3,3); draw(p3,-4,4); g:Restoreattr()
+g:Saveattr(); g:Viewport(0.25,5,-5,-0.25); g:Coordsystem(-3,3,-3,3); draw(p4,-pi,pi); g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dnormal}
+\begin{itemize}
+    \item La méthode \cmd{g:Dnormal(p, t0 \fac{, long, draw\_options})} dessine la normale à la courbe paramétrée par \argu{p}: \(t \mapsto p(t)\) (à valeurs complexes), au point de paramètre \argu{t0}. Si l'argument \argu{long} vaut \nil (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \argu{long}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.normal(p, t0 \fac{, long})} renvoie soit la droite, soit un segment (suivant que \emph{long} vaut \nil ou pas).
+\end{itemize}
+
+\subsubsection{DnormalC}
+\begin{itemize}
+    \item La méthode \cmd{g:DnormalC(f, x0 \fac{, long, draw\_options})} dessine la normale à la courbe cartésienne d'équation \(y=f(x)\), au point d'abscisse \argu{x0}. Si l'argument \argu{long} vaut \nil (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \argu{long}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.normalC(f, x0 \fac{, long})} renvoie soit la droite, soit un segment (suivant que \argu{long} vaut \nil ou pas).
+\end{itemize}
+
+\subsubsection{DnormalI}
+\begin{itemize}
+    \item La méthode \cmd{g:DnormalI(f, x0, y0 \fac{, long, draw\_options})} dessine la normale à la courbe implicite d'équation \(f(x,y)=0\), au point \argu{(x0,y0)} supposé sur la courbe. Si l'argument \argu{long} vaut \nil (valeur par défaut) alors c'est la droite entière qui est dessinée, sinon c'est un segment de longueur \argu{long}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.normalI(f, x0, y0 \fac{, long})} renvoie soit la droite, soit un segment (suivant que \argu{long} vaut \nil ou pas).
+\end{itemize}
+  
+
+\begin{demo}{Symétrique de l'orthocentre}
+\begin{luadraw}{name=orthocentre}
+local ld = luadraw
+local cpx = ld.cpx
+local g = ld.graph:new{window={-5,5,-5,5},bg="cyan!30",size={10,10}}
+local i = cpx.I
+local A, B, C = 4*i, -2-2*i, 3.5
+local h1, h2 = ld.perp({B,C-B},A), ld.perp({A,B-A},C) -- hauteurs
+local A1, F = ld.proj(A,{B,C-B}), ld.proj(C,{A,B-A}) -- projetés
+local H = ld.interD(h1,h2) -- orthocentre
+local A2 = 2*A1-H -- symétrique de H par rapport à BC
+g:Dpolyline({A,B,C},true, "draw=none,fill=Maroon,fill opacity=0.3") -- fond du triangle
+g:Linewidth(6); g:Filloptions("full", "blue", 0.2)
+g:Dangle(C,A1,A,0.25); g:Dangle(B,F,C,0.25) -- angles droits
+g:Linecolor("black"); g:Filloptions("full","cyan",0.5)
+g:Darc(H,C,A2,1); g:Darc(B,A,A1,1) -- arcs
+g:Filloptions("none","black",1) -- on rétablit l'opacité à 1
+g:Dmarkarc(H,C,A1,1,2); g:Dmarkarc(A1,C,A2,1,2) -- marques
+g:Dmarkarc(B,A,H,1,2)
+g:Linewidth(8); g:Linecolor("black")
+g:Dseg({A,B},1.25); g:Dseg({C,B},1.25); g:Dseg({A,C},1.25) -- côtés
+g:Linecolor("red"); g:Dcircle(A,B,C) -- cercle
+g:Linecolor("blue"); g:Dline(h1); g:Dline(h2) -- hauteurs
+g:Dseg({A2,C}); g:Linecolor("red"); g:Dseg({H,A2}) -- segments
+g:Dmarkseg(H,A1,2); g:Dmarkseg(A1,A2,2) -- marques
+g:Labelcolor("blue") -- pour les labels
+g:Dlabel("$A$",A, {pos="NW",dist=0.1}, "$B$",B, {pos="SW"}, "$A_2$",A2,{pos="E"},
+"$C$", C, {pos="S" }, "$H$", H, {pos="NE"}, "$A_1$", A1, {pos="SW"})
+g:Linecolor("black"); g:Filloptions("full"); g:Ddots({A,B,C,H,A1,A2}) -- dessin des points
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Figures géométriques}
+
+\subsubsection{Darc}
+\begin{itemize}
+    \item La méthode \cmd{g:Darc(B, A, C, r \fac{, sens, draw\_options})} dessine un arc de cercle de centre \argu{A} (complexe), de rayon \argu{r}, allant de \argu{B} (complexe) vers \argu{C} (complexe) dans le sens trigonométrique si l'argument \argu{sens} vaut $1$ (valeur par défaut), le sens inverse sinon. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.arc(B, A, C, r, sens)} renvoie la liste des points de cet arc (ligne polygonale). 
+    \item La fonction \cmd{ld.arcb(B, A, C, r, sens)} renvoie cet arc sous forme d'un chemin (voir \emph{Dpath} page \pageref{Dpath}) utilisant des courbes de Bézier.
+\end{itemize}
+
+\subsubsection{Dcircle}
+\begin{itemize}
+    \item La méthode \cmd{g:Dcircle(c, r \fac{, d, draw\_options})} trace un cercle. Lorsque l'argument \argu{d} vaut \nil, c'est le cercle de centre \argu{c} (complexe) et de rayon \argu{r}, lorsque \argu{d} est précisé (complexe) alors c'est le cercle passant par les points d'affixe \argu{c}, \argu{r} et \argu{d}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. Autre syntaxe possible :  \cmd{g:Dcircle(C \fac{, draw\_options})} où \argu{C}$=\{c,r \fac{,d}\}$.
+  \item La fonction \cmd{ld.circle(c, r \fac{, d})} renvoie la liste des points de ce cercle (ligne polygonale). 
+  \item La fonction \cmd{ld.circle(\{c, r \fac{, d}\}, nbdots)} renvoie la liste des points de ce cercle (ligne polygonale) avec \argu{nbdots} points. 
+  \item La fonction \cmd{ld.circleb(c, r \fac{, d})} renvoie ce cercle sous forme d'un chemin (voir \emph{Dpath} page \pageref{Dpath}) utilisant des courbes de Bézier.
+\end{itemize}
+
+\subsubsection{Dellipse}
+\begin{itemize}
+    \item  La méthode \cmd{g:Dellipse(c, rx, ry \fac{, inclin, draw\_options})} dessine l'ellipse de centre \argu{c} (complexe), les arguments \argu{rx} et \argu{ry} précisent les deux rayons (sur $x$ et sur $y$), l'argument facultatif \argu{inclin} est un angle en degrés qui indique l'inclinaison de l'ellipse par rapport à l'axe \(Ox\) (angle nul par défaut). L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+  \item La fonction \cmd{ld.ellipse(c, rx, ry \fac{, inclin})} renvoie la liste des points de cette ellipse (ligne polygonale). 
+  \item La fonction \cmd{ld.ellipse(\{c, rx, ry \fac{, inclin}\}, nbdots)} renvoie la liste des points de cette ellipse (ligne polygonale) avec \argu{nbdots} points. 
+  \item La fonction \cmd{ld.ellipseb(c, rx, ry \fac{, inclin})} renvoie cette ellipse sous forme d'un chemin (voir \emph{Dpath} page \pageref{Dpath}) utilisant des courbes de Bézier.
+\end{itemize}
+
+\subsubsection{Dellipticarc}
+\begin{itemize}
+    \item La méthode \cmd{g:Dellipticarc(B, A, C, rx, ry \fac{, sens, inclin, draw\_options})} dessine un arc d'ellipse de centre \argu{A} (complexe) de rayons \argu{rx} et \argu{ry}, faisant un angle égal à \argu{inclin} par rapport à l'axe \(Ox\) (angle nul par défaut), allant de \argu{B} (complexe) vers \argu{C} (complexe) dans le sens trigonométrique si l'argument \argu{sens} vaut $1$ (valeur par défaut), le sens inverse sinon. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.ellipticarc(B, A, C, rx, ry \fac{, sens, inclin})} renvoie la liste des points de cet arc (ligne polygonale). 
+    \item La fonction \cmd{ld.ellipticarcb(B, A, C, rx, ry \fac{, sens, inclin})} renvoie cet arc sous forme d'un chemin (voir \emph{Dpath} page \pageref{Dpath}) utilisant des courbes de Bézier.
+\end{itemize}
+
+\subsubsection{Dparallelogram}
+\begin{itemize}
+    \item La méthode \cmd{g:Dparallelogram(a, u, v \fac{, draw\_options})} où \argu{a}, \argu{u}, \argu{v} désigne trois nombres complexes désignant un sommet et deux vecteurs, dessine le parallélogramme de sommets $\{a,a+u,a+u+v,a+v\}$. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.parallelogram(a, u, v)} renvoie la liste des sommets de ce parallélogramme.
+\end{itemize}
+
+\subsubsection{Dpolyreg}
+\begin{itemize}
+    \item La méthode \cmd{g:Dpolyreg(sommet1, sommet2, nbcotes, sens \fac{, draw\_options)}} ou \par \cmd{g:Dpolyreg(centre, sommet, nbcotes \fac{, draw\_options})} dessine un polygone régulier. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.polyreg(sommet1, sommet2, nbcotes, sens)} et la fonction \cmd{ld.polyreg(centre, sommet, nbcotes)}, renvoient la liste des sommets de ce polygone régulier.
+\end{itemize}
+
+\subsubsection{Drectangle}
+\begin{itemize}
+    \item La méthode \cmd{g:Drectangle(a, b, c \fac{, draw\_options})} dessine le rectangle ayant comme sommets consécutifs \argu{a} et \argu{b} et dont le côté opposé passe par \argu{c}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \par    
+    La fonction \cmd{ld.rectangle(a, b, c)} renvoie la liste des sommets de ce rectangle.
+    
+    \item La méthode \cmd{g:Drectangle(a, b \fac{, draw\_options})} dessine le rectangle dont les côtés sont parallèles aux axes et ayant comme sommets opposés \argu{a} et \argu{b}. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. \par
+    La fonction \cmd{ld.rectangle(a, b)} renvoie la liste des sommets de ce rectangle.
+\end{itemize}
+
+\subsubsection{Dsequence}
+\begin{itemize}
+    \item La méthode \cmd{g:Dsequence(f, u0, n \fac{, draw\_options})} fait le dessin des "escaliers" de la suite récurrente définie par son premier terme \argu{u0} et la relation \(u_{k+1}=f(u_k)\). L'argument \argu{f} doit être une fonction d'une variable réelle et à valeurs réelles, l'argument \argu{n} est le nombre de termes calculés. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+    \item La fonction \cmd{ld.sequence(f, u0, n)} renvoie la liste des points constituant ces "escaliers".
+\end{itemize}
+
+\begin{demo}{Suite $u_{n+1}=\cos(u_n)$}
+\begin{luadraw}{name=sequence}
+local ld = luadraw
+local cpx = ld.cpx
+local g = ld.graph:new{window={-0.1,1.7,-0.1,1.1},size={10,10,0}}
+local i, pi, cos = cpx.I, math.pi, math.cos
+local f = function(x) return cos(x)-x end
+local ell = ld.solve(f,0,pi/2)[1]
+local L = ld.sequence(cos,0.2,5) -- u_{n+1}=cos(u_n), u_0=0.2
+local seg, z = {}, L[1]
+for k = 2, #L do
+    table.insert(seg,{z,L[k]})
+    z = L[k]
+end -- seg est la liste des segments de l'escalier
+local styleA = "\\tikzset{->-/.style={decoration={markings, mark="
+local styleB = "at position #1 with {\\arrow{Stealth}}}, postaction={decorate}}}"
+g:Writeln(styleA..styleB)
+g:Daxes({0,1,1}, {arrows="-Stealth"})
+g:DlineEq(1,-1,0,"line width=0.8pt,ForestGreen")
+g:Dcartesian(cos, {x={0,pi/2},draw_options="line width=1.2pt,Crimson"})
+g:Dpolyline(seg,false,"->-=0.65,blue")
+g:Dlabel("$u_0$",0.2,{pos="S",node_options="blue"})
+g:Dseg({ell, ell*(1+i)},1,"dashed,gray")
+g:Dlabel("$\\ell\\approx"..ld.round(ell,3).."$", ell,{pos="S"})
+g:Ddots(ell*(1+i)); g:Labelcolor("Crimson")
+g:Dlabel("${\\mathcal C}_{\\cos}$",1+i*cos(1),{pos="E"})
+g:Labelcolor("ForestGreen"); g:Labelangle(g:Arg(1+i)*180/pi)
+g:Dlabel("$y=x$",0.4+i*0.4,{pos="S",dist=0.1})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+La méthode \cmd{g:Arg(z)} calcule et renvoie l'argument \textit{réel} du complexe $z$, c'est à dire son argument (en radians) à l'export dans le repère de TikZ (il faut pour cela appliquer la matrice de transformation du graphe à $z$, puis faire le changement de repère vers celui de TikZ). Si le repère du graphe est orthonormé et si la matrice de transformation est l'identité alors le résultat est identique à celui de \code{cpx.arg(z)} (ce n'est pas le cas dans l'exemple ci-dessus).
+
+De même, la méthode \cmd{g:Abs(z)} calcule et renvoie le module \textit{réel} du complexe $z$, c'est à dire son module à l'export dans le repère de TikZ, c'est donc une longueur en centimètres. Si le repère du graphe est orthonormé avec 1cm par unité sur chaque axe, et si la matrice de transformation est une isométrie alors le résultat est identique à celui de \code{cpx.abs(z)}.
+
+
+\subsubsection{Dsquare}
+\begin{itemize}
+    \item La méthode \cmd{g:Dsquare(a, b \fac{, sens, draw\_options})} dessine le carré ayant comme sommets consécutifs \argu{a} et \argu{b}, dans le sens trigonométrique lorsque \argu{sens} vaut $1$ (valeur par défaut). L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+  \item La fonction \cmd{ld.square(a, b, sens)} renvoie la liste des sommets de ce carré.
+\end{itemize}
+
+\subsubsection{Dwedge}
+La méthode \cmd{g:Dwedge(B, A, C, r, sens \fac{, draw\_options})} dessine un secteur angulaire de centre \argu{A} (complexe), de rayon \argu{r}, allant de \argu{B} (complexe) vers \argu{C} (complexe) dans le sens trigonométrique si l'argument \argu{sens} vaut $1$, le sens inverse sinon. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd.
+
+
+\subsection{Courbes}
+
+\subsubsection{Paramétriques : Dparametric}
+
+\begin{itemize}
+\item La fonction \cmd{ld.parametric(p, t1, t2 \fac{, nbdots, discont, nbdiv})} fait le calcul des points de la courbe et renvoie une ligne polygonale (une liste de listes de complexes, pas de dessin).
+  \begin{itemize}
+    \item L'argument \argu{p} est le paramétrage, ce doit être une fonction d'une variable réelle $t$ et à valeurs complexes, par exemple :
+    \mintinline{Lua}{local p = function(t) return cpx.exp(t*cpx.I) end}
+    \item  Les arguments \argu{t1} et \argu{t2} sont obligatoires avec \(t_1 < t_2\), ils forment les bornes de l'intervalle pour le paramètre.
+    \item L'argument \argu{nbdots} est facultatif, c'est le nombre de points (minimal) à calculer, il vaut $40$ par défaut.
+    \item L'argument \argu{discont} est un booléen facultatif qui indique s'il y a des discontinuités ou non, c'est \false par défaut.
+    \item L'argument \argu{nbdiv} est un entier positif qui vaut $5$ par défaut et indique le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés.
+  \end{itemize}
+  
+\item La méthode \cmd{g:Dparametric(p, options)} fait le calcul des points et le dessin de la courbe paramétrée par \argu{p}. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+
+  \begin{itemize}
+      \item \opt{t=\{g:Xinf(),g:Xsup()\}}, c'est l'intervalle pour le paramètre $t$ (par défaut, c'est tout l'intervalle des abscisses de la fenêtre), 
+      \item \opt{nbdots=40}, 
+      \item \opt{discont=false},
+      \item \opt{nbdiv=5},
+      \item \opt{draw\_options=""},  chaîne qui sera transmise telle quelle à l'instruction \drawcmd,
+      \item \opt{clip=nil}, cette option est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+  \end{itemize}
+\end{itemize}  
+
+\subsubsection{Polaires : Dpolar}
+
+\begin{itemize}
+\item La fonction \cmd{ld.polar(rho, t1, t2 \fac{, nbdots, discont, nbdiv})} fait le calcul des points et renvoie une ligne polygonale (pas de dessin). L'argument \argu{rho} est le paramétrage polaire de la courbe, ce doit être une fonction d'une variable réelle $t$ et à valeurs réelles, par exemple :
+
+    \mintinline{Lua}{local rho = function(t) return 4*math.cos(2*t) end}
+
+    Les autres arguments sont identiques aux courbes paramétrées.
+\item La méthode \cmd{g:Dpolar(rho, options)} fait le calcul des points et le  dessin de la courbe polaire paramétrée par \emph{rho}. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+
+  \begin{itemize}
+      \item \opt{t=\{-pi,pi\}}, c'est l'intervalle pour le paramètre $t$,
+      \item \opt{nbdots=40}, 
+      \item \opt{discont=false},
+      \item \opt{nbdiv=5},
+      \item \opt{draw\_options=""},  chaîne qui sera transmise telle quelle à l'instruction \drawcmd,
+      \item \opt{clip=nil}, cette option est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Cartésiennes : Dcartesian}
+
+\begin{itemize}
+\item La fonction \cmd{ld.cartesian(f, x1, x2 \fac{, nbdots, discont, nbdiv})} fait le calcul des points de la courbe et renvoie une ligne polygonale (pas de dessin). L'argument \argu{f} est la fonction dont on veut la courbe, ce doit être une fonction d'une variable réelle $x$ et à valeurs réelles, par exemple :
+
+    \mintinline{Lua}{local f = function(x) return 1+3*math.sin(x)*x end}
+
+    Les arguments \argu{x1} et \argu{x2} sont obligatoires et forment les bornes de l'intervalle pour la variable. Les autres arguments sont identiques aux courbes paramétrées.
+
+\item La méthode \cmd{g:Dcartesian(f, options)} fait le calcul des points et le dessin de la courbe de \argu{f}. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+
+  \begin{itemize}
+      \item \opt{x=\{g:Xinf(),g:Xsup()\}}, c'est l'intervalle pour le paramètre $x$ (par défaut, c'est tout l'intervalle des abscisses de la fenêtre), 
+      \item \opt{nbdots=40}, 
+      \item \opt{discont=false},
+      \item \opt{nbdiv=5},
+      \item \opt{draw\_options=""},  chaîne qui sera transmise telle quelle à l'instruction \drawcmd,
+      \item \opt{clip=nil}, cette option est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Fonctions périodiques : Dperiodic}
+
+\begin{itemize}
+\item La fonction \cmd{ld.periodic(f, period, x1, x2 \fac{, nbdots, discont, nbdiv})} fait le calcul des points de la courbe et renvoie une ligne polygonale (pas de dessin).
+
+  \begin{itemize}
+    \item L'argument \argu{f} est la fonction dont on veut la courbe, ce doit être une fonction d'une variable réelle $x$ et à valeurs réelles.
+    \item L'argument \argu{period} est une table du type $\{a,b\}$ avec \(a<b\) représentant une période de la fonction \argu{f}.
+    \item Les arguments \argu{x1} et \argu{x2} sont obligatoires et forment les bornes de l'intervalle pour la variable.
+    \item Les autres arguments sont identiques aux courbes paramétrées.
+  \end{itemize}
+  
+\item La méthode \cmd{g:Dperiodic(f, period, options)} fait le calcul des points de la courbe et le dessin de la courbe de \emph{f}. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+
+  \begin{itemize}
+      \item \opt{x=\{g:Xinf(),g:Xsup()\}}, c'est l'intervalle pour le paramètre $x$ (par défaut, c'est tout l'intervalle des abscisses de la fenêtre), 
+      \item \opt{nbdots=40}, 
+      \item \opt{discont=false},
+      \item \opt{nbdiv=5},
+      \item \opt{draw\_options=""},  chaîne qui sera transmise telle quelle à l'instruction \drawcmd,
+      \item \opt{clip=nil}, cette option est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+  \end{itemize}
+
+\end{itemize}
+
+\subsubsection{Fonctions en escaliers : Dstepfunction}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.stepfunction(def, discont)} fait le calcul des points de la courbe et renvoie une ligne polygonale (pas de dessin).
+
+      \begin{itemize}
+      \item  L'argument \argu{def} permet de définir la fonction en escaliers, c'est une table à deux éléments :
+    
+    \begin{TeXcode}
+      { {x1,x2,x3,...,xn}, {c1,c2,...} }
+    \end{TeXcode}
+    
+      Le premier élément \code{\{x1,x2,x3,\ldots,xn\}} doit être une subdivision du segment \([x_1;x_n]\).
+      
+      Le deuxième élément \code{\{c1,c2,\ldots\}} est la liste des constantes avec \code{c1} pour le morceau $[x_1;x_2]$, \code{c2} pour le morceau $[x_2;x_3]$, etc.
+      
+      \item   L'argument \argu{discont} est un booléen qui vaut \true par défaut.
+      \end{itemize}
+  
+    \item La méthode \cmd{g:Dstepfunction(def, options)} fait le calcul des points et le dessin de la courbe de la fonction en escalier.
+
+      \begin{itemize}
+      \item L'argument \argu{def} est le même que celui décrit au-dessus (définition de la fonction en escalier).
+      \item  L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+    
+      \begin{itemize}
+          \item \opt{discont=true},
+          \item \opt{draw\_options=""},  chaîne qui sera transmise telle quelle à l'instruction \drawcmd,
+          \item \opt{clip=nil}, cette option est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+      \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Fonctions affines par morceaux : Daffinebypiece}
+
+\begin{itemize}
+\item La fonction \cmd{ld.affinebypiece(def, discont)} fait le calcul des points de la courbe et renvoie une ligne polygonale (pas de dessin).
+
+  \begin{itemize}
+  \item  L'argument \argu{def} permet de définir la fonction en escaliers, c'est une table à deux champs :
+
+\begin{TeXcode}
+ { {x1,x2,x3,...,xn}, { {a1,b1}, {a2,b2},...} }
+\end{TeXcode}
+
+  Le premier élément \code{\{x1,x2,x3,\ldots,xn\}} doit être une subdivision du segment \([x_1;x_n]\).
+  
+  Le deuxième élément \code{\{ \{a1,b1\},\{a2,b2\},\ldots\}} signifie que sur $[x_1;x_2]$ la fonction est \(x\mapsto a_1x+b_1\), sur $[x_2;x_3]$ la fonction est \(x\mapsto a_2x+b_2\), etc.
+  
+  \item L'argument \argu{discont} est un booléen qui vaut \true par défaut.
+  \end{itemize}
+  
+\item La méthode \cmd{g:Daffinebypiece(def, options)} fait le calcul des points et le dessin de la courbe de la fonction affine par morceaux.
+
+  \begin{itemize}
+  \item L'argument \argu{def} est le même que celui décrit au-dessus (définition de la fonction affine par morceaux).
+  \item L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+  \begin{itemize}
+      \item \opt{discont=true},
+      \item \opt{draw\_options=""},  chaîne qui sera transmise telle quelle à l'instruction \drawcmd,
+      \item \opt{clip=nil}, cette option est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+  \end{itemize}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Équations différentielles : Dodesolve}
+
+\begin{itemize}
+\item La fonction \cmd{ld.odesolve(f, t0, Y0, tmin, tmax, nbdots \fac{, method})} permet une résolution approchée de l'équation différentielle \(Y'(t)=f(t,Y(t))\) dans l'intervalle $[t_{\mathrm{min}};t_{\mathrm{max}}]$ qui doit contenir \argu{t0}, avec la condition initiale $Y(t_0)=Y_0$.
+
+\begin{itemize}
+  \item L'argument \argu{f} est une fonction \(f\colon (t,Y) \mapsto f(t,Y)\) à valeurs dans \(\mathbf R^n\) et où $Y$ est également dans \(mathbf R^n\) : $Y=\{y_1, y_2,\ldots, y_n\}$, mais lorsque $n=1$, $Y$ est un réel.
+  \item Les arguments \argu{t0} et \argu{Y0} donnent les conditions initiales avec $Y_0=\{y_1(t_0), \ldots, y_n(t_0)\}$ (les $y_i$ sont réels), ou $Y_0=y_1(t_0)$ lorsque $n=1$.
+  \item Les arguments \argu{tmin} et \argu{tmax} définissent l'intervalle de résolution, celui-ci doit contenir \argu{t0}.
+  \item L'argument \argu{nbdots} indique le nombre de points calculés de part et d'autre de \argu{t0}.
+  \item L'argument optionnel \argu{method} est une chaîne qui peut valoir \val{"rkf45"} (valeur par défaut), ou \val{"rk4"}. Dans le premier cas, on utilise la méthode de Runge Kutta-Fehlberg (à pas variable), dans le second cas c'est la méthode classique de Runge-Kutta d'ordre $4$.
+  \item En sortie, la fonction renvoie la matrice suivante (liste de listes de réels) :
+  
+\begin{TeXcode}
+{ {tmin,...,tmax}, {y1(tmin),...,y1(tmax)}, {y2(tmin),...,y2(tmax)},...}
+\end{TeXcode}
+
+  La première composante est la liste des valeurs de $t$ (dans l'ordre croissant), la deuxième est la liste des valeurs (approchées) de la composante $y_1$ correspondant à ces valeurs de $t$, etc.
+    \end{itemize}
+    
+\item La méthode \cmd{g:DplotXY(X, Y \fac{, draw\_options, clip})}, où les arguments \argu{X} et \argu{Y} sont deux listes de réels de même longueur, dessine la ligne polygonale constituée des points $(X[k],Y[k])$. L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd. L'argument \argu{clip} est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+
+
+\begin{demo}{Un système différentiel de Lokta-Volterra}
+\begin{luadraw}{name=lokta_volterra}
+local ld = luadraw
+local cpx = ld.cpx
+local g = ld.graph:new{window={-5,50,-0.5,5},size={10,10,0}, border=true}
+local i = cpx.I
+local f = function(t,y) return {y[1]-y[1]*y[2],-y[2]+y[1]*y[2]} end
+g:Labelsize("footnotesize")
+g:Daxes({0,10,1},{limits={{0,50},{0,4}}, nbsubdiv={4,0}, legendsep={0.1,0},
+originpos={"center","center"}, legend={"$t$",""}})
+local y0 = {2,2}
+local M = ld.odesolve(f,0,y0,0,50,250) -- résolution approchée
+-- M est une table à 3 éléments: t, x et y
+g:Lineoptions("solid","blue",8)
+g:Dseg({5+3.5*i,10+3.5*i}); g:Dlabel("$x$",10+3.5*i,{pos="E"})
+g:DplotXY(M[1],M[2]) -- points (t,x(t))
+g:Linecolor("red"); g:Dseg({5+3*i,10+3*i}); g:Dlabel("$y$",10+3*i,{pos="E"})
+g:DplotXY(M[1],M[3]) -- points (t,y(t))
+g:Lineoptions(nil,"black",4)
+g:Saveattr(); g:Viewport(20,50,3,5) -- changement de vue
+g:Coordsystem(-0.5,3.25,-0.5,3.25) -- nouveau repère associé
+g:Daxes({0,1,1},{legend={"$x$","$y$"},arrows="->"})
+g:Lineoptions(nil,"ForestGreen",8); g:DplotXY(M[2],M[3]) -- points (x(t),y(t))
+g:Restoreattr() -- retour à l'ancienne vue
+g:Dlabel("$\\begin{cases}x'=x-xy\\\\y'=-y+xy\\end{cases}$", 5+4.75*i,{})
+g:Show()
+\end{luadraw}
+\end{demo}
+    
+\item La méthode \cmd{g:Dodesolve(f, t0, Y0, options)} permet le dessin d'une solution à l'équation \(Y'(t)=f(t,Y(t))\).
+  \begin{itemize}
+  \item L'argument obligatoire \argu{f} est une fonction \(f\colon (t,Y) \mapsto f(t,Y)\) à valeurs dans \(\mathbf R^n\) et où $Y$ est également dans \(\mathbf R^n\) : $Y=\{y_1,y_2,\ldots,y_n\}$,  mais lorsque $n=1$, $Y$ est un réel.
+  \item Les arguments \argu{t0} et \argu{Y0} donnent les conditions initiales avec $Y_0=\{y_1(t_0),\ldots,y_n(t_0)\}$ (les $y_i$ sont réels), ou $Y_0=y_1(t_0)$ lorsque $n=1$.
+  \item L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+      \begin{itemize}
+        \item \opt{t=\{g:Xinf(), g:Xsup()\}}, détermine l'intervalle pour la variable $t$,
+        \item \opt{out=\{1,2\}},  table de deux entiers $\{i_1,i_2\}$, si $M$ désigne la matrice renvoyée par la fonction \code{odesolve}, les points dessinés auront pour abscisses les $M[i_1]$ et pour ordonnées les $M[i_2]$. Par défaut on a $i_1=1$ et $i_2=2$, ce qui correspond à la fonction $y_1$ en fonction de $t$,
+        \item \opt{nbdots=50}, détermine le nombre de points à calculer pour la fonction,
+        \item \opt{method="rkf45"}, détermine la méthode à utiliser, les valeurs possibles sont \val{"rkf45"} ou \val{"rk4"},
+        \item \opt{draw\_options=""}, est une chaîne qui sera passée telle quelle à l'instruction \drawcmd,
+      \item \opt{clip=nil}, cette option est soit \nil (valeur par défaut), soit une table \code{\{x1,x2,y1,y2\}}, dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+      \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Courbes implicites : Dimplicit}
+
+\begin{itemize}
+\item La fonction \cmd{ld.implicit(f, x1, x2, y1, y2, grid)} calcule et renvoie une ligne polygonale constituant la courbe implicite d'équation $f(x,y)=0$ dans le pavé $[x_1,x_2]\times[y_1,y_2]$. Ce pavé est découpé en fonction de l'argument \argu{grid}.
+
+      \begin{itemize}
+      \item L'argument \argu{f} est une fonction \(f\colon (x,y) \mapsto f(x,y)\) à valeurs dans \(\mathbf R\).
+      \item Les arguments \argu{x1}, \argu{x2} ,\argu{y1}, \argu{y2} définissent la fenêtre du tracé, qui sera le pavé $[x_1,x_2]\times[y_1,y_2]$, on doit avoir \(x_1<x_2\) et \(y_1<y_2\).
+      \item L'argument \argu{grid} est une table contenant deux entiers positifs : $\{n_1,n_2\}$, le premier entier indique le nombre de subdivisions suivant l'axe des $x$, et le second le nombre de subdivisions suivant l'axe des $y$.
+      \end{itemize}
+  
+\item La méthode \cmd{g:Dimplicit(f, options)} fait le dessin de la courbe implicite d'équations $f(x,y)=0$.
+      \begin{itemize}
+      \item L'argument \argu{f} est une fonction \(f\colon (x,y) \mapsto f(x,y)\) à valeurs dans \(\mathbf R\).
+      \item L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+
+            \begin{itemize}
+                \item \opt{view=\{g:Xinf(), g:Xsup(), g:Yinf(), g:Ysup()\}}, table de la forme \code{\{x1,x2,y1,y2\}} qui détermine la zone de dessin $[x_1,x_2]\times[y_1,y_2]$.
+                \item \opt{grid=\{50,50\}}, détermine les subdivisions,
+                \item \opt{draw\_options=""}, est une chaîne qui sera passée telle quelle à l'instruction \drawcmd.
+            \end{itemize}
+      \end{itemize}
+\end{itemize}
+
+\subsubsection{Courbes de niveau : Dcontour}
+
+La méthode \cmd{g:Dcontour(f, z, options)} fait le dessin de \textbf{lignes de niveau} de la fonction \(f\colon (x,y) \mapsto f(x,y)\) à valeurs réelles.
+
+\begin{itemize}
+  \item L'argument \argu{f} est la fonction.
+  \item L'argument \argu{z} est la liste des différents niveaux à tracer.
+  \item L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+            \begin{itemize}
+                \item \opt{view=\{g:Xinf(), g:Xsup(), g:Yinf(), g:Ysup()\}}, table de la forme \code{\{x1,x2,y1,y2\}} qui détermine la zone de dessin $[x_1,x_2]\times[y_1,y_2]$.
+                \item \opt{grid=\{50,50\}}, détermine les subdivisions,
+                \item \opt{colors \{\}}, la liste des couleurs par niveau, par défaut cette liste est vide et c'est la couleur courante de tracé qui est utilisée.
+                \item \opt{draw\_options=""}, est une chaîne qui sera passée telle quelle à l'instruction \drawcmd.
+            \end{itemize}  
+\end{itemize}
+
+\begin{demo}{Exemple avec Dcontour}
+\begin{luadraw}{name=Dcontour}
+local ld = luadraw
+local cpx = ld.cpx
+local g = ld.graph:new{window={-1,6.5,-1.5,11},size={10,10,0}}
+local i, sin, cos = cpx.I, math.sin, math.cos
+local f = function(x,y) return (x+y)/(2+cos(x)*sin(y)) end
+local Lz = ld.range(1,10) -- niveaux à tracer
+local Colors = ld.getpalette(ld.palRainbow,10) -- 10 couleurs équiréparties dans la palette ld.palRainbow
+g:Dgradbox({0,5+10*i,1,1},{legend={"$x$","$y$"}, grid=true, title="$z=\\frac{x+y}{2+\\cos(x)\\sin(y)}$"})
+g:Linewidth(12); g:Dcontour(f,Lz,{view={0,5,0,10}, colors=Colors})
+for k = 1, 10 do
+    local y = (2*k+4)/3*i
+    g:Dseg({5.25+y,5.5+y},1,"color="..Colors[k])
+    g:Labelcolor(Colors[k])
+    g:Dlabel("$z="..k.."$",5.5+y,{pos="E"})
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Paramétrisation d'une ligne polygonale : \emph{curvilinear\_param}}
+Soit $L$ une liste de complexe représentant une ligne \og continue \fg, il est possible d'obtenir une paramétrisation de cette ligne en fonction d'un paramètre $t$ entre $0$ et $1$ ($t$ est l'abscisse curviligne divisée par la longueur totale de $L$).
+
+La fonction \cmd{ld.curvilinear\_param(L \fac{, close})} renvoie une fonction d'une variable $t\in[0;1]$ et à valeurs sur la ligne \argu{L} (liste de nombres complexes), la valeur en $t=0$ est le premier point de \argu{L}, et la valeur en $t=1$ est le dernier point; cette fonction est suivie d'un nombre qui représente la longueur total de \argu{L}. L'argument optionnel \argu{close} indique si la ligne \argu{L} doit être refermée (\false par défaut).
+
+\begin{demo}{Points répartis sur une ligne polygonale}
+\begin{luadraw}{name=curvilinear_param}
+local ld = luadraw
+local cpx = ld.cpx
+local g = ld.graph:new{bbox=false,size={10,10}}
+local i = cpx.I; g:Linewidth(8)
+local L = ld.cartesian(math.sin,-5,5)[1]
+ld.insert(L, {5-2*i, -5-2*i})
+local f = ld.curvilinear_param(L, true)
+local I = ld.map(f,ld.linspace(0,1,20)) -- 20 points répartis sur L
+g:Shift(4*i)
+g:Lineoptions(nil,"ForestGreen",6); g:Dpolyline(L,true)
+g:Filloptions("full","white"); g:Ddots(I) -- le premier et le dernier point sont confondus car L est fermée
+-- autre exemple d'utilisation:
+local nb = 16 -- nombre de flèches
+local t = ld.linspace(0,1,3*nb+1)
+g:Shift(-4*i)
+for k = 0,nb-1 do
+g:Dparametric(f,{t={t[3*k+1],t[3*k+3]},nbdots=10,nbdiv=2,draw_options="-stealth"})
+end
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Domaines liés à des courbes cartésiennes}
+
+\subsubsection{Ddomain1}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.domain1(f, a, b \fac{, nbdots, discont, nbdiv})} renvoie une liste de complexes qui représente le contour de la partie du plan délimitée par la courbe de la fonction \argu{f} sur un intervalle déterminé par \argu{a} et \argu{b}, l'axe $Ox$, et les droites \(x=a\), \(x=b\).
+
+    \item La méthode \cmd{g:Ddomain1(f, options)} dessine ce contour. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+  \begin{itemize}
+      \item \opt{x=\{g:Xinf(),g:Xsup()\}}, c'est l'intervalle pour le paramètre $x$ (par défaut, c'est tout l'intervalle des abscisses de la fenêtre), 
+      \item \opt{nbdots=40}, 
+      \item \opt{discont=false},
+      \item \opt{nbdiv=5},
+      \item \opt{draw\_options=""}, chaîne qui sera transmise telle quelle à l'instruction \drawcmd.
+  \end{itemize}
+\end{itemize}
+    
+\subsubsection{Ddomain2}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.domain2(f, g, a, b \fac{, nbdots, discont, nbdiv})} renvoie une liste de complexes qui représente le contour de la partie du plan délimitée par la courbe de la fonction \argu{f}, la courbe de la fonction \argu{g}, et les droites \(x=a\), \(x=b\).
+    
+    \item La méthode \cmd{g:Ddomain2(f, g, options)} dessine ce contour. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+  \begin{itemize}
+      \item \opt{x=\{g:Xinf(),g:Xsup()\}}, c'est l'intervalle pour le paramètre $x$ (par défaut, c'est tout l'intervalle des abscisses de la fenêtre), 
+      \item \opt{nbdots=40}, 
+      \item \opt{discont=false},
+      \item \opt{nbdiv=5},
+      \item \opt{draw\_options=""}, chaîne qui sera transmise telle quelle à l'instruction \drawcmd.
+  \end{itemize}
+\end{itemize}
+  
+\subsubsection{Ddomain3}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.domain3(f, g, a, b \fac{, nbdots, discont, nbdiv})} renvoie une liste de complexes qui représente le contour de la partie du plan délimitée par la courbe de la fonction \argu{f} et celle de la fonction \argu{g} avec recherche des points d'intersection dans l'intervalle défini par \argu{a} et \argu{b}.
+ 
+    \item La méthode \cmd{g:Ddomain3(f, g, options)} dessine ce contour. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+  \begin{itemize}
+      \item \opt{x=\{g:Xinf(),g:Xsup()\}}, c'est l'intervalle pour le paramètre $x$ (par défaut, c'est tout l'intervalle des abscisses de la fenêtre), 
+      \item \opt{nbdots=40}, 
+      \item \opt{discont=false},
+      \item \opt{nbdiv=5},
+      \item \opt{draw\_options=""}, chaîne qui sera transmise telle quelle à l'instruction \drawcmd.
+  \end{itemize}
+\end{itemize}
+
+\begin{demo}{Partie entière, fonctions Ddomain1 et Ddomain3}
+\begin{luadraw}{name=courbe}
+local ld = luadraw
+local Z = ld.cpx.Z
+local g = ld.graph:new{ window={-5,5,-5,5}, bg="", size={10,10} }
+local f = function(x) return (x-2)^2-2 end
+local h = function(x) return 2*math.cos(x-2.5)-2.25 end
+g:Daxes( {0,1,1},{grid=true,gridstyle="dashed", arrows="->"})
+g:Filloptions("full","brown",0.3)
+g:Ddomain1( math.floor, { x={-2.5,3.5} })
+g:Filloptions("none","white",1); g:Lineoptions("solid","red",12)
+g:Dstepfunction( {ld.range(-5,5), ld.range(-5,4)},{draw_options="arrows={Bracket-Bracket[reversed]},shorten >=-2pt"})
+g:Labelcolor("red")
+g:Dlabel("Partie entière",Z(-3,3),{node_options="fill=white"})
+g:Ddomain3(f,h,{draw_options="fill=blue,fill opacity=0.6"})
+g:Dcartesian(f, {x={0,5}, draw_options="blue"})
+g:Dcartesian(h, {x={0,5}, draw_options="green"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dinequalities}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.inequalities(constraints, x1, x2, y1, y2)} renvoie une liste de nombres complexes représentant le contour de la partie du plan située dans le pavé $[x_1;x_2]\times[y_1;y_2]$ et vérifiant les contraintes exprimées dans l'argument \argu{contraints}, celui-ci est une liste de la forme \code{\{f1,sg1,f2,sg2,...fn,sgn\}} où les \argu{fi} sont des fonctions ($f_i\colon x \mapsto f_i(x)\in \mathbf R$), et les \argu{sgi} sont soit \val{">"}, soit \val{"<"}, la première contrainte est donnée par \argu{f1} et \argu{sg1}, cette contrainte est soit $y>f_1(x)$, soit $y<f_1(x)$ en fonction de la valeur de \argu{sg1}. Il en va de même pour les contraintes suivantes.
+ 
+    \item La méthode \cmd{g:Dinequalities(constraints, options)} permet de dessiner ce contour. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+  \begin{itemize}
+      \item \opt{view=\{g:Xinf(),g:Xsup(),g:Yinf(),g:Ysup()\}}, c'est la fenêtre dans laquelle va se faire la résolution. Par défaut c'est la fenêtre 2D courante.
+      \item \opt{draw\_options=""}, chaîne qui sera transmise telle quelle à l'instruction \drawcmd.
+      \item \opt{useclip=\false}, avec la valeur \false la méthode utilise la fonction précédente (qui calcule le contour de la solution), avec la valeur \true la méthode ne calcule pas le contour mais utilise des "clipping" (un par contrainte).
+  \end{itemize}
+\end{itemize}
+
+\begin{demo}{Dinequalities}
+\begin{luadraw}{name=Dinequalities}
+local ld = luadraw
+local Z = ld.cpx.Z
+local g = ld.graph:new{window={-2,5,-4,9}, size={10,10}}
+g:Daxes({0,1,1}, {grid=true, arrows="-Stealth", legend={"$x$","$y$"}})
+local f = function(x) return x*x - 2*x - 2 end
+local h = function(x) return x*x + 2 end
+local k = function(x) return -x*x+5*x + 2 end
+g:Dinequalities({f,'>', h,'<', k,'<'}, {draw_options="draw=none,fill=pink,fill opacity=0.6"})
+g:Dcartesian(h, {draw_options="blue, line width=0.8pt"}); g:Dlabel("$C_h$",Z(3,8.75),{node_options="blue"})
+g:Dcartesian(f, {draw_options="red, line width=0.8pt"}); g:Dlabel("$C_f$",Z(2,-2),{pos="E",node_options="red"})
+g:Dcartesian(k, {draw_options="green, line width=0.8pt"}); g:Dlabel("$C_k$",Z(1,7),{node_options="green"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dimplicit\_inequalities}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.implicit\_inequality(f, sg, x1, x2, y1, y2, grid)} renvoie un \textbf{chemin} représentant le contour de la partie du plan située dans le pavé $[x_1;x_2]\times[y_1;y_2]$ et vérifiant la condition $f(x,y)>=0$ si \argu{sg}=">", ou $f(x,y)<=0$ si \argu{sg}="<". L'argument \argu{f} est une fonction à deux variables \argu{f}$\colon (x,y)\mapsto f(x,y)\in \mathbf R$. L'argument \argu{grid} est une table de deux entiers : \argu{grid}=\{\argu{n1},\argu{n2}\}, le premier indique le nombre de subdivisions de l'intervalle $[x_1;x_2]$, et le second, le nombre de subdivisions de l'intervalle $[y_1;y_2]$. 
+ 
+    \item La méthode \cmd{g:Dimplicit\_inequalities(constraints, options)} permet de remplir une partie du plan vérifiant les contraintes exprimées dans l'argument \argu{contraints}, celui-ci est une liste de la forme \code{\{f1,sg1,f2,sg2,...fn,sgn\}} où les \argu{fi} sont des fonctions ($f_i\colon (x,y) \mapsto f_i(x,y)\in \mathbf R$), et les \argu{sgi} sont soit \val{">"}, soit \val{"<"}, la première contrainte est donnée par \argu{f1} et \argu{sg1}, cette contrainte est soit $f_1(x,y)>0$, soit $f_1(x,y)<0$ en fonction de la valeur de \argu{sg1}. L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont, avec leur valeur par défaut:
+    
+  \begin{itemize}
+      \item \opt{view=\{g:Xinf(),g:Xsup(),g:Yinf(),g:Ysup()\}}, c'est la fenêtre dans laquelle va se faire la résolution. Par défaut c'est la fenêtre 2D courante.
+      
+      \item \opt{draw\_options=""}, chaîne qui sera transmise telle quelle à l'instruction \drawcmd.
+      
+      \item \opt{grid=\{50,50\}} : table de deux entiers, le premier indique le nombre de subdivisions de l'intervalle des $x$, et le second, le nombre de subdivisions de l'intervalle ds $y$.
+  \end{itemize}
+\end{itemize}
+
+\textbf{NB}: la méthode ne calcule pas le contour mais utilise des "clipping" (un par contrainte).
+
+\begin{demo}{La méthode \cmd{g:Dimplicit\_inequalities}}
+\begin{luadraw}{name=implicit_inequalities}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local g = ld.graph:new{ window = {-3, 4, -3, 5}, size = {10, 10} }
+local f1 = function(x,y) return -x*y+y^2-x^2-1  end
+local f2 = function(x,y) return x^3-x-y^2+4 end
+local filloptions = "draw=none,pattern= north west lines, pattern color=cyan"
+g:Daxes()
+g:Dimplicit_inequalities( {f1,'<',f2,">"}, {view={-2,5,-5,5}, draw_options=filloptions}) 
+g:Dimplicit(f1, {draw_options="red,thick"})
+g:Dimplicit(f2, {view={-2,5,-5,5}, draw_options="violet,thick"})
+local eq = \luastringO{$\begin{cases}y^2-x^2-xy < 1\\ x^3-x+4 > y^2\end{cases}$}
+g:Dlabel( eq, Z(2.25,1), {node_options="fill=white"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Points (Ddots) et labels (Dlabel)}
+
+\begin{itemize}
+\item La méthode pour dessiner un ou plusieurs points est : \cmd{g:Ddots(dots \fac{, mark\_options})}.
+
+    \begin{itemize}
+    \item L'argument \argu{dots} peut être soit un seul point (donc un complexe), soit une liste (une table) de complexes, soit une liste de listes de complexes. Les points sont dessinés dans la couleur courante du tracé de lignes.
+    \item L'argument \argu{mark\_options} est une chaîne de caractères (vide par défaut) qui sera passée telle quelle à l'instruction \drawcmd (modifications locales), exemple :
+\begin{TeXcode}
+    mark_options = "color=green, line width=1.2, scale=0.25"
+\end{TeXcode}
+
+    \item Deux méthodes pour modifier globalement l'apparence des points :
+        \begin{itemize}
+        \item La méthode \cmd{g:Dotstyle(style)} qui définit le style de point, l'argument \argu{style} est une chaîne de caractères qui vaut par défaut \val{"*"}. Les styles possibles sont ceux de la librairie \emph{plotmarks}.
+        \item La méthode \cmd{g:Dotscale(scale)} permet de jouer sur la taille du point, l'argument \argu{scale} est un entier positif qui vaut $1$ par défaut, il sert à multiplier la taille par défaut du point. La largeur courante de tracé de ligne intervient également dans la taille du point. Pour les style de points "pleins" (par exemple le style \val{"triangle*"}), le style et la couleur de remplissage courants sont utilisés par la librairie.
+        \end{itemize}
+    \end{itemize}
+    
+\item La méthode pour placer un label est : 
+\cmdln{g:Dlabel(text1, anchor1, options1, text2, anchor2, options2, \ldots)}
+
+    \begin{itemize}
+    \item Les arguments \argu{text1}, \argu{text2}, \ldots, sont des chaînes de caractères, ce sont les labels.
+    \item Les arguments \argu{anchor1}, \argu{anchor2}, \ldots, sont des complexes représentant les points d'ancrage des labels.
+    \item  Les arguments \argu{options1}, \argu{options2}, \ldots,  permettent de définir localement les paramètres des labels, ces paramètres sont des tables dont les champs définissent les options, qui sont:
+        \begin{itemize}
+            \item \opt{pos="center"}, indique la position du label par rapport au point d'ancrage, il peut valoir \val{"center"} (centré), \val{"N"} (nord), \val{"NE"} (nord est), \val{"E"} (est), \val{"SE"} (sud est), \val{"S"} (sud), \val{"SW"} (sud ouest), \val{"W"} (ouest), \val{"NW"} (nord ouest). Par défaut, il vaut \val{center}, et dans ce cas le label est centré sur le point d'ancrage,
+            \item \opt{dist=0}, distance en cm entre le label et son point d'ancrage lorsque \opt{pos} n'est pas égal à \val{"center"},
+            \item \opt{dir= \{\}}, cette option est une table de la forme \code{\{dirX \fac{,dirY,dep}\}} qui indique la direction de l'écriture. Les 3 valeurs \code{dirX}, \code{dirY} et \code{dep} sont trois complexes représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage. Le vecteur \code{dep} est nul par défaut, et le vecteur \code{dirY}, s'il est absent, est égal au vecteur \code{dirX} tourné de 90 degrés dans le sens direct.
+            Par défaut l'option \opt{dir} est égale à la valeur courante de la direction de l'écriture,
+            \item \opt{node\_options=""} est une chaîne (vide par défaut) destinée à recevoir des options qui seront directement passées à TikZ dans l'instruction \emph{node[]}.
+            \item Les labels sont dessinés dans la couleur courante du texte du document, mais on peut changer de couleur avec l'option \opt{node\_options} en mettant par exemple : \opt{node\_options="color=blue"}.
+            
+            \textbf{Attention} : les options choisies pour un label s'appliquent aussi aux labels suivants si elles sont inchangées.
+        \end{itemize}
+  \end{itemize}
+
+Options globales pour les labels :
+
+    \begin{itemize}
+        \item la méthode \cmd{g:Labelstyle(position)} permet de préciser la position des labels par rapport aux points d'ancrage. L'argument \argu{position} est une chaîne qui peut valoir : \val{"N"} pour  nord, \val{"NE"} pour nord-est, \val{"NW"} pour nord-ouest, ou  encore \val{"S"}, \val{"SE"}, \val{"SW"}. Par défaut, il vaut \val{"center"}, et dans ce cas le label est centré sur le point  d'ancrage.
+  
+    \item La méthode \cmd{g:Labelcolor(color)} permet de définir la couleur des labels. L'argument \argu{color} est une chaîne représentant une couleur pour TikZ. Par défaut l'argument est une chaîne vide ce qui représente la couleur courante du document.
+    
+    \item La méthode \cmd{g:Labelangle(angle)} permet de préciser un \argu{angle} (en degrés) de rotation des labels autour du point d'ancrage, cet angle est nul par défaut.
+    
+    \item La méthode \cmd{g:Labelsize(size)} permet de gérer la taille des labels. L'argument \argu{size} est une chaîne qui peut valoir: \val{"tiny"}, ou \val{"scriptsize"} ou \val{"footnotesize"}, etc. Par défaut l'argument est une chaîne vide, ce qui représente la taille \val{"normalsize"}.
+    
+    \item La méthode \val{g:Labeldir(dir)} permet de gérer la direction l'écriture. l'argument \argu{dir} est une table de la forme \code{\{dirX \fac{,dirY,dep}\}}, les 3 valeurs \code{dirX}, \emph{dirY} et \code{dep} sont trois complexes représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage. Le vecteur \code{dep} est nul par défaut, et le vecteur \code{dirY}, s'il est absent, est égal au vecteur \code{dirX} tourné de 90 degrés dans le sens direct. Lorsque \argu{dir} est une liste vide, cela représente le sens usuel de l'écriture.
+  \end{itemize}
+  
+  
+\item La méthode \cmd{g:Dlabeldot(text, anchor, options)} permet de placer un label et de dessiner le point d'ancrage en même temps.
+    \begin{itemize}
+    \item L'argument \argu{texte} est une chaîne de caractères, c'est le label,
+    \item L'argument \argu{anchor} est un complexe représentant le point d'ancrage du label,
+    \item L'argument \argu{options} est une table dont les champs sont les options possibles. Celles-ci sont à celles de la méthode \cmd{Dlabel}, plus l'option \opt{mark\_options=""} qui est une chaîne de caractères qui sera passée telle quelle à l'instruction \drawcmd lors du dessin du point d'ancrage.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Chemins : Dpath, Dspline et Dtcurve}\label{Dpath}
+
+\subsubsection{Qu'est ce qu'un chemin}
+
+Un chemin est une table de nombres complexes et d'instructions (sous forme de chaînes), cette table représente une succession de différents "morceaux", chaque morceau est une succession de données (points 2D et parfois valeurs numériques) et se termine par une chaîne de caractères qui représente une instruction. Le chemin est régi par la règle suivante: \par
+\hfil\textbf{le dernier point d'un morceau est le premier point du morceau suivant (il n'est donc pas répété) }\hfil\par
+
+\paragraph{Exemple:}
+\begin{Luacode}
+local Z = cpx.Z
+local L = { Z(-3,2),"m",-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" } 
+\end{Luacode}
+Le chemin \emph{L} est composé de cinq morceaux, qui sont:
+    \begin{enumerate}
+        \item \code{\{Z(-3,2),"m"\}}: il y a une donnée et l'instruction \code{"m"} qui signifie \emph{moveto}, cette instruction ne fait pas de dessin proprement dit, mais elle permet de commencer une nouvelle composante dont le premier point est $Z(-3,2)$ (le dernier point du morceau précédent, s'il y en a un, n'est pas pris en compte par cette instruction, c'est la seule exception).
+        
+        \item \code{\{Z(-3,2),-3,-2,"l"\}}:  le premier point du deuxième morceau est bien $Z(-3,2)$ et non pas $-3$, car $Z(-3,2)$ est le dernier point du morceau précédent. Il y a donc trois données et l'instruction "l" qui signifie \emph{lineto}, c'est comme si on exécutait l'instruction \code{g:Dpolyline({Z(-3,2),-3,-2})}, ces trois points sont donc reliés par un segment. Le dernier point de ce morceau est $-2$.
+        
+        \item \code{\{-2,0,2,2,-1,"ca"\}}: le premier point du troisième morceau est bien $-2$ et non pas $0$, car $-2$ est le dernier point du morceau précédent. Il y a cinq données et l'instruction \code{"ca"} qui signifie \emph{circle arc}, c'est comme si on exécutait l'instruction \code{g:Darc(-2,0,2,2,-1)}, donc le centre est $0$, l'arc va de $-2$ à $2$ avec un rayon égal à $2$ et dans le sens des aiguilles d'un montre (dernière valeur $-1$). Le dernier point de ce morceau est $2$.
+        \item \code{\{2,3,Z(3,3),0.5,"la"\}}: le premier point du quatrième morceau est $2$ (et non pas $3$), il y a quatre données et l'instruction \code{"la"} qui signifie \emph{line arc}, c'est une ligne polygonale aux angles arrondis avec un arc de cercle de rayon $0.5$ (valeur qui précède l'instruction). Les points de cette ligne sont \code{\{2,3,Z(3,3)\}}, il y aura donc un arrondi en $3$. Le dernier point de ce morceau est $Z(3,3)$.
+        
+        \item \code{\{Z(3,3),1,Z(-1,5),Z(-3,2),"b"\}}: le premier point du cinquième morceau est $Z(3,3)$ (et non pas $1$), l'instruction \code{"b"} signifie \emph{bezier}, on dessine donc une courbe de Bézier allant de $Z(3,3)$ jusqu'à $Z(-3,2)$, les deux autres points, $1$ et $Z(-1,5)$ sont le premier et le deuxième point de contrôle de la courbe.
+    \end{enumerate}
+
+Voici ce que donne ce chemin:
+\begin{demo}{Path example}
+\begin{luadraw}{name=path_example}
+local ld = luadraw
+local Z = ld.cpx.Z
+local g = ld.graph:new{window={-4,4,-0.5,3}, size={10,10}}
+local L = { Z(-3,2),"m",-3,-2,"l",0,2,2,-1,"ca",3,Z(3,3),0.5,"la",1,Z(-1,5),Z(-3,2),"b" }
+g:Dpath(L, "line width=0.8pt, blue")
+g:Ddots({Z(-3,2),-3,-2,0,2,3,Z(3,3)})
+g:Dlabel("$Z(-3,2)$",Z(-3,2),{pos="W"}, "$-3$",-3,{pos="S"}, "$-2$",-2,{},
+"$0$",0,{}, "$2$",2,{}, "$3$",3,{}, "$Z(3,3)$",Z(3,3),{pos="E"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\noindent\textbf{Remarque}: dans l'exemple ci-dessus, vous pouvez remplacer la partie: \code{Z(-3,2),"m",-3,-2,"l"}, par: \code{Z(-3,2),-3,-2,"l"} car il n'y a pas d'autre morceau avant le \emph{moveto}.
+
+\noindent\textbf{Instructions disponibles et leur syntaxe}, le mot \emph{last} représente le dernier point du morceau précédent:
+      \begin{itemize}
+      \item \code{z1,"m"} (moveto), permet de commencer une nouvelle composante du chemin au point d'affixe $z_1$.
+      \item \code{z1,...,zn,"l"} (lineto), dessine la ligne polygonale \code{\{last,z1,...,zn\}}.
+      \item \code{c1,c2,z2,"b"} (bézier) dessine la courbe de Bézier \code{\{last,c1,c2,z2\}}, où $c_1$ et $c_2$ sont les deux points de contrôle.
+      \item \code{z1,...,zn,"s"} (spline), dessine la spline cubique naturelle passant par les points \code{\{last,z1,...,zn\}}.
+      \item \code{z1,"c"} (cercle), dessine le cercle de centre $z_1$ et passant par le point \emph{last}. Il y a une autre syntaxe possible pour le cercle: \code{z1,z2,"c"}, dans ce cas on dessine le cercle passant par les points \emph{last}, $z_1$ et $z_2$.
+      \item \code{z1,z2,r,sens,"ca"} (arc de cercle), dessine un arc de cercle de centre $z_1$, de rayon $r$, allant de \emph{last} vers $z_2$, dans le sens trigonométrique lorsque \code{sens=1} (et donc dans le sens inverse si \code{sens=-1}).
+      \item \code{z1,z2,rx,ry,sens,inclinaison,"ea"} (arc d'ellipse), dessine un arc d'ellipse de centre $z_1$ allant de \emph{last} vers $z_2$, $rx$ et $ry$ sont les deux rayons suivant les deux axes de l'ellipse, \code{inclinaison} est l'angle en degrés que fait le premier axe de l'ellipse (celui qui porte $rx$) avec l'horizontal. Le paramètre \code{inclinaison} est facultatif, il vaut $0$ par défaut.
+      \item \code{z1,rx,ry,inclinaison,"e"} (ellipse), dessine l'ellipse de centre $z_1$, passant par \emph{last}, $rx$ et $ry$ sont les deux rayons suivant les deux axes de l'ellipse, \code{inclinaison} est l'angle en degrés que fait le premier axe de l'ellipse (celui qui porte $rx$) avec l'horizontal. Le paramètre \code{inclinaison} est facultatif, il vaut $0$ par défaut. Lorsque le point \emph{last} n'est pas sur cette ellipse, alors un segment est tracé entre ce point et un point de l'ellipse.
+      \item \code{z1,...,zn,r,"la"} (line arc), dessine la ligne polygonale \code{\{last,z1,...,zn\}} en remplaçant chaque "angle" par un arc de cercle de rayon $r$.
+      \item \code{z1,...,zn,r,"cla"} (closed line arc), même chose que l'instruction précédente, sauf que la ligne est refermée. 
+      \item \code{"cl"} (closepath), cette instruction s'utilise seule, elle permet de refermer la composante courante en traçant un segment reliant le dernier point au premier point (de la composante courante).
+      \end{itemize}
+  
+\subsubsection{Dessiner un chemin}
+
+\begin{itemize}
+\item La fonction \cmd{ld.path(chemin \fac{, nbdots})} renvoie une ligne polygonale contenant les points constituant le \argu{chemin}. L'argument facultatif, \argu{nbdots} est le nombre minimal de points calculés pour chaque courbe de Bézier contenue dans le chemin, sa valeur par défaut est la variable globale \varglob{ld.bezier\_nbdots} qui est initialisée à $12$.
+
+\item La méthode \cmd{g:Dpath(chemin \fac{, draw\_options})} fait le dessin du \argu{chemin} (qui été décrit ci-dessus) en utilisant au maximum les courbes de Bézier, y compris pour les arcs, les ellipses, etc. L'argument \argu{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \drawcmd.
+ 
+\item La fonction \cmd{ld.spline(points \fac{, v1, v2})} renvoie sous forme de chemin (à dessiner avec \cmd{Dpath}) la spline cubique passant par les points de l'argument \argu{points} (qui doit être une liste de complexes). Les arguments \argu{v1} et \argu{v2} sont vecteurs tangents imposés aux extrémités (contraintes), lorsque ceux-ci sont égaux à \nil (valeur par défaut), c'est une spline cubique naturelle (c'est-à-dire sans contrainte) qui est calculée.
+
+\item La méthode \cmd{g:Dspline(points \fac{, v1, v2, draw\_options})} fait le dessin de la spline décrite ci-dessus. L'argument \argu{draw\_options} est une chaîne de caractères qui sera passée directement à l'instruction \drawcmd.
+
+\begin{demo}{Path et Spline}
+\begin{luadraw}{name=path_spline}
+local ld = luadraw
+local g = ld.graph:new{window={-5,5,-5,5},size={10,10},bg="Beige"}
+local i = ld.cpx.I
+local p = {-3+2*i,"m",-3,-2,"l",0,2,2,1,"ca",3,3+3*i,0.5,"la",1,-1+5*i,-3+2*i,"b",-1,"m",0,"c"}
+g:Daxes( {0,1,1} )
+g:Filloptions("full","blue!30",1,true); g:Dpath(p,"line width=0.8pt")
+g:Filloptions("none")
+local A,B,C,D,E = -4-i,-3*i,4,3+4*i,-4+2*i
+g:Lineoptions(nil,"ForestGreen",12); g:Dspline({A,B,C,D,E},nil,-5*i) -- contrainte en E
+g:Ddots({A,B,C,D,E},"fill=white,scale=1.25")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\item La fonction \cmd{ld.tcurve(L)} renvoie sous forme de chemin une courbe passant par des points donnés avec des vecteurs tangents (à gauche et à droite) imposés à chaque point. L'argument \argu{L} est une table de la forme :
+\begin{Luacode}
+L = {point1,{t1,a1,t2,a2}, point2,{t1,a1,t2,a2}, ..., pointN,{t1,a1,t2,a2}}
+\end{Luacode}
+\argu{point1}, \ldots, \argu{pointN} sont les points d'interpolation de la courbe (affixes), et chacun d'eux est suivi d'une table de la forme \code{\{t1,a1,t2,a2\}} qui précise les vecteurs tangents à la courbe à gauche du point (avec \argu{t1} et \argu{a1}) et à droite du point (avec \argu{t2} et \argu{a2}). Le vecteur tangent à gauche est donné par la formule $V_g = t_1\times e^{ia_1\pi/180}$, donc \argu{t1} représente le module et \argu{a1} est un argument \textbf{en degrés} de ce vecteur. C'est la même chose avec \argu{t2} et \argu{a2} pour le vecteur tangent à droite, \textbf{mais ceux-ci sont facultatifs}, et s'ils ne sont pas précisés alors ils prennent les mêmes valeurs que \argu{t1} et \argu{a1}.
+
+Deux points consécutifs seront reliés par une courbe de Bézier, la fonction calcule les points de contrôle pour avoir les vecteurs tangents souhaités.
+
+\item La méthode \cmd{g:Dtcurve(L, options)} fait le dessin du chemin obtenu par \argu{tcurve} décrit ci-dessus. L'argument \argu{options} est une table dont les champs sont les options possibles, qui sont, avec leur valeur par défaut:
+    \begin{itemize}
+        \item \opt{showdots=false}, cette option permet de dessiner ou non les points d'interpolation donnés ainsi que les points de contrôles calculés, ce qui permet une visualisation des contraintes.
+        \item \opt{draw\_options=""}, c'est une chaîne de caractères qui sera passée directement à l'instruction \drawcmd.
+    \end{itemize}
+\end{itemize}
+
+\begin{demo}{Courbe d'interpolation avec vecteurs tangents imposés}
+\begin{luadraw}{name=tcurve}
+local ld = luadraw
+local g = ld.graph:new{window={-0.5,10.5,-0.5,6.5},size={10,10,0}}
+local i = ld.cpx.I
+local L = {
+1+4*i,{2,-20},
+2+3*i,{2,-70},
+4+i/2,{3,0},
+6+3*i,{4,15},
+8+6*i,{4,0,4,-90}, -- point anguleux
+10+i,{3,-15}}
+g:Dgrid({0,10+6*i},{gridstyle="dashed"})
+g:Daxes(nil,{limits={{0,10},{0,6}},originpos={"center","center"}, arrows="->"})
+g:Dtcurve(L,{showdots=true,draw_options="line width=0.8pt,red"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Chemins et clipping : Beginclip() et Endclip()}
+
+Un chemin peut être utilisé pour faire du clipping grâce à deux fonctions : \cmd{g:Beginclip(chemin \fac{, inverse})} et \cmd{g:Endclip()}. La première ouvre un groupe \emph{scope} et passe le \argu{chemin} comme argument à la fonction \emph{\textbackslash clip} de TikZ. La seconde referme le groupe \emph{scope}, elle est indispensable (sinon il y aura une erreur de compilation).
+L'argument \argu{inverse} est un booléen qui vaut \false par défaut, lorsqu'il a la valeur \true le clipping est inversé, c'est à dire que seul ce qui est à l'extérieur du \argu{chemin} sera dessiné, mais il faut pour cela que celui-ci soit dans le sens trigonométrique.
+
+\begin{demo}{Exemple de clipping}
+\begin{luadraw}{name=polygon_with_different_line_color_and_rounded_corners}
+local ld = luadraw
+local g = ld.graph:new{window={-5,5,-5,5},size={10,10}}
+local i = ld.cpx.I
+local Dcolored_polyreg = function(c,a,nb,r,wd,colors)
+-- c=centre, a=sommet, nb=nombre de côtés, r=rayon, wd=épaisseur en point, colors=liste de couleurs
+    local L = ld.polyreg(c,a,nb)
+    ld.insert(L,{r,"cla"}) --polygone aux angles arrondis (radius=r)
+    local angle = 360/nb
+    local b = a
+    for k = 1, nb do
+        a = b; b = ld.rotate(a,angle,c)
+        g:Beginclip({2*a-c,c,2*b-c,"l"}) -- définition d'un secteur angulaire pour clipper
+        g:Dpath(L,"line width="..wd.."pt,color="..colors[k])
+        g:Endclip()
+    end
+end
+Dcolored_polyreg(3+2*i,5+2*i,5,0.8,12,{"red","blue","orange","green","yellow"}) -- pentagon
+Dcolored_polyreg(-2.5-2*i,-5-2*i,7,1,24,ld.getpalette(ld.palGasFlame,7)) -- heptagon
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Axes et grilles}
+
+Variables globales utilisées pour les axes et les grilles :
+\begin{itemize}
+    \item \varglob{ld.maxGrad = 100} : nombre max de graduations sur un axe.
+    \item \varglob{ld.defaultlabelshift = 0.1875} : lorsqu'une grille est dessinée avec les axes (option \opt{grid=true}) les labels sont automatiquement décalés le long de l'axe avec cette variable.
+    \item \varglob{ld.defaultxylabelsep = 0} : définit la distance par défaut entre les labels et les graduations.
+    \item \varglob{ld.defaultlegendsep = 0.2} : définit la distance par défaut entre la légende et l'axe.
+    \item \varglob{ld.digits = 4} : nombre de décimales par défaut dans les conversions en chaînes de caractères, les $0$ terminaux sont supprimés.
+    \item \varglob{ld.dollar = true} :  pour ajouter des dollars autour des labels des graduations.
+    \item \varglob{ld.siunitx = false} :  avec la valeur \true les labels sont formatés avec la macro \verb|\num{...}| du package \emph{siunitx}, ce qui permet d'utiliser certaines options de ce package, comme remplacer le point décimal par une virgule en faisant :\par
+    \begin{TeXcode}
+    \usepackage[local=FR]{siunitx}
+    \end{TeXcode}
+    ou bien en faisant :
+    \begin{TeXcode}
+    \usepackage{siunitx}
+    \sisetup{output-decimal-marker={,}}
+    \end{TeXcode}
+\end{itemize}
+Pour les axes, en 2D comme en 3D, tous les labels sont formatés en chaînes de caractères avec la fonction \cmd{ld.num(x)}, celle-ci transforme le nombre $x$ en une chaîne \emph{str} avec le nombre de décimales fixées par la variable globale \varglob{ld.digits}, lorsque la variable \varglob{ld.siunitx} a la valeur \true, la fonction renvoie \val{"\textbackslash num\{str\}"}, sinon elle renvoie simplement \emph{str}. Ceci vaut pour également pour les axes en 3D. Voici le code de cette fonction:
+\begin{Luacode}
+function ld.num(x) -- x is a real, returns a string
+    local rep = ld.strReal(x) -- conversion to string with digits decimals max
+    if ld.siunitx then rep = "\\num{"..rep.."}" end --needs \usepackage{siunitx}
+    return rep
+end
+\end{Luacode}
+
+\subsubsection{Daxes}
+%\def\opt#1{\textcolor{blue}{\texttt{#1}}}%
+Le tracé des axes s'obtient avec la méthode \cmd{g:Daxes( \fac{\{A, xpas, ypas\}, options})}.
+\begin{itemize}
+    \item Le premier argument précise le point d'intersection des deux axes (c'est le complexe \argu{A}), le pas des graduations sur l'axe $Ox$ (c'est \argu{xpas}) et le pas des graduations sur $Oy$ (c'est \argu{ypas}). Par défaut le point \argu{A} est l'origine $Z(0,0)$, et les deux pas sont égaux à $1$.
+    \item L'argument \argu{options} est une table précisant les options possibles. Voici ces options avec leur valeur par défaut :
+        \begin{itemize}
+            \item \opt{showaxe=\{1,1\}}. Cette option précise si les axes doivent être tracés ou pas ($1$ ou $0$). La première valeur est pour l'axe $Ox$ et la seconde pour l'axe $Oy$.
+            \item \opt{arrows="-"}. Cette option permet d'ajouter ou non une flèche aux axes (pas de flèche par défaut, mettre \val{"->"} par exemple pour ajouter une flèche).
+            \item \opt{limits=\{"auto","auto"\}}. Cette option permet de préciser l'étendue des deux axes (première valeur pour $Ox$, seconde valeur pour $Oy$). La valeur "auto" signifie que c'est la droite en entier, mais on peut préciser les abscisses extrêmes, par exemple : \opt{limits=\{\{-4,4\},"auto"\}}.
+            \item \opt{gradlimits=\{"auto","auto"\}}. Cette option permet de préciser l'étendue des graduations sur les deux axes (première valeur pour $Ox$, seconde valeur pour $Oy$). La valeur \val{"auto"} signifie que c'est la droite en entier, mais on peut préciser les graduations extrêmes, par exemple : \opt{gradlimits=\{\{-4,4\},\{-2,3\}\}}.
+            \item \opt{unit=\{"",""\}}. Cette option permet de préciser de combien en combien vont les graduations sur les axes. La valeur par défaut signifie qu'il faut prendre la valeur du pas (\argu{xpas} sur $Ox$, ou \argu{ypas} sur $Oy$), SAUF lorsque l'option \opt{labeltext} n'est pas la chaîne vide, dans ce cas \opt{unit} prend la valeur $1$.
+            \item \opt{nbsubdiv=\{0,0\}}. Cette option permet de préciser le nombre de subdivisions entre deux graduations principales sur l'axe.
+            \item \opt{tickpos=\{0.5,0.5\}}. Cette option précise la position des graduations par rapport à chaque axe, ce sont deux nombres entre $0$ et $1$, la valeur par défaut de $0.5$ signifie qu'ils sont centrés sur l'axe ($0$ et $1$ représentent les extrémités).
+            \item \opt{tickdir=\{"auto","auto"\}}. Cette option indique la direction des graduations sur l'axe. Cette direction est un vecteur (complexe) non nul. La valeur par défaut \val{"auto"} signifie que les graduations sont orthogonales à l'axe.
+            \item \opt{xyticks=\{0.2,0.2\}}. Cette option précise la longueur des graduations sur l'axe.
+            \item \opt{xylabelsep=\{0,0\}}. Cette option précise la distance entre les labels et les graduations sur l'axe.
+            \item \opt{originpos=\{"right","top"\}}. Cette option précise la position du label à l'origine sur l'axe, les valeurs possibles sont : \val{"none"}, \val{"center"}, \val{"left"}, \val{"right"} pour $Ox$, et \val{"none"}, \val{"center"}, \val{"bottom"}, \val{"top"} pour $Oy$.
+            
+            \item \opt{originnum=\{A.re,A.im\}}. Cette option précise la valeur au point origine des graduations (graduation numéro $0$). 
+            
+            La formule qui définit le label à la graduation numéro $n$ est : 
+            \codeln{(originnum + unit*n)"labeltext"/labelden.}
+            
+            \item \opt{originloc=A}. Cette option précise le point origine des graduations.
+            
+            \item \opt{legend=\{"",""\}}. Cette option permet de préciser une légende pour l'axe.
+            \item \opt{legendpos=\{0.975,0.975\}}. Cette option précise la position (entre $0$ et $1$) de la légende par rapport à chaque axe.
+            
+            \item \opt{legendsep=\{ld.defaultlegendsep,ld.defaultlegendsep\}}. Cette option précise la distance entre la légende et l'axe. La légende est de l'autre côté de l'axe par rapport aux graduations.
+            
+            \item \opt{legendangle=\{"auto","auto"\}}. Cette option précise l'angle (en degrés) que doit faire la légende pour l'axe. La valeur \val{"auto"} par défaut signifie que la légende doit être parallèle à l'axe si l'option \opt{labelstyle} est aussi à \val{"auto"}, sinon la légende est horizontale.
+            
+            \item \opt{legendstyle=\{"auto","auto"\}}. Précise le style de label pour les légendes, avec la valeur \val{"auto"} celui-ci est déterminé automatiquement, sinon on peut utiliser les valeurs: \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+            
+            \item \opt{labelpos=\{"bottom","left"\}}. Cette option précise la position des labels par rapport à l'axe. Pour l'axe $Ox$, les valeurs possibles sont : \val{"none"}, \val{"bottom"} ou \val{"top"}, pour l'axe $Oy$ c'est :  \val{"none"}, \val{"right"} ou \val{"left"}.
+            
+            \item \opt{labelden=\{1,1\}}. Cette option précise le dénominateur des labels (entier) pour l'axe. Rappelons que la formule qui définit le label à la graduation numéro $n$ est : 
+            \codeln{(originnum + unit*n)"labeltext"/labelden.}
+            
+            \item \opt{labeltext=\{"",""\}}. Cette option définit le texte qui sera ajouté au numérateur des labels pour l'axe.
+            
+            \item \opt{labelstyle=\{"S","W"\}}. Cette option définit le style des labels pour chaque axe. Les valeurs possibles sont : \val{"auto"}, \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+            
+            \item \opt{labelangle=\{0,0\}}. Cette option définit pour chaque axe l'angle des labels en degrés par rapport à l'horizontale.
+            
+            \item \opt{labelcolor=\{"",""\}}. Cette option permet de choisir une couleur pour les labels sur chaque axe. La chaîne vide représente la couleur par défaut.
+            
+            \item \opt{labelshift=\{0,0\}}. Cette option permet de définir un décalage systématique pour les labels sur l'axe (décalage de long de l'axe), avec l'option \opt{grid=false} les valeurs par défaut sont $0$ et $0$, mais avec l'option \opt{grid=true} on a par défaut \opt{labelshift=\{ld.defaultlabelshift,ld.defaultlabelshift\}} où \varglob{ld.defaultlabelshift} est une variable globale initialisée à $0.1875$.
+            
+            \item \opt{xynode\_options=""}. Chaîne de caractères qui sera transmise telle quelle à l'instruction \verb|\node{}| pour tous les labels sur les deux axes (mais pas pour les légendes).
+            
+            \item \opt{xnode\_options=xynode\_options}. Chaîne de caractères qui sera transmise telle quelle à l'instruction \verb|\node{}| pour tous les labels sur l'axe des $x$ (mais pas pour la légende).
+            
+             \item \opt{ynode\_options=xynode\_options}. Chaîne de caractères qui sera transmise telle quelle à l'instruction \verb|\node{}| pour tous les labels sur l'axe des $y$ (mais pas pour la légende).
+            
+            \item \opt{nbdeci=\{2,2\}}. Cette option précise le nombre de décimales pour les valeurs numériques sur l'axe.
+            
+            \item \opt{use\_siunitx=\{ld.siunitx,ld.siunitx\}}. Cette option précise si les valeurs numériques doivent être formatées en utilisant le paquet \emph{siunitx}, la valeur par défaut est celle de la variable globale \varglob{ld.siunitx} qui vaut \false par défaut.
+            
+            \item \opt{myxlabels=""}. Cette option permet d'imposer des labels personnels sur l'axe $Ox$. Lorsqu'il y en a, la valeur passée à l'option doit être une liste du type : \code{\{pos1,"text1",pos2,"text2",\ldots\}}. Le nombre \argu{pos1} représente une abscisse dans le repère \code{(A,xpas)}, ce qui correspond au point d'affixe \code{A+pos1*xpas}.
+            
+            \item \opt{myylabels=""}. Cette option permet d'imposer des labels personnels sur l'axe $Oy$. Lorsqu'il y en a, la valeur passée à l'option doit être une liste du type :  \code{\{pos1,"text1",pos2,"text2",\ldots\}}. Le nombre \argu{pos1} représente une abscisse dans le repère \code{(A,i*ypas)}, ce qui correspond au point d'affixe \code{A+pos1*ypas*i}.
+            
+            \item \opt{grid=false}. Cette option permet d'ajouter ou non une grille.
+            
+            \item \opt{showlines=\{\true,\true\}}. Lorsque \opt{grid=\true}, cette option permet d'afficher ou non les traits verticaux de la grille (correspondant à l'axe des $x$, ainsi que les traits horizontaux de la grille (correspondant à l'axe des $y$).
+            
+            \item \opt{drawbox=false}. Cette option de dessiner les axes sous la forme d'une boite, dans ce cas, les graduations sont sur le côté gauche et le côté bas.
+            \item \opt{gridstyle="solid"}. Cette option définit le style ligne pour la grille principale.
+            \item \opt{subgridstyle="solid"}. Cette option définit le style ligne pour la grille secondaire. Une grille secondaire apparaît lorsqu'il y a des subdivisions sur un des axes.
+            \item  \opt{gridcolor="gray"}. Ceci définit la couleur de la grille principale.
+            \item \opt{subgridcolor="lightgray"}. Ceci définit la couleur de la grille secondaire.
+            \item \opt{gridwidth=4}. Épaisseur de trait de la grille principale (ce qui fait 0.4pt).
+            \item \opt{subgridwidth=2}. Épaisseur de trait de la grille secondaire (ce qui fait 0.2pt).
+        \end{itemize}
+\end{itemize}
+
+\begin{demo}{Exemple avec axes avec grille}
+\begin{luadraw}{name=axes_grid}
+local ld = luadraw
+local g = ld.graph:new{window={-6.5,6.5,-3.5,3.5}, size={10,10,0}}
+local i, pi, a = ld.cpx.I, math.pi, math.sqrt(2)
+local f = function(x) return 2*a*math.sin(x) end
+g:Labelsize("footnotesize"); g:Linewidth(8)
+g:Daxes({0,pi/2,a},{labeltext={"\\pi","\\sqrt{2}"}, labelden={2,1},nbsubdiv={1,1},grid=true,arrows="->"})
+g:Lineoptions("solid","Crimson",12); g:Dcartesian(f, {x={-2*pi,2*pi}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{DaxeX et DaxeY}
+
+Les méthodes \cmd{g:DaxeX(\fac{\{A, xpas\}, options})} et \cmd{g:DaxeY(\fac{\{A, ypas\}, options})} permettent de tracer les axes séparément.
+\begin{itemize}
+    \item Le premier argument précise le point servant d'origine (c'est le complexe \argu{A}) et le pas des graduations sur l'axe. Par défaut le point \argu{A} est l'origine $Z(0,0)$, et le pas est égal à $1$.
+    \item L'argument \argu{options} est une table précisant les options possibles. Voici ces options avec leur valeur par défaut :
+        \begin{itemize}
+            \item \opt{showaxe=1}. Cette option précise si l'axe doit être tracé ou non ($1$ ou $0$).
+            
+            \item \opt{arrows="-"}. Cette option permet d'ajouter ou non une flèche à l'axe (pas de flèche par défaut, mettre \val{"->"} pour ajouter une flèche).
+            
+            \item \opt{limits="auto"}. Cette option permet de préciser l'étendue des deux axes. La valeur "auto" signifie que c'est la droite en entier, mais on peut préciser les abscisses extrêmes, par exemple : \opt{limits=\{-4,4\}}.
+            
+            \item \opt{gradlimits="auto"}. Cette option permet de préciser l'étendue des graduations sur les deux axes. La valeur \val{"auto"} signifie que c'est la droite en entier, mais on peut préciser les graduations extrêmes, par exemple : \opt{gradlimits=\{-2,3\}}.
+            \item \opt{unit=""}. Cette option permet de préciser de combien en combien vont les graduations sur l'axe. La valeur par défaut signifie qu'il faut prendre la valeur du pas, SAUF lorsque l'option \opt{labeltext} n'est pas la chaîne vide, dans ce cas \opt{unit} prend la valeur $1$.
+            
+            \item \opt{nbsubdiv=0}. Cette option permet de préciser le nombre de subdivisions entre deux graduations principales.
+            
+            \item \opt{tickpos=0.5}. Cette option précise la position des graduations par rapport à l'axe, ce sont deux nombres entre $0$ et $1$, la valeur par défaut de $0.5$ signifie qu'ils sont centrés sur l'axe. ($0$ et $1$ représentent les extrémités).
+            
+            \item \opt{tickdir="auto"}. Cette option indique la direction des graduations sur l'axe. Cette direction est un vecteur (complexe) non nul. La valeur par défaut \val{"auto"} signifie que les graduations sont orthogonales à l'axe.
+            
+            \item \opt{xyticks=0.2}. Cette option précise la longueur des graduations.
+            
+            \item \opt{xylabelsep=0}. Cette option précise la distance entre les labels et les graduations.
+            
+            \item \opt{originpos="center"}. Cette option précise la position du label à l'origine sur l'axe, les valeurs possibles sont : \val{"none"}, \val{"center"}, \val{"left"}, \val{"right"} pour $Ox$, et \val{"none"}, \val{"center"}, \val{"bottom"}, \val{"top"} pour $Oy$.
+            
+            \item \opt{originnum=A.re} pour $Ox$ et \opt{originnum=A.im} pour $Oy$. Cette option précise la valeur de la graduation à l'origine (graduation numéro $0$). 
+            
+            La formule qui définit le label à la graduation numéro $n$ est : 
+            \codeln{(originnum + unit*n)"labeltext"/labelden.}
+
+            \item \opt{legend=""}. Cette option permet de préciser une légende pour l'axe.
+            
+            \item \opt{legendpos=0.975}. Cette option précise la position (entre $0$ et $1$) de la légende par rapport à l'axe.
+            
+            \item \opt{legendsep=ld.defaultlegendsep}. Cette option précise la distance entre la légende et l'axe. La légende est de l'autre côté de l'axe par rapport aux graduations.
+            
+            \item \opt{legendangle="auto"}. Cette option précise l'angle (en degrés) que doit faire la légende pour l'axe. La valeur "auto" par défaut signifie que la légende doit être parallèle à l'axe si l'option \opt{labelstyle} est aussi à \val{"auto"}, sinon la légende est horizontale.
+            
+            \item \opt{legendstyle="auto"}. Précise le style de label pour la légende, avec la valeur \val{"auto"} celui-ci est déterminé automatiquement, sinon on peut utiliser les valeurs: \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+            
+            \item \opt{labelpos="bottom"} pour $Ox$ et \opt{labelpos="left"} pour $Oy$. Cette option précise la position des labels par rapport à l'axe. Pour l'axe $Ox$, les valeurs possibles sont : \val{"none"}, \val{"bottom"} ou \val{"top"}, pour l'axe $Oy$ c'est :  \val{"none"}, \val{"right"} ou \val{"left"}.
+            
+            \item \opt{labelden=1}. Cette option précise le dénominateur des labels (entier) pour l'axe. La formule qui définit le label à la graduation numéro $n$ est : 
+            \codeln{(originnum + unit*n)"labeltext"/labelden.}
+            
+            \item \opt{labeltext=""}. Cette option définit le texte qui sera ajouté au numérateur des labels.
+            
+            \item \opt{labelstyle="S"} pour $Ox$ et \opt{labelstyle="W"} pour $Oy$. Cette option définit le style des labels. Les valeurs possibles sont: \val{"auto"}, \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+            
+            \item \opt{labelangle=0}. Cette option définit l'angle des labels en degrés par rapport à l'horizontale.
+            
+            \item \opt{labelcolor=""}. Cette option permet de choisir une couleur pour les labels. La chaîne vide représente la couleur courante du texte.
+            
+            \item \opt{labelshift=0}. Cette option permet de définir un décalage systématique pour les labels sur l'axe (décalage de long de l'axe).
+            
+            \item \opt{nbdeci=2}. Cette option précise le nombre de décimales pour les labels numériques.
+            
+            \item \opt{use\_siunitx=ld.siunitx}. Cette option précise si les valeurs numériques doivent être formatées en utilisant le paquet \emph{siunitx}, la valeur par défaut est celle de la variable globale \varglob{ld.siunitx} qui vaut \false par défaut.
+            
+            \item \opt{mylabels=""}. Cette option permet d'imposer des labels personnels. Lorsqu'il y en a, la valeur passée à l'option doit être une liste du type : \code{\{pos1,"text1",pos2,"text2",\ldots\}}. Le nombre \argu{pos1} représente une abscisse dans le repère \code{(A,xpas)} pour $Ox$, ou \code{(A,ypas*i)} pour $Oy$, ce qui correspond au point d'affixe \code{A+pos1*xpas} pour $Ox$, et \code{A+pos1*ypas*i} pour $Oy$.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Dgradline}
+
+Les méthodes de tracé des axes s'appuient sur la méthode \cmd{g:Dgradline(\{A, u\}, options)}, où \argu{\{A,u\}} représente la droite passant par \argu{A} (un complexe) et dirigé par le vecteur \argu{u} (un complexe non nul), le couple $(A,u)$ sert de repère sur cette droite (et oriente cette droite), donc chaque point $M$ de cette droite a une abscisse $x$ telle $M=A+xu$. Cette méthode permet de dessiner cette droite graduée, l'argument \argu{options} est une table précisant les options possibles, qui sont (avec leur valeur par défaut) :
+\begin{itemize}
+    \item \opt{showaxe=1}. Cette option précise si l'axe doit être tracé ou non ($1$ ou $0$).
+    
+    \item \opt{arrows="-"}. Cette option permet d'ajouter ou non une flèche à l'axe (pas de flèche par défaut, mettre \val{"->"} pour ajouter une flèche).
+    
+    \item \opt{limits="auto"}. Cette option permet de préciser l'étendue des deux axes. La valeur \val{auto"} signifie que c'est la droite en entier, mais on peut préciser les abscisses extrêmes, par exemple : \opt{limits=\{-4,4\}}.
+    
+    \item \opt{gradlimits="auto"}. Cette option permet de préciser l'étendue des graduations sur les deux axes. La valeur \val{"auto"} signifie que c'est la droite en entier, mais on peut préciser les graduations extrêmes, par exemple : \opt{gradlimits=\{-2,3\}}.
+    
+    \item \opt{unit=1}. Cette option permet de préciser de combien en combien vont les graduations sur l'axe.
+    
+    \item \opt{nbsubdiv=0}. Cette option permet de préciser le nombre de subdivisions entre deux graduations principales.
+    
+    \item \opt{tickpos=0.5}. Cette option précise la position des graduations par rapport à l'axe, ce sont deux nombres entre $0$ et $1$, la valeur par défaut de $0.5$ signifie qu'ils sont centrés sur l'axe. ($0$ et $1$ représentent les extrémités).
+    
+    \item \opt{tickdir="auto"}. Cette option indique la direction des graduations sur l'axe. Cette direction est un vecteur (complexe) non nul. La valeur par défaut \val{"auto"} signifie que les graduations sont orthogonales à l'axe.
+    
+    \item \opt{xyticks=0.2}. Cette option précise la longueur des graduations.
+    
+    \item \opt{xylabelsep=defaultxylabelsep}. Cette option précise la distance entre les labels et les graduations, \varglob{defaultxylabelsep} est une variable globale valant $0$ par défaut.
+    
+    \item \opt{originpos="center"}. Cette option précise la position du label à l'origine sur l'axe, les valeurs possibles sont : \val{"none"}, \val{"center"}, \val{"left"}, \val{"right"}.
+    
+    \item \opt{originnum=0}. Cette option précise la valeur de la graduation à l'origine $A$ (graduation numéro $0$).
+    
+    La formule qui définit le label à la graduation numéro $n$ (au point $A+nu$) est : 
+    \codeln{(originnum + unit*n)"labeltext"/labelden.}
+
+    \item \opt{legend=""}. Cette option permet de préciser une légende pour l'axe.
+    
+    \item \opt{legendpos=0.975}. Cette option précise la position (entre $0$ et $1$) de la légende par rapport à l'axe.
+    
+    \item \opt{legendsep=ld.defaultlegendsep}. Cette option précise la distance entre la légende et l'axe. La légende est de l'autre côté de l'axe par rapport aux graduations, \varglob{ld.defaultlegendsep} est une variable globale qui vaut $0.2$ par défaut.
+    
+    \item \opt{legendangle="auto"}. Cette option précise l'angle (en degrés) que doit faire la légende pour l'axe. La valeur \val{"auto"} par défaut signifie que la légende doit être parallèle à l'axe si l'option \opt{labelstyle} est aussi à \val{"auto"}, sinon la légende est horizontale.
+    
+    \item \opt{legendstyle="auto"}. Précise le style de label pour la légende, avec la valeur \val{"auto"} celui-ci est déterminé automatiquement, sinon on peut utiliser les valeurs: \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+    
+    \item \opt{labelpos="bottom"}. Cette option précise la position des labels par rapport à l'axe, les valeurs possibles sont : \val{"none"}, \val{"bottom"}, or \val{"top"}. Cette position détermine en même temps celle de la légende : de l'autre côté de l'axe.
+    
+    \item \opt{labelden=1}. Cette option précise le dénominateur des labels (entier) pour l'axe. La formule qui définit le label à la graduation numéro $n$ est : 
+    \codeln{(originnum + unit*n)"labeltext"/labelden.}
+    
+    \item \opt{labeltext=""}. Cette option définit le texte qui sera ajouté au numérateur des labels.
+    
+    \item \opt{labelstyle="auto"}. Cette option définit le style des labels. Les valeurs possibles sont: \val{"auto"}, \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+    
+    \item \opt{labelangle=0}. Cette option définit l'angle des labels en degrés par rapport à l'horizontale.
+    
+    \item \opt{labelcolor=""}. Cette option permet de choisir une couleur pour les labels. La chaîne vide représente la couleur courante du texte.
+    
+    \item \opt{labelshift=0}. Cette option permet de définir un décalage systématique pour les labels sur l'axe (décalage de long de l'axe).
+    
+    \item \opt{nbdeci=2}. Cette option précise le nombre de décimales pour les labels numériques.
+    
+    \item \opt{use\_siunitx=ld.siunitx}. Cette option précise si les valeurs numériques doivent être formatées en utilisant le paquet \emph{siunitx}, la valeur par défaut est celle de la variable globale \varglob{ld.siunitx} qui vaut \false par défaut.
+    
+    \item \opt{mylabels=""}. Cette option permet d'imposer des labels personnels. Lorsqu'il y en a, la valeur passée à l'option doit être une liste du type : \code{\{x1,"text1",x2,"text2",\ldots\}}. Les nombres \argu{x1}, \argu{x2}, \ldots, représentent des abscisses dans le repère $(A,u)$.
+\end{itemize}
+
+\begin{demo}{Exemples de droites graduées}
+\begin{luadraw}{name=gradline}
+local ld = luadraw
+local g = ld.graph:new{window={-5,5,-5,5},size={10,10}}
+g:Labelsize("footnotesize")
+local i = ld.cpx.I
+g:Dgradline({3.25*i,1+i/2}, {limits={-4,4}, legend="Axe", legendpos=0.5, arrows="-stealth"})
+g:Dgradline({-3,1}, {legend="demo", labeltext="\\pi", labelden=3, unit=2, nbsubdiv=1, arrows="-latex"})
+g:Dgradline({3-4*i,-1.25+i/5}, {legend="A", labelstyle="N", gradlimits={-1,5},
+nbsubdiv=3, unit=1.411, nbdeci=3, arrows="-Latex"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dgrid}
+
+La méthode \cmd{g:Dgrid(\{A, B\}, options} permet le dessin d'une grille.
+\begin{itemize}
+    \item Le premier argument est obligatoire, il précise le coin inférieur gauche (c'est le complexe \argu{A}), le coin supérieur droit (c'est le complexe \argu{B}) de la grille.
+    \item L'argument \argu{options} est une table précisant les options possibles. Voici ces options avec leur valeur par défaut :
+        \begin{itemize}
+            \item \opt{unit=\{1,1\}}. Cette option définit les unités sur les axes pour la grille principale.
+            \item \opt{showlines=\{\true,\true\}}. Cette option permet d'afficher ou non les traits verticaux de la grille (correspondant à l'axe des $x$, ainsi que les traits horizontaux de la grille (correspondant à l'axe des $y$).
+            \item \opt{gridwidth=4}. Cette option définit l'épaisseur du trait de la grille principale (0.4pt par défaut).
+            \item \opt{gridcolor="gray"}. Couleur grille de la grille principale.
+            \item \opt{gridstyle="solid"}. Style de trait pour la grille principale.
+            \item \opt{nbsubdiv=\{0,0\}}. Nombre de subdivisions (pour chaque axe) entre deux traits de la grille principale. Ces subdivisions déterminent la grille secondaire.
+            \item \opt{subgridcolor="lightgray"}. Couleur de la grille secondaire.
+            \item \opt{subgridwidth=2}. Épaisseur du trait de la grille secondaire (0.2pt par défaut).
+            \item \opt{subgridstyle="solid"}. Style de trait pour la grille secondaire.
+            \item \opt{originloc=A}. Localisation de l'origine de la grille.
+        \end{itemize}
+\end{itemize}
+
+\paragraph{Exemple :} il est possible de travailler dans un repère non orthogonal. Voici un exemple où l'axe $Ox$ est conservé, mais la première bissectrice devient le nouvel axe $Oy$, on modifie pour cela la matrice de transformation du graphe. À partir de cette modification les affixes représentent les coordonnées dans le nouveau repère.
+\begin{demo}{Exemple de repère non orthogonal}
+\begin{luadraw}{name=axes_non_ortho}
+local ld = luadraw
+local g = ld.graph:new{window={-5.25,5.25,-4,4},size={10,10}}
+local i, pi, Z = ld.cpx.I, math.pi, ld.cpx.Z
+local f = function(x) return 2*math.sin(x) end
+g:Setmatrix({0,1,1+i}); g:Labelsize("small")
+g:Dgrid({-5-4*i,5+4*i},{gridstyle="dashed"})
+g:Daxes({0,1,1}, {arrows="-Stealth"})
+g:Lineoptions("solid","ForestGreen",12); g:Dcartesian(f,{x={-5,5}})
+g:Dcircle(0,3,"Crimson")
+g:DlineEq(1,0,3,"Navy") -- droite d'équation x=-3
+g:Lineoptions("solid","black",8); g:DtangentC(f,pi/2,1.5,"<->")
+g:Dpolyline({pi/2,pi/2+2*i,2*i},"dotted")
+g:Ddots(Z(pi/2,2))
+g:Dlabeldot("$\\frac{\\pi}2$",pi/2,{pos="SW"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dgradbox}
+
+La méthode \cmd{g:Dgradbox(\{A, B, xpas, ypas\}, options)} permet le dessin d'une boîte graduée.
+\begin{itemize}
+    \item Le premier argument est obligatoire, il précise le coin inférieur gauche (c'est le complexe \argu{A}) et le coin supérieur droit (c'est le complexe \argu{B}) de la boîte, ainsi que le pas sur chaque axe.
+    \item L'argument \argu{options} est une table précisant les options possibles. Ce sont les mêmes que pour les axes, mises à part certaines valeurs par défaut. À celles-ci s'ajoute l'option suivante : \opt{title=""} qui permet d'ajouter un titre en haut de la boite, attention cependant à laisser suffisamment de place pour cela.
+\end{itemize}
+
+\begin{demo}{Utilisation de Dgradbox}
+\begin{luadraw}{name=gradbox}
+local ld = luadraw
+local g = ld.graph:new{window={-5,4,-5.5,5},size={10,10}}
+local i, pi = ld.cpx.I, math.pi
+local h = function(x) return x^2/2-2 end
+local f = function(x) return math.sin(3*x)+h(x) end
+g:Dgradbox({-pi-4*i,pi+4*i,pi/3,1},{grid=true,originloc=0, originnum={0,0}, labeltext={"\\pi",""},
+labelden={3,1}, title="\\textbf{Title}", legend={"Legende $x$","Legende $y$"}})
+g:Saveattr(); g:Viewport(-pi,pi,-4,4) -- on limite la vue (clip)
+g:Filloptions("full","blue",0.6); g:Linestyle("noline"); g:Ddomain2(f,h,{x={-pi/2,2*pi/3}})
+g:Filloptions("none",nil,1); g:Lineoptions("solid",nil,8); g:Dcartesian(h,{x={-pi,pi}, draw_options="DarkBlue"})
+g:Dcartesian(f,{x={-pi,pi},draw_options="Crimson"})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Dessins d'ensembles (diagrammes de Venn)}
+
+\subsubsection{Dessiner un ensemble}
+
+La fonction \cmd{ld.set(center \fac{, angle, scale})} renvoie un chemin représentant un ensemble (en forme d'œuf), dont le centre est \argu{center} (complexe), l'argument \argu{angle} représente l'inclinaison (en degrés) de l'axe vertical de l'ensemble ($0$ par défaut), et l'argument \argu{scale} est un facteur d'échelle permettant de modifier la taille de l'ensemble ($1$ par défaut). Un tel chemin peut être dessiné avec la méthode \cmd{g:Dpath()}.
+
+\begin{demo}{Dessiner un ensemble}
+\begin{luadraw}{name=set}
+local ld = luadraw
+local g = ld.graph:new{window={-5.25,5.25,-5,5},size={10,10}}
+local i = ld.cpx.I
+local A, B, C = ld.set(i,0), ld.set(-2-i,25), ld.set(2-i,-25)
+g:Fillopacity(0.3)
+g:Dpath(A,"fill=orange"); g:Dpath(B,"fill=blue")
+g:Dpath(C,"fill=green")
+g:Fillopacity(1)
+g:Dlabel("$A$",5*i,{pos="N"},"$B$",-4+3*i,{pos="W"},"$C$",4+3*i,{pos="E"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Opérations sur les ensembles}
+
+Notons $C_1$ et $C_2$ deux listes de complexes représentant le contour de deux ensembles (courbes fermées simples, d'un seul tenant). Les opérations possibles sont au nombre de trois :
+\begin{itemize}
+    \item La fonction \cmd{ld.cap(C1, C2)} renvoie une liste de complexes représentant le contour de l'intersection des ensembles correspondant à $C_1$ et $C_2$.
+    \item La fonction \cmd{ld.cup(C1, C2)} renvoie une liste de complexes représentant le contour de la réunion des ensembles correspondant à $C_1$ et $C_2$.
+        \item La fonction \cmd{ld.setminus(C1, C2)} renvoie une liste de complexes représentant le contour de la différence des ensembles correspondant à $C_1$ et $C_2$ ($C_1\setminus C_2$).    
+\end{itemize}
+Le résultat de ces opérations, étant une liste de complexes, peut être dessiné avec la méthode \cmd{g:Dpolyline()}.
+
+\begin{demo}{Opérations sur les ensembles}
+\begin{luadraw}{name=cap_and_cup}
+local ld = luadraw
+local g = ld.graph:new{window={-5.5,5.5,-5,5},size={10,10}}
+local i = ld.cpx.I
+local A, B, C = ld.set(i,0), ld.set(-2-i,25), ld.set(2-i,-25)
+g:Fillopacity(0.3)
+g:Dpath(A,"fill=orange"); g:Dpath(B,"fill=blue"); g:Dpath(C,"fill=green")
+g:Fillopacity(1)
+local C1, C2, C3 = ld.path(A), ld.path(B), ld.path(C) -- conversion: chemin -> liste de complexes
+local I = ld.cap(ld.cup(C1,C2),C3)
+g:Linecolor("red"); g:Filloptions("full","white")
+g:Dpolyline(I,true,"line width=0.8pt,fill opacity=0.8")
+g:Dlabel("$A$",5*i,{pos="N"},"$B$",-4+3*i,{pos="W"},"$C$",4+3*i,{pos="E"},
+"$(A\\cup B) \\cap C$",-i,{pos="NE",node_options="red,draw"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{NB} : le résultat n'est pas toujours satisfaisant lorsque les contours deviennent trop complexes, ou lorsque les contours ont des tronçons en commun.
+
+
+\subsection{Importer une image}
+
+\subsubsection{Placer une image dans le graphique}
+
+Pour importer une image dans le graphique en cours (et éventuellement dessiner par dessus), il y a la méthode : \cmdln{g:Dimage(filename, anchor, options)}
+\begin{itemize}
+    \item \argu{filename} est le nom complet du fichier image, celle-ci sera affichée par la commande \verb|\includegraphics[]{}| dans un node,
+    \item \argu{anchor} est un nombre complexe représentant le point d'ancrage de l'image dans le graphique,
+    \item \argu{options} est une table dont les champs définissent les paramètres d'affichage, qui sont (avec leur valeur par défaut):
+    \begin{itemize}
+        \item \opt{pos="center"} qui indique la position de l'image par rapport au point d'ancrage, sur le même principe que pour les labels. Les valeurs possibles sont: \val{"center"}, \val{"N"}, \val{"NE"}, \val{"E"}, \val{"SE"}, \val{"S"}, \val{"SW"}, \val{"W"}, \val{"NW"}.
+        \item \opt{name=""} qui permet éventuellement de donner un nom au node qui va être créé (nom qui pourra être utilisé par TikZ ensuite),
+        \item \opt{graphics\_options=""} qui est une chaîne contenant des options pour la commande \verb|\includegraphics|,
+        \item \opt{matrix=nil} qui est une table représentant une matrice de transformation affine, celle-ci sera appliquée localement au node créé (pour le node, l'origine est le point d'ancrage). Il est à noter que la matrice 2D de transformation globale du graphique en cours est également prise en compte par cette méthode.
+    \end{itemize}
+\end{itemize}
+
+\begin{demo}{Importer une image}
+\begin{luadraw}{name=Dimage}
+local ld = luadraw
+local Z, i = ld.cpx.Z, ld.cpx.I
+local g = ld.graph:new{margin={0,0,0,0}, size={10,10},bg="green!30"}
+local filename = ld.cachedir.."flower.jpg"
+local g_options = "width=4.5cm,height=4.5cm"
+g:Dimage(filename,Z(-5,5),{pos="SE", graphics_options=g_options})
+g:Dimage(filename,Z(5,5),{pos="SE", matrix={0,-1,i}, graphics_options=g_options})
+g:Rotate(180)
+g:Dimage(filename,Z(-5,5),{pos="SE", graphics_options=g_options})
+g:IDmatrix()
+g:Dimage(filename,Z(-5,-5),{pos="SE", matrix={0,1,-i}, graphics_options=g_options})
+g:Dlabel( "Originale", Z(-5,5),{pos="SE"},
+"Symétrie verticale", Z(5,5), {pos="SW"},
+"Rotation (globale)", Z(5,-5), {pos="NW"},
+"Symétrie horizontale", Z(-5,-5), {pos="NE"} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Mapper une image sur un parallélogramme}
+
+Ceci est possible avec la méthode : \cmd{g:Dmapimage(filename, parallelo, options)}, où :
+\begin{itemize}
+    \item  \argu{filename} est le nom complet du fichier image, 
+    \item \argu{parallelo} est une liste de la forme $\{a,u,v\}$ constituée de trois nombres complexes, cette liste représente le parallélogramme de sommets $\{a,a+u,a+u+v,a+v\}$.
+    \item \argu{options} est une table dont les champs définissent les paramètres, qui sont (avec leur valeur par défaut):
+    \begin{itemize}
+        \item \opt{name=""} qui permet éventuellement de donner un nom au node qui va être créé (nom qui pourra être utilisé par TikZ ensuite).
+        \item \opt{clip=false} qui est un booléen indiquant si l'image doit être clippée avec le parallélogramme, mais normalement cela n'est pas nécessaire.
+        \item \opt{border\_options=nil}, lorsque cette option n'est pas égale à \nil, ce doit être une chaîne de caractères contenant les options de dessin le contour du parallélogramme, \opt{border\_options} sera alors transmise directement à l'instruction \drawcmd pour dessiner le contour.
+    \end{itemize}    
+\end{itemize}
+
+\begin{demo}{Mapper une image}
+\begin{luadraw}{name=Dmapimage}
+local ld = luadraw
+local g = ld.graph:new{window={-2,3.5,-0.5,7}, margin={0,0,0,0}, size={10,10},bg="green!30"}
+local filename = ld.cachedir.."flower.jpg"
+local i = ld.cpx.I
+local a, u, v, w = 0, 3, -1.5+i, 4*i
+local facets = {{a,u,w}, {a+v,-v,w}, {a+v+w,-v,u} }
+local portrait = {a+w+(2*v+u)/3+0.2, (u-v)/4, 1.5*i+0.2}
+for _,f in ipairs(facets) do
+    g:Dmapimage(filename,f,{border_options="Navy"})
+end
+g:Dmapimage(ld.cachedir.."russell.jpg", portrait, {border_options="lightgray,line width=1.5mm"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Les couleurs}
+
+Dans l'environnement \luadrawenv les couleurs sont des chaînes de caractères qui doivent correspondre à des couleurs connues de TikZ. Le package \emph{xcolor} est fortement conseillé pour ne pas être limité aux couleurs de bases.
+
+\subsubsection{Calculs sur les couleurs}
+
+Afin de pouvoir faire des manipulations sur les couleurs, celles-ci ont été définies (dans le module \emph{luadraw\_colors.lua}) sous la forme de tables de trois composantes : rouge, vert, bleu, chaque composante étant un nombre entre $0$ et $1$, et avec leur nom au format \emph{svgnames} du package \emph{xcolor}, par exemple on y trouve (entre autres) les déclarations :
+\begin{Luacode}
+local ld = luadraw
+ld.AliceBlue = {0.9412, 0.9725, 1}
+ld.AntiqueWhite = {0.9804, 0.9216, 0.8431}
+ld.Aqua = {0.0, 1.0, 1.0}
+ld.Aquamarine = {0.498, 1.0, 0.8314}
+\end{Luacode}
+On pourra se référer à la documentation de \emph{xcolor} pour avoir la liste de ces couleurs.
+
+Pour utiliser celles-ci dans l'environnement \luadrawenv, on peut :
+\begin{itemize}
+    \item soit les utiliser avec leur nom si on a déclaré dans le préambule : \verb|\usepackage[svgnames]{xcolor}|, par exemple : \code{g:Linecolor("AliceBlue")},
+    
+    \item soit les utiliser avec la fonction \cmd{ld.rgb()} de \luadrawenv, par exemple : \code{g:Linecolor(ld.rgb(AliceBlue))}. Par contre, avec cette fonction \cmd{ld.rgb()}, pour changer localement de couleur il faut faire comme ceci (exemple) : \par
+    \code{g:Dpolyline(L,"color="..ld.rgb(AliceBlue))}, ou \code{g:Dpolyline(L,"fill="..ld.rgb(AliceBlue))}. Car la fonction \cmd{rgb()} ne renvoie pas un nom de couleur, mais une définition de couleur.
+\end{itemize}
+
+\paragraph{Fonctions pour la gestion des couleurs :}
+\begin{itemize}
+    \item La fonction \cmd{ld.rgb(r, g, b)} ou \cmd{ld.rgb(\{r, g, b\})}, renvoie la couleur sous forme d'une chaîne de caractères compréhensible par TikZ dans les options \code{color=\ldots} et \code{fill=\ldots}. Les valeurs de $r$, $g$ et $b$ doivent être entre $0$ et $1$.
+    
+    \item La fonction \cmd{ld.hsb(h, s, b \fac{, table})} renvoie la couleur sous forme d'une chaîne de caractères compréhensible par TikZ. L'argument \argu{h} (hue) doit être un nombre enter $0$ et $360$, l'argument \argu{s} (saturation) doit être entre $0$ et $1$, et l'argument \argu{b} (brightness) doit être aussi entre $0$ et $1$. L'argument (facultatif) \argu{table} est un booléen (\false par défaut) qui indique si le résultat doit être renvoyé sous forme de table $\{r,g,b\}$ ou non (par défaut c'est sous forme d'une chaîne).
+    
+    \item La fonction \cmd{ld.mixcolor(color1, proportion1, color2, proportion1, ..., colorN, proportionN)} mélange les couleurs \argu{color1}, \ldots, \argu{colorN} dans les proportions demandées et renvoie la couleur qui en résulte sous forme d'une chaîne de caractères compréhensible par TikZ, suivie de cette même couleur sous forme de table $\{r,g,b\}$. Chacune des couleurs doit être une table de trois composantes $\{r,g,b\}$.
+    
+    \item La fonction \cmd{ld.mixpalette(pal, percent, color)} renvoie une nouvelle palette après avoir mixer chaque couleur de la palette \argu{pal} avec \argu{color}. L'argument \argu{pal} est une liste de couleurs, chacune d'elles étant une table de trois composantes $\{r,g,b\}$, l'argument \argu{percent} est un nombre entre $0$ et $100$, et l'argument \argu{color} est une couleur sous forme de table $\{r,g,b\}$.
+    
+    \item La fonction \cmd{ld.palette(colors, pos \fac{, table})} : l'argument \argu{colors} est une liste (table) de couleurs au format $\{r,g,b\}$, l'argument \argu{pos} est un nombre entre $0$ et $1$, la valeur $0$ correspond à la première couleur de la liste et la valeur $1$ à la dernière. La fonction calcule et renvoie la couleur correspondant à la position \argu{pos} dans la liste par interpolation linéaire. L'argument (facultatif) \argu{table} est un booléen (\false par défaut) qui indique si le résultat doit être renvoyé sous forme de table $\{r,g,b\}$ ou non (par défaut c'est sous forme d'une chaîne).
+    
+    \item La fonction \cmd{ld.getpalette(colors, nb \fac{, table})} : l'argument \argu{colors} est une liste (table) de couleurs au format $\{r,g,b\}$, l'argument \argu{nb} indique le nombre de couleurs souhaité. La fonction renvoie une liste de \argu{nb} couleurs régulièrement réparties dans \argu{colors}. L'argument (facultatif) \argu{table} est un booléen (\false par défaut) qui indique si les couleurs sont renvoyées sous forme de tables $\{r,g,b\}$ ou non (par défaut c'est sous forme de chaînes).  
+    
+    \item La méthode \cmd{g:Newcolor(name, color)} permet de définir dans l'export TikZ au format rgb une nouvelle couleur dont le nom sera \argu{name} (chaîne), l'argument \argu{color} peut être soit une table de trois composantes : rouge, vert, bleu (entre 0 et 1) définissant cette couleur, soit une chaîne de caractères représentant une couleur. Dans le premier cas la méthode utilise un \verb|\definecolor| et dans le second cas elle utilise un \verb|\colorlet|.
+    
+\end{itemize}
+On peut également utiliser toutes les possibilités habituelles de TikZ pour la gestion des couleurs.
+
+Par défaut, il y a cinq palettes de couleurs\footnote{Une palette est une table de couleurs, celles-ci sont elle-mêmes des tables de nombres entre $0$ et $1$ représentant les composantes rouge, vert, bleu.}.
+
+\begin{demo}{Les cinq palettes par défaut}
+\begin{luadraw}{name=palettes}
+local ld = luadraw
+local Z = ld.cpx.Z
+local g = ld.graph:new{window={-5,5,-5,5},bbox=false, border=true}
+g:Linewidth(1)
+local Dpalette = function(pal,A,h,L,N,name)
+    local dl = L/N
+    for k = 1, N do
+        local color = ld.palette(pal,(k-1)/(N-1))
+        g:Drectangle(A,A+h,A+h+dl,"color="..color..",fill="..color)
+        A = A+dl
+    end
+    g:Drectangle(A,A+h,A+h-L); g:Dlabel(name,A+h/2,{pos="E"})
+end
+local A, h, dh, L, N = Z(-5,4), Z(0,-1), Z(0,-1.1), 5, 100
+Dpalette(ld.rainbow,A,h,L,N,"ld.rainbow"); A = A+dh
+Dpalette(ld.palAutumn,A,h,L,N,"ld.palAutumn"); A = A+dh
+Dpalette(ld.palGistGray,A,h,L,N,"ld.palGistGray"); A = A+dh
+Dpalette(ld.palGasFlame,A,h,L,N,"ld.palGasFlame"); A = A+dh
+Dpalette(ld.palRainbow,A,h,L,N,"ld.palRainbow")
+g:Show()
+\end{luadraw}
+\end{demo}

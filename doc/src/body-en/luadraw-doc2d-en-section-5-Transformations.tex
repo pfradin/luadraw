@@ -1,0 +1,61 @@
+\section{Transformations}
+In the following:
+\begin{itemize}
+    \item the argument \argu{L} is either a complex number, a list of complex numbers, or a list of lists of complex numbers,
+    \item the line \argu{d} is a list of two complex numbers: a point on the line and a direction vector.
+\end{itemize}
+
+\subsection{affin}
+The function \cmd{ld.affin(L, d, v, k)} returns the image of \argu{L} by the affinity of base line \argu{d}, parallel to the vector \argu{v} and of ratio \argu{k}.
+
+\subsection{ftransform}
+The function \cmd{ld.ftransform(L, f)} returns the image of \argu{L} by the function \argu{f}, which must be a function of the complex variable. If one of the elements of \argu{L} is the complex number \val{cpx.Jump}, then it is returned as is in the result.
+
+\subsection{hom}
+The function \cmd{ld.hom(L, factor \fac{, center})} returns the image of \argu{L} by the homothety with center \argu{center} and ratio \argu{factor}. By default, the argument \argu{center} is $0$.
+
+\subsection{inv}
+The function \cmd{ld.inv(L, radius \fac{, center})} returns the image of \argu{L} by the inversion with respect to the circle with center \argu{center} and radius \argu{radius}. By default, the argument \argu{center} is $0$.
+
+\subsection{proj}
+The function \cmd{ld.proj(L, d)} returns the image of \argu{L} by the orthogonal projection onto the line \argu{d}.
+
+\subsection{projO}
+The function \cmd{ld.projO(L, d, v)} returns the image of \argu{L} by projection onto the line \argu{d} parallel to the vector \argu{v}.
+
+\subsection{rotate}
+The function \cmd{ld.rotate(L, angle \fac{, center})} returns the image of \argu{L} by rotation with center \emph{center} and angle \argu{angle} (in degrees). By default, the argument \argu{center} is $0$.
+
+\subsection{shift}
+The function \cmd{ld.shift(L, u)} returns the image of \argu{L} by translation of vector \argu{u}.
+
+\subsection{simil}
+The function \cmd{ld.simil(L, factor, angle \fac{, center})} returns the image of \argu{L} by the similarity of center \argu{center}, ratio \argu{factor}, and angle \argu{angle} (in degrees). By default, the argument \emph{center} is $0$.
+
+\subsection{sym}
+The function \cmd{ld.sym(L, d)} returns the image of \argu{L} by the orthogonal symmetry of axis \argu{d}.
+
+\subsection{symG}
+The function \cmd{ld.symG(L, d, v)} returns the image of \argu{L} by the symmetry about the line \argu{d} followed by the translation of vector \argu{v} (sliding symmetry).
+
+\subsection{symO}
+The function \cmd{ld.symO(L, d)} returns the image of \argu{L} by symmetry with respect to the line \argu{d} and parallel to the vector \argu{v} (oblique symmetry).
+
+\begin{demo}{Using Transformations}
+\begin{luadraw}{name=Sierpinski}
+local ld = luadraw
+local g = ld.graph:new{window={-5,5,-5,5},size={10,10}}
+local i, hom = ld.cpx.I, ld.hom
+local rand = math.random
+local A, B, C = 5*i, -5-5*i, 5-5*i -- triangle initial
+local T, niv = {{A,B,C}}, 5
+for k = 1, niv do
+    T = ld.concat( hom(T,0.5,A), hom(T,0.5,B), hom(T,0.5,C) )
+end
+for _,cp in ipairs(T) do
+    g:Filloptions("full", ld.rgb(rand(),rand(),rand()))
+    g:Dpolyline(cp,true)
+end
+g:Show()
+\end{luadraw}
+\end{demo}

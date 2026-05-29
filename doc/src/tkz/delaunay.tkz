@@ -1,0 +1,20 @@
+\begin{tikzpicture}[line join=round,scale=2]%
+\begin{scope}%
+\pgfsetlinewidth{0.6pt}%
+\draw[fill={rgb,1:red,0.8784;green,1;blue,1}] (2.62,6.218) -- (2.108,5.025) -- (4.096,6.322)--cycle;%
+\draw[fill={rgb,1:red,0.7039;green,0.9039;blue,0.9902}] (2.62,6.218) -- (4.096,6.322) -- (4.523,6.834)--cycle;%
+\draw[fill={rgb,1:red,0.5294;green,0.8078;blue,0.9804}] (4.096,6.322) -- (2.108,5.025) -- (4.914,2.809)--cycle;%
+\draw[fill={rgb,1:red,0.6981;green,0.7176;blue,0.9236}] (4.523,6.834) -- (4.096,6.322) -- (5.285,6.46)--cycle;%
+\draw[fill={rgb,1:red,0.8667;green,0.6275;blue,0.8667}] (4.523,6.834) -- (5.285,6.46) -- (5.969,6.819)--cycle;%
+\draw[fill={rgb,1:red,0.904;green,0.5647;blue,0.6844}] (4.096,6.322) -- (4.914,2.809) -- (6.548,4.376)--cycle;%
+\draw[fill={rgb,1:red,0.9412;green,0.502;blue,0.502}] (5.285,6.46) -- (4.096,6.322) -- (6.556,4.858)--cycle;%
+\draw[fill={rgb,1:red,0.9706;green,0.5647;blue,0.4902}] (4.096,6.322) -- (6.548,4.376) -- (6.556,4.858)--cycle;%
+\draw[fill={rgb,1:red,1;green,0.6275;blue,0.4784}] (5.969,6.819) -- (5.285,6.46) -- (6.556,4.858)--cycle;%
+\draw[fill={rgb,1:red,0.9706;green,0.7648;blue,0.5137}] (5.969,6.819) -- (6.556,4.858) -- (7.344,6.313)--cycle;%
+\draw[fill={rgb,1:red,0.9412;green,0.902;blue,0.549}] (6.556,4.858) -- (6.548,4.376) -- (7.344,6.313)--cycle;%
+\draw[mark=*,mark size=1.6pt] plot coordinates {(5.285,6.46)} plot coordinates {(6.556,4.858)} plot coordinates {(7.344,6.313)} plot coordinates {(2.62,6.218)} plot coordinates {(6.548,4.376)} plot coordinates {(5.969,6.819)} plot coordinates {(4.914,2.809)} plot coordinates {(4.523,6.834)} plot coordinates {(4.096,6.322)} plot coordinates {(2.108,5.025)};%
+\draw[line width=0.4pt,gray,dashed] (6.5563,4.8271) .. controls (6.5563,5.7619) and (5.8068,6.5114) .. (4.872,6.5114) .. controls (3.9372,6.5114) and (3.1877,5.7619) .. (3.1877,4.8271) .. controls (3.1877,3.8924) and (3.9372,3.1429) .. (4.872,3.1429) .. controls (5.8068,3.1429) and (6.5563,3.8924) .. (6.5563,4.8271);%
+\draw[mark=*,mark size=1.6pt,mark options={gray}] plot coordinates {(5.285,6.46)} plot coordinates {(4.096,6.322)} plot coordinates {(6.556,4.858)};%
+\pgfsetlinewidth{0.4pt}%
+\end{scope}%
+\end{tikzpicture}%

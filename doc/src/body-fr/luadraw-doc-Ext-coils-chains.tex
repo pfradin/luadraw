@@ -1,0 +1,163 @@
+\subsection{Le module \emph{luadraw\_coils\_chains}}
+
+Le module \emph{luadraw\_coils\_chains} permet de dessiner des ressorts (deux types), ainsi que des chaînes (deux types). Il ajoute de nouvelles méthodes graphiques à la classe \emph{ld.graph} mais ne renvoie rien.
+
+\subsubsection{Les ressorts}
+
+    \begin{itemize}
+        \item La méthode \cmd{g:Dcoil(list, radius, options)} permet de dessiner un ressort. L'argument \argu{radius} est le rayon du ressort. L'argument \argu{list} a deux formes possibles :
+            \begin{itemize}
+                \item Forme $1$: \argu{list} = \{a1, n1, a2, n2,\ldots, aN\}, où $a_1$, \ldots, $a_N$ sont des points (nombres complexes), $n_1$ est un entier, c'est le nombre de spires entre $a_1$ et $a_2$, $n_2$ est le nombre de spires entre $a_2$ et $a_3$, etc.
+                \item Forme $2$: \argu{list} = \{C, n \}, où $C$ est une ligne polygonale (par exemple une courbe) et $n$ un entier représentant le nombre total de spires. Le ressort sera dessiné le long de la courbe $C$.
+            \end{itemize}
+        L'argument \argu{options} est une table dont les champs sont les options qui vont modifier l'aspect esthétique du ressort. Ces options sont (avec leur valeur par défaut):
+        \begin{itemize}
+            \item \opt{direction=1} : sens de rotation des spires ($1$ pour le sens direct, $-1$ pour le sens inverse).
+            \item \opt{wire\_dia=<2*radius/15>} : diamètre du fil.
+            \item \opt{color="gray"} : couleur de remplissage des spires.
+            \item \opt{colorB=color} : couleur de remplissage des spires "arrière", par défaut c'est la même valeur que l'option \opt{color}.
+            \item \opt{border=<couleur courante>} : couleur du contour des spires.
+            \item \opt{border\_width=<épaisseur courante>} : épaisseur du contour des spires.
+            \item \opt{tension=1} : les spires sont légèrement courbées pour donner un effet 3D, cette option permet d'accentuer ou diminuer la courbure. Avec la valeur $0$ il n'y a aucune courbure.
+            \item \opt{start\_angle=\nil}, \opt{end\_angle=\nil} : angles (en degrés) pour la première demi spire et pour la dernière. Ces angles sont déterminés de manière automatique, mais ils peuvent être modifiés avec ces options.
+            \item \opt{wireframe=\false} : avec la valeur \true, les spires sont remplies d'une couleur unie, mais avec la valeur \false (valeur par défaut) elles sont remplies avec un gradient, plus précisément avec la formule suivante:
+            \codeln{left color=<color>!<leftC>, right color=<color>!<rightC>, middle color=<color>!<midC>}
+            avec les trois coefficients qui sont des options :  \opt{leftC=100}, \opt{rightC=50}, \opt{midC=10}.
+            \item \opt{holes=\false} : avec la valeur \true un point est dessiné aux extrémités du ressort.
+            \item \opt{reverse=\false} : permet d'inverser l'ordre d'affichage du ressort lorsque celui-ci est constitué de plusieurs morceaux.
+        \end{itemize}
+        
+\begin{demo}{Méthode \emph{g:Dcoil()}}
+\begin{luadraw}{name=Dcoil_examples}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{window={-5.6,5,-5,5}, size={10,10}}
+require 'luadraw_coils_chains'
+local a, b, c, d = Z(-5,4), Z(-1,4), Z(1,4), Z(3,4)
+g:Dcoil({a,10,b}, 0.75, {}); g:Dlabel("options par défaut", b+0.5, {pos="E"})
+g:Shift(Z(0,-2))
+g:Dcoil({a,10,b,10,c,5,d}, 0.75, {color="SteelBlue", direction=-1, wire_dia=0.075, 
+    border="gray", colorB="Brown"})
+g:Dlabel("3 ressorts", d+0.5, {pos="E"})
+g:Shift(Z(0,-2))
+g:Dcoil({Z(-4,4),8, Z(-4,0)}, 1, {wireframe=true}); g:Dlabel("wireframe=true",Z(-4,-0.5),{pos="S"})
+local C = ld.circle(Z(2,2),2)
+g:Dcoil( {C,30}, 0.5, {color="Crimson", wire_dia=0.1, border="lightgray", colorB="DarkRed"})
+g:Dlabel("le long d'un cercle",Z(2,-0.5),{pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+    \item La méthode \cmd{g:Dcoil2(list, radius, options)} permet de dessiner un ressort en fil de fer. L'argument \argu{radius} est le rayon du ressort. L'argument \argu{list} a deux formes possibles :
+        \begin{itemize}
+            \item Forme $1$: \argu{list} = \{a1, n1, a2, n2,\ldots, aN\}, où $a_1$, \ldots, $a_N$ sont des points (nombres complexes), $n_1$ est un entier, c'est le nombre de spires entre $a_1$ et $a_2$, $n_2$ est le nombre de spires entre $a_2$ et $a_3$, etc.
+            \item Forme $2$: \argu{list} = \{C, n \}, où $C$ est une ligne polygonale (par exemple une courbe) et $n$ un entier représentant le nombre total de spires. Le ressort sera dessiné le long de la courbe $C$.
+        \end{itemize}
+    L'argument \argu{options} est une table dont les champs sont les options qui vont modifier l'aspect esthétique du ressort. Ces options sont (avec leur valeur par défaut):
+    \begin{itemize}
+        \item \opt{direction=1} : sens de rotation des spires ($1$ pour le sens direct, $-1$ pour le sens inverse).
+        \item \opt{color=<couleur courante>} : couleur des spires.
+        \item \opt{width=<épaisseur courante>} : épaisseur des spires (en dixième de point).
+        \item \opt{border="white"} : cette option est soit une chaîne vide (\val{""}), soit une chaîne représentant une couleur, dans le second cas, le dessin utilise l'option \emph{double} de TikZ  avec cette couleur en bordure permettant ainsi de voir les spires "avant" passer devant les spires "arrière", comme un ressort en 3D.
+        \item \opt{border\_width=<épaisseur courante>} : épaisseur de la bordure (utilisée lorsque l'option \opt{border} est pas égale à \nil).
+    \end{itemize}
+    
+\begin{demo}{Méthode \emph{g:Dcoil2()}}
+\begin{luadraw}{name=Dcoil2_examples}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{window={-5.6,5,-5,5}, size={10,10}}
+require 'luadraw_coils_chains'
+local a, b, c, d = Z(-5,4), Z(-1,4), Z(1,4), Z(3,4)
+g:Dcoil2({a,10,b}, 0.75, {}); g:Dlabel("options par défaut", b+0.5, {pos="E"})
+g:Shift(Z(0,-2))
+g:Dcoil2({a,10,b,10,c,4,d}, 0.75, {color="SteelBlue", direction=-1, width=12})
+g:Dlabel("3 ressorts", d+0.5, {pos="E"})
+g:Shift(Z(0,-2))
+g:Dcoil2({Z(-4,4),8, Z(-4,0)}, 1, {border="", width=12}); g:Dlabel('border=""',Z(-4,-0.5),{pos="S"})
+local C = ld.circle(Z(2,2),2)
+g:Dcoil2( {C,60}, 0.5, {color="Crimson", width=8, border="white"})
+g:Dlabel("le long d'un cercle",Z(2,-0.5),{pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+\end{itemize}
+
+\subsubsection{Les chaînes}
+ 
+\begin{itemize}
+    \item La méthode \cmd{g:Dchain(list, link\_length, options)} permet de dessiner une chaîne. L'argument \argu{list} est une liste d'au moins deux nombres complexes, ce sont les points par où la chaîne passera. L'argument \argu{link\_length} est la longueur d'un maillon de la chaîne, mais celui-ci sera ajusté pour avoir un nombre entier de maillons. 
+    L'argument \argu{options} est une table dont les champs sont les options qui vont modifier l'aspect esthétique de la chaîne. Ces options sont (avec leur valeur par défaut):
+        \begin{itemize}
+            \item \opt{width=<(longueur calculée d'un maillon)/1.618>} : largeur d'un maillon, avec la valeur \opt{width="circle"}, le maillon sera circulaire.
+            \item \opt{wire\_dia=<width/4>} : diamètre du fil.
+            \item \opt{color="gray"} : couleur de remplissage des maillons.
+            \item \opt{colorB=color} : deuxième couleur de remplissage.
+            \item \opt{border=<couleur courante>} : couleur du contour des maillons.
+            \item \opt{border\_width=<épaisseur courante>} : épaisseur du contour des maille.
+            \item \opt{wireframe=\false} : avec la valeur \true, les maillons sont remplies d'une couleur unie, mais avec la valeur \false (valeur par défaut) elles sont remplies avec un gradient, plus précisément avec la formule suivante:
+            \codeln{left color=<color>!<leftC>, right color=<colorB>!<rightC>, middle color=<color>!<midC>}
+            avec les trois coefficients qui sont des options :  \opt{leftC=100}, \opt{rightC=50}, \opt{midC=10}.
+        \end{itemize}
+        
+\begin{demo}{Méthode \emph{g:Dchain()}}
+\begin{luadraw}{name=Dchain_examples}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{window={-5.25,6,-5,5.25}, size={10,10}}
+require 'luadraw_coils_chains'
+g:Labelsize("small")
+local a, b = Z(-5,4.5), Z(3,4.5)
+g:Dchain({a,b}, 1, {}); g:Dlabel("options par défaut", b, {pos="E", dist=0.1})
+g:Shift(Z(0,-1))
+g:Dchain({a,b}, 0.25, {wireframe=true}); g:Dlabel("wireframe=true", b, {pos="E"})
+g:Shift(Z(0,1))
+a, b = Z(-4,3), Z(-4,-4)
+g:Dchain({a,b}, 0.35, {color="SteelBlue", colorB="DarkBlue", width="circle", wire_dia=0.1, border="lightgray"})
+g:Dlabel('width="circle"', b, {pos="S",dist=0.1})
+a, b = Z(-2,1), Z(4,1)
+local C = ld.ellipticarc(a,Z(1,1),b,3,4,1)
+g:Dchain(C, 0.75, {color="Brown", border="lightgray"}); g:Ddots({a,b})
+g:Dlabel("Arc d'ellipse",Z(1,-3),{pos="S",dist=0.5})
+g:Show()
+\end{luadraw}   
+\end{demo}
+
+    \item La méthode \cmd{g:Dchain2(list, R, options)} permet de dessiner une chaîne sous forme de deux fils ondulés entrecroisés. L'argument \argu{list} est une liste d'au moins deux nombres complexes, ce sont les points par où la chaîne passera. L'argument \argu{R} est le rayon de la chaîne (hauteur d'une ondulation). L'argument \argu{options} est une table dont les champs sont les options qui vont modifier l'aspect esthétique de la chaîne.
+    \begin{itemize}
+        \item \opt{direction=1} : sens de rotation des fils ($1$ pour le sens direct, $-1$ pour le sens inverse).
+        \item \opt{color=<couleur courante>} : couleur de la chaîne.
+        \item \opt{width=<épaisseur courante>} : épaisseur des fils (en dixième de point).
+        \item \opt{border="white"} : cette option est soit une chaîne vide (\val{""}), soit une chaîne représentant une couleur, dans le second cas, le dessin utilise l'option \emph{double} de TikZ  avec cette couleur en bordure permettant ainsi de distinguer le fil qui passe devant de celui qui passe derrière.
+        \item \opt{border\_width=<épaisseur courante>} : épaisseur de la bordure (utilisée lorsque l'option \opt{border} est pas égale à \nil).
+    \end{itemize}
+    
+\begin{demo}{Méthode \emph{g:Dchain2()}}
+\begin{luadraw}{name=Dchain2_examples}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{window={-5,5,-4.5,5}, size={10,10}}
+require 'luadraw_coils_chains'
+g:Labelsize("small")
+local a, b = Z(-4,4.5), Z(4,4.5)
+g:Dchain2({a,b}, 0.1, {width=8})
+g:Shift(Z(0,1))
+a, b = Z(-4,3), Z(-4,-4)
+g:Dchain2({a,b}, 0.35, {color="SteelBlue", width=24, border=""})
+g:Dlabel('border=""', b, {pos="S",dist=0.1})
+a, b = Z(-2,1), Z(4,1)
+local C = ld.circle(Z(1,-1), 2.5)
+g:Dchain2(C, 0.125, {color="Brown", width=12})
+g:Dlabel("Le long d'un cercle",Z(1,-4),{pos="S",dist=0.1})
+g:Show()
+\end{luadraw} 
+\end{demo}
+\end{itemize}

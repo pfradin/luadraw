@@ -1,0 +1,235 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (-0.5,-0.5) rectangle (9.5,9.05);%
+\draw[color=black,line width=0.8pt,line cap=round] (0.9,8.1) .. controls (0.96,8.19) and (0.96,8.19) .. (0.99,8.19);%
+\draw[color=black,line width=0.8pt,line cap=round] (0.9,8.1) .. controls (0.96,8.01) and (0.96,8.01) .. (0.99,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (0.99,8.19) .. controls (1.02,8.19) and (1.14,8.01) .. (1.17,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (1.17,8.19) .. controls (1.2,8.19) and (1.2,8.19) .. (1.26,8.1) .. controls (1.32,8.01) and (1.32,8.01) .. (1.35,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (1.35,8.19) .. controls (1.38,8.19) and (1.5,8.01) .. (1.53,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (1.53,8.19) .. controls (1.56,8.19) and (1.56,8.19) .. (1.62,8.1) .. controls (1.68,8.01) and (1.68,8.01) .. (1.71,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (1.71,8.19) .. controls (1.74,8.19) and (1.86,8.01) .. (1.89,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (1.89,8.19) .. controls (1.92,8.19) and (1.92,8.19) .. (1.98,8.1) .. controls (2.04,8.01) and (2.04,8.01) .. (2.07,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (2.07,8.19) .. controls (2.1,8.19) and (2.22,8.01) .. (2.25,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (2.25,8.19) .. controls (2.28,8.19) and (2.28,8.19) .. (2.34,8.1) .. controls (2.4,8.01) and (2.4,8.01) .. (2.43,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (2.43,8.19) .. controls (2.46,8.19) and (2.58,8.01) .. (2.61,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (2.61,8.19) .. controls (2.64,8.19) and (2.64,8.19) .. (2.7,8.1) .. controls (2.76,8.01) and (2.76,8.01) .. (2.79,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (2.79,8.19) .. controls (2.82,8.19) and (2.94,8.01) .. (2.97,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (2.97,8.19) .. controls (3,8.19) and (3,8.19) .. (3.06,8.1) .. controls (3.12,8.01) and (3.12,8.01) .. (3.15,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (3.15,8.19) .. controls (3.18,8.19) and (3.3,8.01) .. (3.33,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (3.33,8.19) .. controls (3.36,8.19) and (3.36,8.19) .. (3.42,8.1) .. controls (3.48,8.01) and (3.48,8.01) .. (3.51,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (3.51,8.19) .. controls (3.54,8.19) and (3.66,8.01) .. (3.69,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (3.69,8.19) .. controls (3.72,8.19) and (3.72,8.19) .. (3.78,8.1) .. controls (3.84,8.01) and (3.84,8.01) .. (3.87,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (3.87,8.19) .. controls (3.9,8.19) and (4.02,8.01) .. (4.05,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (4.05,8.19) .. controls (4.08,8.19) and (4.08,8.19) .. (4.14,8.1) .. controls (4.2,8.01) and (4.2,8.01) .. (4.23,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (4.23,8.19) .. controls (4.26,8.19) and (4.38,8.01) .. (4.41,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (4.41,8.19) .. controls (4.44,8.19) and (4.44,8.19) .. (4.5,8.1) .. controls (4.56,8.01) and (4.56,8.01) .. (4.59,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (4.59,8.19) .. controls (4.62,8.19) and (4.74,8.01) .. (4.77,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (4.77,8.19) .. controls (4.8,8.19) and (4.8,8.19) .. (4.86,8.1) .. controls (4.92,8.01) and (4.92,8.01) .. (4.95,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (4.95,8.19) .. controls (4.98,8.19) and (5.1,8.01) .. (5.13,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (5.13,8.19) .. controls (5.16,8.19) and (5.16,8.19) .. (5.22,8.1) .. controls (5.28,8.01) and (5.28,8.01) .. (5.31,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (5.31,8.19) .. controls (5.34,8.19) and (5.46,8.01) .. (5.49,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (5.49,8.19) .. controls (5.52,8.19) and (5.52,8.19) .. (5.58,8.1) .. controls (5.64,8.01) and (5.64,8.01) .. (5.67,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (5.67,8.19) .. controls (5.7,8.19) and (5.82,8.01) .. (5.85,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (5.85,8.19) .. controls (5.88,8.19) and (5.88,8.19) .. (5.94,8.1) .. controls (6,8.01) and (6,8.01) .. (6.03,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (6.03,8.19) .. controls (6.06,8.19) and (6.18,8.01) .. (6.21,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (6.21,8.19) .. controls (6.24,8.19) and (6.24,8.19) .. (6.3,8.1) .. controls (6.36,8.01) and (6.36,8.01) .. (6.39,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (6.39,8.19) .. controls (6.42,8.19) and (6.54,8.01) .. (6.57,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (6.57,8.19) .. controls (6.6,8.19) and (6.6,8.19) .. (6.66,8.1) .. controls (6.72,8.01) and (6.72,8.01) .. (6.75,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (6.75,8.19) .. controls (6.78,8.19) and (6.9,8.01) .. (6.93,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (6.93,8.19) .. controls (6.96,8.19) and (6.96,8.19) .. (7.02,8.1) .. controls (7.08,8.01) and (7.08,8.01) .. (7.11,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (7.11,8.19) .. controls (7.14,8.19) and (7.26,8.01) .. (7.29,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (7.29,8.19) .. controls (7.32,8.19) and (7.32,8.19) .. (7.38,8.1) .. controls (7.44,8.01) and (7.44,8.01) .. (7.47,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (7.47,8.19) .. controls (7.5,8.19) and (7.62,8.01) .. (7.65,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (7.65,8.19) .. controls (7.68,8.19) and (7.68,8.19) .. (7.74,8.1) .. controls (7.8,8.01) and (7.8,8.01) .. (7.83,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (7.83,8.19) .. controls (7.86,8.19) and (7.98,8.01) .. (8.01,8.01);%
+\draw[color=black,line width=0.8pt,line cap=round] (8.01,8.19) .. controls (8.04,8.19) and (8.04,8.19) .. (8.1,8.1);%
+\draw[color=black,line width=0.8pt,line cap=round] (8.01,8.01) .. controls (8.04,8.01) and (8.04,8.01) .. (8.1,8.1);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (0.99,8.01) .. controls (1.02,8.01) and (1.14,8.19) .. (1.17,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (1.17,8.01) .. controls (1.2,8.01) and (1.2,8.01) .. (1.26,8.1) .. controls (1.32,8.19) and (1.32,8.19) .. (1.35,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (1.35,8.01) .. controls (1.38,8.01) and (1.5,8.19) .. (1.53,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (1.53,8.01) .. controls (1.56,8.01) and (1.56,8.01) .. (1.62,8.1) .. controls (1.68,8.19) and (1.68,8.19) .. (1.71,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (1.71,8.01) .. controls (1.74,8.01) and (1.86,8.19) .. (1.89,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (1.89,8.01) .. controls (1.92,8.01) and (1.92,8.01) .. (1.98,8.1) .. controls (2.04,8.19) and (2.04,8.19) .. (2.07,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (2.07,8.01) .. controls (2.1,8.01) and (2.22,8.19) .. (2.25,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (2.25,8.01) .. controls (2.28,8.01) and (2.28,8.01) .. (2.34,8.1) .. controls (2.4,8.19) and (2.4,8.19) .. (2.43,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (2.43,8.01) .. controls (2.46,8.01) and (2.58,8.19) .. (2.61,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (2.61,8.01) .. controls (2.64,8.01) and (2.64,8.01) .. (2.7,8.1) .. controls (2.76,8.19) and (2.76,8.19) .. (2.79,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (2.79,8.01) .. controls (2.82,8.01) and (2.94,8.19) .. (2.97,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (2.97,8.01) .. controls (3,8.01) and (3,8.01) .. (3.06,8.1) .. controls (3.12,8.19) and (3.12,8.19) .. (3.15,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (3.15,8.01) .. controls (3.18,8.01) and (3.3,8.19) .. (3.33,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (3.33,8.01) .. controls (3.36,8.01) and (3.36,8.01) .. (3.42,8.1) .. controls (3.48,8.19) and (3.48,8.19) .. (3.51,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (3.51,8.01) .. controls (3.54,8.01) and (3.66,8.19) .. (3.69,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (3.69,8.01) .. controls (3.72,8.01) and (3.72,8.01) .. (3.78,8.1) .. controls (3.84,8.19) and (3.84,8.19) .. (3.87,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (3.87,8.01) .. controls (3.9,8.01) and (4.02,8.19) .. (4.05,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (4.05,8.01) .. controls (4.08,8.01) and (4.08,8.01) .. (4.14,8.1) .. controls (4.2,8.19) and (4.2,8.19) .. (4.23,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (4.23,8.01) .. controls (4.26,8.01) and (4.38,8.19) .. (4.41,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (4.41,8.01) .. controls (4.44,8.01) and (4.44,8.01) .. (4.5,8.1) .. controls (4.56,8.19) and (4.56,8.19) .. (4.59,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (4.59,8.01) .. controls (4.62,8.01) and (4.74,8.19) .. (4.77,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (4.77,8.01) .. controls (4.8,8.01) and (4.8,8.01) .. (4.86,8.1) .. controls (4.92,8.19) and (4.92,8.19) .. (4.95,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (4.95,8.01) .. controls (4.98,8.01) and (5.1,8.19) .. (5.13,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (5.13,8.01) .. controls (5.16,8.01) and (5.16,8.01) .. (5.22,8.1) .. controls (5.28,8.19) and (5.28,8.19) .. (5.31,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (5.31,8.01) .. controls (5.34,8.01) and (5.46,8.19) .. (5.49,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (5.49,8.01) .. controls (5.52,8.01) and (5.52,8.01) .. (5.58,8.1) .. controls (5.64,8.19) and (5.64,8.19) .. (5.67,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (5.67,8.01) .. controls (5.7,8.01) and (5.82,8.19) .. (5.85,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (5.85,8.01) .. controls (5.88,8.01) and (5.88,8.01) .. (5.94,8.1) .. controls (6,8.19) and (6,8.19) .. (6.03,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (6.03,8.01) .. controls (6.06,8.01) and (6.18,8.19) .. (6.21,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (6.21,8.01) .. controls (6.24,8.01) and (6.24,8.01) .. (6.3,8.1) .. controls (6.36,8.19) and (6.36,8.19) .. (6.39,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (6.39,8.01) .. controls (6.42,8.01) and (6.54,8.19) .. (6.57,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (6.57,8.01) .. controls (6.6,8.01) and (6.6,8.01) .. (6.66,8.1) .. controls (6.72,8.19) and (6.72,8.19) .. (6.75,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (6.75,8.01) .. controls (6.78,8.01) and (6.9,8.19) .. (6.93,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (6.93,8.01) .. controls (6.96,8.01) and (6.96,8.01) .. (7.02,8.1) .. controls (7.08,8.19) and (7.08,8.19) .. (7.11,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (7.11,8.01) .. controls (7.14,8.01) and (7.26,8.19) .. (7.29,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (7.29,8.01) .. controls (7.32,8.01) and (7.32,8.01) .. (7.38,8.1) .. controls (7.44,8.19) and (7.44,8.19) .. (7.47,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (7.47,8.01) .. controls (7.5,8.01) and (7.62,8.19) .. (7.65,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (7.65,8.01) .. controls (7.68,8.01) and (7.68,8.01) .. (7.74,8.1) .. controls (7.8,8.19) and (7.8,8.19) .. (7.83,8.19);%
+\draw[line width=0.4pt,double=black,draw=white,double distance=0.8pt,line cap=butt] (7.83,8.01) .. controls (7.86,8.01) and (7.98,8.19) .. (8.01,8.19);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (0.9,7.65) .. controls (1.215,7.44) and (1.215,7.44) .. (1.215,7.335);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (0.9,7.65) .. controls (0.585,7.44) and (0.585,7.44) .. (0.585,7.335);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,7.335) .. controls (1.215,7.23) and (0.585,6.81) .. (0.585,6.705);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,6.705) .. controls (1.215,6.6) and (1.215,6.6) .. (0.9,6.39) .. controls (0.585,6.18) and (0.585,6.18) .. (0.585,6.075);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,6.075) .. controls (1.215,5.97) and (0.585,5.55) .. (0.585,5.445);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,5.445) .. controls (1.215,5.34) and (1.215,5.34) .. (0.9,5.13) .. controls (0.585,4.92) and (0.585,4.92) .. (0.585,4.815);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,4.815) .. controls (1.215,4.71) and (0.585,4.29) .. (0.585,4.185);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,4.185) .. controls (1.215,4.08) and (1.215,4.08) .. (0.9,3.87) .. controls (0.585,3.66) and (0.585,3.66) .. (0.585,3.555);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,3.555) .. controls (1.215,3.45) and (0.585,3.03) .. (0.585,2.925);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,2.925) .. controls (1.215,2.82) and (1.215,2.82) .. (0.9,2.61) .. controls (0.585,2.4) and (0.585,2.4) .. (0.585,2.295);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,2.295) .. controls (1.215,2.19) and (0.585,1.77) .. (0.585,1.665);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (1.215,1.665) .. controls (1.215,1.56) and (1.215,1.56) .. (0.9,1.35);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=round] (0.585,1.665) .. controls (0.585,1.56) and (0.585,1.56) .. (0.9,1.35);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,7.335) .. controls (0.585,7.23) and (1.215,6.81) .. (1.215,6.705);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,6.705) .. controls (0.585,6.6) and (0.585,6.6) .. (0.9,6.39) .. controls (1.215,6.18) and (1.215,6.18) .. (1.215,6.075);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,6.075) .. controls (0.585,5.97) and (1.215,5.55) .. (1.215,5.445);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,5.445) .. controls (0.585,5.34) and (0.585,5.34) .. (0.9,5.13) .. controls (1.215,4.92) and (1.215,4.92) .. (1.215,4.815);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,4.815) .. controls (0.585,4.71) and (1.215,4.29) .. (1.215,4.185);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,4.185) .. controls (0.585,4.08) and (0.585,4.08) .. (0.9,3.87) .. controls (1.215,3.66) and (1.215,3.66) .. (1.215,3.555);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,3.555) .. controls (0.585,3.45) and (1.215,3.03) .. (1.215,2.925);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,2.925) .. controls (0.585,2.82) and (0.585,2.82) .. (0.9,2.61) .. controls (1.215,2.4) and (1.215,2.4) .. (1.215,2.295);%
+\draw[color=SteelBlue,line width=2.4pt,line cap=butt] (0.585,2.295) .. controls (0.585,2.19) and (1.215,1.77) .. (1.215,1.665);%
+\draw[-] (0.9,1.35) node[below=0.1cm] {\small border=""};%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.2738,4.1513) .. controls (3.2699,4.1136) and (3.2699,4.1136) .. (3.15,4.05) .. controls (3.0461,3.9627) and (3.0461,3.9627) .. (3.0501,3.925);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.2738,3.9487) .. controls (3.2778,3.911) and (3.07,3.7365) .. (3.074,3.6988);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.2978,3.7224) .. controls (3.3017,3.6847) and (3.3017,3.6847) .. (3.1978,3.5974) .. controls (3.1128,3.4917) and (3.1128,3.4917) .. (3.1241,3.4555);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.339,3.5221) .. controls (3.3502,3.4859) and (3.1802,3.2744) .. (3.1914,3.2382);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.4063,3.3048) .. controls (3.4176,3.2685) and (3.4176,3.2685) .. (3.3326,3.1628) .. controls (3.2714,3.0417) and (3.2714,3.0417) .. (3.2899,3.0086);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.4863,3.1185) .. controls (3.5048,3.0854) and (3.3825,2.8431) .. (3.401,2.81);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.5974,2.9199) .. controls (3.6159,2.8868) and (3.6159,2.8868) .. (3.5548,2.7657) .. controls (3.5184,2.635) and (3.5184,2.635) .. (3.543,2.6061);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.7142,2.7522) .. controls (3.7388,2.7233) and (3.6661,2.4619) .. (3.6907,2.4331);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.8619,2.5791) .. controls (3.8865,2.5503) and (3.8865,2.5503) .. (3.8501,2.4195) .. controls (3.8416,2.2841) and (3.8416,2.2841) .. (3.8717,2.261);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.0089,2.4393) .. controls (4.0389,2.4162) and (4.022,2.1454) .. (4.052,2.1223);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.1892,2.3006) .. controls (4.2193,2.2775) and (4.2193,2.2775) .. (4.2108,2.1421) .. controls (4.229,2.0076) and (4.229,2.0076) .. (4.263,1.9908);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.3626,2.1926) .. controls (4.3966,2.1758) and (4.433,1.9069) .. (4.467,1.8901);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.5666,2.0919) .. controls (4.6006,2.0751) and (4.6006,2.0751) .. (4.6188,1.9407) .. controls (4.6643,1.8129) and (4.6643,1.8129) .. (4.701,1.8034);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.7569,2.0214) .. controls (4.7936,2.012) and (4.8847,1.7563) .. (4.9214,1.7469);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.9773,1.9649) .. controls (5.014,1.9555) and (5.014,1.9555) .. (5.0596,1.8277) .. controls (5.1294,1.7113) and (5.1294,1.7113) .. (5.1672,1.7093);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.1791,1.934) .. controls (5.2169,1.932) and (5.3565,1.6993) .. (5.3944,1.6973);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.4062,1.922) .. controls (5.4441,1.92) and (5.4441,1.92) .. (5.5139,1.8037) .. controls (5.6061,1.7042) and (5.6061,1.7042) .. (5.6436,1.71);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.6091,1.9323) .. controls (5.6465,1.9381) and (5.8309,1.739) .. (5.8684,1.7448);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.8339,1.9672) .. controls (5.8714,1.973) and (5.8714,1.973) .. (5.9636,1.8734) .. controls (6.0736,1.7941) and (6.0736,1.7941) .. (6.1092,1.8072);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.0314,2.0183) .. controls (6.0669,2.0315) and (6.2871,1.8728) .. (6.3226,1.8859);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.2448,2.097) .. controls (6.2804,2.1101) and (6.2804,2.1101) .. (6.3904,2.0308) .. controls (6.5144,1.9756) and (6.5144,1.9756) .. (6.5465,1.9957);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.4273,2.1865) .. controls (6.4594,2.2066) and (6.7073,2.0962) .. (6.7394,2.1163);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.6202,2.3071) .. controls (6.6523,2.3272) and (6.6523,2.3272) .. (6.7763,2.272) .. controls (6.9087,2.2426) and (6.9087,2.2426) .. (6.9362,2.2687);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.7814,2.4319) .. controls (6.8089,2.458) and (7.0737,2.3992) .. (7.1012,2.4252);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.9464,2.5885) .. controls (6.9739,2.6146) and (6.9739,2.6146) .. (7.1063,2.5851) .. controls (7.242,2.5832) and (7.242,2.5832) .. (7.2636,2.6144);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.0789,2.7428) .. controls (7.1005,2.7739) and (7.3718,2.7701) .. (7.3934,2.8012);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.2087,2.9296) .. controls (7.2303,2.9607) and (7.2303,2.9607) .. (7.366,2.9588) .. controls (7.4993,2.9841) and (7.4993,2.9841) .. (7.5142,3.0189);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.3075,3.1077) .. controls (7.3225,3.1426) and (7.5891,3.1931) .. (7.604,3.2279);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.3973,3.3167) .. controls (7.4123,3.3515) and (7.4123,3.3515) .. (7.5456,3.3768) .. controls (7.671,3.4285) and (7.671,3.4285) .. (7.6787,3.4656);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.4583,3.5108) .. controls (7.4659,3.548) and (7.7168,3.6513) .. (7.7244,3.6885);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.504,3.7337) .. controls (7.5116,3.7709) and (7.5116,3.7709) .. (7.6371,3.8225) .. controls (7.7496,3.8984) and (7.7496,3.8984) .. (7.7496,3.9363);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.5246,3.9363) .. controls (7.5246,3.9742) and (7.7496,4.1258) .. (7.7496,4.1637);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.5246,4.1637) .. controls (7.5246,4.2016) and (7.5246,4.2016) .. (7.6371,4.2775) .. controls (7.732,4.3744) and (7.732,4.3744) .. (7.7244,4.4115);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.504,4.3663) .. controls (7.4964,4.4034) and (7.6863,4.5972) .. (7.6787,4.6344);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.4583,4.5892) .. controls (7.4506,4.6263) and (7.4506,4.6263) .. (7.5456,4.7232) .. controls (7.619,4.8373) and (7.619,4.8373) .. (7.604,4.8721);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.3973,4.7833) .. controls (7.3824,4.8181) and (7.5292,5.0463) .. (7.5142,5.0811);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.3075,4.9923) .. controls (7.2925,5.0271) and (7.2925,5.0271) .. (7.366,5.1412) .. controls (7.4151,5.2677) and (7.4151,5.2677) .. (7.3934,5.2988);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.2087,5.1704) .. controls (7.187,5.2015) and (7.2853,5.4545) .. (7.2636,5.4856);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (7.0789,5.3572) .. controls (7.0572,5.3884) and (7.0572,5.3884) .. (7.1063,5.5149) .. controls (7.1287,5.6487) and (7.1287,5.6487) .. (7.1012,5.6748);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.9464,5.5115) .. controls (6.9189,5.5376) and (6.9637,5.8052) .. (6.9362,5.8313);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.7814,5.6681) .. controls (6.7539,5.6942) and (6.7539,5.6942) .. (6.7763,5.828) .. controls (6.7716,5.9636) and (6.7716,5.9636) .. (6.7394,5.9837);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.6202,5.7929) .. controls (6.588,5.813) and (6.5787,6.0842) .. (6.5465,6.1043);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.4273,5.9135) .. controls (6.3951,5.9336) and (6.3951,5.9336) .. (6.3904,6.0692) .. controls (6.3582,6.201) and (6.3582,6.201) .. (6.3226,6.2141);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.2448,6.003) .. controls (6.2092,6.0161) and (6.1448,6.2797) .. (6.1092,6.2928);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (6.0314,6.0817) .. controls (5.9958,6.0948) and (5.9958,6.0948) .. (5.9636,6.2266) .. controls (5.9059,6.3493) and (5.9059,6.3493) .. (5.8684,6.3552);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.8339,6.1328) .. controls (5.7964,6.1386) and (5.681,6.3842) .. (5.6436,6.39);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.6091,6.1677) .. controls (5.5716,6.1735) and (5.5716,6.1735) .. (5.5139,6.2963) .. controls (5.4323,6.4046) and (5.4323,6.4046) .. (5.3944,6.4027);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.4062,6.178) .. controls (5.3684,6.176) and (5.2051,6.3927) .. (5.1672,6.3907);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (5.1791,6.166) .. controls (5.1412,6.164) and (5.1412,6.164) .. (5.0596,6.2723) .. controls (4.9582,6.3625) and (4.9582,6.3625) .. (4.9214,6.3531);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.9773,6.1351) .. controls (4.9406,6.1257) and (4.7378,6.306) .. (4.701,6.2966);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.7569,6.0786) .. controls (4.7202,6.0692) and (4.7202,6.0692) .. (4.6188,6.1593) .. controls (4.501,6.2267) and (4.501,6.2267) .. (4.467,6.2099);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.5666,6.0081) .. controls (4.5326,5.9913) and (4.297,6.126) .. (4.263,6.1092);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.3626,5.9074) .. controls (4.3286,5.8906) and (4.3286,5.8906) .. (4.2108,5.9579) .. controls (4.0821,6.0009) and (4.0821,6.0009) .. (4.052,5.9777);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.1892,5.7994) .. controls (4.1592,5.7763) and (3.9017,5.8621) .. (3.8717,5.839);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (4.0089,5.6607) .. controls (3.9788,5.6375) and (3.9788,5.6375) .. (3.8501,5.6805) .. controls (3.7153,5.6958) and (3.7153,5.6958) .. (3.6907,5.6669);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.8619,5.5209) .. controls (3.8372,5.4921) and (3.5676,5.5227) .. (3.543,5.4939);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.7142,5.3478) .. controls (3.6896,5.319) and (3.6896,5.319) .. (3.5548,5.3343) .. controls (3.4196,5.3231) and (3.4196,5.3231) .. (3.401,5.29);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.5974,5.1801) .. controls (3.5789,5.147) and (3.3084,5.1245) .. (3.2899,5.0914);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.4863,4.9815) .. controls (3.4678,4.9485) and (3.4678,4.9485) .. (3.3326,4.9372) .. controls (3.2026,4.8981) and (3.2026,4.8981) .. (3.1914,4.8618);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.4063,4.7952) .. controls (3.3951,4.759) and (3.1353,4.6807) .. (3.1241,4.6445);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.339,4.5779) .. controls (3.3278,4.5417) and (3.3278,4.5417) .. (3.1978,4.5026) .. controls (3.078,4.439) and (3.078,4.439) .. (3.074,4.4012);%
+\draw[color=Brown,line width=1.2pt,line cap=round] (3.2978,4.3776) .. controls (3.2938,4.3399) and (3.0541,4.2127) .. (3.0501,4.175);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.0501,4.175) .. controls (3.0461,4.1373) and (3.0461,4.1373) .. (3.15,4.05) .. controls (3.2699,3.9864) and (3.2699,3.9864) .. (3.2738,3.9487);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.0501,3.925) .. controls (3.0541,3.8873) and (3.2938,3.7601) .. (3.2978,3.7224);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.074,3.6988) .. controls (3.078,3.661) and (3.078,3.661) .. (3.1978,3.5974) .. controls (3.3278,3.5583) and (3.3278,3.5583) .. (3.339,3.5221);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.1241,3.4555) .. controls (3.1353,3.4193) and (3.3951,3.341) .. (3.4063,3.3048);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.1914,3.2382) .. controls (3.2026,3.2019) and (3.2026,3.2019) .. (3.3326,3.1628) .. controls (3.4678,3.1515) and (3.4678,3.1515) .. (3.4863,3.1185);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.2899,3.0086) .. controls (3.3084,2.9755) and (3.5789,2.953) .. (3.5974,2.9199);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.401,2.81) .. controls (3.4196,2.7769) and (3.4196,2.7769) .. (3.5548,2.7657) .. controls (3.6896,2.781) and (3.6896,2.781) .. (3.7142,2.7522);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.543,2.6061) .. controls (3.5676,2.5773) and (3.8372,2.6079) .. (3.8619,2.5791);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.6907,2.4331) .. controls (3.7153,2.4042) and (3.7153,2.4042) .. (3.8501,2.4195) .. controls (3.9788,2.4625) and (3.9788,2.4625) .. (4.0089,2.4393);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.8717,2.261) .. controls (3.9017,2.2379) and (4.1592,2.3237) .. (4.1892,2.3006);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.052,2.1223) .. controls (4.0821,2.0991) and (4.0821,2.0991) .. (4.2108,2.1421) .. controls (4.3286,2.2094) and (4.3286,2.2094) .. (4.3626,2.1926);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.263,1.9908) .. controls (4.297,1.974) and (4.5326,2.1087) .. (4.5666,2.0919);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.467,1.8901) .. controls (4.501,1.8733) and (4.501,1.8733) .. (4.6188,1.9407) .. controls (4.7202,2.0308) and (4.7202,2.0308) .. (4.7569,2.0214);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.701,1.8034) .. controls (4.7378,1.794) and (4.9406,1.9743) .. (4.9773,1.9649);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.9214,1.7469) .. controls (4.9582,1.7375) and (4.9582,1.7375) .. (5.0596,1.8277) .. controls (5.1412,1.936) and (5.1412,1.936) .. (5.1791,1.934);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.1672,1.7093) .. controls (5.2051,1.7073) and (5.3684,1.924) .. (5.4062,1.922);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.3944,1.6973) .. controls (5.4323,1.6954) and (5.4323,1.6954) .. (5.5139,1.8037) .. controls (5.5716,1.9265) and (5.5716,1.9265) .. (5.6091,1.9323);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.6436,1.71) .. controls (5.681,1.7158) and (5.7964,1.9614) .. (5.8339,1.9672);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.8684,1.7448) .. controls (5.9059,1.7507) and (5.9059,1.7507) .. (5.9636,1.8734) .. controls (5.9958,2.0052) and (5.9958,2.0052) .. (6.0314,2.0183);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.1092,1.8072) .. controls (6.1448,1.8203) and (6.2092,2.0839) .. (6.2448,2.097);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.3226,1.8859) .. controls (6.3582,1.899) and (6.3582,1.899) .. (6.3904,2.0308) .. controls (6.3951,2.1664) and (6.3951,2.1664) .. (6.4273,2.1865);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.5465,1.9957) .. controls (6.5787,2.0158) and (6.588,2.287) .. (6.6202,2.3071);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.7394,2.1163) .. controls (6.7716,2.1364) and (6.7716,2.1364) .. (6.7763,2.272) .. controls (6.7539,2.4058) and (6.7539,2.4058) .. (6.7814,2.4319);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.9362,2.2687) .. controls (6.9637,2.2948) and (6.9189,2.5624) .. (6.9464,2.5885);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.1012,2.4252) .. controls (7.1287,2.4513) and (7.1287,2.4513) .. (7.1063,2.5851) .. controls (7.0572,2.7116) and (7.0572,2.7116) .. (7.0789,2.7428);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.2636,2.6144) .. controls (7.2853,2.6455) and (7.187,2.8985) .. (7.2087,2.9296);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.3934,2.8012) .. controls (7.4151,2.8323) and (7.4151,2.8323) .. (7.366,2.9588) .. controls (7.2925,3.0729) and (7.2925,3.0729) .. (7.3075,3.1077);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.5142,3.0189) .. controls (7.5292,3.0537) and (7.3824,3.2819) .. (7.3973,3.3167);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.604,3.2279) .. controls (7.619,3.2627) and (7.619,3.2627) .. (7.5456,3.3768) .. controls (7.4506,3.4737) and (7.4506,3.4737) .. (7.4583,3.5108);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.6787,3.4656) .. controls (7.6863,3.5028) and (7.4964,3.6966) .. (7.504,3.7337);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.7244,3.6885) .. controls (7.732,3.7256) and (7.732,3.7256) .. (7.6371,3.8225) .. controls (7.5246,3.8984) and (7.5246,3.8984) .. (7.5246,3.9363);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.7496,3.9363) .. controls (7.7496,3.9742) and (7.5246,4.1258) .. (7.5246,4.1637);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.7496,4.1637) .. controls (7.7496,4.2016) and (7.7496,4.2016) .. (7.6371,4.2775) .. controls (7.5116,4.3291) and (7.5116,4.3291) .. (7.504,4.3663);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.7244,4.4115) .. controls (7.7168,4.4487) and (7.4659,4.552) .. (7.4583,4.5892);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.6787,4.6344) .. controls (7.671,4.6715) and (7.671,4.6715) .. (7.5456,4.7232) .. controls (7.4123,4.7485) and (7.4123,4.7485) .. (7.3973,4.7833);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.604,4.8721) .. controls (7.5891,4.9069) and (7.3225,4.9574) .. (7.3075,4.9923);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.5142,5.0811) .. controls (7.4993,5.1159) and (7.4993,5.1159) .. (7.366,5.1412) .. controls (7.2303,5.1393) and (7.2303,5.1393) .. (7.2087,5.1704);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.3934,5.2988) .. controls (7.3718,5.3299) and (7.1005,5.3261) .. (7.0789,5.3572);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.2636,5.4856) .. controls (7.242,5.5168) and (7.242,5.5168) .. (7.1063,5.5149) .. controls (6.9739,5.4854) and (6.9739,5.4854) .. (6.9464,5.5115);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (7.1012,5.6748) .. controls (7.0737,5.7008) and (6.8089,5.642) .. (6.7814,5.6681);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.9362,5.8313) .. controls (6.9087,5.8574) and (6.9087,5.8574) .. (6.7763,5.828) .. controls (6.6523,5.7728) and (6.6523,5.7728) .. (6.6202,5.7929);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.7394,5.9837) .. controls (6.7073,6.0038) and (6.4594,5.8934) .. (6.4273,5.9135);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.5465,6.1043) .. controls (6.5144,6.1244) and (6.5144,6.1244) .. (6.3904,6.0692) .. controls (6.2804,5.9899) and (6.2804,5.9899) .. (6.2448,6.003);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.3226,6.2141) .. controls (6.2871,6.2272) and (6.0669,6.0685) .. (6.0314,6.0817);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (6.1092,6.2928) .. controls (6.0736,6.3059) and (6.0736,6.3059) .. (5.9636,6.2266) .. controls (5.8714,6.127) and (5.8714,6.127) .. (5.8339,6.1328);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.8684,6.3552) .. controls (5.8309,6.361) and (5.6465,6.1619) .. (5.6091,6.1677);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.6436,6.39) .. controls (5.6061,6.3958) and (5.6061,6.3958) .. (5.5139,6.2963) .. controls (5.4441,6.18) and (5.4441,6.18) .. (5.4062,6.178);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.3944,6.4027) .. controls (5.3565,6.4007) and (5.2169,6.168) .. (5.1791,6.166);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (5.1672,6.3907) .. controls (5.1294,6.3887) and (5.1294,6.3887) .. (5.0596,6.2723) .. controls (5.014,6.1445) and (5.014,6.1445) .. (4.9773,6.1351);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.9214,6.3531) .. controls (4.8847,6.3437) and (4.7936,6.088) .. (4.7569,6.0786);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.701,6.2966) .. controls (4.6643,6.2871) and (4.6643,6.2871) .. (4.6188,6.1593) .. controls (4.6006,6.0249) and (4.6006,6.0249) .. (4.5666,6.0081);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.467,6.2099) .. controls (4.433,6.1931) and (4.3966,5.9242) .. (4.3626,5.9074);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.263,6.1092) .. controls (4.229,6.0924) and (4.229,6.0924) .. (4.2108,5.9579) .. controls (4.2193,5.8225) and (4.2193,5.8225) .. (4.1892,5.7994);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (4.052,5.9777) .. controls (4.022,5.9546) and (4.0389,5.6838) .. (4.0089,5.6607);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.8717,5.839) .. controls (3.8416,5.8159) and (3.8416,5.8159) .. (3.8501,5.6805) .. controls (3.8865,5.5497) and (3.8865,5.5497) .. (3.8619,5.5209);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.6907,5.6669) .. controls (3.6661,5.6381) and (3.7388,5.3767) .. (3.7142,5.3478);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.543,5.4939) .. controls (3.5184,5.465) and (3.5184,5.465) .. (3.5548,5.3343) .. controls (3.6159,5.2132) and (3.6159,5.2132) .. (3.5974,5.1801);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.401,5.29) .. controls (3.3825,5.2569) and (3.5048,5.0146) .. (3.4863,4.9815);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.2899,5.0914) .. controls (3.2714,5.0583) and (3.2714,5.0583) .. (3.3326,4.9372) .. controls (3.4176,4.8315) and (3.4176,4.8315) .. (3.4063,4.7952);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.1914,4.8618) .. controls (3.1802,4.8256) and (3.3502,4.6141) .. (3.339,4.5779);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.1241,4.6445) .. controls (3.1128,4.6083) and (3.1128,4.6083) .. (3.1978,4.5026) .. controls (3.3017,4.4153) and (3.3017,4.4153) .. (3.2978,4.3776);%
+\draw[line width=0.4pt,double=Brown,draw=white,double distance=1.2pt,line cap=butt] (3.074,4.4012) .. controls (3.07,4.3635) and (3.2778,4.189) .. (3.2738,4.1513);%
+\draw[-] (5.4,1.35) node[below=0.1cm] {\small Le long d'un cercle};%
+\end{scope}%
+\end{tikzpicture}%

@@ -1,0 +1,14 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (0,0) rectangle (10.0,7.6923076923077);%
+\node[line width=0.3pt,inner sep=-0.15pt,above right] at (0,0){\includegraphics[width=10.0cm, height=7.6923076923077cm]{tkz/Villarceau_circles.png}};%
+\draw[] (4.2772,3.9573) -- (4.2772,4.6545);%
+\draw[] (2.1086,4.2909) -- (2.1086,4.9881);%
+\draw[] (5.7228,3.735) -- (5.7228,4.4321);%
+\draw[] (7.8914,3.4014) -- (7.8914,4.0986);%
+\draw[stealth-stealth] (4.2772,4.6545) -- (2.1086,4.9881);%
+\draw[stealth-stealth] (5.7228,4.4321) -- (7.8914,4.0986);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(4.2772,3.9573)} plot coordinates {(5.7228,3.735)};%
+\draw[-] (3.6845,2.3187) node[below left] {$x$} (8.6142,3.2902) node[below right] {$y$} (5,7.332) node[above] {$z$} (3.1929,4.8213) node[above] {$R$} (6.8071,4.2653) node[above] {$R$} (7.0689,0.8619) node[above left,cm={0.9884,-0.152,0.4303,0.9027,(0,0)}] {bitangent plane to the torus} (4.2772,3.9573) node[below,cm={0.9884,-0.152,0.4303,0.9027,(0,0)}] {$-r$} (5.7228,3.735) node[below,cm={0.9884,-0.152,0.4303,0.9027,(0,0)}] {$r$};%
+\end{scope}%
+\end{tikzpicture}%

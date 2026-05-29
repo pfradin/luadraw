@@ -1,0 +1,61 @@
+\section{Transformations}
+Dans ce qui suit :
+\begin{itemize}
+    \item l'argument \argu{L} est soit un complexe, soit une liste de complexes soit une liste de listes de complexes,
+    \item la droite \argu{d} est une liste de deux complexes : un point de la droite et un vecteur directeur.
+  \end{itemize}
+  
+\subsection{affin}
+La fonction \cmd{ld.affin(L, d, v, k)} renvoie l'image de \argu{L} par l'affinité de base la droite \argu{d}, parallèlement au vecteur \argu{v} et de rapport \argu{k}.
+
+\subsection{ftransform}
+La fonction \cmd{ld.ftransform(L, f)} renvoie l'image de \argu{L} par la fonction \argu{f} qui doit être une fonction de la variable complexe. Si un des éléments de \argu{L} est le complexe \val{cpx.Jump} alors celui-ci est renvoyé tel quel dans le résultat.
+
+\subsection{hom}
+La fonction \cmd{ld.hom(L, factor \fac{, center})} renvoie l'image de \argu{L} par l'homothétie de centre \argu{center} et de rapport \argu{factor}. Par défaut, l'argument \argu{center} vaut $0$.
+
+\subsection{inv}
+La fonction \cmd{ld.inv(L, radius \fac{, center})} renvoie l'image de \argu{L} par l'inversion par rapport au cercle de centre \argu{center} et de rayon \argu{radius}. Par défaut, l'argument \argu{center} vaut $0$.
+
+\subsection{proj}
+La fonction \cmd{ld.proj(L, d)} renvoie l'image de \argu{L} par la projection orthogonale sur la droite \argu{d}.
+
+\subsection{projO}
+La fonction \cmd{ld.projO(L, d, v)} renvoie l'image de \argu{L} par la projection sur la droite \argu{d} parallèlement au vecteur \argu{v}.
+
+\subsection{rotate}
+La fonction \cmd{ld.rotate(L, angle \fac{, center})} renvoie l'image de \argu{L} par la rotation de centre \argu{center} et d'angle \argu{angle} (en degrés). Par défaut, l'argument \argu{center} vaut $0$.  
+
+\subsection{shift}
+La fonction \cmd{ld.shift(L, u)} renvoie l'image de \argu{L} par la translation de vecteur \argu{u}.
+
+\subsection{simil}
+La fonction \cmd{ld.simil(L, factor, angle \fac{, center})} renvoie l'image de \argu{L} par la similitude de centre \argu{center}, de rapport \emph{factor} et d'angle \emph{angle} (en degrés). Par défaut, l'argument \emph{center} vaut arguargu$0$.
+
+\subsection{sym}
+La fonction \cmd{ld.sym(L, d)} renvoie l'image de \argu{L} par la symétrie orthogonale d'axe la droite \argu{d}.
+
+\subsection{symG}
+La fonction \cmd{ld.symG(L, d, v)} renvoie l'image de \argu{L} par la symétrie par rapport à la droite \argu{d} suivie de la translation de vecteur \argu{v} (symétrie glissée).
+
+\subsection{symO}
+La fonction \cmd{ld.symO(L, d)} renvoie l'image de \argu{L} par la symétrie par rapport à la droite \argu{d} et parallèlement au vecteur \argu{v} (symétrie oblique).
+
+\begin{demo}{Utilisation de transformations}
+\begin{luadraw}{name=Sierpinski}
+local ld = luadraw
+local g = ld.graph:new{window={-5,5,-5,5},size={10,10}}
+local i, hom = ld.cpx.I, ld.hom
+local rand = math.random
+local A, B, C = 5*i, -5-5*i, 5-5*i -- triangle initial
+local T, niv = {{A,B,C}}, 5
+for k = 1, niv do
+    T = ld.concat( hom(T,0.5,A), hom(T,0.5,B), hom(T,0.5,C) )
+end
+for _,cp in ipairs(T) do
+    g:Filloptions("full", ld.rgb(rand(),rand(),rand()))
+    g:Dpolyline(cp,true)
+end
+g:Show()
+\end{luadraw}
+\end{demo}

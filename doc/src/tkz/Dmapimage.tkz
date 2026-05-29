@@ -1,0 +1,13 @@
+\begin{tikzpicture}[line join=round,background rectangle/.style={,fill=green!30},show background rectangle]%
+\begin{scope}%
+\clip (0,0) rectangle (7.3333333333333,10.0);%
+\node[line width=0.3pt,inner sep=-0.15pt,cm={4,0,0,5.3333,(0,0)},above right] at (2.6667,0.6667){\includegraphics[width=1cm,height=1cm]{tkz/flower.jpg}};%
+\draw[Navy] (2.6667,0.6667) -- (6.6667,0.6667) -- (6.6667,6) -- (2.6667,6)--cycle;%
+\node[line width=0.3pt,inner sep=-0.15pt,cm={2,-1.3333,0,5.3333,(-2,1.3333)},above right] at (2.6667,0.6667){\includegraphics[width=1cm,height=1cm]{tkz/flower.jpg}};%
+\draw[Navy] (0.6667,2) -- (2.6667,0.6667) -- (2.6667,6) -- (0.6667,7.3333)--cycle;%
+\node[line width=0.3pt,inner sep=-0.15pt,cm={2,-1.3333,4,0,(-2,6.6667)},above right] at (2.6667,0.6667){\includegraphics[width=1cm,height=1cm]{tkz/flower.jpg}};%
+\draw[Navy] (0.6667,7.3333) -- (2.6667,6) -- (6.6667,6) -- (4.6667,7.3333)--cycle;%
+\node[line width=0.3pt,inner sep=-0.15pt,cm={1.5,-0.3333,0.2667,2,(0.2667,6.2222)},above right] at (2.6667,0.6667){\includegraphics[width=1cm,height=1cm]{tkz/russell.jpg}};%
+\draw[lightgray,line width=1.5mm] (2.9333,6.8889) -- (4.4333,6.5556) -- (4.7,8.5556) -- (3.2,8.8889)--cycle;%
+\end{scope}%
+\end{tikzpicture}%

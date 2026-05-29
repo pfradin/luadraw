@@ -1,0 +1,282 @@
+\section{Introduction}
+
+As a reminder, we use the following shortcuts:
+
+\begin{Luacode}
+local ld = luadraw -- alias sur l'espace de nommage
+local cpx = ld.cpx -- raccourci pour la classe cpx
+local pt3d = ld.pt3d -- raccourci pour la classe pt3d
+\end{Luacode}
+
+\subsection{Prerequisites}
+
+\begin{itemize}
+    \item This chapter presents the use of the \luadrawenv package with the \emph{3d} global option:
+\verb|\usepackage[3d]{luadraw}|.
+    \item The package loads the \emph{luadraw\_graph2d.lua} module, which defines the \emph{ld.graph} class and provides the \luadrawenv environment for creating graphs in Lua. Everything said in the previous chapter (Drawing 2D) therefore applies, and is assumed to be known here.
+    \item The \emph{3d} global option also allows the loading of the \emph{luadraw\_graph3d.lua} module. This also defines the \emph{ld.graph3d} class (which relies on the \emph{ld.graph} class) for 3D drawings.
+\end{itemize}
+
+\subsection{Some reminders}
+
+\begin{itemize}
+    \item Another global package option: \opt{noexec}. When this global option is mentioned, the default value of the \opt{exec} option for the \luadrawenv environment will be \false (and no longer \true).
+
+    \item When a graph is finished, it is exported in TikZ format, so this package also loads the TikZ package and the libraries:
+
+    \begin{itemize}
+        \item\emph{patterns}
+        \item\emph{plotmarks}
+        \item\emph{arrows.meta}
+        \item\emph{decorations.markings}
+    \end{itemize}
+    
+    \item Graphs are created in a \luadrawenv environment, which calls \emph{luacode}, so the \textbf{Lua language} must be used in this environment.
+
+    \item Saving the \emph{*.tkz} file: the chart is exported in TikZ format to a file (with the \emph{tkz} extension). By default, it is saved in the \emph{\_luadraw} folder, which is a subfolder of the current folder (containing the master document), but it is possible to specify a path to another subfolder, with the global option \opt{cachedir=\ldots}.
+
+    \item The environment options are:
+    
+    \begin{itemize}
+        \item \opt{name=\ldots}: allows you to name the resulting TikZ file. It is given a name without an extension (the extension will be automatically added; it is \emph{.tkz}). If this option is omitted, then a default name is used, which is the name of the master file followed by a number.
+
+        \item \opt{exec=true/false}: allows you to execute or not the Lua code included in the environment. By default, this option is true, \textbf{EXCEPT} if the global option \opt{noexec} was mentioned in the preamble with the package declaration. When a complex graph that requires a lot of calculations is developed, it may be useful to add the option \opt{exec=false}; this will avoid recalculating the same graph for future compilations.
+
+        \item \opt{auto=true/false}: allows you to automatically include or not the TikZ file in place of the \luadrawenv environment when the \opt{exec} option is \false. By default, the \opt{auto} option is \true.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Creating a 3D Graph}
+
+\begin{TeXcode}
+\begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
+local ld = luadraw
+-- create a new graph and give it a local name
+local g = ld.graph3d:new{ window3d={x1,x2,y1,y2,z1,z2 [,xscale,yscale,zscale]}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2 [,xscale,yscale]}, margin={top,right,bottom,left}, size={width,height,ratio}, bg="color", border=true/false }
+-- build graph g
+graph instructions in Lua language ...
+-- display graph g and save it in the file <filename>.tkz
+g:Show()
+-- or Save only in the <filename>.tkz file
+g:Save()
+\end{luadraw}
+\end{TeXcode}
+
+\noindent\textbf{Important}: throughout the rest of this chapter, points in space are called \emph{3D points}, they are triplets of $\mathbf R^3$. In the \luadrawenv environment, the 3D point $(x,y,z)$ will be denoted \cmd{pt3d.M(x, y, z)} (\cmd{pt3d.M} is a function that creates and returns a 3D point).
+
+Creation is done in a \luadrawenv environment. This creation is done on the first line inside the environment by naming the graph:
+
+\begin{Luacode}
+local ld = luadraw
+local g = ld.graph3d:new{ window3d={x1,x2,y1,y2,z1,z2 [,xscale,yscale,zscale]}, adjust2d=true/false, viewdir={30,60}, window={x1,x2,y1,y2 [,xscale,yscale]}, margin={left,right,top,bottom}, size={width,height,ratio}, bg="color", border=true/false }
+\end{Luacode}
+
+The \emph{graph3d} class is defined in the \luadrawenv package using the global option \opt{3d}. This class is instantiated by invoking its constructor and giving it a name (here it's \emph{g}). This is done locally so that the graph \emph{g} thus created will no longer exist once it leaves the environment (otherwise \emph{g} would remain in memory until the end of the document).
+
+\begin{itemize}
+    \item The option \opt{window3d=\{x1,x2,y1,y2,z1,z2 \fac{,xscale,yscale,zscale}\}} defines the $\mathbf R^3$ parallelepiped corresponding to the graph: it is $[x_1;x_2]\times[y_1;y_2]\times[z_1;z_2]$, as well as the scale on the three axes: \emph{xscale}, \emph{yscale}, and \emph{zscale}, these are optional and default to $1$. The default parallelepiped is $[-5;5]\times[-5;5]\times[-5;5]$.
+
+    \textbf{Caution}: The three scales determine the initial 3D matrix of the graph. When one of them is not $1$, this matrix is ​​not the identity matrix. If you need to change the graph matrix later, you must use the method \cmd{g:Composematrix3d()} and not \cmd{g:Setmatrix3d()}, and remember to save the initial matrix beforehand with the method \cmd{g:Savematrix()}, you can then restore it with the method \cmd{g:Restorematrix()}.
+
+    \item The option \opt{adjust2d} indicates whether the 2D window that will contain the projection of the 3D drawing should be determined automatically (\false by default). This 2D window corresponds to the \opt{window} option.
+
+    \item The option \opt{viewdir} is a table that defines the projection method and the two viewing angles (in degrees). By default  \opt{viewdir=\{"ortho","30,60\}} (orthographic projection). The following figure shows what these two angles correspond to.
+
+\begin{center}
+\begin{luadraw}{name=viewdir}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK 
+local g = ld.graph3d:new{ size={8,8} }
+local i, M = ld.cpx.I, ld.pt3d.M
+local O, A = Origin, M(4,4,4)
+local B, C, D, E = ld.pxy(A), ld.px(A), ld.py(A), ld.pz(A) --projected from A onto the xOy plane and onto the axes
+g:Dpolyline3d( {{O,A},{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, "->") -- axes
+g:Dpolyline3d( {{E,A,B,O}, {C,B,D}}, "dashed")
+g:Dpath3d( {C,O,B,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8") --angular sector
+g:Darc3d(C,O,B,2.5,1,"->") -- arc de cercle pour theta
+g:Dpath3d( {E,O,A,2.5,1,"ca",O,"l","cl"}, "draw=none,fill=cyan,fill opacity=0.8") --angular sector
+g:Darc3d(E,O,A,2.5,1,"->") -- arc of a circle for phi
+g:Dballdots3d(O) -- the point of origin in the form of a small sphere
+g:Labelsize("footnotesize")
+g:Dlabel3d(
+  "$x$", 5.25*vecI,{}, "$y$", 5.25*vecJ,{}, "$z$", 5.25*vecK,{},
+  "towards the observer", A, {pos="E"},
+  "$O$", O, {pos="NW"},
+  "$\\theta$", (B+C)/2, {pos="N", dist=0.15},
+  "$\\varphi$", (A+E)/2, {pos="S",dist=0.25})
+g:Dlabel("viewdir=\\{'ortho',$\\theta,\\varphi$\\} (in degrees)",-5*i,{pos="N"}) -- label 2D
+g:Show()
+\end{luadraw}
+\captionof{figure}{Viewing Angles}\label{viewdir}
+\end{center}
+
+    \item The other options are those of the \emph{ld.graph} class, described in Chapter 1.
+\end{itemize}
+
+\paragraph{Graph construction.}
+
+\begin{itemize}
+    \item The instantiated object (\emph{g} in the example) has all the methods of the \emph{ld.graph} class, plus methods specific to 3D.
+    \item The \emph{ld.graph3d} class also provides a number of mathematical functions specific to 3D.
+\end{itemize}
+
+\subsection{Affine Projection Modes}
+
+\begin{itemize}
+    \item Orthogonal Projections:
+    \begin{itemize}
+        \item \opt{viewdir=\{"ortho",theta,phi\}}, or \opt{viewdir=\{theta,phi\}}: orthographic projection (orthogonal projection onto the screen), this is the default projection with theta=30 and phi=60 (degrees),
+        \item \opt{viewdir="xOy"}: orthogonal projection onto the $xy$ plane,
+        \item \opt{viewdir="xOz"}: orthogonal projection onto the $xz$ plane,
+        \item \opt{viewdir="yOz"}: orthogonal projection onto the $yz$ plane.
+    \end{itemize}
+    \item Non-orthogonal Projections:
+    \begin{itemize}
+        \item \opt{viewdir=\{"yz",k,alpha\}}: cavalier perspective on the $yz$ plane,
+        \item \opt{viewdir=\{"xz",k,alpha\}}: cavalier perspective on the $xz$ plane,
+        \item \opt{viewdir=\{"xy",k,alpha\}}: cavalier perspective on the $xy$ plane,
+        \item \opt{viewdir="iso"}: isometric perspective.
+    \end{itemize}
+    The three cavalier perspectives are defined using two parameters: a positive number \emph{k} and an angle in degrees \emph{alpha}, which are highlighted in the following figure.
+\end{itemize}
+
+\begin{center}
+\begin{luadraw}{name=perpectives}
+local ld, cpx, pt3d = luadraw, luadraw.cpx, luadraw.pt3d
+local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK 
+local Z, Zp, deg = cpx.Z, cpx.Zp, ld.deg
+
+local k, alpha, r = 0.65, 60, 3
+local g = ld.graph3d:new{
+    window3d = {-4.5,4.5,-4.5,4.5,-4.5,4.5},
+    window ={-5,5,-5,5},
+    viewdir = {"yz",k,alpha},
+    size={10,10},
+}
+g:Labelsize("footnotesize")
+local draw = function()
+    g:Dscene3d( g:addAxes(Origin, {arrows=1}) )
+    g:Darc(1,0,Zp(1,alpha*deg),(r+0.5)*k,1,"->"); g:Ddots(r*k)
+    g:Dlabel("$\\alpha$",Zp((r+1)*k,30*deg),{pos="NE"}, "$k$", r*k,{pos="SE"})
+    g:Dcircle(0,r*k)
+end
+g:Dline(0,1); g:Dline(0,cpx.I)
+-- top left
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-4.5,5.5,-5,5)
+draw()
+g:Ddots3d(r*vecI); g:Dlabel3d("$x=1$",r*vecI,{pos="W",dist=0.1}); 
+g:Dlabel("perspective on yz plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+-- top right
+g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-4.75,5.5,-5,5)
+g:Setviewdir({"xz",k,alpha})
+draw()
+g:Ddots3d(r*vecJ); g:Dlabel3d("$y=1$",r*vecJ,{pos="NW"}); 
+g:Dlabel("perspective on xz plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+-- bottom left
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-4.5,5.5,-5,5.5)
+g:Setviewdir({"xy",k,alpha})
+draw()
+g:Ddots3d(r*vecK); g:Dlabel3d("$z=1$",r*vecK,{pos="W"}); 
+g:Dlabel("perspective on xy plane",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+-- bottom right
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-4.5,5.5,-5,5.5)
+g:Setviewdir("iso")
+g:Dscene3d( g:addAxes(Origin, {arrows=1}) ); g:Dcircle(0, cpx.abs(g:Proj3d(r*vecI)))
+g:Ddots3d({r*vecI,r*vecJ,r*vecK}); 
+g:Dlabel3d("$z=1$",r*vecK,{pos="NW"}, "$x=1$",r*vecI,{pos="NW"},"$y=1$",r*vecJ,{pos="NE"});
+g:Dlabel("isometric perspective",Z(0.5,-5),{pos="N",node_options="fill=white"})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\captionof{figure}{Affine Projection Modes}
+\end{center}
+
+All values ​​that can be passed to the \opt{viewdir} option during creation can also be used in the \cmd{g:Setviewdir()} method during graphing.
+
+
+\subsection{Central Projection}
+
+Since version 2.4, \luadrawenv also offers central projection. Unlike previous modes, \textbf{this projection is not affine}, and furthermore, it is not defined for all points in space, which can lead to errors, thus requiring thought and adjustments. This projection is defined by:
+
+\begin{itemize}
+    \item A camera, which is a point in space stored in a global variable called \varglob{ld.camera} and which should not be modified directly.
+    \item A target, which is a point in space stored in a global variable called \varglob{ld.target} and which should not be modified directly.
+\end{itemize}
+
+
+The plane passing through the \varglob{ld.target} and orthogonal to the \varglob{ld.target} - \varglob{ld.camera} axis is the projection plane; it represents the screen. As with the previous modes, the central projection is accessed via the \opt{viewdir} option, or the \cmd{g:Setviewdir} method:
+\cmdln{ viewdir = \{"central" \fac{, camera, target}\}}
+or
+\cmdln{viewdir = \{"central" \fac{, theta, phi, d, target}\}}
+
+In the first case, the values ​​of \argu{camera} and \argu{target} are given (3D points; by default, \argu{target} is the origin). In the second case, the three arguments \argu{theta}, \argu{phi}, and \argu{d} are used to calculate the position of the camera according to the following diagram:
+
+\begin{center}
+\begin{luadraw}{name=central_perspective}
+local ld, cpx, pt3d = luadraw, luadraw.cpx, luadraw.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window3d={-5,3,-5,3,-5,5}, window={-5,10,-7,7}, size={12,12}, margin={0,0,0,0}, bbox=false,
+    viewdir={"central",-60,65,35}}
+    
+g:Writeln("\\tikzset{->-/.style= {decoration={markings, mark=at position #1 with {\\arrow{stealth}}}, postaction={decorate}}}")
+g:Labelsize("footnotesize")
+local dcamera = function(pos,dir)
+    local a, b, c, d, e = 0.25, 0.25, 0.1, 0.2, 0.1
+    local u = cpx.normalize(dir)
+    local v = cpx.I*u
+    local chem, dep = {}, pos+e*u-b*v
+    chem = {dep,dep+2*a*u,dep+2*a*u+2*b*v,dep+2*b*v,0.15,"cla", dep+(b-c)*v,"m",pos-d*v,pos+d*v,dep+(b+c)*v,"l"}
+    g:Dpath(chem)
+end
+local d = 10
+local N = pt3d.normalize(M(2,1,1.5))
+local v = pt3d.normalize(pt3d.prod(N,vecJ))
+local u = pt3d.prod(v,N)
+local Cam = d*N
+local A = ld.pxy(Cam)
+local B, C = M(0,2,2.5), M(3,-1,4)
+local E = (B+C)/2+vecK
+local F = pt3d.isobar3d({B,C,E})+1.51*vecJ
+local T = ld.tetra(B,E-B,C-B,F-B)
+local B1, C1, E1, F1 = ld.proj3dO(B, {Origin,N}, Cam-B), ld.proj3dO(C, {Origin,N}, Cam-C), ld.proj3dO(E, {Origin,N}, Cam-E), ld.proj3dO(F, {Origin,N}, Cam-F)
+local x, y = 12,8
+local D = Origin -x*u/2-y*v/2.5
+local plan = {D,D+x*u,D+x*u+y*v,D+y*v}  
+g:Dscene3d(
+    g:addFacet(plan, {color="white", contrast=0.125, edge=true}),
+    g:addPoly(T, {color="white", contrast=0.25, edge=true, hidden=true, hiddenstyle="dashed"}),
+    g:addPolyline( {{(Cam+B)/2,B1},{C,C1},{E,E1},{F,F1}}, {width=2,color="gray", hidden=true}),
+    g:addPolyline({{-5*vecK,5*vecK},{-5*vecI,4*vecI}}, {arrows=1, hidden=true})
+)
+g:Dballdots3d(Origin,nil,1.5)
+g:Ddots3d({B1,C1, E1, F1},"gray")
+g:Dpolyline3d({Origin, A, Cam},true,"dashed")
+g:Dangle3d(Cam,A,Origin)
+g:Dangle3d(Cam,Origin,v,0.3,"line width=0.8pt")
+g:Darc3d(vecI,Origin,A,2.25,1,'-stealth'); g:Darc3d(vecK,Origin,Cam,2.25,1,'-stealth')
+g:Dpolyline3d({{Cam,(B+Cam)/2},{Cam,C},{Cam,E},{Cam,F}},true,"->-=0.35,line width=0.1pt,gray")
+g:Dpolyline3d({{B1,C1,E1,F1},{C1,F1}},true,"gray")
+g:Dpolyline3d({B1,E1},true,"dotted,gray")
+g:Ddots3d({B, C, E, F})
+g:Dlabel3d("screen plane",D,{pos="NE",dir={u,v}})
+g:Dlabel3d("target",Origin, {pos="S",dist=0.1}, "camera",Cam,{pos="SE"}, "$A$",B,{pos="N"},"$B$",C,{pos="S"},"$C$",E,{pos="N"},
+"$D$",F,{},"$A'$",B1,{node_options="gray",dist=0}, "$B'$",C1,{pos="NW"}, "$C'$",E1,{pos="N"},"$D'$",F1,{}, "$\\theta$", 2.75*vecI,{pos="N",node_options="black"},"$\\varphi$", 1.3*(vecK+N), {}, "$z$",5*vecK,{},"$x$",4.5*vecI,{pos="center"})
+local O = M(-3,-2,-4)
+g:Ddots3d(O); g:Dpolyline3d({{O,O+vecI},{O,O+vecJ},{O,O+vecK}},'->')
+g:Dlabel3d("$x$",O+1.25*vecI,{},"$y$",O+1.25*vecJ,{},"$z$",O+1.25*vecK,{},"Origin",O,{pos="S"})
+u = g:Proj3dV(Cam)
+g:Dpolyline3d( {Cam/2-0.4*vecK-Cam/3.5, Cam/2-0.4*vecK+Cam/3.5}, 'stealth-stealth')
+g:Dlabel("$d$ = distance target - camera", g:Proj3d(Cam/2-0.4*vecK),{dir={u, cpx.I*u}, node_options="fill=white"})
+dcamera(u,u)
+g:Show()
+\end{luadraw}
+\captionof{figure}{Central projection}
+\end{center}
+
+The default values ​​are: \argu{theta}=$30$ (degrees), \argu{phi}=$60$, \argu{d}=$15$, \argu{target}=\varglob{pt3d.Origin} (the variable \varglob{pt3d.Origin} is the 3D point $(0,0,0)$).

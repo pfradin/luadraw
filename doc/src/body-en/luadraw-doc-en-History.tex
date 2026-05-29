@@ -1,0 +1,229 @@
+\section{History}
+
+\subsection{Version 3.1}
+
+\begin{itemize}
+    \item Added the function \cmd{ld.implicit\_inequality()} which returns a \textbf{path} representing the outline of the part of the plane located within a certain block and satisfying a condition of the type $f(x,y)>=0$ or $f(x,y)<=0$.
+    
+    \item Added the method \cmd{g:Dimplicit\_inequalities()} which can fill the set of points satisfying a constraint system of the type $f_i(x,y)>0$ or $f_i(x,y)<0$.
+    
+    \item Adding the function \cmd{plane2rectangle(P, V, L1, L2)} which returns a rectangle (a list of 3D points) to represent this plane. This is the same rectangle drawn by the method \cmd{g:Dplane(P, V, L1, L2)}. It can be drawn using the method \cmd{g:Dpolyline3d()} or as a facet.
+    
+    \item For the methods \cmd{g:addPlane()} and \cmd{g:addPlaneEq()} (which are used in \cmd{g:Dscene3d()}), the \opt{rectangle} option has been added. When \opt{rectangle=\nil} (the default value), the plane is cut by the 3D window and the resulting facet is drawn. When \opt{rectangle=\{V,L1,L2\}}, the plane is drawn as a rectangular facet; this is the same rectangle drawn by the method \cmd{g:Dplane(P, V, L1, L2)} (where $P$ denotes the plane).
+    
+    \item When creating a 3D graph, the \opt{window3d} option now takes into account the scales on the three axes:\par
+    \hfil\opt{window3d=\{x1,x2,y1,y2,z1,z2 \fac{,xscale,yscale,zscale}\}}.\hfil\par
+    These three scales are optional and are set to $1$ by default; they determine the initial 3D matrix of the graph (which is therefore no longer the identity if one of the scales is different from $1$).
+    
+    \item When creating a graph, the \opt{margin} option can now be reduced to a single number when all four margins are equal, for example \opt{margin=0}.
+    
+    \item Added the option \opt{useclip=<boolean>} for the method \cmd{g:Dinequalities()} which allows you to choose the technique to use, either contour calculation (with the value \false, default value), or with a series of clips (with the value \true).
+
+    \item The \cmd{rectangle()} function now has a second possible syntax: \cmd{rectangle(a, b)}, in which case the rectangle has its sides parallel to the axes and has opposite vertices \argu{a} and \argu{b}. ​​The same applies to the corresponding graphical method \cmd{g:Drectangle()}.
+    
+    \item For the \cmd{line2strip()} function, the argument \argu{ends}, which was previously a boolean, can now take the values ​​\val{"none"} (equivalent to \false), \val{"butt"} (equivalent to \true), or \val{"round"}. Boolean values ​​are still accepted.
+    
+    \item The function \cmd{line2strip()} now has an additional argument called \opt{mode}, which can be \val{"center"} (default value), or \val{"left"}, or \val{"right"}, in the first case the strip is centered on the polygonal line, in the second case it is on the left of the line, and in the third case it is on the right of the line.
+
+    \item In the function \cmd{read\_csv\_file()}, add the option \opt{comment=<char>}, this indicates the characters that begin a line of comments.
+    
+    \item All methods for drawing lines or half-lines (\cmd{g:Dline()}, \cmd{g:Dperp()},\ldots) now have an \opt{scale} option, like the \cmd{g:Dseg()} method. This option (which defaults to $1$) can be a number (percentage) or a table of two numbers (percentages). The second case allows you to vary the two endpoints separately.
+
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 3.0}
+
+This version introduces a major change: all data related to the \emph{luadraw} package is now stored in the namespace (table) named \emph{luadraw}. This necessitates the use of dot notation, for example, \code{luadraw.graph} instead of \code{graph}. However, it is possible to create shortcuts; for instance, the instruction \code{local ld = luadraw} will allow you to use \emph{ld} instead of \emph{luadraw} in dot notation. Refer to the very beginning of this document for more details.
+
+This change results in incompatibility with previous versions; however, the changes required to adapt older code are minimal, especially since there are no changes to the graphics methods (they were already encapsulated in two classes).
+
+This change also brings some (minor) modifications to extensions; refer to the documentation for more details.
+
+\begin{itemize}
+    \item Added a second possible syntax for the functions \cmd{ld.surface()} and \cmd{ld.obj\_surface()}: \cmd{ld.surface(f, mesh)} and \cmd{ld.obj\_surface(f, mesh)} where \argu{mesh}$=\{\{u_1,\ldots,u_n\}, \{v_1,\ldots,v_m\}\}$ (increasing list of values ​​of parameter $u$ and increasing list of values ​​of parameter $v$).
+    
+    \item In the \emph{luadraw\_decorations} module: the 2D and 3D line drawing methods have been overridden so that the \argu{draw\_options} argument, which is normally a string passed to the \drawcmd instruction, can be replaced by a table whose fields represent possible options (such as adding a label). The method names remain unchanged, and the old syntax is still valid.
+    
+    \item In the functions \cmd{ld.curve2cone()}, \cmd{ld.curve2cylinder()}, \cmd{ld.line2tube()}, \cmd{ld.section2tube()}, \cmd{ld.rotcurve()} and \cmd{ld.rotline()}, add the option \opt{obj=\true/\false}; with the value by \false (default) the functions return a list of facets, with the value \true they return a table \code{\{vertices=\{3D points\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{3D vectors\}\}}. If the \cmd{g:Dpoly()} method does not take into account the \emph{normals} field, the \cmd{g:Pov\_facet()} method of the \emph{luadraw\_povray} module, on the other hand, uses this field when it is present.
+    
+    \item Added the function \cmd{ld.cutpolyline2(P,f,sg,close)} where \argu{P} is a polygon (list of complex numbers), \argu{f} is a function ($x\mapsto f(x)\in \mathbf R$), and \argu{sg} is a string equal to \val{">"} or \val{"<"}. This function returns the outline of the part of the polygon satisfying the constraint $y>f(x)$ or $y<f(x)$ depending on the value of \argu{sg}.
+
+    \item Added the method \cmd{g:Dinequalities(constraints, options)} which draws the set of points satisfying a constraint system of the type $y>f_i(x)$ or $y<f_i(x)$.
+
+    \item In the \emph{luadraw\_povray} module: added the option \opt{usepalette=\{palette, mode, minmax\}}.
+    
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.8}
+Non-exhaustive list:
+\begin{itemize}
+    \item Added functions: \cmd{nth\_root(n,x)} (nth root of a real $x$, defined on $\mathbb R$ when $n$ is odd); \cmd{cpx.cosh()}, \cmd{cpx.sinh()} (complex hyperbolic cosine and sine) and \cmd{cpx.pow(z,a)} (for calculating $z^a$ with $z$ a complex number and $a$ a real number).
+    
+    \item Added the \emph{luadraw\_coils\_chains} extension which allows drawing springs and chains.
+    
+    \item Added the \emph{luadraw\_log\_axes} extension which allows you to create and draw on a logarithmic grid in $x$, or in $y$, or in $x$ and $y$.
+    
+    \item Added the \opt{use\_siunitx} option for the \cmd{g:Daxes()}, \cmd{g:DaxeX()}, \cmd{g:DaxeY()}, \cmd{g:Dgradbox()}, \cmd{g:Dgradline()} methods. This allows you to locally use or not use the formatting of numeric values ​​by the \emph{siunitx} package.
+    
+    \item Added the \opt{showlines} option for the \cmd{g:Dgrid()} method which allows you to show or hide horizontal and/or vertical lines.
+    
+    \item Added the \emph{luadraw\_decorations} extension, which enhances certain drawing methods by adding options. Currently, there is \cmd{g:Ddecoratedarc()} for 2D arcs and \cmd{g:Ddecoratedarc3d()} for 3D arcs.
+    
+    \item For the methods \cmd{g:Dpoly()}, \cmd{g:Dfacet()}, \cmd{g:Dmixfacet()}, and \cmd{g:addFacet()}, in the option \opt{usepalette=\{palette, mode\}}, the second argument can now be a function, \argu{mode}$\colon f \mapsto \mathrm{mode}(f)\in\mathbb R$, where $f$ denotes a facet (a list of 3D points). Facets with the smallest value have the first color of the palette, those with the smallest value have the last color of the palette, and for the others, the color is calculated by linear interpolation. Previously, the argument \argu{mode} could only be \val{"x"}, \val{"y"}, or \val{"z"}.
+    
+    \item Added the function \cmd{obj\_surface(f,u1,u2,v1,v2 \fac{, grid})} which returns the surface parameterized by \argu{f}$\colon(u,v)\mapsto f(u,v)\in\mathbf R^3$ in \emph{obj} format, that is, a table with three fields \{vertices=\{\ldots\}, facets=\{\{\ldots\},\ldots\}, normals=\{\ldots\}\}. The first two fields are identical to the case of polyhedra, and the third field contains the unit vectors normal to the surface at each vertex. The facets are triangular.
+
+    \item In the \emph{luadraw\_povray} module: a second syntax has been added for drawing smooth parametric surfaces:
+    \cmdln{g:Pov\_surface(f,u1,u2,v1,v2,options)}
+    where \argu{f}$\colon(u,v)\mapsto f(u,v)\in\mathbf R^3$ is the parameterization. This method is faster than the previous one.
+
+    \item In the \emph{luadraw\_spherical} module: add the global variable \varglob{Hiddendelayed} = \false. With the value \false, hidden parts are drawn at the end of the \cmd{g:Dspherical()} instruction; with the value \true, they are drawn at the very end of the current graph, which can be useful if you have added elements after the sphere that hide part of it.
+
+    \item For the \cmd{g:Daxes()} method: the \opt{originloc} option is still the point used as the origin for the graduations, but it is no longer automatically the point of intersection of the two axes.
+
+    \item For the method \cmd{g:Daxes()}: addition of the options \opt{xynode\_options = ""}, \opt{xnode\_options = xynode\_options} and \opt{ynode\_options = xynode\_options} which allow passing options to the instruction \verb|\node{}| for all labels (except legends).
+    
+    \item For the \cmd{g:addAaxes()} method, add the option \opt{labels=}\verb|{"$x$","$y$","$z$"}| to manage the labels displayed at the end of each axis.
+
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.7}
+Non-exhaustive list:
+\begin{itemize}
+    \item The basic solid drawing methods: \cmd{g:Dcylinder()}, \cmd{g:Dcone()} and \cmd{g:Dfrustum()} now have two additional options: \opt{edgestyle} and \opt{edgewidth} (as for the \cmd{g:Dsphere()} method).
+    \item In the module \emph{luadraw\_compile\_tex}, for the methods: \par
+    \hfil \cmd{g:Dcompiled\_tex(L, anchor, options)} and \cmd{g:Compiled\_tex2path3d(L, options)},\hfil\par
+     add the option \opt{pos} identical to the labels.
+    \item In the \emph{luadraw\_compile\_tex} module, three global variables are added to manage access to the \emph{pdflatex}, \emph{pdf2ps} and \emph{pstoedit} programs. These variables are \varglob{pdflatexcmd}, \varglob{pdf2pscmd} and \varglob{pstoeditcmd}, they allow you to optionally add a path to the program, for example: \code{pstoeditcmd = "/usr/bin/pstoedit"}.
+    \item New syntax for the function \cmd{circle(data, nbdots)}, where \argu{data} is a list (center and radius, or three points on the circle) and \argu{nbdots} is the desired number of points. The old syntaxes remain valid.
+    \item New syntax for the function \cmd{ellipse(data, nbdots)}, where \argu{data} is a list: \{center, rx, ry, incline\}, and \argu{nbdots} is the desired number of points. The old syntaxes remain valid.
+    \item Added the function \cmd{mixpalette(pal, percent, color)} which returns a new palette after mixing each color of the palette \argu{pal} with \argu{color}.
+    \item Correction of numerous typos in the documentation.
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.6}
+Non-exhaustive list:
+\begin{itemize}
+    \item Added the \emph{luadraw\_povray} extension which allows you to create an image with Pov-Ray and include it in the current graphic to draw over it.
+    \item Added the \emph{luadraw\_fields} extension which allows drawing vector fields or gradient fields.
+    \item Added the \emph{luadraw\_shadedforms} extension, which allows drawing 2D polygonal lines or filling a shape with a color gradient based on the chosen calculation method and palette.
+    \item The \cmd{g:Dshadedpolyline()} method is now part of the \emph{luadraw\_shadedforms} extension.    
+    \item Added the methods \cmd{g:Dimage()} and \cmd{g:Dmapimage()}. The first allows you to include an image in the graph, and the second allows you to map an image onto a parallelogram.
+    \item Added the function \cmd{parallelogram()}, which returns the vertices of a parallelogram constructed from a vertex and two vectors. Also added is the corresponding drawing method \cmd{g:Dparallelogram()}.
+    \item Added the options \opt{gradside} and \opt{gradsection} which allow modification of gradient parameters in the drawing of cylinders, cones and truncated cones (methods \cmd{g:Dcylinder()}, \cmd{g:Dcone()} and \cmd{g:Dfrustum()}).
+    \item Extension of the method \cmd{g:Newcolor(name, color)}, the second argument can now be eiher a table of three RGB components, or a string representing a color.
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.5}
+Non-exhaustive list:
+\begin{itemize}
+    \item Added the function \cmd{read\_csv\_file()}\footnote{Based on an idea by Christophe BAL.} which allows reading a \emph{csv} file with different options.
+    \item The \emph{luadraw\_palettes} extension has been updated to version 1.3.0 of the \verb|@prism| project of \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christophe BAL}.
+    \item Added the method \cmd{g:Dshadedpolyline()} which allows drawing a 2D polygonal line with a color gradient depending on the calculation method and palette chosen.
+    \item Added the \cmd{g:Dpolynames()} method which allows displaying a polyhedron with the number of faces and/or those of vertices.
+    \item Added the \emph{luadraw\_cvx\_polyhedra\_nets} extension, which allows you to determine a net for convex polyhedra.
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.4}
+Non-exhaustive list:
+\begin{itemize}
+    \item Added the central projection.
+    \item Added the \opt{legendstyle} option for axes, to impose a label style ("auto", "N", "E", ...) for legends when there are any (until now, the style was necessarily "auto").
+    \item Added the \cmd{g:Labeldir()} method which allows global management of the writing direction.
+    \item Added the functions \cmd{interCS()} (intersection between a circle in space and a sphere), and the function \cmd{interSSS()} (intersection between 3 spheres).
+    \item Added the function \cmd{voronoi()} as a complement to Delaunay triangulation, it allows you to make Voronoi diagrams.
+    \item Added the function \cmd{parallel\_polyline()} which returns a parallel polygonal line.
+    \item Added the function \cmd{tangent\_from()} and the method \cmd{g:Dtangent\_from()} which allows drawing the tangents to a given curve from a given point.
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.3}
+Non-exhaustive list:
+\begin{itemize}
+\item Added cavalier perspective projections: on $yz$, on $xz$ or on $xy$, as well as the isometric projection.
+\item Added the function \cmd{section2tube()}.
+\item Added the \emph{luadraw\_compile\_tex} module.
+\item Added the \cmd{g:Proj3dV()} method for calculating the projection of space vectors onto the screen plane.
+\item Added the functions \cmd{circumcircle()} and \cmd{incircle()} in 2D, they return a sequence: center and radius.
+\item Added the function \cmd{line2strip()} which returns a path representing a "strip" centered on a given polygonal line.
+\item Added the function \cmd{delaunay()} which performs a Delaunay triangulation on a list of points and returns the list of triangles obtained.
+\item Added the function \cmd{cpx.normalize(z)} which returns the complex number $z$ divided by its modulus (or \nil if it is zero).
+\item Added the instruction \cmd{whatis(variable, msg)} which displays the status of a \argu{variable} (along with the message \argu{msg}) and its contents in the terminal.
+\item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.2}
+Non-exhaustive list:
+\begin{itemize}
+    \item Added the \opt{clip} option for the methods: \cmd{g:Dfacet()}, \emph{Dmixfacet()}, \cmd{g:addFacet()}, \cmd{g:addPoly()} and \cmd{g:addPolyline()}, as well as for point cloud drawing methods, and line drawing methods such as \cmd{g:Dpolyline3d()}, \cmd{g:Dparametric3d()}, \cmd{g:Dpath3d()}, etc.
+
+    \item Added the \opt{xyzstep} option for the \cmd{g:Dboxaxes3d()} method. This option defines a common step for all three axes ($1$ by default).
+
+     \item Added the \cmd{g:DSdots()}, \cmd{g:DSstars()}, \cmd{g:DSinvstereo\_curve()}, and \cmd{g:DSinvstereo\_polyline()} methods to the \emph{luadraw\_spherical} module.
+
+    \item Added the \emph{luadraw\_palettes} module.
+
+    \item Added the \cmd{interDC()} function (intersection between a line and a circle in 2D) and the \cmd{interCC()} function (intersection between two circles in 2D).
+
+    \item Added the \cmd{curvilinear\_param()} and \cmd{curvilinear\_param3d()} functions, which allow you to parameterize a list of points (one in 2D and the other in 3D) with a function of a variable $t$ between $0$ and $1$.
+
+    \item Added the function \cmd{cvx\_hull2d()}, which returns the convex hull (polygonal line) of a list of points in 2D, and the function \cmd{cvx\_hull3d()}, which returns the convex hull (list of facets) of a list of points in 3D.
+
+    \item Added the methods \cmd{g:Beginclip(path)} and \cmd{g:Endclip()}, which make it easier to set up clipping using TikZ.
+
+    \item Added the functions \cmd{normal()}, \cmd{normalC()}, and \cmd{normalI()}, which return the normal to a 2D curve at a given point. The corresponding graphics methods have also been added.
+
+    \item Added the function \cmd{isobar()}, which returns the isobarycenter of a list of complexes.
+
+    \item Added the \opt{usepalette=\{palette,mode\}} option for the \cmd{g:Dpoly()}, \cmd{g:Dfacet()}, \cmd{g:Dmixfacet()}, and \cmd{g:addFacet()} methods.
+
+    \item Added the \cmd{clipplane()} function, which allows you to clip a plane with a convex polyhedron. The function returns the section, if it exists, as a facet.
+
+    \item Added the \cmd{cartesian3d()} and \cmd{cylindrical\_surface()} functions, which calculate and return surfaces, with the option to add dividing walls for the \cmd{g:Dscene3d()} method.     
+
+    \item Added the function \cmd{evalf(f, \ldots)} which allows a protected evaluation of $f(\ldots)$. It returns the result of the evaluation if there is no runtime error from Lua, otherwise it returns \nil but without causing the script execution to terminate.
+
+    \item Added the function \cmd{split\_points\_by\_visibility()} (3d) to separate a curve into two parts: visible part, hidden part.
+
+    \item In the methods \cmd{g:Dfacet()}, \cmd{g:Dmixfacet()}, \cmd{g:Dpoly()}, \cmd{g:Dedges()}, \cmd{g:addFacet()}, \cmd{g:addPolyline()}, \cmd{g:addPoly()}, the default values ​​for the line drawing options (thickness, color, and style) are the current values.
+    \item Bug fixes...
+\end{itemize}    
+
+\subsection{Version 2.1}
+Non-exhaustive list:
+\begin{itemize}
+    \item By default, TikZ files are saved in a subfolder called \emph{\_luadraw}. The new package option \opt{cachedir} allows you to change this.
+
+    \item The \opt{line join=round} option is automatically added to the \emph{tikzpicture} environment.
+    \item Two additional options for the \luadrawenv environment: \opt{bbox} and \opt{pictureoptions}.
+    \item A number of additional 2D and 3D geometric construction functions.
+    \item Graduated axes (2D, 3D) use the \emph{siunitx} package to format labels when the global variable \varglob{siunitx} is set to \true.
+
+    \item Added upright and slanted truncated cones (\cmd{frustum()} and \cmd{g:Dfrustum()}).
+    \item Added regular pyramids (\cmd{regular\_pyramid()} and truncated pyramids \cmd{truncated\_pyramid()}).
+
+    \item Cylinders and cones are no longer necessarily upright; they can now be slanted.
+    \item Added the \cmd{cutpolyline(L, D, close)} function.
+
+    \item (Elementary) drawing of sets (\cmd{set()} function) and operations on sets (\cmd{cap()}, \cmd{cup()}, \cmd{setminus()}).
+    \item Modification of the \opt{mode} option of the \cmd{g:Dplane()} method.
+    \item Addition of the \opt{close} option for the \cmd{g:addPolyline()} method.
+    \item Bug fixes...
+\end{itemize}
+
+\subsection{Version 2.0}
+
+\begin{itemize}
+    \item Introduction of the \emph{luadraw\_graph3d.lua} module for 3D drawings.
+    \item Introduction of the \opt{dir} option for the \cmd{g:Dlabel()} method.
+    \item Minor changes in color management.
+\end{itemize}
+
+\subsection{Version 1.0}
+First version.

@@ -1,0 +1,167 @@
+\subsection{Le module \emph{luadraw\_compile\_tex}}
+
+\textbf{Attention} : 
+\begin{itemize}
+    \item ce module ajoute de nouvelles méthodes graphiques aux classes {ld.graph} et \emph{ld.graph3d} ainsi que plusieurs fonctions dans l'espace de noms \emph{luadraw}, mais il ne renvoie rien.
+    \item ce module a été testé sous linux, mais pas (encore) sous windows, ni macOS,
+    \item ce module nécessite que soit installés les programmes : \emph{pdflatex}, \emph{pdf2ps} et \emph{pstoedit} sur votre système,
+\end{itemize}
+
+La fonction \cmd{ld.compile\_tex\_default(options)} permet de modifier les réglages par défaut, ces paramètres sont (avec leur valeur par défaut) :
+\begin{itemize}
+    \item \opt{pdflatexcmd=\val{"pdflatex"}},
+    \item \opt{pstoeditcmd=\val{"pstoedit"}},
+    \item \opt{pdf2pscmd=\val{"pdf2ps"}},
+    \item \opt{preamble=}\verb|"\\documentclass[12pt]{article}\n"}|,
+    \item \opt{usepackage=}\verb|"\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"|.
+\end{itemize}
+
+En fonction de votre système d'exploitation, il vous faudra peut être modifier ces variables pour ajouter le chemin d'accès au programme, par exemple : 
+\codeln{ld.compile\_tex\_default( \{pstoeditcmd="/usr/bin/pstoedit"\} )}
+
+
+Ce module permet de :
+
+\begin{enumerate}
+    \item compiler un fragment de texte en \TeX,
+    \item de convertir le fichier obtenu en un fichier \emph{eps} contenant du \emph{flattened postscript},
+    \item de lire le contenu du fichier \emph{eps} et renvoyer son contenu sous forme d'une liste de chemins, avec l'épaisseur de ligne en tête de chaque chemin, et l'instruction de remplissage à la fin.
+    \item La liste ainsi obtenue peut être :
+        \begin{enumerate}
+            \item dessinée à l'écran,
+            \item convertie en chemins 3D dans un plan donné et être dessinée,
+            \item convertie en lignes polygonales 3D dans un plan donné (on perd alors l'épaisseur et la commande de remplissage) et être dessinée.
+        \end{enumerate}
+\end{enumerate}
+
+\subsubsection{Première partie : compilation et lecture}
+
+\paragraph{Attention} : cette étape nécessite une compilation du document avec l'option \emph{-shell-escape} ou \emph{-enable-write18}.
+Sans cette option, le fragment ne sera pas compilé, ce qui n'est pas un problème si le fichier \emph{<filename>.eps} existe déjà et que l'on ne souhaitait pas le modifier.
+
+
+La première étape est le rôle de la fonction \cmd{ld.compile\_tex(text \fac{, filename, conv\_stroke})}, l'argument \argu{text} est une chaîne de caractères, c'est le fragment à compiler, l'argument optionnel \argu{filename} est aussi une chaîne de caractères, c'est le nom du fichier qui sera créé, ce nom ne doit contenir \textbf{ni chemin, ni extension}, par défaut ce nom est \emph{"tex2FlatPs"}, il est créé dans le dossier courant (mais sera ensuite effacé). L'argument optionnel \argu{conv\_stroke} est un booléen qui indique si les lignes polygonales (instructions \emph{stroke}) doivent être converties en bandes remplies avec un \emph{fill}, ou pas (\false par défaut).
+
+Le processus se déroule en plusieurs étapes :
+    \begin{enumerate}
+        \item création du fichier tex. Celui-ci utilise les paramètres \opt{preamble} et \opt{usepackage}. La compilation se fait avec \emph{pdflatex}.
+        
+        \item Le fichier obtenu est transformé en postscript avec l'utilitaire \emph{pdf2ps}.
+        \item Le fichier \emph{ps} obtenu est à son tour transformé avec l'utilitaire \emph{pstoedit} en un fichier \emph{eps} en \emph{flattened postscript} (tout le contenu est sous forme de chemins).
+        
+        \item Le fichier \emph{<filename>.eps} ainsi obtenu est copié dans le dossier de travail de \luadrawenv (le nom de ce dossier est dans la variable globale \varglob{ld.cachedir}), et tous les résidus de la compilation sont effacés.
+        
+        \item Le contenu du fichier ainsi créé est automatiquement lu par la fonction \cmd{ld.read\_compiled\_tex(filename)}, qui renvoie une liste de chemins, chaque chemin est une liste commençant par l'épaisseur de ligne, suivi de points et d'instructions comme un chemin ordinaire, et se terminant par la commande de remplissage (\emph{"fill"}, ou \emph{"eofill"} ou \emph{"stroke"}).
+   \end{enumerate}
+   
+\subsubsection{Deuxième partie : exploitation du résultat}
+
+\paragraph{En 2D} Le résultat peut être dessiné avec la méthode \cmd{g:Dcompiled\_tex(L, anchor, options)} où \argu{L} est le résultat renvoyé par la fonction \cmd{compile\_tex()}. L'argument \argu{anchor} est un nombre complexe, il représente le centre de la boîte englobante du dessin contenu dans \argu{L}. \writeoptions :
+\begin{itemize}
+    \item \opt{pos="center"}, indique la position du contenu de \argu{L} par rapport au point d'ancrage, les valeurs possibles sont les mêmes que pour l'option \opt{pos} des labels, c'est-à-dire: \val{"center"}, \val{"N"}, \val{"NE"}, \val{"E"}, \val{"SE"}, \val{"S"}, \val{"SW"}, \val{"W"}, \val{"NW"},
+    
+    \item \opt{scale=1}, permet de jouer sur la taille du dessin, cette option peut être un nombre ou bien une table de deux nombres : \emph{\{scaleX, scaleY\}},
+    
+    \item \opt{color=<couleur courante par défaut>},
+    
+    \item \opt{dir=nil}, direction de l'écriture (\nil signifie le sens habituel). De manière générale, c'est une table constituée de deux vecteurs \opt{dir=\{v1,v2\}} indiquant le sens de l'écriture,
+    
+    \item \opt{hollow=false}, permet d'activer ou désactiver le remplissage des formes. Avec la valeur \true seuls les contours sont dessinés,
+    
+    \item \opt{drawbox=false} : permet de dessiner ou non la boîte englobante,
+    
+    \item \opt{draw\_options=""} : chaîne contenant les options qui seront passées directement à la commande \drawcmd.
+\end{itemize}
+
+Le résultat peut être transformé en ligne polygonale (liste de listes de complexes) avec la fonction \cmd{ld.compiled\_tex2polyline(L \fac{, scale})} où \argu{L} est le résultat renvoyé par la fonction \cmd{ld.compile\_tex()}. L'argument optionnel \argu{scale} permet de jouer sur la taille, ce peut être un nombre ou bien une table de deux nombres : \emph{\{scaleX, scaleY\}}.
+
+
+\begin{demo}{Exemple avec \emph{compile\_tex} en 2D}
+\begin{luadraw}{name=compile_tex2d}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{bbox=false}
+require 'luadraw_compile_tex'
+local i = cpx.I
+local text = "\\[\\int_0^{+\\infty} e^{-\\frac{x^2}2}dx = \\frac{\\sqrt{2\\pi}}2\\]" -- text to compile
+-- compiler avec l'option -shell-escape une première fois pour créer le fichier gauss_integral.eps 
+local L = ld.compile_tex(text,"gauss_integral",true) -- avec le true les lignes (stroke) sont changées en bandes
+g:Shift(2*i) -- un premier dessin
+g:Dcompiled_tex(L,0,{scale=2,hollow=true, drawbox=true, draw_options="fill=pink", dir={1-i/4,i}}) -- on dessine L
+
+g:Shift(-4*i) -- un second dessin
+L = ld.compiled_tex2polyline(L,{3,3}) -- L est convertie en ligne polygonale
+local f = function(z) return Z(z.re,z.im+math.sin(z.re*1.5)) end  -- cette fonction produit des vagues sinusoïdales
+L = ld.ftransform(L,f) -- on applique la fonction f à L
+g:Dpath( ld.polyline2path(L), 'draw=none,fill=blue') -- on dessine L en tant que chemin
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\paragraph{En 3D} Le résultat peut être converti en 3D avec la méthode \cmd{g:Compiled\_tex2path3d(L, options)} où \argu{L} est le résultat renvoyé par la fonction \cmd{ld.compile\_tex()}. \writeoptions :
+
+\begin{itemize}
+    \item \opt{scale=1}, permet de jouer sur la taille du dessin, cette option peut être un nombre ou bien une table de deux nombres : \emph{\{scaleX, scaleY\}},
+    
+    \item \opt{anchor=pt3d.Origin}, point 3D qui représente le centre de la boîte englobante du dessin,
+    
+    \item \opt{pos="center"}, indique la position du contenu de \argu{L} par rapport au point d'ancrage, les valeurs possibles sont les mêmes que pour l'option \opt{pos} des labels, c'est-à-dire: \val{"center"}, \val{"N"}, \val{"NE"}, \val{"E"}, \val{"SE"}, \val{"S"}, \val{"SW"}, \val{"W"}, \val{"NW"},
+    
+    \item \opt{color=<couleur courante par défaut>},
+    
+    \item \opt{dir=\{pt3d.vecJ,pt3d.vecK\}}, base du plan dans lequel sera le résultat (ce plan contiendra également le point \opt{anchor}), ces deux vecteurs indiquent le sens de l'écriture,
+    
+    \item \opt{polyline=false}, avec la valeur \true le résultat renvoyé sera une liste de listes de points 3D et pourra donc être dessiné avec la méthode \cmd{g:Dpolyline3d()}, par contre les informations : épaisseur de ligne et commande de remplissage, sont perdues. Avec la valeur \false le résultat est une liste de chemins, chaque chemin est une liste commençant par l'épaisseur de ligne, suivi de points 3D et d'instructions comme un chemin 3D ordinaire, et se terminant par la commande de remplissage (\emph{"fill"}, ou \emph{"eofill"} ou \emph{"stroke"}).
+\end{itemize}
+
+Avec l'option \opt{polyline=false} (valeur par défaut), le résultat envoyé peut être dessiné avec la méthode \cmd{g:Dcompiled\_tex3d(L, options)} où \argu{L} est le résultat de la méthode \cmd{g:Compiled\_tex2path3d()}. \writeoptions :
+
+\begin{itemize}
+    \item \opt{color=<couleur courante par défaut>},
+    \item \opt{hollow=false}, permet d'activer ou désactiver le remplissage des formes. Avec la valeur \true seuls les contours sont dessinés.
+    \item \opt{drawbox=false} : permet de dessiner ou non la boîte englobante,
+    \item \opt{draw\_options=""} : chaîne contenant les options qui seront passées directement à la commande \drawcmd.
+\end{itemize}
+
+\begin{demo}{Écrire sur un cylindre}
+\begin{luadraw}{name=compile_tex3d}
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Origin, vecI, vecJ, vecK, M, Mc = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M, pt3d.Mc
+
+local g = ld.graph3d:new{ window={-3,3,-4,4}, margin={0,0,0,0}, size={10,10}, viewdir={-50,60}}
+require 'luadraw_compile_tex'
+
+function curve_on_cylinder(curve,cylinder,screenNormal) 
+-- curve est une ligne polygonale sur le cylindre,
+-- cylinder = {A,r,B} estle cylindre
+-- cette fonction sépare la partie visible de a partie cachée de la courbe
+    local A,r,B = table.unpack(cylinder)
+    local U = B-A
+    local visibility_function = function(N)
+        local I = ld.dproj3d(N,{A,U})
+        return (pt3d.dot(N-I,screenNormal) >= 0)
+    end
+    return ld.split_points_by_visibility(curve,visibility_function)
+end
+
+local A, r, B = -3*vecK, 2, 2.5*vecK -- the cylinder
+local text = "Euler theorem: \\par \\(e^{i\\pi}=-1\\)"
+local L = ld.compile_tex(text, "essai") -- compiler avec -shell-escape la 1ière fois pour créer le fichier "essai.eps"
+local C = g:Compiled_tex2path3d(L,{scale=3, anchor=M(r,0,0), dir={vecJ,vecK}, polyline=true})
+-- C est le texte converti en ligne polygonale 3D sur le plan passant par anchor, de base (vecJ,vecK) et grossie 3 fois (scale)
+
+local f = function(A) return Mc(r,A.y/r,A.z) end -- renvoie l'image du point sur le cylindre par enroulement
+C = ld.ftransform3d(C,f) -- conversion: courbe plane -> courbe cylindrique
+local Cv, Ch = curve_on_cylinder(C, {A,r,B}, g.Normal) -- parties visible et cachée de C (peut être un peu long)
+Ch = ld.polyline2path3d(Ch) -- partie cachée, conversion en chemins
+g:Dpath3d(Ch, "draw=none,fill=red!30")
+g:Dcylinder(A,r,B,{color="blue",opacity=0.5})
+Cv = ld.polyline2path3d(Cv) -- partie visible, conversion en chemins
+g:Dpath3d(Cv, "draw=none,fill=red")
+g:Show()
+\end{luadraw}
+\end{demo}

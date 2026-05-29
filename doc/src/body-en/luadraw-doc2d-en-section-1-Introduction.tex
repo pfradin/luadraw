@@ -1,0 +1,263 @@
+\section{Introduction}
+
+\subsection{What's New Since Version 3.0}
+
+Since version 3.0, \textbf{all} data relating to the \emph{luadraw} package is encapsulated in a single namespace, called \textbf{luadraw} (it's a table). This means that the data is only accessible using dot notation, specifically:
+
+\begin{enumerate}
+    \item the class \emph{graph} becomes \emph{luadraw.graph},
+    \item the class \emph{cpx} (complex numbers) becomes \emph{luadraw.cpx},
+    \item the class \emph{graph3d} becomes \emph{luadraw.graph3d},
+    \item the class \emph{pt3d} (3D points) becomes \emph{luadraw.pt3d},
+    \item all global variables and all non-graphical functions are in the \emph{luadraw} namespace, except for a few exceptions specific to complex numbers which are passed to the \emph{cpx} class, and a few exceptions specific to 3D points which are passed to the \emph{pt3d} class,
+    \item however, there is no change for the graphical methods since they were already encapsulated in the \emph{graph} and \emph{graph3d} classes.
+\end{enumerate}
+
+The Lua language does not allow namespace factorization, so you really have to use dot notation, but fortunately you can create shortcuts (or aliases), for example:
+
+\begin{Luacode}
+local ld = luadraw -- alias on the namespace
+local cpx, pt3d = ld.cpx, ld.pt3d -- shortcuts for the cpx and pt3d classes
+local Z, M, i = cpx.Z, pt3d.M, cpx.I -- shortcuts to the Z and M functions and the complex number i
+local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
+local g = ld.graph3d:new{}
+...
+\end{Luacode}
+
+Due to this major change, scripts from previous versions \textbf{can no longer be compiled directly}; they must be adapted to this new version. However, with shortcuts, the changes are minimal.
+
+Another new feature: the \emph{luadraw} environment now uses a \emph{luacode} environment (and no longer \emph{luacode*}), which allows TeX macros to be inserted into Lua code. Therefore, the most frequently used shortcuts can be put into a macro and used in \emph{luadraw} code, for example:
+
+\begin{TeXcode}
+\documentclass{article}
+\usepackage[3d]{luadraw}
+
+\newcommand*{\shortcuts}{%
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Z, M, i = cpx.Z, pt3d.M, cpx.I
+local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
+}%
+
+\begin{document}
+
+\begin{luadraw}{name=test}
+\shortcuts
+local g = ld.graph3d:new{}
+local P = ld.polyreg(0, Z(2,3), 5)
+g:Dpolyline(P, true, "red,line width=1.2pt")
+local Q = ld.map(pt3d.toPoint3d, P)
+P = ld.pyramid(Q, M(0,0,4))
+g:Dpoly(P, {color="blue", opacity=0.6})
+g:Show()
+\end{luadraw}
+\end{document}
+\end{TeXcode}
+
+The starred environment \emph{luadraw*}, on the other hand, uses a \emph{luacode*} environment; in this case, there is no interference from \TeX{} in the Lua code.
+
+\paragraph{NB}: Throughout this documentation, we will use the following shortcuts:
+
+\begin{Luacode}
+local ld = luadraw -- alias on the namespace
+local cpx = ld.cpx -- shortcut for the cpx class
+local pt3d = ld.pt3d -- shortcut for the pt3d class
+\end{Luacode}
+
+
+\subsection{Prerequisites}
+
+\begin{itemize}
+\item In the preamble, you must declare the \luadrawenv package: \verb|\usepackage[global options]{luadraw}|
+\item Compilation is done with LuaLatex \textbf{exclusively}.
+\item The colors in the \emph{luadraw} environment are strings that must correspond to colors known to TikZ. It is strongly recommended to use the \emph{xcolor} package with the \emph{svgnames} option.
+\end{itemize}
+
+Regardless of the global options chosen, this package loads the \emph{luadraw\_graph2d.lua} module, which defines the \emph{ld.graph} class, and provides the \emph{luadraw} environment for creating graphs in Lua. To create 3D graphics, you must also load the \emph{ld.graph3d} class using the global option \opt{3d}: \par
+\hfil\verb|\usepackage[3d]{luadraw}|.\hfil
+
+\paragraph{Global package options}: \opt{noexec}, \opt{3d}, and \opt{cachedir=}.
+
+\begin{itemize}
+\item \opt{noexec}: When this global option is specified, the default value of the \emph{exec} option for the \emph{luadraw} environment will be false (and no longer true).
+\item \opt{3d}: When this global option is specified, the \emph{luadraw\_graph3d.lua} module is also loaded. This module also defines the \emph{ld.graph3d} class (which relies on the \emph{ld.graph} class) for 3D drawings.
+\item \opt{cachedir=<folder>}: By default, the created files are saved in the \emph{\_luadraw} folder, which is a subfolder of the current folder (containing the master document). This folder can be changed with the \opt{cachedir} option, for example \opt{cachedir=\{tikz\}}.
+\end{itemize}
+
+\noindent\textbf{NB}: In this chapter, we will not discuss the \opt{3d} option. This is the subject of the next chapter. We will therefore only discuss the 2D version.
+
+When a graph is finished, it is exported in TikZ format, so this package also loads the TikZ package and the libraries:
+\begin{itemize}
+\item\emph{patterns}
+\item\emph{plotmarks}
+\item\emph{arrows.meta}
+\item\emph{decorations.markings}
+\end{itemize}
+
+Graphs are created in a \luadrawenv environment, which calls \emph{luacode}, so the \textbf{lua language} must be used in this environment:
+
+\begin{TeXcode}
+\begin{luadraw}{ name=<filename>, exec=true/false, auto=true/false }
+local ld = luadraw
+-- create a new graph with a local name (this line is a comment)
+local g = ld.graph:new{ window={x1,x2,y1,y2 [,xscale,yscale]}, margin={top,right,bottom,left},
+size={width,height,ratio}, bg="color", border=true/false }
+-- build the g chart
+graphic instructions in Lua language ...
+-- display the g chart and save it in the <filename>.tkz file
+g:Show()
+-- or save it only in the <filename>.tkz file
+g:Save()
+\end{luadraw}
+\end{TeXcode}
+
+\paragraph{Saving the \emph{*.tkz} file}: the chart is exported in TikZ format to a file (with the \emph{tkz} extension). By default, it is saved in the \emph{\_luadraw} folder, which is a subfolder of the current folder (containing the master document), but it is possible to specify a path to another subfolder. with the global option \opt{cachedir=\ldots}.
+
+\subsection{\luadrawenv Environment Options}
+
+These are:
+\begin{itemize}
+    \item \opt{name=\ldots{}}: Allows you to name the produced TikZ file. It is given a name without an extension (this will be automatically added; it is \emph{.tkz}). If this option is omitted, then a default name is the name of the master file followed by a number.
+
+    \item \opt{exec=true/false}: Allows you to execute or not the Lua code included in the environment. By default, this option is true, \textbf{UNLESS} if the global option \opt{noexec} was mentioned in the preamble with the package declaration. When a complex graph that requires a lot of calculations is ready, it may be useful to add the \opt{exec=false} option. This will prevent recalculations of the same graph for future compilations.
+
+    \item \opt{auto=true/false}: Allows you to automatically include or exclude the TikZ file in place of the \luadrawenv environment when the \opt{exec} option is set to \false. By default, the \opt{auto} option is \true.
+
+\end{itemize}
+
+\subsection{The cpx (complex numbers) class}
+
+Reminder: we use the alias \code{local cpx = ld.cpx}.
+
+It is automatically loaded by the \emph{luadraw\_graph2d} module and therefore when the \luadrawenv package is loaded. This class allows you to manipulate complex numbers and perform common calculations. We create a complex number with the function \cmd{cpx.Z(a, b)} for \(a + i\times b\), or with the function \cmd{cpx.Zp(r, theta)} for \(r\times e^{i\theta}\) in polar coordinates.
+
+\begin{itemize}
+    \item Example: \code{local z = cpx.Z(a,b)} will create the complex number corresponding to \(a + i\times b\) in the variable $z$. We then access the real and imaginary parts of $z$ like this: \code{z.re} and \code{z.im}. Of course, you can create a shortcut to this function with the instruction \code{local Z = cpx.Z} at the beginning of the code.
+
+    \item \textbf{Warning}: A real number $x$ is not considered complex by Lua. However, the functions provided for graphical constructions perform the verification and conversion from real to complex. However, we can use $Z(x,0)$ instead of $x$.
+
+    \item The usual operators have been overloaded, allowing the use of the usual symbols, namely: +, x, -, /, as well as the equality test with = (this equality test is performed to within $\varglob{ld.epsilon}$, where $\varglob{ld.epsilon}$ is a global variable that defaults to $1e-16$.). When a calculation fails, the returned result should normally be equal to \nil.
+In addition, the following functions are added:
+
+    \begin{itemize}
+    \item modulus: \cmd{cpx.abs(z)},
+    \item modulus squared: \cmd{cpx.abs2(z)},
+    \item normalization: \cmd{cpx.normalize(z)} (returns \emph{nil} if $z$ is null),
+    \item norm 1: \cmd{cpx.N1(z)},
+    \item main argument: \cmd{cpx.arg(z)},
+    \item conjugate: \cmd{cpx.bar(z)},
+    \item perfect equality: \cmd{cpx.equal(z1,z2)},
+    \item complex exponential: \cmd{cpx.exp(z)},
+    \item the complex hyperbolic cosine and sine: \cmd{cpx.cosh(z)} and \cmd{cpx.sinh(z)},
+    \item the power function $a$: cmd{cpx.pow(z,a)} (the calculation uses the main argument of $z$),
+    \item scalar product: \cmd{cpx.dot(z1, z2)}, where the complex numbers represent vector affixes,
+    \item determinant: \cmd{cpx.det(z1, z2)},
+    \item the oriented angle (in radians) between two non-zero vectors: \cmd{cpx.angle(z1, z2)}
+    \item rounding: \cmd{cpx.round(z, number of decimals)},
+    \item the function: \cmd{cpx.isNul(z)} tests whether the real and imaginary parts of \emph{z} are in absolute value less than the global variable \varglob{ld.epsilon} which is equal to $1e-16$ by default,
+    \item the function \cmd{cpx.isComplex(u)} tests whether \argu{u} is complex or not and returns a boolean (note: if \argu{u} is real, the function returns \false),
+    \item the function \cmd{cpx.toComplex(x)} tests if \argu{x} is a real number, if so, it returns the complex number \code{cpx.Z(x,0)}, if \argu{x} is a complex number the function returns \argu{x}, and in other cases, it returns \nil,
+    \item the function \cmd{cpx.isobar(L)} where \argu{L} is a list of complex numbers, returns the isobarycenter of the points of \argu{L}.
+    \end{itemize}
+\end{itemize}
+
+We also have the constant \varglob{cpx.I} which represents the pure imaginary $\imath$.
+
+Example:
+
+\begin{Luacode}
+local cpx = luadraw.cpx
+local i = cpx.I
+local A = 2+3*i
+\end{Luacode}
+
+The multiplication symbol is required.
+
+\subsection{Displaying a Variable in the Terminal}
+
+The instruction \cmd{ld.whatis(variable \fac{, msg})} displays the type of the \argu{variable} and its contents in the terminal during compilation. Recognized types include the predefined types plus: \emph{complex number}, \emph{list of (complex) numbers}, and \emph{list of lists of (complex) numbers}. The argument \emph{msg} is an optional string (empty by default) which is displayed with the type to locate the variable in the terminal.
+
+\subsection{Creating a Graph}
+
+As seen above, creation is done in a \luadrawenv environment. This creation is done by naming the graph:
+
+\begin{Luacode}
+local ld = luadraw
+local g = ld.graph:new{ window = {x1,x2,y1,y2 [,xscale,yscale]}, margin = {left,right,top,bottom}, 
+                     size = {width,height,ratio}, bg = "color", border = true/false, 
+                     bbox = true/false, pictureoptions = "" }
+\end{Luacode}
+
+The \emph{ld.graph} class is defined in the \luadrawenv package. This class is instantiated by invoking its constructor and giving it a name (here it's \emph{g}). This is done locally so that the graph \emph{g} thus created will no longer exist once it leaves the environment (otherwise \emph{g} would remain in memory until the end of the document). Here are the options for the constructor \cmd{ld.graph:new{}}:
+
+\begin{itemize}
+\item \opt{window=\{x1,x2,y1,y2 \fac{,xscale,yscale}\}}. This option (optional) defines the $\mathbf R^2$ tile in which the graph is plotted (it is $[x_1;x_2]\times[y_1;y_2]$), as well as the axis scales, which are the parameters \argu{xscale} and \argu{yscale}. These last two parameters are optional and default to $1$; they represent the scale (cm per unit) on the axes.
+ By default, we have \opt{window = \{-5,5,-5,5,1,1\}}.
+
+\item \opt{margin=\{left,right,top,bottom\}}. This option (optional) sets the margins around the graph in cm. By default, we have \opt{margin=\{0.5,0.5,0.5,0.5\}}.
+
+\item \opt{size=\{width,height \fac{,ratio}\}}. This option (optional) allows you to impose a size (in cm, including margins) for the graph. The \argu{ratio} argument is optional and corresponds to the desired scale ratio (\argu{xscale}/\argu{yscale}). A ratio of 1 will result in an orthonormal coordinate system, and if the ratio is not specified, the default ratio (defined with the \opt{window} option) is retained. A ratio of $0$ determines the scales so that the graph is exactly the requested size. Using this parameter will modify the values ​​of \argu{xscale} and \argu{yscale}. By default, the size is $11\times 11$ (in cm) with margins ($10\times 10$ without margins).
+
+\item \opt{bg="color"}. This option (optional) allows you to define a background color for the graph. This color is a string representing a color for TikZ. By default, this string is empty, meaning the background will not be painted.
+
+\item \opt{border=true/false}. This option (optional) indicates whether or not a frame should be drawn around the graph (including the margins). By default, this parameter is set to \false.
+
+\item \opt{bbox=true/false}. This option (optional) indicates whether a bounding box should be added to the graph so that it has the desired size. Everything outside of it is clipped by TikZ. By default, this parameter is set to \true. With the value \false, no bounding box is added, but everything outside the 2D window, except for the paths, is clipped by \luadrawenv. The graph size can be smaller than the requested size.
+
+\item \opt{pictureoptions=""}. This option (optional) is a string containing options that will be passed to the \emph{tikzpicture} envoironment like this:
+\begin{TeXcode}
+\begin{tikzpicture}[line join=round <,pictureoptions>]
+\end{TeXcode}
+\end{itemize}
+
+\paragraph{Graph construction.}
+
+\begin{itemize}
+    \item The instantiated object (\emph{g} in the example) has several methods for drawing (segments, lines, curves, etc.). Drawing instructions are not sent directly to \TeX; they are stored as strings in a table that is a property of the \emph{g} object. The \cmd{g:Show()} method will send these instructions to \TeX while saving them in a text file.\footnote{This file will contain a \emph{tikzpicture} environment.} The \cmd{g:Save()} method saves the graph in the file designated by the (environment) option \opt{name} but without sending the instructions to \TeX.
+
+    \item The current graph can be saved to another file with the \cmd{g:Savetofile(<filename with extension>)} method.
+
+    \item A current graph can be reset, i.e., delete all elements already created, with the \cmd{g:Cleargraph()} method.
+
+    \item The \luadrawenv package also provides a number of mathematical functions, as well as functions for calculating lists (tables) of complex numbers, geometric transformations, etc. These functions are in the namespace \luadrawenv.
+\end{itemize}
+
+\paragraph{Coordinate system. Location}
+
+\begin{itemize}
+\item The instantiated object (\emph{g} in the example) has:
+    \begin{enumerate}
+    \item An original view: this is the $\mathbf R^2$ block defined by the \opt{window} option at creation. This \textbf{must not be modified} subsequently.
+
+    \item A current view: this is a $\mathbf R^2$ block that must be included in the original view; anything outside this block will be clipped. By default, the current view is the original view. To retrieve the current view, you can use the \cmd{g:Getview()} method, which returns a table \code{\{x1,x2,y1,y2\}}, representing the block $[x_1;x_2]\times [y_1;y_2]$.
+
+    \item A transformation matrix: this is initialized to the identity matrix. During a drawing instruction, the points are automatically transformed by this matrix before being sent to TikZ.
+
+    \item A coordinate system (Cartesian coordinate system) linked to the current view; this is the user's coordinate system. By default, this is the canonical coordinate system of $\mathbf R^2$, but it is possible to change it. Let's say the current view is the $[-5;5]\times[-5;5]$ block. It is possible, for example, to decide that this block represents the $[-1;12]$ interval for the abscissas and the $[0,8]$ interval for the ordinates. The method that makes this change will modify the graph's transformation matrix, so that for the user, everything happens as if they were in the $[-1;12]\times [0;8]$ block. The intervals of the user's coordinate system can be retrieved using the methods: \par
+    \hfil\cmd{g:Xinf()}, \cmd{g:Xsup()}, \cmd{g:Yinf()} and \cmd{g:Ysup()}.\hfil
+    \end{enumerate}
+
+\item Complex numbers are used to represent points or vectors in the user's Cartesian coordinate system.
+
+\item In the TikZ export, the coordinates will be different because the lower left corner (excluding margins) will have coordinates $(0,0)$, and the upper right corner (excluding margins) will have coordinates corresponding to the size (excluding margins) of the graph, and with $1$ cm per unit on both axes. This means that normally, TikZ should only handle \og small\fg\ numbers. 
+
+\item The conversion is done automatically with the \cmd{g:strCoord(x, y)} method, which returns a string of the form \emph{(a,b)}, where \emph{a} and \emph{b} are the coordinates for TikZ, or with the \cmd{g:Coord(z)} method, which also returns a string of the form \emph{(a,b)} representing the TikZ coordinates of the point with affix $z$ in the user's coordinate system.
+\end{itemize}
+
+\subsection{Can we use TikZ directly in the \luadrawenv environment?}
+
+Suppose we are creating a graph named \emph{g} in a \luadrawenv environment. It is possible to write a TikZ instruction during this creation, but not using \code{tex.sprint("<tikz instruction>")}, because then this instruction would not be part of the graph \emph{g}. To do this, you must use the method \cmd{g:Writeln("<tikz instruction>")}, with the constraint that \textbf{the backslashes must be doubled}, and without forgetting that the graphic coordinates of a point in \emph{g} are not the same for TikZ. For example:
+
+\begin{Luacode}
+g:Writeln("\\draw"..g:Coord(Z(1,-1)).." node[red] {Text};")
+\end{Luacode}
+
+Or to change styles:
+\begin{Luacode}
+g:Writeln("\\tikzset{every node/.style={fill=white}}")
+\end{Luacode}
+
+In a Beamer presentation, this can also be used to insert pauses in a graph:
+\begin{Luacode}
+g:Writeln("\\pause")
+\end{Luacode}

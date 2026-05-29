@@ -1,0 +1,19 @@
+\subsection{The \emph{luadraw\_fields} module}
+
+This module does not return anything; it adds new graphics methods to the \emph{ld.graph} class and a new function to the \emph{luadraw} namespace. These are the same methods given at the end of Chapter $1$ for drawing vector and gradient fields. It includes:
+
+\begin{itemize}
+    \item The function \cmd{ld.field(f, x1, x2, y1, y2 \fac{, grid, length})}, which returns the vector field (a list of line segments). The argument \argu{f} is a function \argu{f}\(\colon (x,y)\mapsto f(x,y)\in\mathbf{R}^2\) (\(f(x,y)\) is a list of two real numbers). The field is computed over the rectangle \([x_1;x_2]\times[y_1;y_2]\). The argument \argu{grid}, which defaults to $\{25,25\}$, specifies the number of subdivisions of the intervals \([x_1;x_2]\) and \([y_1;y_2]\). The argument \argu{length} allows one to fix the vector length (all vectors have the same norm); by default, a suitable length is computed from the step sizes along both axes.
+    
+    \item The method \cmd{g:Dvectorfield(f, options)} draws the vector field associated with the function \argu{f}. \writeoptions:
+        \begin{itemize}
+            \item \opt{view=<default window>}: a list of the form \opt{view=\{x1,x2,y1,y2\}} defining the rectangle \([x_1;x_2]\times[y_1;y_2]\). By default, this is the window selected when the graph was created.
+            \item \opt{grid=\{25,25\}}: a list of two integers defining the number of subdivisions along each axis.
+            \item \opt{length=nil}: allows one to impose the vector length; by default, the length is computed from the step sizes along both axes.
+            \item \opt{draw\_options=""}: a string containing the drawing options passed to TikZ.
+        \end{itemize}
+        
+    \item The method \cmd{g:Dgradientfield(f, options)} draws the gradient field associated with the \textbf{scalar} function \argu{f}\(\colon (x,y)\mapsto f(x,y)\in\mathbf{R}\). The argument \argu{options} is the same as in the \cmd{Dvectorfield()} method.
+\end{itemize}
+
+An example of both methods has already been given on page~\pageref{fields}.

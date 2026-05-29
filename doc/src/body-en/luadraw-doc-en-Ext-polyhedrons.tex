@@ -1,0 +1,107 @@
+\subsection{The \emph{luadraw\_polyhedrons} module}
+
+This module is still in draft form and is expected to be expanded in the future. As its name suggests, it contains the definition of polyhedra. All numerical data comes from the \href{https://dmccooey.com/polyhedra/}{Visual Polyhedra} website.
+
+\textbf{Usage: This module does not add new graphics methods, but it returns a table of functions for constructing polyhedra.} Therefore, it is used as follows (example):
+\begin{Luacode}
+local poly = require 'luadraw_polyhedrons'
+local M = pt3d.M
+local T = poly.tetrahedron( M(0,0,0), M(1,1,1) )
+\end{Luacode}
+
+All functions follow the same model: \cmd{<name>(C, S \fac{, all})} where $C$ is the center of the polyhedron (3D point) and $S$ is a vertex of the polyhedron (3D point). When $C$ or $S$ have the value \emph{nil}, the untransformed polyhedron (centered at the origin) is returned. The optional argument \emph{all} is a boolean. When it has the value \emph{true}, the function returns four things: \emph{P, V, E, F} where:
+\begin{itemize}
+    \item $P$ is the solid as a polyhedron,
+    \item $V$ the list (table) of vertices,
+    \item $E$ the list (table) of edges (with 3D points),
+    \item $F$ the list of facets (with 3D points). Some polyhedra have multiple facet types; in this case, the returned result is of the form: \emph{P, V, E, F1, F2, ...}, where $F1$, $F2$, ... are lists of facets. This can allow them to be drawn with different colors, for example. \end{itemize}
+The argument \emph{all} is set to \emph{false}, which is the default value; the function only returns the polyhedron.
+
+Here are the solids currently contained in this module:
+
+\begin{itemize}
+    \item The Platonic solids, these solids have only one face type:
+\begin{itemize}
+    \item The function \cmd{tetrahedron(C, S \fac{, all})} allows the construction of a regular tetrahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point).
+    \item The function \cmd{octahedron(C, S \fac{, all})} allows the construction of an octahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point).
+    \item The function \cmd{cube(C, S \fac{, all})} allows the construction of a cube with center \argu{C} (3d point) and one vertex at \argu{S} (3d point).
+    \item The function \cmd{icosahedron(C, S \fac{, all})} allows the construction of an icosahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point).
+    \item The function \cmd{dodecahedron(C, S \fac{, all})} allows the construction of a dodecahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point).
+\end{itemize}
+
+    \item The Archimedean Solids:
+\begin{itemize}
+    \item The function \cmd{cuboctahedron(C, S \fac{, all})} allows the construction of a cuboctahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{icosidodecahedron(C, S \fac{, all})} allows the construction of an icosidodecahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{lsnubcube(C, S \fac{, all})} allows the construction of a snub cube (form 1) with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{lsnubdodecahedron(C, S \fac{, all})} allows the construction of a snub dodecahedron (form 1) with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{rhombicosidodecahedron(C, S \fac{, all})} allows the construction of a rhombicosidodecahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has three types of faces.
+    \item The function \cmd{rhombicuboctahedron(C, S \fac{, all})} allows the construction of a rhombicuboctahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{rsnubcube(C, S \fac{, all})} allows the construction of a snub cube (shape 2) with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{rsnubdodecahedron(C, S \fac{, all})} allows the construction of a snub dodecahedron (shape 2) with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{truncatedcube(C, S \fac{, all})} allows the construction of a truncated cube with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{truncatedcuboctahedron(C, S \fac{, all})} allows the construction of a truncated cuboctahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has three types of faces.
+    \item The function \cmd{truncateddodecahedron(C, S \fac{, all})} allows the construction of a truncated dodecahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{truncatedicosahedron(C, S \fac{, all})} allows the construction of a truncated icosahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{truncatedicosidodecahedron(C, S \fac{, all})} allows the construction of a truncated icosidodecahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two threes of faces.
+    \item The function \cmd{truncatedoctahedron(C, S \fac{, all})} allows the construction of a truncated octahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{truncatedtetrahedron(C, S \fac{, all})} allows the construction of a truncated tetrahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+\end{itemize}
+
+    \item Other solids:
+\begin{itemize}
+    \item The function \cmd{octahemioctahedron(C, S \fac{, all})} allows the construction of an octahemioctahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has two types of faces.
+    \item The function \cmd{small\_stellated\_dodecahedron(C, S \fac{, all})} allows the construction of a small stellated dodecahedron with center \argu{C} (3d point) and one vertex at \argu{S} (3d point). This solid has only one type of face.
+\end{itemize}
+\end{itemize}
+
+\begin{demo}{Polyhedra from the \emph{luadraw\_polyhedrons} module}
+\begin{luadraw}{name=polyhedrons}
+local ld = luadraw
+local M, Origin = ld.pt3d.M, ld.pt3d.Origin
+local i = ld.cpx.I
+local poly = require 'luadraw_polyhedrons' -- chargement du module
+
+local g = ld.graph3d:new{bg="LightGray", size={10,10}}
+g:Labelsize("small"); ld.Hiddenlines = false
+-- en haut à gauche 
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F = poly.icosahedron(Origin,M(0,2,4.5),true) 
+g:Dscene3d(
+    g:addFacet(F, {color="Crimson",opacity=0.8}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Icosahedron",5*i,{})
+g:Restoreattr()
+-- en haut à droite
+g:Saveattr()
+g:Viewport(0,5,0,5); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1,F2 = poly.truncatedtetrahedron(Origin,M(0,0,5),true) -- Full output, display in a 3D scene
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addFacet(F2, {color="Gold"}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Truncated Tetrahedron",5*i,{})
+g:Restoreattr()
+-- en bas à gauche
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1,F2,F3 = poly.rhombicosidodecahedron(Origin,M(0,0,4.5),true)
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addFacet(F2, {color="Gold",opacity=0.8}), g:addFacet(F3, {color="ForestGreen"}),
+    g:addPolyline(A, {color="Pink", width=8}), g:addDots(S) )
+g:Dlabel("Rhombicosidodecahedron",-5*i,{})
+g:Restoreattr()
+-- en bas à droite
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-5,5,-5,5,true)
+local T,S,A,F1 = poly.small_stellated_dodecahedron(Origin,M(0,0,5),true)
+g:Dscene3d(
+    g:addFacet(F1, {color="Crimson",opacity=0.8}),
+    g:addPolyline(A, {color="Pink", width=8}),
+    g:addDots(S) )
+g:Dlabel("Small Stellated Dodecahedron",-5*i,{})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}

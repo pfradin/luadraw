@@ -1,0 +1,269 @@
+\subsection{Le module \emph{luadraw\_decorations}}
+
+Le module \cmd{luadraw\_decorations} redéfinit certaines méthodes graphiques pour leur ajouter des options comme par exemple : ajouter un label, mais pour chacune d'elles, \textbf{l'ancienne syntaxe est toujours valable}. Ce module ne renvoie rien.
+
+\subsubsection{Lignes polygonales 2D : g:Dpolyline()}
+
+La méthode \cmd{g:Dpolyline(L, options)} dessine la ligne polygonale \argu{L} (liste de nombres complexes ou liste de listes de nombres complexes). L'argument \argu{options} est une table dont les champs définissent les options possibles, celles-ci sont (avec leur valeur par défaut) :
+\begin{itemize}
+    \item \opt{close=\false} : booléen indiquant si la ligne \argu{L} doit être refermée.
+    
+    \item \opt{clip=\nil} : cette option vaut ou bien \nil (valeur par défaut) ou bien une table de la forme \code{\{x1,x2,y1,y2\}},  dans le premier cas la ligne est clippée par la fenêtre 2D courante \textbf{après} sa transformation par la matrice 2D du graphe, dans le second cas la ligne est clippée par la fenêtre $[x_1;x_2]\times[y_1;y_2]$ \textbf{avant} d'être transformée par la matrice du graphe.
+    
+    \item \opt{draw\_options=\val{""}} : chaîne (vide par défaut) qui sera passée telle quelle à l'instruction  \drawcmd.
+    
+    \item Options pour l'ajout d'un label :
+        \begin{itemize}
+            \item \opt{label=\val{""}} : label à ajouter.
+            
+            \item \opt{anchor1d=\nil} : nombre entre $0$ et $1$ indiquant la position du label le long de la ligne \argu{L} ($0$ pour la début de ligne, $1$ pour la fin de ligne).
+            
+            \item \opt{anchor=\nil} : nombre complexe représentant le point d'ancrage du label dans le plan.
+            
+            \item \opt{anchor2d=\val{cpx.Z(0.5,0.5)}} : nombre complexe représentant la position du label dans le pavé $[0;1]\times[0;1]$ qui représente la boîte englobante de la ligne \argu{L}, donc par défaut le label est au centre de cette boîte.
+            L'ordre de priorité est : \opt{anchor}, \opt{anchor1d}, \opt{anchor2d} (si la première option vaut \nil, la seconde est choisie, si elle vaut \nil également, alors la troisième est choisie).
+            
+            \item \opt{pos=\val{"center"}}, indique la position du label par rapport au point d'ancrage, il peut valoir \val{"center"} (centré), \val{"N"} (nord), \val{"NE"} (nord est), \val{"E"} (est), \val{"SE"} (sud est), \val{"S"} (sud), \val{"SW"} (sud ouest), \val{"W"} (ouest), \val{"NW"} (nord ouest). Par défaut, il vaut \val{center}, et dans ce cas le label est centré sur le point d'ancrage.
+            
+            \item \opt{dist=\val{0}}, distance en cm entre le label et son point d'ancrage lorsque \opt{pos} n'est pas égal à \val{"center"}.
+            
+            \item \opt{dir=\val{\{\}}}, cette option est une table de la forme \code{\{dirX \fac{,dirY,dep}\}} qui indique la direction de l'écriture. Les 3 valeurs \code{dirX}, \code{dirY} et \code{dep} sont trois complexes représentant 3 vecteurs, les deux premiers indiquent le sens de l'écriture, le troisième un déplacement (translation) du label par rapport au point d'ancrage. Le vecteur \code{dep} est nul par défaut, et le vecteur \code{dirY}, s'il est absent, est égal au vecteur \code{dirX} tourné de 90 degrés dans le sens direct.
+            Par défaut l'option \opt{dir} est égale à la valeur courante de la direction de l'écriture.
+            
+            \item \opt{node\_options=\val{""}} est une chaîne (vide par défaut) destinée à recevoir des options qui seront directement passées à TikZ dans l'instruction \emph{node[]}.
+            
+            \item \opt{showanchor=\false} : avec la valeur \true le point d'ancrage est affiché ainsi que la boîte englobante du label.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Chemins 2D : g:Dpath()}
+
+La méthode \cmd{g:Dpath(P, options)} dessine chemin \argu{P}. Les \argu{options} sont les mêmes que pour la méthode \cmd{g:Dpolyline()} sauf les options \opt{close} et \opt{clip} qui ne sont pas prises en compte.
+
+\subsubsection{Droites 2D : g:Dline()}
+
+La méthode \cmd{g:Dline(d, options)} trace la droite \argu{d}, celle-ci est une liste du type $\{A,u\}$ où $A$ représente un point de la droite (un nombre complexe) et $u$ un vecteur directeur (un nombre complexe non nul). 
+
+Variante : la méthode \cmd{g:Dline(A, B, options)} trace la droite passant par les points \argu{A} et \argu{B} (deux nombres complexes). 
+
+Dans les deux cas, les \argu{options} sont les mêmes que pour la méthode \cmd{g:Dpolyline()} sauf les options \opt{close} et \opt{clip} qui ne sont pas prises en compte, et plus l'option :
+\begin{itemize}
+    \item \opt{scale=\val 1}.  L'option \opt{scale} (qui vaut $1$ par défaut) est soit un nombre (pourcentage) permettant de faire varier la longueur du segment affiché (à partir de son milieu), soit une table de deux nombres (pourcentages) \{scaleA, scaleB\} permettant de faire varier la longueur du segment affiché à chacune de ses extrémités.
+\end{itemize}
+
+\subsubsection{Segments 2D : g:Dseg()}
+
+La méthode \cmd{g:Dseg(seg, options)} où \argu{seg}=$\{A,B\}$ avec $A$ et $B$ deux nombres complexes, trace le segment $[A;B]$. Les \argu{options} sont les mêmes que pour la méthode \cmd{g:Dpolyline()} sauf les options \opt{close} et \opt{clip} qui ne sont pas prises en compte, et plus les deux options suivantes
+\begin{itemize}
+    \item \opt{scale=\val 1}. L'option \opt{scale} (qui vaut $1$ par défaut) est soit un nombre (pourcentage) permettant de faire varier la longueur du segment affiché (à partir de son milieu), soit une table de deux nombres (pourcentages) \{scaleA, scaleB\} permettant de faire varier la longueur du segment affiché à chacune de ses extrémités.
+    
+    \item \opt{ticks=\val{"none"}} : permet d'ajouter on non des marques (graduations) sur le segment. La syntaxe pour en ajouter est : \opt{ticks=\{nb \fac{, length, space, draw\_options}\}} où \argu{nb} est le nombre de traits à ajouter.
+\end{itemize}
+
+\subsubsection{Arc 2D : g:Darc()}
+
+La méthode \cmd{g:Darc(B, A, C, r, direction, options)} dessine un arc de cercle de centre \argu{A} (nombre complexe), de rayon \argu{r}, allant de \argu{B} (nombre complexe) vers \argu{C} (nombre complexe) dans le sens trigonométrique si l'argument \argu{direction} vaut $1$, le sens inverse sinon. L'argument \argu{options} est une table dont les champs définissent les options possibles, celles-ci sont (avec leur valeur par défaut) :
+\begin{itemize}
+    \item \opt{arc\_options=\val{""}} : chaîne de caractères transmises à l'instruction \drawcmd pour le dessin de l'arc de cercle.
+    \item \opt{sector\_options=\val{""}} : chaîne de caractères définissant le mode de remplissage du secteur angulaire.
+    \item \opt{label=\val{""}} : texte qui sera affiché.
+    \item \opt{node\_options=\val{""}} : chaîne définissant les options pour le label.
+    \item \opt{pos=\val{"auto"}} : précise la position du label par rapport au point d'ancrage, les autres valeurs possibles sont les valeurs habituelles pour positionner un label: \val{"center"}, \val{"N"}, \val{"NW"}, etc. Par défaut, le point d'ancrage est situé à l'intersection de l'arc de cercle et de la bissectrice de l'angle.
+    \item \opt{dist=\val{r}} : distance entre le point d'ancrage et le centre du cercle, par défaut c'est le rayon \argu{r} du cercle.
+    \item \opt{angle=\val{0}} : angle (en degrés) de la rotation que doit effectuer le point d'ancrage par défaut autour du centre du cercle.
+    \item \opt{rotate=\val{"none"}} : indique si le label doit être tourné autour de son point d'ancrage, les autres valeurs possibles sont : \val{"auto"}, dans ce cas le label est écrit en suivant la direction de la bissectrice, ou bien \val{"ortho"}, et dans ce cas le label est écrit perpendiculairement à la bissectrice.
+    \item \opt{ticks=\val{"none"}} : permet d'ajouter on non des marques (graduations) sur l'arc de cercle pour un angle aigu. La syntaxe pour en ajouter est : \opt{ticks=\{nb \fac{, length, space, draw\_options}\}} où \argu{nb} est le nombre de traits à ajouter.
+    \item \opt{showanchor=\false} : avec la valeur \true, le point d'ancrage est dessiné, ainsi que la bissectrice et la boîte autour du label.
+\end{itemize}
+
+\begin{demo}{Méthode \emph{g:Darc()}}
+\begin{luadraw}{name=decoratedarc2D}
+local ld = luadraw
+local cpx = ld.cpx
+local Z, i = cpx.Z, cpx.I
+
+local g = ld.graph:new{window={-5,3,-3,5}, size={10,10}}
+require 'luadraw_decorations'
+g:Shift(Z(0,-2)) -- exemple 1
+local b,a,c,r = 3, 0, 2.5+1.5*i, 2
+g:Dpolyline({b,a,c})
+g:Darc(b,a,c,r,1, {
+    label="angle", rotate="auto", 
+    sector_options="fill=Pink,opacity=0.5", 
+    arc_options="red,line width=0.8pt,-latex"  })
+g:Dlabel("Exemple 1",1.5,{pos="S"})
+g:Shift(Z(0,4))  -- exemple 2     
+b,a,c,r = 3, 0, 2.5+3*i, 2    
+g:Dpolyline({b,a,c})
+g:Darc(b,a,c,r,1, {
+    label="angle", rotate="ortho", 
+    sector_options="left color=white, right color=blue!50", 
+    arc_options="line width=0.8pt,latex-latex",
+    showanchor=true  })
+g:Dlabel("Exemple 2",1.5,{pos="S"})
+g:Shift(Z(-3.5,0))  -- exemple 3     
+b,a,c,r = 3, 0, 1+3*i, 1.5    
+g:Dpolyline({b,a,c})
+g:Darc(b,a,c,r,-1, {
+    label="angle", dist=r/2, pos="center",
+    node_options="fill=white",
+    sector_options="pattern=north west lines,pattern color=gray", 
+    arc_options="line width=0.8pt,green"   })
+g:Dlabel("Exemple 3",1.5,{pos="N"})    
+g:Shift(Z(2,-4)) -- exemple 4
+b,a,c,r = -3, 0, -1+2*i, 2    
+g:Dpolyline({b,a,c})
+g:Darc(b,a,c,r,-1, {
+    label="angle", dist=r+0.125, 
+    node_options="draw,inner sep=1pt",
+    arc_options="line width=0.8pt,blue,-Stealth",
+    ticks=3  })
+g:Dlabel("Exemple 4",-1.5,{pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%3D
+\subsubsection{Arc 3D : g:Darc3d()}
+
+La méthode \cmd{g:Darc3d(B, A, C, r, direction, options)} dessine un arc de cercle de centre \argu{A} (point 3D), de rayon \argu{r}, allant de \argu{B} (point 3D) vers \argu{C} (point 3D) dans le sens direct si l'argument \argu{direction} vaut $1$, le sens inverse sinon. Cet arc est tracé dans le plan contenant les trois points \argu{A}, \argu{B} et \argu{C}, lorsque ces trois points sont alignés il faut préciser l'option \opt{normal} (point 3D non nul) qui représente un vecteur normal au plan. Ce plan est orienté par le produit vectoriel $\vec{AB}\wedge\vec{AC}$ ou bien par le vecteur \opt{normal} si celui-ci est précisé.. L'argument\argu{options} est une table dont les champs définissent les options possibles, celles-ci sont (avec leur valeur par défaut) :
+\begin{itemize}
+    \item \opt{normal=\nil} : point 3D non nul représentant un vecteur normal au plan $(ABC)$, il est facultatif si les trois points sont non alignés.
+    
+    \item \opt{arc\_options=\val{""}} : chaîne de caractères transmises à l'instruction \drawcmd pour le dessin de l'arc de cercle.
+    
+    \item \opt{sector\_options=\val{""}} : chaîne de caractères définissant le mode de remplissage du secteur angulaire.
+    
+    \item \opt{label=\val{""}} : texte qui sera affiché.
+    
+    \item \opt{node\_options=\val{""}} : chaîne définissant les options pour le label.
+    
+    \item \opt{pos=\val{"auto"}} : précise la position du label par rapport au point d'ancrage, les autres valeurs possibles sont les valeurs habituelles pour positionner un label: \val{"center"}, \val{"N"}, \val{"NW"}, etc. Par défaut, le point d'ancrage est situé à l'intersection de l'arc de cercle et de la bissectrice de l'angle.
+    
+    \item \opt{dist=\val{r}} : distance entre le point d'ancrage et le centre du cercle ($A$), par défaut c'est le rayon \argu{r} du cercle.
+    
+    \item \opt{angle=\val{0}} : angle (en degrés) de la rotation que doit effectuer le point d'ancrage par défaut autour du centre du cercle ($A$) et dans e plan du cercle.
+    
+    \item \opt{rotate=\val{"none"}} : indique si le label doit être tourné autour de son point d'ancrage \textbf{dans le plan de l'écran}. Les autres valeurs possibles sont : \val{"auto"}, dans ce cas le label est écrit en suivant la direction de la bissectrice, ou bien \val{"ortho"}, et dans ce cas le label est écrit perpendiculairement à la bissectrice.
+    
+    \item \opt{rotate3d=\val{"none"}} : indique si le label doit être tourné autour de son point d'ancrage \textbf{dans le plan ($(ABC)$}. Les autres valeurs possibles sont : \val{"auto"}, dans ce cas le label est écrit en suivant la direction de la bissectrice, ou bien \val{"ortho"}, et dans ce cas le label est écrit perpendiculairement à la bissectrice (toujours dans le plan $(ABC)$). Avec la valeur \val{"none"} le label est écrit dans le plan de l'écran.
+    
+    \item \opt{ticks=\val{"none"}} : permet d'ajouter on non des marques (graduations) sur l'arc de cercle pour un angle aigu. La syntaxe pour en ajouter est : \opt{ticks=\{nb \fac{, length, space, draw\_options}\}} où \argu{nb} est le nombre de traits à ajouter.
+    
+    \item \opt{showanchor=\false} : avec la valeur \true, le point d'ancrage est dessiné,  ainsi que la bissectrice et la boîte autour du label.
+    
+    \item \opt{bezier=\true} : pour dessiner l'arc avec des courbes de Bézier, avec la valeur \false l'arc est une ligne polygonale. Lorsque TikZ ajoute une flèche au bout d'une courbe de Bézier celle-ci subit une légère déformation qui peut créer un artefact lorsque le secteur angulaire doit être peint, dans ce cas il vaut mieux prendre l'option \opt{bezier=\false}.
+\end{itemize}
+
+\begin{demo}{Méthode \emph{g:Darc3d()}}
+\begin{luadraw}{name=decorated_arcs3D}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{ window={-3,8,-5,8}, viewdir={"xy",0.8,60}, size={10,10} }
+require 'luadraw_decorations'
+local O, P = Origin, M(6.5, 6, 4)
+local Px,Pz,Py,Pxz = ld.px(P), ld.pz(P), ld.py(P), ld.pxz(P)
+
+g:Dpolyline3d({{O, 7*vecI}, {O, 7*vecJ}, {O, 6*vecK}}, "-Stealth,solid,black, line width=1pt")
+g:Dlabel3d("$x$", 7*vecI, {pos="E"}, "$y$", 7*vecJ, {pos="N"}, "$z$", 6*vecK, {pos="S"})
+g:Dpolyline3d({{P,Py}, {P,Pxz}, {Pxz,Px}, {O,Pxz}, {Pxz,Pz}}, "dashed,blue,thick")
+g:Dseg3d({O, P}, "-latex,RosyBrown,line width=4pt")
+g:Dpolyline3d({{O, 2.5*vecI}, {O, 2.5*vecJ}, {O, 2.5*vecK}}, "-latex,cyan,line width=3pt")
+
+g:Darc3d(Px, O, P, 4, 1, {
+    arc_options = "-Stealth,blue,ultra thick",
+    sector_options = "fill=blue,opacity=0.2",
+    label = "$\\alpha$", node_options="blue,scale=1.25",
+    rotate = "ortho", pos="N" })
+     
+g:Darc3d(Py, O, P, 4, 1, {
+    arc_options = "-Stealth,green,ultra thick",
+    sector_options = "fill=green,opacity=0.2",
+    label = "$\\beta$", node_options="green,scale=1.25",
+    pos = "S", rotate3d = "ortho"  }) 
+     
+g:Darc3d(Px, O, Pz, 4, 1, {
+    arc_options = "-Stealth,Crimson,ultra thick",
+    sector_options = "fill=Crimson,opacity=0.2",
+    label = "$\\delta$", node_options="Crimson,scale=1.25",
+    rotate3d = "auto", angle=-5,
+    showanchor=true  })  
+
+g:Darc3d(Pz, O, P, 4, 1, {
+    arc_options = "-Stealth,violet,ultra thick",
+    sector_options = "fill=violet,opacity=0.2",
+    label = "$\\gamma$", node_options="violet,scale=1.25",
+    pos="E"  }) 
+g:Ddots3d({P,Pxz,Px,Py,Pz})     
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\paragraph{Conclusion} : 
+\begin{enumerate}
+    \item Dans toutes les méthodes graphiques 2D ou 3D qui font du dessin de lignes font appel à une des méthodes précédentes, pour celles qui ont un argument \argu{draw\_options}, qui normalement est une chaîne de caractères, celui-ci peut être remplacé par une table \argu{options} comme pour la nouvelle méthode \cmd{g:Dpolyline(L, options)}.
+    
+    \item Dans toutes les méthodes graphiques 2D ou 3D qui font du dessin de lignes, qui ont déjà un argument \argu{options} (ou  \argu{args}), et qui parmi ces options en ont une une qui s'appelle \opt{draw\_options} ,qui normalement est une chaîne de caractères, celle-ci peut être remplacée par une table \argu{options} comme pour la nouvelle méthode \cmd{g:Dpolyline(L, options)}.
+\end{enumerate}
+
+\begin{demo}{Décorations 2D}
+\begin{luadraw}{name=decorations2d}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{size={10,10}}
+require 'luadraw_decorations'
+local A, B = Z(1,4), Z(-3,1)
+local C = ld.rotate(B,50,A)
+local A1 = (B+C)/2
+g:Dpolyline({A,B,C}, {close=true, draw_options="draw=none,fill=pink,fill opacity=0.3", 
+    label="$(T)$", anchor=(A+B+C)/3, pos="E",node_options="DarkRed"})
+g:Lineoptions(nil,"ForestGreen",8)
+g:Dseg({A,B}, {scale=1.25,ticks=2,label="$D_1$",anchor1d=0,pos="E"})
+g:Dseg({A,C}, {scale=1.25,ticks=2,label="$D_2$",anchor1d=1,pos="S"})
+g:Dseg({C,B}, {scale=1.25,label="$D_3$",anchor1d=1,pos="W"})
+g:Dmarkseg(B,A1,3); g:Dmarkseg(A1,C,3); g:Dangle(B,A1,A,0.25,"black,thin")
+g:Dcircle({A,B,C}, {label='$(C)$', anchor1d=0, pos="E", draw_options="blue"})
+g:Dmed(B,C,{label="$M_{bc}=H_a$",anchor1d=0.15,pos="N",dir=cpx.I*(C-B), draw_options="dashed,black,thin"})
+g:Dcartesian( function(x) return (x/2)^2-4 end,{x={-5,5},
+    draw_options={label="$C_f$", anchor2d=Z(0.5,0), pos="S", draw_options="red,line width=1.2pt"} })
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\begin{demo}{Décorations 3D}
+\begin{luadraw}{name=decorations3d}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M, Z = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M, ld.cpx.Z
+
+local g = ld.graph3d:new{size={10,10}}
+require 'luadraw_decorations'
+g:Dline3d(-5*vecI,5*vecI, {label="$x$",anchor=5*vecI,pos="S",draw_options="-stealth"},true)
+g:Dline3d(-5*vecJ,5*vecJ, {label="$y$",anchor1d=1,pos="SE",draw_options="-stealth"},true)
+g:Dcircle3d(Origin, 3, vecK, {label="$(C)$",anchor1d=0,pos="SE",
+    dir={vecJ,-vecI}, draw_options="red,thick", node_options="red"})
+local nb = 15
+local H = ld.linspace(0,3,nb)
+for k = 1, nb-1 do
+    local z = H[k]
+    local r = math.sqrt(9-z^2)
+    g:Darc3d(M(0,-r,z),z*vecK,M(0,r,z),r,-1,vecK,"thin, red!30")
+end
+g:Dpath3d({-3*vecJ,Origin,3*vecK,3,-1,vecI,"ca",3*vecK,"l","cl"},
+    "draw=none,pattern color=black!60,pattern=north west lines")
+g:Dseg3d({Origin,5*vecK}, 
+    {label="$z$",anchor2d=Z(0,1),pos="N",draw_options="-stealth"})   
+g:Dseg3d({-3*vecJ,3*vecK}, {label="$3\\sqrt 2$\\,cm", pos="S", dir={M(0,1,1),M(0,-1,1)},
+    ticks=2, draw_options="<->"}) 
+g:Dseg3d({3*vecJ,3*vecK}, 
+    {ticks=2, label="$3$", anchor=3*vecJ,pos="S",dir={vecJ,vecK}}) 
+g:Dpath3d({-3*vecJ,Origin,3*vecJ,3,-1,vecI,"ca"}, 
+    {label="$S$", anchor1d=0.5, pos="N",dist=0.15,draw_options="red,thick", node_options="red"})
+g:Show()
+\end{luadraw}
+\end{demo}

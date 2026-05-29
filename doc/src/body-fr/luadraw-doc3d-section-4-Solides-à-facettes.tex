@@ -1,0 +1,724 @@
+\section{Solides à facettes}
+
+\subsection{Définition d'un solide}
+
+Il y a deux façons de définir un solide :
+\begin{enumerate}
+    \item Sous forme d'une liste (table) de facettes. Une facette est elle-même une liste de points 3D (au moins 3) coplanaires et non alignés, qui sont les sommets. Les facettes sont supposées convexes et elles sont orientées par l'ordre d'apparition des sommets. C'est à dire, si $A$, $B$ et $C$ sont les trois premiers sommets d'une facette $F$, alors la facette est orientée avec le vecteur normal $\vec{AB}\wedge\vec{AC}$. Si ce vecteur normal est dirigé vers l'observateur, alors la facette est considérée comme visible. La méthode \cmd{g:Cosine\_incidence(N \fac{, A})} renvoie le cosinus de l'angle au point \argu{A} entre le vecteur \argu{N} (qui doit être unitaire) et le vecteur unitaire dirigé vers l'observateur, si ce cosinus est positif alors \argu{N} est dirigé vers l'observateur (le point \argu{A} est facultatif SAUF en projection centrale).
+    
+    Dans la définition d'un solide, les vecteurs normaux aux facettes doivent être dirigés vers \textbf{l'extérieur} du solide pour que l'orientation soit correcte.
+    
+    \item Sous forme de \textbf{polyèdre}, c'est à dire une table à deux champs, un premier champ appelé \emph{vertices} qui est la liste des sommets du polyèdre (points 3D), et un deuxième champ appelé \emph{facets} qui la liste des facettes, mais ici, dans la définition des facettes, les sommets sont remplacés par leur indice dans la liste \emph{vertices}. Les facettes sont orientées de la même façon que précédemment. Cette définition correspond au format \emph{obj} mais sans vecteurs normaux.
+\end{enumerate}
+
+Par exemple, considérons les quatre points $A=M(-2,-2,0)$, $B=M(3,0,0)$, $C=M(-2,2,0)$ et $D=M(0,0,4)$, alors on peut définir le tétraèdre construit sur ces quatre points :
+\begin{itemize}
+    \item soit sous forme d'une liste de facettes : \code{T=\{\{A,B,D\},\{B,C,D\},\{C,A,D\},\{A,C,B\}\}} (attention à l'orientation),
+    \item soit sous forme de polyèdre : 
+    \code{T=\{vertices=\{A,B,C,D\},facets=\{\{1,2,4\},\{2,3,4\},\{3,1,4\},\{1,3,2\}\}\}}.
+\end{itemize}
+
+\paragraph{Fonctions de conversion entre les deux définitions}
+\begin{itemize}
+    \item La fonction \cmd{ld.poly2facet(P)} où \argu{P} est un polyèdre, renvoie ce solide sous forme d'une liste de facettes.
+    \item La fonction \cmd{ld.facet2poly(L \fac{, epsilon})} renvoie la liste de facettes \argu{L} sous forme de polyèdre. L'argument facultatif \argu{epsilon} vaut $10^{-8}$ par défaut, il précise à combien près sont faites les comparaisons entre points 3D. S'il y a beaucoup de facettes, le temps de calcul peut devenir important.
+\end{itemize}
+
+\subsection{Dessin d'un polyèdre : Dpoly}
+
+La fonction \cmd{g:Dpoly(P, options)} permet de représenter le polyèdre \argu{P} (par l'algorithme naïf du peintre). L'argument \argu{options} est une table contenant les options, celles-ci sont (avec leur valeur par défaut) :
+\begin{itemize}
+    \item \opt{mode=ld.mShaded} : définit le mode de représentation. Il y a six valeurs possibles :
+        \begin{itemize}
+            \item \val{ld.mWireframe} : mode fil de fer, on dessine les arêtes visibles et cachées.
+            \item \val{ld.mFlat} : on dessine les faces de couleur unie, ainsi que les arêtes visibles.
+            \item \val{ld.mFlatHidden} : on dessine les faces de couleur unie, les arêtes visibles, et les arêtes cachées.
+            \item \val{ld.mShaded} : on dessine les faces de couleur nuancée en fonction de leur inclinaison, ainsi que les arêtes visibles. C'est le mode par défaut.
+            \item \val{ld.mShadedHidden} : on dessine les faces de couleur nuancée en fonction de leur inclinaison, les arêtes visibles et cachées.
+            \item \val{ld.mShadedOnly} :  on dessine les faces de couleur nuancée en fonction de leur inclinaison, mais pas les arêtes.
+        \end{itemize}
+        \item \opt{contrast=1} : nombre qui permet d'accentuer ou diminuer la nuance des couleurs des facettes dans les modes \val{ld.mShaded}, \val{ld.mShadedHidden}, \val{ld.mShadedOnly}.
+        \item \opt{edgestyle=<style courant>} : chaîne qui définit le style de ligne des arêtes.
+        \item \opt{edgecolor=<couleur courante>} : chaîne qui définit la couleur des arêtes.
+        \item \opt{hiddenstyle=ld.Hiddenlinestyle} : chaîne qui définit le style de ligne des arêtes cachées. Par défaut c'est la valeur contenue dans la variable globale \varglob{ld.Hiddenlinestyle} (qui vaut elle-même \val{"dotted"} par défaut).
+        \item \opt{hiddencolor=<couleur courante>} : chaîne qui définit la couleur des arêtes cachées. 
+        \item \opt{edgewidth=<épaisseur courante>} : épaisseur de trait des arêtes en dixième de point. 
+        \item \opt{opacity=1} : nombre entre 0 et 1 qui permet de mettre une transparence ou non sur les facettes. La valeur par défaut est 1, ce qui signifie pas de transparence.
+        \item \opt{backcull=false} : avec la valeur \true, les facettes considérées comme non visibles (vecteur normal non dirigé vers l'observateur) ne sont pas affichées. Cette option est intéressante pour les polyèdres convexes car elle permet de diminuer le nombre de facettes à dessiner.
+        \item \opt{twoside=true} : avec la valeur \true on distingue les deux côtés des facettes (intérieur et extérieur), les deux côtés n'auront pas exactement la même couleur.
+        \item \opt{color="white"} : chaîne définissant la couleur de remplissage des facettes.
+        \item \opt{usepalette=nil} : cette option permet éventuellement de préciser une palette de couleurs pour peindre les facettes ainsi qu'un mode de calcul, la syntaxe est : \opt{usepalette=\{palette,mode\}}, où \argu{palette} désigne une table de couleurs qui sont elles-mêmes des tables de la forme $\{r,g,b\}$ où $r$, $g$ et $b$ sont des nombres entre $0$ et $1$. L'argument  \argu{mode} peut être :
+            \begin{itemize}
+                \item soit une des chaînes : \val{"x"}, \val{"y"}, \val{"z"}. Dans le premier cas par exemple, les facettes au centre de gravité d'abscisse minimale ont la première couleur de la palette, les facettes au centre de gravité d'abscisse maximale ont la dernière couleur de la palette, pour les autres, la couleur est calculée en fonction de l'abscisse du centre de gravité par interpolation linéaire.
+                \item soit une fonction : \argu{mode}$\colon f \mapsto \mathrm{mode}(f)\in\mathbb R$, où $f$ désigne une facette (liste de points 3D). Les facettes ayant la valeur minimale ont la première couleur de la palette, celles ayant la valeur minimale ont la dernière couleur de la palette, pur les autres la couleur est calculée par interpolation linéaire.
+            \end{itemize}
+\end{itemize}
+
+\begin{demo}{Section d'un tétraèdre par un plan}
+\begin{luadraw}{name=tetra_coupe}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{viewdir={10,60},bbox=false, size={10,10}, bg="gray!30"}
+local A,B,C,D = M(-2,-4,-2),M(4,0,-2),M(-2,4,-2),M(0,0,2)
+local T = ld.tetra(A,B-A,C-A,D-A) -- tétraèdre de sommets A, B, C, D
+local plan = {Origin, -vecK} -- plan de coupe
+local T1, T2, section = ld.cutpoly(T,plan) -- on coupe le tétraèdre
+-- T1 est le polyèdre résultant dans le demi espace contenant -vecK
+-- T2 est le polyèdre résultant dans l'autre demi espace
+-- section est une facette (c'est la coupe)
+g:Dpoly(T1,{color="Crimson", edgecolor="white", opacity=0.8, edgewidth=8})
+g:Filloptions("bdiag","Navy"); g:Dpolyline3d(section,true,"draw=none")
+g:Dpoly(ld.shift3d(T2,2*vecK), {color="Crimson", edgecolor="white", opacity=0.8, edgewidth=8})
+g:Dballdots3d({A,B,C,D+2*vecK}) -- on a dessiné T2 translaté avec le vecteur 2*vecK
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Visualiser les numéros des facettes et/ou ceux des sommets d'un polyèdre} 
+
+La méthode \cmd{g:Dpolynames(P \fac{, option, opacity})} affiche le polyèdre \argu{P} avec la possibilité d'ajouter sur chaque face son numéro (qui est son rang d'apparition dans la liste \emph{P.facets}) précédé de la lettre \emph{F}, et éventuellement le numéro de chaque sommet (qui est son rang d'apparition dans la liste \emph{P.vertices}) précédé de la lettre \emph{V}. L'argument \argu{option} peut prendre les valeurs: \val{"facet"} ou bien \val{"vertex"} ou bien \val{"both"} (qui est la valeur par défaut). L'argument \argu{opacity} est un nombre entre $0$ et $1$ qui vaut $0.6$ par défaut.
+
+\begin{demo}{Visualiser les faces et sommets d'un polyèdre}
+\begin{luadraw}{name=show_facet_number}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{viewdir={30,60}, window={-2.5,5,-3,3},size={10,10}}
+P = ld.parallelep(Origin, 4*vecI,5*vecJ,3*vecK)
+local A, B, C = M(4,2.5,3), M(2,5,3), M(4,5,1.5)
+P = ld.cutpoly(P, ld.plane(A,B,C), true) -- P est coupé avec le plan, la section est ajoutée en tant que facette
+g:Dpolynames(P) -- on visualise les numéros des facettes et des sommets de P
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\subsection{Fonctions de construction de polyèdres}
+
+Les fonctions suivantes renvoient un polyèdre, c'est à dire une table à deux champs, un premier champ appelé \emph{vertices} qui est la liste des sommets du polyèdre (points 3D), et un deuxième champ appelé \emph{facets} qui la liste des facettes, mais dans la définition des facettes, les sommets sont remplacés par leur indice dans la liste \emph{vertices}.
+
+\begin{itemize}
+    \item \cmd{ld.tetra(S, v1, v2, v3)} renvoie le tétraèdre  construit à partir du sommet \argu{S} (point 3D) et des 3 vecteurs \argu{v1}, \argu{v2}, \argu{v3} (points 3D) supposés dans le sens direct. Les sommets de ce tétraèdre sont $S$, $S+v_1$, $S+v_2$, $S+v_3$.
+    
+    \item \cmd{ld.parallelep(A, v1, v2, v3)} renvoie le parallélépipède construit à partir du sommet \argu{A} (point 3D) et de 3 vecteurs \argu{v1}, \argu{v2}, \argu{v3} (points 3D) supposés dans le sens direct.
+    
+    \item \cmd{ld.prism(base, vector \fac{, open})} renvoie un prisme, l'argument \argu{base} est une liste de points 3D (une des deux bases du prisme), \argu{vector} est le vecteur de translation (point 3D) qui permet d'obtenir la seconde base. L'argument facultatif \argu{open} est un booléen indiquant si le prisme est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées. La \argu{base} doit être orientée par le \argu{vector}.
+    
+    \item \cmd{ld.pyramid(base, vertex \fac{, open})} renvoie une pyramide, l'argument \argu{base} est une liste de points 3D, \argu{vertex} est le sommet de la pyramide (point 3D). L'argument facultatif \argu{open} est un booléen indiquant si la pyramide est ouverte ou non (\false par défaut). Dans le cas où elle est ouverte, seules les facettes latérales sont renvoyées. La \argu{base} doit être orientée par le sommet.
+    
+    \item \cmd{ld.regular\_pyramid(n, side, height \fac{, open, center, axe})} renvoie une pyramide régulière, \argu{n} est le nombre de côtés de la base, l'argument \argu{side} est la longueur d'un côté, et \argu{height} est la hauteur de la pyramide. L'argument facultatif \argu{open} est un booléen indiquant si la pyramide est ouverte ou non (\false par défaut). Dans le cas où elle est ouverte, seules les facettes latérales sont renvoyées. L'argument facultatif \argu{center} est le centre de la base (\varglob{Origin} par défaut), et l'argument facultatif \argu{axe} est un vecteur directeur de l'axe de la pyramide (\varglob{vecK} par défaut).
+    
+    \item \cmd{ld.truncated\_pyramid(base, vertex, height \fac{, open})} renvoie une pyramide tronquée, l'argument \argu{base} est une liste de points 3D, \argu{vertex} est le sommet de la pyramide (point 3D). L'argument \argu{height} est un nombre indiquant la hauteur par rapport à la base, où s'effectue la troncature, celle-ci est parallèle au plan de la base. L'argument facultatif \argu{open} est un booléen indiquant si la pyramide est ouverte ou non (\false par défaut). Dans le cas où elle est ouverte, seules les facettes latérales sont renvoyées. La \argu{base} doit être orientée par le sommet.
+    
+    \item \cmd{ld.cylinder(A, V, R \fac{, nbfacet, open})} renvoie un cylindre droit de rayon \argu{R}, \argu{A} (point 3D) est le centre d'une des bases circulaires et \argu{V} est vecteur 3D non nul tel que le centre de la seconde base est le point $A+V$. L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \argu{open} est un booléen indiquant si le cylindre est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.
+    
+    \item \cmd{ld.cylinder(A, R, B \fac{, nbfacet, open})} renvoie un cylindre droit de rayon \argu{R}, \argu{A} (point 3D) est le centre d'une des bases circulaires et \argu{B} est le centre de la seconde base. L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \argu{open} est un booléen indiquant si le cylindre est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.
+    
+   \item \cmd{ld.cylinder(A, R, V, B \fac{, nbfacet, open})} renvoie un cylindre de rayon \argu{R}, \argu{A} (point 3D) est le centre d'une des bases circulaires et \argu{B} est le centre de la seconde base, et \argu{V} est un vecteur 3D normal au plan des bases circulaires (le cylindre peut donc être penché). L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \argu{open} est un booléen indiquant si le cylindre est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.
+    
+    \item \cmd{ld.cone(A, V, R \fac{, nbfacet, open})} renvoie un cône de sommet \argu{A} (point 3D), d'axe dirigé par \argu{V} (point 3D), de base le cercle de centre le point $A+V$ de rayon \argu{R} (dans un plan orthogonal à \argu{V}). L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \argu{open} est un booléen indiquant si le cône est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.
+
+    \item \cmd{ld.cone(C, R, A \fac{, nbfacet, open})} renvoie un cône de sommet \argu{A} (point 3D), \argu{C} est le centre de base circulaire et \argu{R} son rayon (dans un plan orthogonal à l'axe $(AC)$). L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \argu{open} est un booléen indiquant si le cône est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.    
+    
+    \item \cmd{ld.cone(C, R, V, A \fac{, nbfacet, open})} renvoie un cône de sommet \argu{A} (point 3D), \argu{C} est le centre de base circulaire, \argu{R} son rayon, la base est dans un plan orthogonal à \argu{V} (vecteur 3D). L'axe $(AC)$ n'est donc pas forcément orthogonal à la face circulaire (cône penché). L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \argu{open} est un booléen indiquant si le cône est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.        
+
+    \item \cmd{ld.frustum(C, R, r, V \fac{, nbfacet, open})} renvoie un tronc de cône droit. Le point \argu{C} (point 3D) est le centre de la base circulaire de rayon \argu{R}, le vecteur \argu{V} dirige l'axe du tronc de cône. Le centre de l'autre base circulaire est le point $C+V$, et son rayon est \argu{r} (les bases sont orthogonales à \argu{V}). L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \argu{open} est un booléen indiquant si le tronc de cône est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.    
+    
+    \item \cmd{ld.frustum(C, R, r, V, A \fac{, nbfacet, open})} renvoie un tronc de cône. Le point \argu{C} (point 3D) est le centre de la base circulaire de rayon \argu{R}, le centre de l'autre base circulaire est le point \argu{A}, et son rayon est \argu{r}, les bases sont orthogonales au vecteur \argu{V}, mais pas forcément orthogonales à l'axe $(AC)$. L'argument facultatif \argu{nbfacet} vaut $35$ par défaut (nombre de facettes latérales). L'argument facultatif \\argu{C}{open} est un booléen indiquant si le tronc de cône est ouvert ou non (\false par défaut). Dans le cas où il est ouvert, seules les facettes latérales sont renvoyées.
+
+    \item \cmd{ld.sphere(A, R \fac{, nbu, nbv})} renvoie la sphère de centre \argu{A} (point 3D) et de rayon \argu{R}. L'argument facultatif \argu{nbu} représente le nombre de fuseaux ($36$ par défaut) et l'argument facultatif \argu{nbv} le nombre de parallèles ($20$ par défaut).
+\end{itemize}
+
+\begin{demo}{Cône tronqué, pyramide tronquée, cylindre oblique}
+\begin{luadraw}{name=frustum_pyramid}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{adjust2d=true,bbox=false, size={10,10} }
+g:Dfrustum(M(-1,-4,0),3,1,5*vecK, {color="cyan"})
+g:Dcylinder(M(-4,4,0),2,vecK,M(-4,2,5), {color="orange"})
+local base = ld.map(pt3d.toPoint3d, ld.polyreg(0,3,5))
+g:Dpoly(ld.truncated_pyramid( ld.shift3d(base,8*vecI-vecJ-2*vecK), M(5,0,5),4), {mode=4,color="Crimson"})
+g:Dcone(M(6,7,-2),3,vecK,M(6,8,5),{color="Pink"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Remarque} : nous avons déjà des primitives pour dessiner des cylindres, cônes, et sphères sans passer par des facettes. Un des intérêts de donner une définition de ces objets sous forme de polyèdres est que l'on va pouvoir faire certains calculs sur ces objets comme par exemple des sections planes.
+
+\begin{demo}{Hyperbole : intersection cône - plan}
+\begin{luadraw}{name=hyperbole}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-8,6,-9,9},bbox=false, 
+    viewdir={"central",45,65}, size={10,10}}
+ld.Hiddenlinestyle = "dashed"; ld.Hiddenlines = true
+local C1 = ld.cone(Origin,4*vecK,3,35,true)
+local C2 = ld.cone(Origin, -4*vecK,3,35,true)
+local P = {M(1,-1,-2),vecI} -- plan de la section
+local I1 = g:Intersection3d(C1,P) -- intersection entre le cône C1 et le plan P
+local I2 = g:Intersection3d(C2,P) -- intersection entre le cône C2 et le plan P
+-- I1 et I2 sont de type Edges (arêtes)
+g:Dcone(Origin,4*vecK,3,{color="orange"}); g:Dcone(Origin,-4*vecK,3,{color="orange"})
+g:Lineoptions("solid","Navy",8)
+g:Dedges(I1); g:Dedges(I2) -- dessin des arêtes I1 et I2
+g:Dplane(P, vecK,14,9)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Dans cet exemple, les cônes $C_1$ et $C_2$ sont définis sous forme de polyèdres pour déterminer leur intersection avec le plan $P$, mais pas pour les dessiner. La méthode \cmd{g:Intersection3d(C1, P)} renvoie l'intersection du polyèdre $C_1$ avec le plan $P$ sous la forme d'une table à deux champs, un champ nommé \emph{visible} qui contient une ligne polygonale 3D représentant les arêtes (segments) visibles de l'intersection (c'est à dire qui sont sur une facette visible de $C_1$), et un autre champ nommé \emph{hidden} qui contient une ligne polygonale 3D représentant les arêtes cachées de l'intersection (c'est à dire qui sont sur une facette non visible de $C_1$). La méthode \cmd{g:Dedges()} permet de dessiner ce type d'objets.
+
+\begin{demo}{Section de cône avec plusieurs vues}
+\begin{luadraw}{name=several_views}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window3d={-3,3,-3,3,-3,3}, size={10,10}, margin={0,0,0,0}}
+g:Labelsize("footnotesize")
+local y0, R = 1, 2.5
+local C = ld.cone(M(0,0,3),-6*vecK,R,35,true) -- cone ouvert
+local P1 = {M(0,0,0),vecK+vecJ} -- 1er plan de coupe
+local P2 = {M(0,y0,0),vecJ} -- 2ieme plan de coupe
+local I, I2
+local dessin = function() -- un dessin par vue
+    g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+    I1 = g:Intersection3d(C,P1) -- intersection entre le cône C et les plans P1 et P2
+    I2 = g:Intersection3d(C,P2) -- I1 et I2 sont de type Edges
+    g:Dpolyline3d( {{M(0,-3,3),M(0,0,3),M(0,0,-3),M(3,0,-3)}, {M(0,0,-3),M(0,3,-3)}},"red,line width=0.4pt" )
+    g:Dcone( M(0,0,3),-6*vecK,R, {color="cyan"})
+    g:Dedges(I1, {hidden=true,color="Navy", width=8})
+    g:Dedges(I2, {hidden=true,color="DarkGreen", width=8})
+end
+-- en haut à gauche, vue dans l'espace, on ajoute les plans au dessin
+g:Saveattr(); g:Viewport(-5,0,0,5); g:Coordsystem(-7,6,-6,5,1); g:Setviewdir("central"); dessin()
+g:Dpolyline3d( {M(-3,-3,3),M(3,-3,3),M(3,3,-3),M(-3,3,-3)},"Navy,line width=0.8pt")
+g:Dpolyline3d( {M(-3,y0,3),M(3,y0,3),M(3,y0,-3)},"DarkGreen,line width=0.8pt")
+g:Dlabel3d( "$P_1$",M(3,-3,3),{pos="SE",dir={-vecI,-vecJ+vecK},node_options="Navy, draw"})
+g:Dlabel3d( "$P_2$",M(-3,y0,3),{pos="SW",dir={-vecI,vecK},node_options="DarkGreen,draw"})
+g:Restoreattr()
+-- en haut à droite, projection sur le plan xOy
+g:Saveattr(); g:Viewport(0,5,0,5); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("xOy"); dessin()
+g:Restoreattr()
+-- en bas à gauche, projection sur le plan xOz
+g:Saveattr(); g:Viewport(-5,0,-5,0); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("xOz"); dessin()
+g:Restoreattr()
+-- en bas à droite, projection sur le plan yOz
+g:Saveattr(); g:Viewport(0,5,-5,0); g:Coordsystem(-6,6,-6,5,1); g:Setviewdir("yOz"); dessin()
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Lecture dans un fichier obj}
+
+La fonction \cmd{ld.read\_obj\_file(file)}\footnote{Cette fonction est une contribution de Christophe BAL.} permet de lire le contenu du fichier \emph{obj} désigné par la chaîne de caractères \argu{file}. La fonction lit les définitions des sommets (lignes commençant par \verb|v |), et les lignes définissant les facettes (lignes commençant par \verb|f |). Les autres lignes sont ignorées. La fonction renvoie une séquence constituée du polyèdre, suivi d'une liste de quatre réels \code{\{x1,x2,y1,y2,z1,z2\}} représentant la boîte 3D englobante (bounding box) du polyèdre.
+
+\begin{demo}{Masque de Nefertiti}
+\begin{luadraw}{name=lecture_obj}
+local ld = luadraw
+local P,bbox = ld.read_obj_file("obj/nefertiti.obj")
+local g = ld.graph3d:new{window3d=bbox,window={-6,5,-7,7},viewdir={"central",35,65,20},
+margin={0,0,0,0}, size={10,10}, bg="LightGray"}
+g:Dpoly(P, {usepalette={ld.palAutumn,"z"},mode=ld.mShadedOnly})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Surface au format obj}
+
+Deux syntaxes possibles:
+\begin{enumerate}
+    \item \cmd{ld.obj\_surface(f, u1, u2, v1, v2 \fac{, grid})} renvoie au format \emph{obj} la surface paramétrée par la fonction \argu{f}$\colon(u,v) \mapsto f(u,v)\in \mathbf R^3$. L'intervalle pour le paramètre $u$ est donné par \argu{u1} et \argu{u2}. L'intervalle pour le paramètre $v$ est donné par \argu{v1} et \argu{v2}. Le paramètre facultatif \argu{grid} vaut $\{25,25\}$ par défaut, il définit le nombre de points à calculer pour le paramètre $u$ suivi du nombre de points à calculer pour le paramètre $v$ (les valeurs de $u$ et $v$ sont équiréparties).
+    
+    \item \cmd{ld.obj\_surface(f, mesh)} avec \argu{mesh}$=\{\{u_1,\ldots,u_n\}, \{v_1,\ldots,v_m\}\}$, renvoie la surface paramétrée par la fonction \argu{f}$\colon(u,v) \mapsto f(u,v)\in \mathbf R^3$. Les valeurs des paramètres $u$ et $v$ sont données par l'argument \argu{mesh}, elles doivent être dans l'ordre strictement croissant, mais elles ne sont pas forcément équiréparties.
+\end{enumerate}
+Dans les deux cas, le résultat n'est pas une liste de facettes mais une table à trois champs :
+\codeln{\{vertices=\{\ldots\}, normals=\{\ldots\}, facets=\{\{\ldots\},\{\ldots\},\ldots\} \}.}
+    \begin{itemize}
+        \item Les champs \emph{vertices} et \emph{facets} sont identiques au cas des polyèdres : listes des sommets (points 3D) et liste des facettes avec numéros des sommets, sauf qu'ici les facettes sont toutes \textbf{triangulaires}.
+        \item Le champ \emph{normals} est une liste de vecteurs 3D unitaires représentant des vecteurs normaux à la surface à raison de un par sommet.
+    \end{itemize}
+
+
+
+\subsection{Dessin d'une liste de facettes : Dfacet et Dmixfacet}
+
+Il y a deux méthodes possibles :
+\begin{enumerate}
+    \item Pour un solide $S$ sous forme d'une liste de facettes (avec points 3D), la méthode est :
+    cmdln{g:Dfacet(S, options)}
+    où \argu{S} est la liste de facettes et \argu{options} une table définissant les options. Celles-ci sont :
+    \begin{itemize}
+        \item \opt{mode=ld.mShaded} : définit le mode de représentation. Les valeurs possibles sont:
+            \begin{itemize}
+                \item \val{ld.mWireframe} : mode fil de fer, on dessine les arêtes seulement.
+                \item \val{ld.mFlat} ou \val{ld.mFlatHidden} : on dessine les faces de couleur unie, ainsi que les arêtes.
+                \item \val{ld.mShaded} ou \val{ld.mShadedHidden} : on dessine les faces de couleur nuancée en fonction de leur inclinaison, ainsi que les arêtes.
+                \item \val{ld.mShadedOnly} : on dessine les faces de couleur nuancée en fonction de leur inclinaison, mais pas les arêtes.
+            \end{itemize}
+        \item \opt{contrast=1} : ce nombre permet d'accentuer ou diminuer la nuance des couleurs des facettes dans les modes \val{ld.mShaded}, \val{ld.mShadedHidden}, \val{ld.mShadedOnly}.
+        \item \opt{edgestyle=<style courant>} : chaîne qui définit le style de ligne des arêtes.
+        \item \opt{edgecolor=<couleur courante>} : chaîne qui définit la couleur des arêtes.
+        \item \opt{hiddenstyle=ld.Hiddenlinestyle} : chaîne qui définit le style de ligne des arêtes cachées. Par défaut c'est la valeur contenue dans la variable globale \varglob{ld.Hiddenlinestyle} (qui vaut elle-même \val{"dotted"} par défaut).
+        \item \opt{hiddencolor=<couleur par défaut>} : chaîne qui définit la couleur des arêtes cachées.
+        \item \opt{edgewidth=<épaisseur courante>} : épaisseur de trait des arêtes en dixième de point.
+        \item \opt{opacity=1} : nombre entre 0 et 1 qui permet de mettre une transparence ou non sur les facettes.
+        \item \opt{backcull=false} : avec la valeur \true, les facettes considérées comme non visibles (vecteur normal non dirigé vers l'observateur) ne sont pas affichées. Cette option est intéressante pour les polyèdres convexes car elle permet de diminuer le nombre de facettes à dessiner.
+        \item \opt{clip=false} : avec la valeur \true, les facettes sont clippées par la fenêtre 3D.
+        \item \opt{twoside} : booléen qui vaut true par défaut, ce qui signifie qu'on distingue les deux côtés des facettes (intérieur et extérieur), les deux côtés n'auront pas exactement la même couleur.
+        \item \opt{color="white"} : chaîne définissant la couleur de remplissage des facettes.
+        \item \opt{twoside=true} : avec la valeur \true on distingue les deux côtés des facettes (intérieur et extérieur), les deux côtés n'auront pas exactement la même couleur.
+        \item \opt{color="white"} : chaîne définissant la couleur de remplissage des facettes.
+        \item \opt{usepalette=nil} : cette option permet éventuellement de préciser une palette de couleurs pour peindre les facettes ainsi qu'un mode de calcul, la syntaxe est : \opt{usepalette=\{palette,mode\}}, où \argu{palette} désigne une table de couleurs qui sont elles-mêmes des tables de la forme $\{r,g,b\}$ où $r$, $g$ et $b$ sont des nombres entre $0$ et $1$. L'argument  \argu{mode} peut être :
+            \begin{itemize}
+                \item soit une des chaînes : \val{"x"}, \val{"y"}, \val{"z"}. Dans le premier cas par exemple, les facettes au centre de gravité d'abscisse minimale ont la première couleur de la palette, les facettes au centre de gravité d'abscisse maximale ont la dernière couleur de la palette, pour les autres, la couleur est calculée en fonction de l'abscisse du centre de gravité par interpolation linéaire.
+                \item soit une fonction : \argu{mode}$\colon f \mapsto \mathrm{mode}(f)\in\mathbb R$, où $f$ désigne une facette (liste de points 3D). Les facettes ayant la valeur minimale ont la première couleur de la palette, celles ayant la valeur minimale ont la dernière couleur de la palette, pur les autres la couleur est calculée par interpolation linéaire.
+            \end{itemize}    
+        \end{itemize}
+    
+    \item Pour plusieurs listes de facettes dans un même dessin, la méthode est :
+        \cmdln{g:Dmixfacet(S1, options1, S2, options2, \ldots)}
+    où \argu{S1}, \argu{S2}, \ldots, sont des listes de facettes, et \argu{options1}, \argu{options2}, \ldots, sont les options correspondantes. Les options d'une liste de facettes s'appliquent aussi aux suivantes si elles ne sont pas changées. Ces options sont identiques à la méthode précédente.
+    
+    Cette méthode est utile pour dessiner plusieurs solides ensemble, à condition qu'il n'y ait pas d'intersections entre les objets, car celles-ci ne sont pas gérées ici.
+\end{enumerate}
+
+\begin{demo}[courbeniv]{Exemple de courbes de niveaux sur une surface}
+\begin{luadraw}{name=courbes_niv}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M, Z = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M, ld.cpx.Z
+local cos, sin = math.cos, math.sin
+local g = ld.graph3d:new{window3d={0,5,0,10,0,11}, adjust2d=true, size={10,10},
+    viewdir={"central",220,60,15,M(2.5,5,5.5)}}
+g:Labelsize("footnotesize")
+local S = ld.cartesian3d(function(u,v) return (u+v)/(2+cos(u)*sin(v)) end,0,5,0,10,{30,30})
+local n = 10 -- nombre de niveaux
+local Colors = ld.getpalette(ld.palGasFlame,n,true) -- liste de 10 couleurs au format table
+local niv, S1 = {}
+for k = 1, n do
+    S1, S = ld.cutfacet(S,{M(0,0,k),-vecK}) -- section de S avec le plan z=k
+    ld.insert(niv,{S1, {color=Colors[k],mode=ld.mShaded,edgewidth=0.5}}) -- S1 est la partie sous le plan et S au dessus
+end
+ld.insert(niv,{S, {color=Colors[n+1]}}) -- insertion du dernier niveau
+-- niv est une liste du type {facettes1, options1, facettes2, options2, ...}
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="lightgray"})
+g:Dmixfacet(table.unpack(niv))
+for k = 1, n do
+    g:Dballdots3d( M(5,0,k), ld.rgb(Colors[k]))
+end
+g:Dlabel("$z=\\frac{x+y}{2+\\cos(x)\\sin(y)}$", Z((g:Xinf()+g:Xsup())/2, g:Yinf()), {pos="N"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Fonctions de construction de listes de facettes}
+
+Les fonctions suivantes renvoient un solide sous forme d'une liste de facettes (avec points 3D).
+
+\subsubsection{surface()}
+
+Deux syntaxes possibles :
+\begin{enumerate}
+    \item \cmd{ld.surface(f, u1, u2, v1, v2 \fac{, grid})} renvoie la surface paramétrée par la fonction \argu{f}$\colon(u,v) \mapsto f(u,v)\in \mathbf R^3$. L'intervalle pour le paramètre $u$ est donné par \argu{u1} et \argu{u2}. L'intervalle pour le paramètre $v$ est donné par \argu{v1} et \argu{v2}. Le paramètre facultatif \argu{grid} vaut $\{25,25\}$ par défaut, il définit le nombre de points à calculer pour le paramètre $u$ suivi du nombre de points à calculer pour le paramètre $v$ (les valeurs de $u$ et $v$ sont équiréparties).
+    
+    \item \cmd{ld.surface(f, mesh)} avec \argu{mesh}$=\{\{u_1,\ldots,u_n\}, \{v_1,\ldots,v_m\}\}$, renvoie la surface paramétrée par la fonction \argu{f}$\colon(u,v) \mapsto f(u,v)\in \mathbf R^3$. Les valeurs des paramètres $u$ et $v$ sont données par l'argument \argu{mesh}, elles doivent être dans l'ordre strictement croissant, mais elles ne sont pas forcément équiréparties.
+\end{enumerate}
+
+    
+Il y a deux variantes pour les surfaces :
+
+\subsubsection{cartesian3d()}
+
+La fonction \cmd{ld.cartesian3d(f, x1, x2, y1, y2 \fac{, grid, addwall})} renvoie la surface cartésienne d'équation $z=f(x,y)$ où \argu{f}$\colon(x,y)\mapsto f(x,y)\in\mathbb R$. L'intervalle pour $x$ est donné par \argu{x1} et \argu{x2}. L'intervalle pour $y$ est donné par \argu{y1} et \argu{y2}. Le paramètre facultatif \argu{grid} vaut $\{25,25\}$ par défaut, il définit le nombre de points à calculer pour $x$ suivi du nombre de points à calculer pour $y$. Le paramètre \argu{addwall} vaut \val{0} ou \val{"x"}, ou \val{"y"}, ou \val{"xy"} (\val{0} par défaut). Lorsque cette option vaut \val{"x"} (ou \val{"xy"}), la fonction renvoie, après la liste des facettes composant la surface, une liste de facettes séparatrices (murs ou cloisons) entre chaque "couche" de facettes, une couche correspond à deux valeurs consécutives du paramètre $x$\footnote{Ces cloisons sont en fait des plans d'équation $x=$constante}. Avec la valeur \val{"y"} (ou \val{"xy"}) c'est une liste de facettes séparatrices (murs) entre chaque "couche" correspond à deux valeurs consécutives du paramètre "y"\footnote{Ces cloisons sont en fait des plans d'équation $y=$constante}. Cette option peut être utile avec la méthode \cmd{g:Dscene3d()} (uniquement), car les cloisons séparatrices forment une partition de l'espace isolant les facettes de la surface, ce qui permet d'éviter des calculs d'intersection inutiles entre elles. C'est notamment le cas avec des surfaces non convexes.
+
+Par exemple, voici le code de la figure \ref{pointcol}:
+\begin{Luacode}
+\begin{luadraw}{name=point_col}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window3d={-2,2,-2,2,-4,4}, window={-3.5,3,-5,5}, size={8,9,0}, viewdir={120,60}}
+local S = ld.cartesian3d(function(u,v) return u^2-v^2 end, -2,2,-2,2,{20,20}) -- surface d'équation z=x^2-y^2
+local Tx = g:Intersection3d(S, {Origin,vecI}) --intersection entre S et le plan yOz
+local Ty = g:Intersection3d(S, {Origin,vecJ}) --intersection entre S et le plan xOz
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray",drawbox=true})
+g:Dfacet(S,{mode=ld.mShadedOnly,color="ForestGreen"}) -- dessin de la surface
+g:Dedges(Tx, {color="Crimson", hidden=true, width=8}) -- dessin de l'intersection avec yOz
+g:Dedges(Ty, {color="Navy",hidden=true, width=8}) -- dessin de l'intersection avec xOz
+g:Dpolyline3d( {M(2,0,4),M(-2,0,4),M(-2,0,-4)}, "Navy,line width=.8pt")
+g:Dpolyline3d( {M(0,-2,4),M(0,2,4),M(0,2,-4)}, "Crimson,line width=.8pt")
+g:Show()
+\end{luadraw}
+\end{Luacode}
+
+\subsubsection{cylindrical\_surface()}
+
+La fonction \cmd{ld.cylindrical\_surface(r, z, u1, u2, theta1, theta2 \fac{, grid, addwall})} renvoie la surface paramétrée en cylindrique par \emph{r(u,theta), theta, z(u,theta)}. Les arguments \argu{r} et \argu{z} sont donc deux fonctions de $u$ et $\theta$, à valeurs réelles. L'intervalle pour $u$ est donné par \argu{u1} et \argu{u2}. L'intervalle pour $\theta$ est donné par \argu{theta1} et \argu{theta2} (en radians). Le paramètre facultatif \argu{grid} vaut $\{25,25\}$ par défaut, il définit le nombre de points à calculer pour $u$ suivi du nombre de points à calculer pour $v$. Le paramètre \argu{addwall} vaut $0$ ou \val{"v"}  ou \val{"z"} ou \val{"vz"} ($0$ par défaut). Lorsque cette option vaut \val{"v"}  ou \val{"vz"} , la fonction renvoie, après la liste des facettes composant la surface, une liste de facettes séparatrices (murs ou cloisons) entre chaque "couche" de facettes, une couche correspond à deux valeurs consécutives de l'angle $\theta$\footnote{Ces cloisons sont en fait des plans d'équation $\theta=$constante}. Lorsque cette option vaut \val{"z"}  ou \val{"vz"}, la fonction renvoie, après la liste des facettes composant la surface, une liste de facettes séparatrices (murs ou cloisons) entre chaque "couche" de facettes, une couche correspond à deux valeurs consécutives de la cote $z$\footnote{Ces cloisons sont en fait des plans d'équation $z=$constante}, les valeurs de $z$ sont calculées à  partir des valeurs du paramètres $u$ et avec la valeur \argu{theta1}, ceci est utile lorsque $z$ ne dépend que $u$ (et donc pas de $\theta$). Cette option peut être utile avec la méthode \cmd{g:Dscene3d()} (uniquement), car les cloisons séparatrices forment une partition de l'espace isolant les facettes de la surface, ce qui permet d'éviter des calculs d'intersection inutiles entre elles. C'est notamment le cas avec des surfaces non convexes.
+
+\begin{demo}{Surfaces utilisant l'option \emph{addwall}}
+\begin{luadraw}{name=surface_with_addWall}
+local ld = luadraw
+local pi, ch, sh = math.pi, math.cosh, math.sinh
+local O = ld.pt3d.Origin
+local g = ld.graph3d:new{window3d={-4,4,-4,4,-5,5}, window={-10,10,-4,4}, size={10,10}, viewdir={60,60}}
+g:Labelsize("footnotesize")
+local S,wall = ld.cartesian3d(function(x,y) return x^2-y^2 end,-2,2,-2,2,nil,"xy")
+g:Saveattr(); g:Viewport(-10,0,-4,4); g:Coordsystem(-4.5,4.5,-4.5,4.75)
+g:Dscene3d(
+    g:addWall(wall), -- 2 intersections de facettes avec cette instruction, et 529 sans
+    g:addFacet(S,{color="SteelBlue"}),
+    g:addAxes(O,{arrows=1}) )
+g:Restoreattr()
+g:Saveattr(); g:Viewport(0,10,-4,4); g:Coordsystem(-5,5,-5,5)
+local r = function(u,v) return ch(u) end
+local z = function(u,v) return sh(u) end
+S,wall = ld.cylindrical_surface(r,z,-2,2,-pi,pi,{25,51},"zv")
+g:Dscene3d(
+    g:addWall(wall), -- 13 intersections de facettes avec cette instruction, et plus de 17000 sans ...
+    g:addFacet(S,{color="Crimson"}),
+    g:addAxes(O,{arrows=1}) )
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{curve2cone()}
+La fonction \cmd{ld.curve2cone(f, t1, t2, S, options)} construit un cône de sommet \argu{S} (point 3D) et de base la courbe paramétrée par \argu{f}$\colon t\mapsto f(t)\in\mathbf R^3$ sur l'intervalle défini par \argu{t1} et \argu{t2}. L'argument \argu{options} est une table dont les champs définissent les options, qui sont (avec leur valeur  par défaut) :
+    \begin{itemize}
+        \item \opt{nbdots=15} : nombre minimal de points de la courbe à calculer.
+        
+        \item \opt{ratio=0} :  nombre représentant le rapport d'homothétie (de centre le sommet \argu{S}) pour construire l'autre partie du cône, avec la valeur $0$ il n'y a pas de deuxième partie.
+        
+        \item \opt{nbdiv=0} : entier positif indiquant le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre $t$ peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés.
+        
+        \item \opt{obj=\false} : avec la valeur \false cette fonction construit une liste de facettes, avec les valeur \true elle construit une table à trois champs : \code{\{vertices=\{points 3D\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{vecteurs 3D\}\}}.
+    \end{itemize}
+La fonction renvoie une séquence : 
+\begin{enumerate}
+    \item la liste de facettes ou bien la table au format \emph{obj}, suivie 
+    \item d'une ligne polygonale 3D qui représente les bords du cône.
+\end{enumerate}
+
+ 
+\begin{demo}{Exemple de cône elliptique}
+\begin{luadraw}{name=curve2cone}
+local ld = luadraw
+local O, M = ld.pt3d.Origin, ld.pt3d.M
+local cos, sin, pi = math.cos, math.sin, math.pi
+local g = ld.graph3d:new{ window3d={-2,2,-4,4,-3,3}, window={-5.5,5.5,-5.5,5},
+    size={10,10}, viewdir="central"}
+local f = function(t) return M(2*cos(t),4*sin(t),-3) end -- ellipse dans le plan z=-3
+local C, bord = ld.curve2cone(f,-pi,pi,O,{nbdiv=2, ratio=-1})
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+g:Dpolyline3d(bord[1],"red,line width=2.4pt") -- bord inférieur
+g:Dfacet(C, {mode=ld.mShadedOnly,color="LightBlue"}) -- cône
+g:Dpolyline3d(bord[2],"red,line width=0.8pt") -- bord supérieur
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{curve2cylinder()}
+La fonction \cmd{ld.curve2cylinder(f, t1, t2, V \fac{, options})} construit un cylindre d'axe dirigé par le vecteur \argu{V} (point 3D) et de base la courbe paramétrée par \argu{f}$\colon t\mapsto f(t)\in\mathbf R^3$ sur l'intervalle défini par \argu{t1} et \argu{t2}. La seconde base est la translatée de la première avec le vecteur \argu{V}. L'argument \argu{options} est une table dont les champs définissent les options, qui sont (avec leur valeur  par défaut) :
+    \begin{itemize}
+        \item \opt{nbdots=15} : nombre minimal de points de la courbe à calculer.
+        
+        \item \opt{nbdiv=0} : entier positif indiquant le nombre de fois que l'intervalle entre deux valeurs consécutives du paramètre $t$ peut être coupé en deux (dichotomie) lorsque les points correspondants sont trop éloignés
+        
+        \item \opt{obj=\false} : avec la valeur \false cette fonction construit une liste de facettes, avec les valeur \true elle construit une table à trois champs : \code{\{vertices=\{points 3D\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{vecteurs 3D\}\}}.
+    \end{itemize}
+La fonction renvoie une séquence : 
+\begin{enumerate}
+    \item la liste de facettes ou bien la table au format \emph{obj}, suivie 
+    \item d'une ligne polygonale 3D qui représente les bords du cylindre.
+\end{enumerate}
+ 
+\begin{demo}{Section d'un cylindre non circulaire}
+\begin{luadraw}{name=curve2cylinder}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+local cos, sin, pi = math.cos, math.sin, math.pi
+
+local g = ld.graph3d:new{ window3d={-5,5,-5,5,-4,4},window={-9,8,-10.5,5.5},
+    viewdir={"central",39,64}, size={10,10}}
+local f = function(t) return M(4*cos(t)-cos(4*t),4*sin(t)-sin(4*t),-4) end -- courbe dans le plan z=-3
+local V = 8*vecK
+local C = ld.curve2cylinder(f,-pi,pi,V,{nbdots=25,nbdiv=2})
+local plan = {M(0,0,2), -vecK} -- plan de coupe z=2
+local C1, C2, section = ld.cutfacet(C,plan)
+g:Dboxaxes3d({grid=true,gridcolor="gray",fillcolor="LightGray"})
+g:Dfacet(C1, {mode=ld.mShaded,color="LightBlue"}) -- partie sous le plan
+g:Dfacet(g:Plane2facet(plan), {opacity=0.3,color="Chocolate"}) -- dessin du plan sous forme d'une facette
+g:Filloptions("fdiag","red"); g:Dpolyline3d(section) -- dessin de la section
+g:Dfacet(C2, {mode=3,color="LightBlue"}) -- partie du cylindre au dessus du plan
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{line2tube(); section2tube()}
+
+La fonction \cmd{ld.line2tube(L, r \fac{, options})} construit un tube centré sur \argu{L} qui doit être une liste de points 3D, l'argument \argu{r} représente le rayon de ce tube. L'argument \argu{options} est une table dont les champs définissent les options, qui sont (avec leur valeur  par défaut) :
+    \begin{itemize}
+        \item \opt{nbfacet=3} : nombre de facettes latérales du tube.
+        
+        \item \opt{close=false} : booléen indiquant si la ligne polygonale doit être refermée.
+        
+        \item \opt{hollow=false} : booléen indiquant si les deux extrémités du tube doivent être ouvertes ou non. Lorsque l'option \opt{close} vaut \true, l'option \opt{hollow} prend automatiquement la valeur \true.
+        
+        \item \opt{addwall=0} : nombre qui vaut $0$ ou $1$. Lorsque cette option vaut $1$, la fonction renvoie, après le tube, une liste de facettes séparatrices (murs) entre chaque "tronçon" du tube, ce qui peut être utile avec la méthode \cmd{g:Dscene3d()} (uniquement).
+        
+        \item \opt{obj=\false} : avec la valeur \false cette fonction renvoie une liste de facettes, avec les valeur \true elle renvoie une table à trois champs : \code{\{vertices=\{points 3D\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{vecteurs 3D\}\}}.
+    \end{itemize}
+    
+La fonction \cmd{ld.section2tube(section, L \fac{, options})} construit également un tube centré sur \argu{L} qui doit être une liste de points 3D, l'argument \argu{section} doit être une facette centrée sur le premier point de \argu{L}, elle représente une section du tube qui va être construit. L'argument \argu{options} est une table dont les champs définissent les options, qui sont (avec leur valeur  par défaut) :
+    \begin{itemize}
+        \item \opt{nbfacet=3} : nombre de facettes latérales du tube.
+        
+        \item \opt{close=false} : booléen indiquant si la ligne polygonale doit être refermée.
+        
+        \item \opt{hollow=false} : booléen indiquant si les deux extrémités du tube doivent être ouvertes ou non. Lorsque l'option \opt{close} vaut \true, l'option \opt{hollow} prend automatiquement la valeur \true.
+        
+        \item \opt{addwall=0} : nombre qui vaut $0$ ou $1$. Lorsque cette option vaut $1$, la fonction renvoie, après le tube, une liste de facettes séparatrices (murs) entre chaque "tronçon" du tube, ce qui peut être utile avec la méthode \cmd{g:Dscene3d()} (uniquement).
+        
+        \item \opt{obj=\false} : avec la valeur \false cette fonction renvoie une liste de facettes, avec les valeur \true elle renvoie une table à trois champs : \code{\{vertices=\{points 3D\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{vecteurs 3D\}\}}.        
+    \end{itemize}
+    
+\begin{demo}{Exemple avec line2tube et section2tube}
+\begin{luadraw}{name=line2tube_section2tube}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-5,6,-4.5,8}, viewdir={45,60}, margin={0,0,0,0}, size={10,10}}
+local L1 = ld.map(pt3d.toPoint3d,ld.polyreg(0,3,6)) -- hexagone régulier dans le plan xOy, centre O de sommet M(3,0,0)
+local L2 = ld.shift3d(ld.rotate3d(L1,90,{Origin,vecJ}),3*vecJ)
+local L3 = ld.shift3d(ld.reverse(L1),6*vecK)
+L3[6] = L3[5]-2*vecK -- modification du dernier point
+local section = ld.shift3d({M(2,0,0.5),M(4,0,0.5),M(4,0,-0.5),M(2,0,-0.5)},6*vecK)
+local T1 = ld.line2tube(L1,1,{nbfacet=8,close=true}) -- tube 1 refermé
+local T2 = ld.line2tube(L2,1,{nbfacet=8}) -- tube 2 non refermé
+local T3 = ld.section2tube(section, L3,{hollow=true})
+g:Dmixfacet( T1, {color="Crimson",opacity=0.8}, T2, {color="SteelBlue"}, T3, {color="ForestGreen"} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{rotcurve()}
+La fonction \cmd{ld.rotcurve(p, t1, t2, axe, angle1, angle2 \fac{, options})} construit sous forme d'une liste de facettes, la surface balayée par la courbe paramétrée par \argu{p}$\colon t\mapsto p(t)\in \mathbf R^3$ sur l'intervalle défini par \argu{t1} et \argu{t2}, en la faisant tourner autour de \argu{axe} (qui est une table de la forme \{point 3D, vecteur 3D\} représentant une droite orientée de l'espace), d'un angle allant de \argu{angle1} (en degrés) à \argu{angle2}. L'argument \argu{options} est une table dont les champs définissent les options, qui sont (avec leur valeur  par défaut) :
+    \begin{itemize}
+        \item \opt{grid=\{25,25\}} : table constituée de deux nombres, le premier est le nombre de points calculés pour le paramètre $t$, et le second le nombre de points calculés pour le paramètre angulaire.
+
+        \item \opt{addwall=0} : nombre qui vaut $0$ ou $1$ ou $2$. Lorsque cette option vaut $1$, la fonction renvoie, après la surface, une liste de facettes séparatrices (murs) entre chaque "couche" de facettes (une couche correspond à deux valeurs consécutives du paramètre $t$), et avec la valeur $2$ c'est une liste de facettes séparatrices (murs) entre chaque "tranche" de rotation (une couche correspond à deux valeurs consécutives du paramètre angulaire, ceci est intéressant lorsque la courbe est dans un même plan que l'axe de rotation). Cette option peut être utile avec la méthode \cmd{g:Dscene3d()} (uniquement).
+        
+        \item \opt{obj=\false} : avec la valeur \false cette fonction renvoie une liste de facettes, avec les valeur \true elle renvoie une table à trois champs : \code{\{vertices=\{points 3D\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{vecteurs 3D\}\}}.           
+    \end{itemize} 
+        
+\begin{demo}{Exemple avec rotcurve}
+\begin{luadraw}{name=rotcurve}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+local cos, sin, pi = math.cos, math.sin, math.pi
+local g = ld.graph3d:new{viewdir={30,60},size={10,10}}
+local p = function(t) return M(0,sin(t)+2,t) end -- courbe dans le plan yOz
+local axe = {Origin,vecK}
+local S = ld.rotcurve(p,pi,-pi,axe,0,360,{grid={25,35}})
+local visible, hidden = g:Classifyfacet(S)
+g:Dfacet(hidden, {mode=ld.mShadedOnly,color="cyan"})
+g:Dline3d(axe,"red,line width=1.2pt")
+g:Dfacet(visible, {mode=5,color="cyan"})
+g:Dline3d(axe,"red,line width=1.2pt,dashed")
+g:Dparametric3d(p,{t={-pi,pi},draw_options="red,line width=1.2pt"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Remarque} : si l'orientation de la surface ne semble pas bonne, il suffit d'échanger les paramètres \argu{t1} et \argu{t2}, ou bien \argu{angle1} et \argu{angle2}.
+
+\subsubsection{rotline()}
+
+La fonction \cmd{ld.rotline(L, axe, angle1, angle2 \fac{, options})} construit sous forme d'une liste de facettes, la surface balayée par la liste de points 3D \argu{L} en la faisant tourner autour de \argu{axe} (qui est une table de la forme \{point 3D, vecteur 3D\} représentant une droite orientée de l'espace), d'un angle allant de \argu{angle1} (en degrés) à \argu{angle2}. L'argument \argu{options} est une table dont les champs définissent les options, qui sont (avec leur valeur  par défaut) :
+    \begin{itemize}
+        \item \opt{nbdots=25} : nombre de points calculés pour le paramètre angulaire.
+        
+        \item \opt{close=false} : booléen qui indique si \argu{L} doit être refermée.
+        
+        \item \opt{addwall=0} : nombre qui vaut $0$ ou $1$ ou $2$. Lorsque cette option vaut $1$, la fonction renvoie, après la liste des facettes composant la surface, une liste de facettes séparatrices (murs) entre chaque "couche" de facettes (une couche correspond à deux valeurs consécutives du paramètre $t$), et avec la valeur $2$ c'est une liste de facettes séparatrices (murs) entre chaque "tranche" de rotation (une couche correspond à deux valeurs consécutives du paramètre angulaire, ceci est intéressant lorsque la courbe est dans un même plan que l'axe de rotation). Cette option peut être utile avec la méthode \cmd{g:Dscene3d()} (uniquement).
+        
+        \item \opt{obj=\false} : avec la valeur \false cette fonction renvoie une liste de facettes, avec les valeur \true elle renvoie une table à trois champs : \code{\{vertices=\{points 3D\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{vecteurs 3D\}\}}.           
+        \end{itemize} 
+        
+\begin{demo}{Exemple avec rotline}
+\begin{luadraw}{name=rotline}
+local ld = luadraw
+local pt3d = ld.pt3d
+local M = pt3d.M
+local g = ld.graph3d:new{window={-4,4,-4,4},size={10,10}}
+local L = {M(0,0,4),M(0,4,0),M(0,0,-4)} -- liste de points dans le plan yOz
+local axe = {pt3d.Origin, pt3d.vecK}
+local S = ld.rotline(L,axe,0,360,{nbdots=5}) -- le point 1 et le point 5 sont confondus
+g:Dfacet(S,{color="Crimson",edgecolor="Gold",opacity=0.8})
+g:Show()
+\end{luadraw}
+\end{demo}      
+
+
+\subsection{Arêtes d'un solide}
+
+Un objet de type "edge" est une table à deux champs, un champ nommé \emph{visible} qui contient une ligne polygonale 3D correspondant aux arêtes visibles, et un autre champ nommé \emph{hidden} qui contient une ligne polygonale 3D correspondant aux arêtes cachées.
+
+\begin{itemize}
+    \item La méthode \cmd{g:Edges(P)} où \argu{P} est un polyèdre, renvoie les arêtes de $P$ sous forme d'un objet de type "edge". Une arête de argu est visible lorsqu'elle appartient à au moins une face visible.
+    
+    \item La méthode \cmd{g:Intersection3d(P, plane)} où argu est un polyèdre ou bien une liste de facettes, renvoie sous forme d'objet de type "edge" l'intersection entre argu et le plan représenté par \argu{plane} (c'est une table de la forme \{A,u\} où $A$ est un point du plan et $u$ un vecteur normal, ce sont donc deux points 3D).
+    
+    \item La méthode \cmd{g:Dedges(edges, options)} permet de dessiner \argu{edges} qui doit être un objet de type "edge". L'argument \argu{options} est une table dont les champs définissent les options, qui sont (avec leur valeur  par défaut) :
+    \begin{itemize}
+        \item \opt{hidden=false} : booléen qui indique si les arêtes cachées doivent être dessinées).
+        \item \opt{visible=true} : booléen qui indique si les arêtes visibles doivent être dessinées.
+        \item \opt{clip=false} : booléen qui indique si les arêtes doivent être clippées par la fenêtre 3D.
+        \item \opt{hiddenstyle=ld.Hiddenlinestyle} : chaîne de caractères définissant le style de ligne des arêtes cachées, par défaut cette option contient la valeur de la variable globale \varglob{ld.Hiddenlinestyle} (qui vaut \val{"dotted"} par défaut).
+        \item \opt{hiddencolor=color} : chaîne de caractères définissant la couleur des arêtes cachées, par défaut cette option contient la même couleur que l'option \opt{color}.
+        \item \opt{style=<style courant>} : chaîne de caractères définissant le style de ligne des arêtes visibles.
+        \item \opt{color=<couleur courante>} : chaîne de caractères définissant la couleur des arêtes visibles.
+        \item \opt{width=<épaisseur courante>} : nombre représentant l'épaisseur de trait des arêtes (en dixième de point).
+    \end{itemize}
+
+    \item \textbf{Complément} : 
+        \begin{itemize}
+            \item La fonction \cmd{ld.facetedges(F)} où \argu{F} est une liste de facettes ou bien un polyèdre, renvoie une liste de segments 3D représentant toutes les arêtes de \argu{F}. Le résultat n'est pas un objet de type "edge", et il se dessine avec la méthode \cmd{g:Dpolyline3d()}. Bien sûr, chaque arête n'apparaît qu'une seule fois dans la liste.
+            \item La fonction \cmd{ld.facetvertices(F)} où \argu{F} est une liste de facettes ou bien un polyèdre, renvoie la liste de tous les sommets de \argu{F} (points 3D).
+        \end{itemize}
+\end{itemize}
+
+\subsection{Méthodes et fonctions s'appliquant à des facettes ou polyèdres}
+
+\begin{itemize}
+    \item La méthode \cmd{g:Isvisible(F)} où \argu{F} désigne \textbf{une} facette (liste d'au moins 3 points 3D coplanaires et non alignés), renvoie \true si la facette \argu{F} est visible (vecteur normal dirigé vers l'observateur). Si $A$, $B$ et $C$ sont les trois premiers points de \argu{F}, le vecteur normal est calculé en faisant le produit vectoriel $\vec{AB}\wedge\vec{AC}$.
+    
+    \item La méthode \cmd{g:Classifyfacet(F)} où \argu{F} est une liste de facettes ou bien un polyèdre, renvoie \textbf{deux} listes de facettes, la première est la liste des facettes visibles, et la suivante, la liste des facettes non visibles.
+    
+    \item La méthode \cmd{g:Sortfacet(F \fac{, backcull})} où \argu{F} est une liste de facettes, renvoie cette liste de facettes triées de la plus éloignée à la plus proche de l'observateur. L'argument facultatif \argu{backcull} est un booléen qui vaut \false par défaut, lorsqu'il a la valeur \true, les facettes non visibles sont exclues du résultat (seules les facettes visibles sont alors renvoyées après avoir été triées). Le calcul de l'éloignement d'un facette se fait sur son centre de gravité. La technique dite du "peintre" consiste à afficher les facettes de la plus éloignée à la plus proche, donc dans l'ordre de la liste renvoyée par cette fonction (le résultat affiché n'est cependant pas toujours correct en fonction de la taille et de la forme des facettes).
+    
+    \item La méthode \cmd{g:Sortpolyfacet(P \fac{, backcull})} où \argu{P} est un polyèdre, renvoie la liste des facettes de \argu{P} (facettes avec points 3D) triées de la plus éloignée à la plus proche de l'observateur. L'argument facultatif \argu{backcull} est un booléen qui vaut \false par défaut, lorsqu'il a la valeur \true, les facettes non visibles sont exclues du résultat comme pour la méthode précédente. Ces deux méthodes de tris sont utilisées par les méthodes de dessin de polyèdres ou facettes (\cmd{g:Dpoly()}, \cmd{g:Dfacet()} et \cmd{g:Dmixfacet()}).
+    
+    \item La méthode \cmd{g:Outline(P)} où \argu{P} est un polyèdre, renvoie le "contour" de \argu{P} sous la forme d'une table à deux champs, un champ nommé \emph{visible} qui contient une ligne polygonale 3D représentant les "arêtes" (segments) appartenant à une seule facette, celle-ci étant visible, ou bien à deux facettes, une visible et une cachée; l'autre champ est nommé \emph{hidden} et contient une ligne polygonale 3D représentant les "arêtes" appartenant à une seule facette, celle-ci étant cachée.
+    
+    \item La fonction \cmd{ld.border(P)} où \argu{P} est un polyèdre ou une liste de facette, renvoie une ligne polygonale 3D qui correspond aux arêtes appartenant à une seule facette de \argu{P} (ces arêtes sont mises "bout à bout" pour former une ligne polygonale).
+    
+    \item La fonction \cmd{ld.getfacet(P \fac{, list})} où \argu{P} est un polyèdre, renvoie la liste des facettes de \argu{P} (avec points 3D) dont le numéro figure dans la table \argu{list}. Si l'argument \argu{list} n'est pas précisé, c'est la liste de toutes les facettes de \argu{P} qui est renvoyée (dans ce cas c'est la même chose que \cmd{ld.poly2facet(P)}).
+    
+    \item La fonction \cmd{ld.facet2plane(L)} où \argu{L} est soit une facette, soit une liste de facettes, renvoie soit le plan contenant la facette, soit la liste des plans contenant chacune des facettes de \argu{L}. Un plan est une table du type \{A,u\} où $A$ est un point du plan et $u$ un vecteur normal au plan (donc deux points 3D).
+    
+    \item La fonction \cmd{ld.reverse\_face\_orientation(F)} où \argu{F} et soit une facette, soit une liste de facette, soit un polyèdre, renvoie un résultat de même nature que \argu{F} mais dans lequel l'ordre sur les sommets de chaque facette a été inversé. Cela peut être utile lorsque l'orientation de l'espace à été modifiée.
+    
+\begin{demo}{Sphère inscrite dans un octaèdre avec projection du centre sur les faces}
+\begin{luadraw}{name=sphere_octaedre}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local poly = require "luadraw_polyhedrons"
+local g = ld.graph3d:new{ window3d={-3,3,-3,3,-3,3}, size={10,10}}
+local P = poly.octahedron(Origin,M(0,0,3)) -- polyèdre défini dans le module luadraw_polyhedrons
+P = ld.rotate3d(P,-10,{Origin,vecK}) -- rotate3d sur un polyèdre renvoie un polyèdre
+local V, H = g:Classifyfacet(P) -- V pour facettes visibles, H pour hidden
+local S = ld.map(function(p) return {ld.proj3d(Origin,p),p[2]} end, ld.facet2plane(V) )
+-- S contient la liste de : {projeté, vecteur normal} (projetés de Origin sur les faces visibles)
+local R = pt3d.abs(S[1][1]) -- rayon de la sphère
+g:Dboxaxes3d({grid=true, gridcolor="gray", fillcolor="LightGray"})
+g:Dfacet(H, {color="blue",opacity=0.9}) -- dessin des facettes non visibles
+g:Dsphere(Origin,R,{mode=ld.mBorder,color="orange"}) -- dessin de la sphère
+g:Dballdots3d(Origin,"gray",0.75) -- centre de la sphère
+for _,D in ipairs(S) do -- segments reliant l'origine aux projetés
+    g:Dpolyline3d( {Origin,D[1]},"dashed,gray")
+end
+g:Dfacet(V,{opacity=0.4, color="LightBlue"}) -- facettes visibles de l'octaèdre
+g:Dcrossdots3d(S,nil,0.75) -- dessin des projetés sur les faces
+g:Dpolyline3d( {M(0,-3,3), M(0,0,3), M(-3,0,3)},"gray")
+g:Show()
+\end{luadraw}
+\end{demo}
+\end{itemize}
+
+\subsection{Découper un solide : cutpoly et cutfacet}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.cutpoly(P, plane \fac{, close})} permet de couper le polyèdre \argu{P} avec le plan \argu{plane} (table du type \{A,n\} où $A$ est un point du plan et $n$ un vecteur normal au plan). La fonction renvoie 3 choses : la partie située dans le demi-espace contenant le vecteur $n$ (sous forme d'un polyèdre), suivie de la partie située dans l'autre demi-espace (toujours sous forme d'un polyèdre), suivie de la section sous forme d'une facette orientée par $-n$. Lorsque l'argument facultatif \argu{close} vaut \true, la section est ajoutée aux deux polyèdres résultants, ce qui a pour effet de les refermer (\false par défaut).\par
+    \textbf{Remarque} : lorsque le polyèdre \argu{P} n'est pas convexe, le résultat de la section n'est pas toujours correct.
+
+\begin{demo}{Cube coupé par un plan (cutpoly), avec \emph{close}=false et avec \emph{close}=true}
+\begin{luadraw}{name=cutpoly}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window3d={-3,3,-3,3,-3,3}, window={-4,4,-3,3},size={10,10}}
+local P = ld.parallelep(M(-1,-1,-1),2*vecI,2*vecJ,2*vecK)
+local A, B, C = M(0,-1,1), M(0,1,1), M(1,-1,0)
+local plane = {A, pt3d.prod(B-A,C-A)}
+local P1 = ld.cutpoly(P,plane)
+local P2 = ld.cutpoly(P,plane,true)
+g:Lineoptions(nil,"Gold",8)
+g:Dpoly( ld.shift3d(P1,-2*vecJ), {color="Crimson",mode=ld.mShadedHidden} )
+g:Dpoly( ld.shift3d(P2,2*vecJ), {color="Crimson",mode=ld.mShadedHidden} )
+g:Dlabel3d(
+    "close=false", M(2,-2,-1), {dir={vecJ,vecK}},
+    "close=true", M(2,2,-1), {} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+     \item La fonction \cmd{ld.cutfacet(F, plane \fac{, close})}, où \argu{F} est une facette, une liste de facettes, ou un polyèdre, fait la même chose que la fonction précédente sauf que cette fonction renvoie des listes de facettes et non pas des polyèdres. Cette fonction a été utilisée dans l'exemple des courbes de niveau à la figure \ref{courbeniv}.
+\end{itemize}
+
+\subsection{Clipper des facettes avec un polyèdre convexe : clip3d}
+
+La fonction \cmd{ld.clip3d(S, P \fac{, exterior})} clippe le solide \argu{S} (liste de facettes ou bien polyèdre) avec le solide convexe \argu{P} (liste de facettes ou bien polyèdre) et renvoie la liste de facettes qui en résulte. L'argument facultatif \argu{exterior} est un booléen qui vaut \false par défaut, dans ce cas c'est la partie de \argu{S} qui est intérieure à \argu{P} qui est renvoyée, sinon c'est la partie de \argu{S} extérieure à \argu{P} qui est renvoyée.
+
+\textbf{Remarque} : le résultat n'est pas toujours satisfaisant pour la partie extérieure.
+
+\paragraph{Cas particulier} : clipper une liste de facettes $S$ (ou bien un polyèdre) avec la fenêtre 3D courante peut se faire avec cette fonction de la manière suivante :
+
+\begin{center}
+\textbf{S = ld.clip3d(S, g:Box3d())}
+\end{center}
+
+En effet, la méthode \cmd{g:Box3d()} renvoie la fenêtre 3D courante sous forme d'un parallélépipède.
+
+\begin{demo}[clip3d]{Exemple avec clip3d : construction d'un dé à partir d'un cube et d'une sphère}
+\begin{luadraw}{name=clip3d}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-3,3,-3,3},size={10,10}, viewdir="central"}
+local S = ld.sphere(Origin,3)
+local C = ld.parallelep(M(-2,-2,-2),4*vecI,4*vecJ,4*vecK)
+local C1 = ld.clip3d(S,C) -- sphère clippée par le cube
+local C2 = ld.clip3d(C,S) -- cube clippé par la sphère
+local V = g:Classifyfacet(C2) -- facettes visibles de C2
+g:Dfacet( ld.concat(C1,C2), {color="Beige",mode=ld.mShadedOnly,backcull=true} ) -- que les faces visibles
+g:Dpolyline3d(V,true,"line width=0.8pt") -- contour des faces visibles de C2
+local A, B, C, D = M(2,-2,-2), M(2,2,2), M(-2,2,-2), M(0,0,2) -- dessin des points noirs
+g:Filloptions("full","black")
+g:Dcircle3d( D,0.25,vecK); g:Dcircle3d( (2*A+B)/3,0.25,vecI)
+g:Dcircle3d( (A+2*B)/3,0.25,vecI); g:Dcircle3d( (3*B+C)/4,0.25,vecJ)
+g:Dcircle3d( (B+C)/2,0.25,vecJ); g:Dcircle3d( (B+3*C)/4,0.25,vecJ)
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{Clipper un plan avec un polyèdre convexe : clipplane}
+
+La fonction \cmd{ld.clipplane(plane, P)}, où l'argument \argu{plane} est une table de la forme \emph{\{A,n\}} représentant le plan passant par $A$ (point 3D) et de vecteur normal $n$ (point 3D non nul), et \argu{P} est un polyèdre convexe, renvoie la section du polyèdre par le plan, si elle existe, sous forme d'une facette (liste de points 3D) orientée par $n$.

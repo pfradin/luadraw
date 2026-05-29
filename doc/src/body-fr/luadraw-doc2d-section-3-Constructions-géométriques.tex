@@ -1,0 +1,144 @@
+\section{Constructions géométriques}
+
+Dans cette section sont regroupées les fonctions construisant des figures géométriques sans méthode graphique dédiée correspondante.
+
+\subsection{circumcircle(), incircle()}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.circumcircle(a, b, c)} (ou \cmd{ld.circumcircle(\{a, b, c\})}), où \argu{a}, \argu{b} et \argu{c} sont trois points (trois nombres complexes), renvoie le cercle circonscrit au triangle formé par ces trois points, sous la forme d'une séquence: $C,r$, où $C$ est le centre du cercle (nombre complexe), $r$ son rayon.
+    \item La fonction \cmd{ld.incircle3d(a, b, c)} (ou \cmd{ld.incircle3d(\{a, b, c\})}), où \argu{a}, \argu{b}, et \argu{c} sont trois points (trois nombres complexes), renvoie le cercle inscrit dans triangle formé par ces trois points, sous la forme d'une séquence: $C,r$, où $C$ est le centre du cercle (nombre complexe), $r$ son rayon.    
+\end{itemize}
+
+\subsection{cvx\_hull2d()}
+
+La fonction \cmd{ld.cvx\_hull2d(L)} où \argu{L} est une liste de complexes, calcule et renvoie une liste de complexes représentant l'enveloppe convexe de $L$.
+
+\subsection{delaunay()}
+
+La fonction \cmd{ld.delaunay(L)} où \argu{L} est une liste de nombres complexes \textbf{distincts}, renvoie une liste de triangles (un triangle étant une liste de trois nombres complexes) obtenus par triangulation de Delaunay des points de \argu{L} (le cercle circonscrit de chacun des triangles ne contient aucun des autres points).
+
+\begin{demo}{Triangulation de Delaunay}
+\begin{luadraw}{name=delaunay}
+local ld = luadraw
+local g = ld.graph:new{bbox=false, pictureoptions="scale=2"}
+local i = ld.cpx.I; g:Linewidth(6)
+local L = {0.285+1.46*i,1.556-0.142*i,2.344+1.313*i,-2.38+1.218*i,1.548-0.624*i,
+0.969+1.819*i, -0.086-2.191*i,-0.477+1.834*i,-0.904+1.322*i,-2.892+0.025*i}
+local T = ld.delaunay(L) -- liste de triangles
+local n = #T
+local num = 7 --on choisit un triangle
+local colors = ld.getpalette(ld.palGasFlame,n)
+for k = 1, n do
+    g:Dpolyline(T[k],true,'fill='..colors[k])
+    end
+g:Ddots(L)
+g:Dcircle( {ld.circumcircle(T[num])}, "line width=0.4pt,gray,dashed" )
+g:Ddots(T[num],"gray")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{voronoi()}
+
+La fonction \cmd{ld.voronoi(L \fac{, window})} où \argu{L} est une liste de nombres complexes \textbf{distincts}, détermine le diagramme de Voronoï des points de la liste \argu{L}. Cette fonction renvoie une liste d'éléments de la forme \code{\{A,polygone\}}  où \code{A} est un point la liste \argu{L}, et \code{polygone} une liste de nombres complexes représentant les sommets de la cellule associée à \code{A}. Il y a ainsi une cellule par point de \argu{L}. La cellule du point \code{A} contient les points du plan qui sont plus proches de \code{A} que des autres points de \argu{L}. Cette fonction utilise la triangulation de Delaunay. L'argument optionnel \argu{window}, qui vaut par défaut \code{\{-5,5,-5,5\}}, est utilisée pour clipper les cellules de Voronoï qui sont non bornées, cette fenêtre est automatiquement agrandie si nécessaire, pour contenir tous les points de \argu{L} ainsi que tous les centes des cercles circonscrits au triangles de Delaunay (attention: cela ne change pas la fenêtre 2D du graphique en cours).
+
+\begin{demo}{Diagramme de Voronoï}
+\begin{luadraw}{name=voronoi}
+local ld = luadraw
+local g = ld.graph:new{ bbox=true, margin={0,0,0,0}, size={10,10}}
+local i = ld.cpx.I
+local S = {0.285+1.46*i,1.556-0.142*i,2.344+1.313*i,-2.38+1.218*i,1.548-0.624*i,
+0.969+1.819*i,-0.086-2.191*i,-0.477+1.834*i,-0.904+1.322*i,-2.892+0.025*i}
+local V = ld.voronoi(S)
+local colors = ld.getpalette(ld.rainbow,#V)
+for k,T in ipairs(V) do
+    local A, polygon = table.unpack(T)
+    g:Dpolyline(polygon,true,"color=white, line width=1.2pt,fill="..colors[k])
+    g:Ddots(A,"mark=x,white,scale=2,line width=1.2pt")-- A est un des points de S
+end
+g:Dpolyline(ld.delaunay(S),true,"dotted,line width=0.6pt") -- triangles de Delaunay
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{line2strip()}
+
+La fonction \cmd{ld.line2strip(L, width \fac{, close, ends, mode})} où \argu{L} est une liste de nombres complexes, ou une liste de listes de nombres complexes, renvoie un chemin représentant une "bande" calculée sur \argu{L} et de largeur \argu{width}. L'argument optionnel \argu{close} est un booléen qui indique si \argu{L} doit être refermée (\false par défaut). 
+
+L'argument optionnel \argu{ends} indique la façon dont les deux extrémités de la bande sont dessinées, les valeurs possibles sont : \val{"none"}, \val{"butt"} (valeur par défaut) ou \val{"round"}. Pour rester compatible avec l'ancienne version, cet argument peut également prendre les valeurs \true (équivalent à \val{"butt"}) ou \false (équivalent à \val{"none"}).
+
+L'argument \argu{mode} peut valoir soit \val{"center"} (valeur par défaut), soit \val{"left"}, soit \val{"right"}, dans le premier cas la bande est centrée sur \argu{L}, dans le second cas elle est sur la gauche de \argu{L}, et dans le troisième cas elle est sur la droite de \argu{L}.
+
+\begin{demo}{Exemple avec \emph{line2strip}}
+\begin{luadraw}{name=line2strip}
+local ld = luadraw
+local g = ld.graph:new{bbox=false, bg="lightgray"}
+local i = ld.cpx.I; g:Linewidth(8)
+local p = {-3+3*i,-3,"l",0,3,3,1,"ca", 3+3*i,"l"}
+local P = ld.path(p) -- p est converti en ligne polygonale
+g:Setmatrix({-3+3*i,0.5,0.5*i})
+local L = ld.line2strip(P,1,true)
+g:Dpath(L,"Crimson,fill=Gold"); g:Dpath(p,"gray,dashed")
+g:Dlabel("close=true",i,{})
+g:Setmatrix({3+3*i,0.5,0.5*i})
+L = ld.line2strip(P,1,false)
+g:Dpath(L,"Crimson,fill=Gold"); g:Dpath(p,"gray,dashed")
+g:Dlabel("close=false",i,{})
+g:Setmatrix({-3-i,0.5,0.5*i})
+L = ld.line2strip(P,1,false,"round","right")
+g:Dpath(L,"Crimson,fill=Gold"); g:Dpath(p,"gray,dashed")
+g:Dlabel('mode="right"',1.5*i,{}); g:Dlabel('ends="round"',0.5*i,{})
+g:Setmatrix({3-i,0.5,0.5*i})
+L = ld.line2strip(P,1,true,false,"left")
+g:Dpath(L,"Crimson,fill=Gold"); g:Dpath(p,"gray,dashed")
+g:Dlabel('mode="left"',1.5*i,{}); g:Dlabel("close=true",0.5*i,{})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{parallel\_polyline()}
+
+La fonction \cmd{ld.parallel\_polyline(L, width \fac{, close})} où \argu{L} est une liste de nombres complexes, ou une liste de listes de nombres complexes, renvoie une ligne polygonale parallèle à \argu{L} et située à une "distance" égale à \argu{width}. L'argument \argu{width} peut être positif ou négatif pour être d'un coté ou de l'autre de \argu{L} (cela dépend du sens de parcours de \argu{L}). L'argument optionnel \argu{close} est un booléen qui indique si \argu{L} doit être refermée (\false par défaut).
+
+
+\subsection{sss\_triangle()}
+
+La fonction \cmd{ld.sss\_triangle(ab, bc, ca)} où \argu{ab}, \argu{bc} et \argu{ca} sont trois longueurs, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle direct dont les longueurs des côtés sont les arguments, c'est-à-dire $AB=ab$, $BC=bc$ et $CA=ca$, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \cmd{g:Dpolyline}.
+
+\subsection{sas\_triangle()}
+
+La fonction \cmd{ld.sas\_triangle(ab, alpha, ca)} où \argu{ab} et \argu{ca} sont deux longueurs, \argu{alpha} un angle en degrés, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle tel que $AB=ab$, $CA=ca$, et tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \argu{alpha}, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \cmd{g:Dpolyline}.
+
+\subsection{asa\_triangle()}
+
+La fonction \cmd{ld.asa\_triangle(alpha, ab, beta)} où \argu{ab} est une longueur, \argu{alpha} et \argu{beta} deux angles en degrés, calcule et renvoie une liste de trois points (3 complexes) $\{A,B,C\}$ formant les sommets d'un triangle tel que $AB=ab$, tel que l'angle $(\vec{AB},\vec{AC})$ a pour mesure \argu{alpha}, et tel que l'angle $(\vec{BA},\vec{BC})$ a pour mesure \argu{beta}, lorsque cela est possible. Le sommet $A$ est toujours le complexe $0$ et le sommet $B$ est toujours le complexe $ab$. Ce triangle peut être dessiné avec la méthode \cmd{g:Dpolyline}.
+
+
+\begin{demo}{sss\_triangle, sas\_triangle et asa\_triangle}
+\begin{luadraw}{name=sss_triangles_and_co}
+local ld = luadraw
+local g = ld.graph:new{window={-5,5,-3,5},size={10,10}}
+g:Labelsize("footnotesize"); g:Linewidth(8)
+local Zp, i, deg = ld.cpx.Zp, ld.cpx.I, ld.deg
+local T1 = ld.shift( ld.sss_triangle(4,5,3), 2*i-2)
+local T2 = ld.shift( ld.sas_triangle(4,60,2), -4-2*i)
+local T3 = ld.shift( ld.asa_triangle(30,4,50), 0.5-i)
+g:Dpolyline({T1,T2,T3}, true)
+g:Linewidth(4)
+g:Darc(T2[2],T2[1],T2[3],0.5,1,"->")
+g:Darc(T3[2],T3[1],T3[3],0.75,1,"->")
+g:Darc(T3[1],T3[2],T3[3],0.75,-1,"->")
+g:Dlabel(
+  "$4$",(T1[1]+T1[2])/2,{pos="N"}, "$5$",(T1[2]+T1[3])/2,{pos="NE"},"$3$",(T1[1]+T1[3])/2,{pos="W"},
+  "$4$",(T2[1]+T2[2])/2,{pos="N"},"$60^\\circ$", T2[1]+Zp(0.9,30*deg),{pos="center"}, 
+  "$2$",(T2[1]+T2[3])/2,{pos="W"},
+  "$4$",(T3[1]+T3[2])/2,{pos="N"}, "$30^\\circ$",T3[1]+Zp(1.15,15*deg),{pos="center"},
+  "$50^\\circ$",T3[2]+Zp(1.15,155*deg),{pos="center"},
+  "sss\\_triangle(4,5,3)",(T1[1]+T1[2])/2,{pos="S"}, "sas\\_triangle(4,60,2)",(T2[1]+T2[2])/2,{},
+  "asa\\_triangle(30,4,50)",(T3[1]+T3[2])/2,{})
+for _,T in ipairs({T1,T2,T3}) do
+    g:Dlabel("$A$",T[1],{pos="SW"}, "$B$",T[2],{pos="SE"},"$C$",T[3],{pos="N"})
+end
+g:Show()
+\end{luadraw}
+\end{demo}

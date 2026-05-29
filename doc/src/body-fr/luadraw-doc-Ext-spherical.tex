@@ -1,0 +1,375 @@
+\subsection{Le module \emph{luadraw\_spherical}}
+
+
+
+Ce module permet de dessiner un certain nombre d'objets sur une sphère (comme par exemple des cercles, des triangles sphériques, \ldots) sans avoir à gérer à la main les parties visibles ou non visibles. Le dessin se fait en trois temps:
+\begin{enumerate}
+    \item On définit les caractéristiques de la sphère (centre, rayon, couleur,...)
+    \item On définit les objets à ajouter dans la scène, grâce à des méthodes dédiées.
+    \item On affiche le tout avec la méthode \cmd{g:Dspherical()}.
+\end{enumerate}
+Bien sûr, toutes les méthodes de dessin 2D et 3D restent utilisables.
+
+\textbf{Utilisation} : ce module ajoute de nouvelles méthodes graphiques à la classe \emph{ld.graph3d}, il ne renvoie rien, les fonctions introduites par ce module vont dans l'espace de noms \emph{luadraw}.
+
+\subsubsection{Fonctions globales du module}
+
+\begin{itemize}
+        \item \cmd{ld.sM(x, y, z)}: renvoie un point de la sphère, c'est le point $I$ de la sphère tel que la demi-droite $[O,I)$ ($O$ étant le centre de la sphère) passe par le point $A$ de coordonnées cartésiennes $(x,y,z)$. C'est le projeté du point $M(x,y,z)$ sur la sphère partant du centre.
+        
+        \item \cmd{ld.sM(theta, phi)}: où \argu{theta} et \argu{phi} sont des angles en degrés, renvoie un point de la sphère donc les coordonnées sphériques sont \emph{(R,theta,phi)} où $R$ est le rayon de la sphère.
+        
+        \item \cmd{ld.toSphere(A)}: renvoie le projeté du point \argu A sur la sphère partant du centre.
+\end{itemize}
+
+\subsubsection{Définition de la sphère}
+
+La sphère est définie avec la méthode \cmd{g:Define\_sphere( options )}, où \argu{options} est une table permettant d'ajuster chaque paramètre. Ceux-ci sont les suivants (avec leur valeur par défaut):
+
+\begin{itemize}
+    \item \opt{center=\val{pt3d.Origin}},
+    \item \opt{radius=\val{3}},
+    \item \opt{color=\val{"orange"}},
+    \item \opt{opacity=\val{1}},
+    \item \opt{mode=\val{ld.mBorder}}, mode d'affichage de la sphère (valeurs possibles; \val{ld.mWireframe} ou \val{ld.mGrid} ou \val{ld.mBorder}),
+    \item \opt{edgecolor=\val{"lightgray"}},
+    \item \opt{edgestyle="\val{solid"}},
+    \item \opt{hiddenstyle=\val{ld.Hiddenlinestyle}},
+    \item \opt{hiddencolor=\val{"gray"}},
+    \item \opt{edgewidth=\val{4}},
+    \item \opt{show=\true}, pour montrer ou non la sphère,
+    \item \opt{insidelabelcolor=\val{"darkgray"}} : définit la couleur des labels dont le point d'ancrage est intérieur à la sphère.
+    \item \opt{arrowBstyle=\val{"->"}} : type de flèche en fin de ligne
+    \item \opt{arrowAstyle=\val{"<-"}} : type de flèche en début de ligne
+    \item \opt{arrowABstyle=\val{"<->"}} : très peu utilisée car la plupart du temps les lignes tracées sur la sphère doivent être découpées.
+    \item \opt{hiddendelayed=\false}: avec la valeur \false les lignes cachées sont dessinées à la fin de l'instruction \cmd{g:Dspherical()}, avec la valeur \true elles sont dessinées à la toute fin du graphique en cours ce qui peut être utile si vous avez ajouté après la sphère des éléments qui cachent une partie de celle-ci (cependant on peut modifier ce comportement localement avec l'option \opt{hidden=\true/\false}).
+\end{itemize}
+
+La méthode \cmd{g:Clear\_spherical()} permet de supprimer les objets qui ont été ajoutés à la scène, et remet les valeurs par défaut.
+
+
+\subsubsection{Ajouter un cercle : g:DScircle}
+\def\writeoptions{L'argument \argu{options} est une table dont les champs qui définissent les options, qui sont (avec leur valeur par défaut)}%
+
+La méthode \cmd{g:DScircle(P, options)} permet d'ajouter un cercle sur la sphère, l'argument \argu{P} est une table de la forme $\{A,n\}$ qui représente un plan (passant par $A$ et normal à $n$, deux points 3D). Le cercle est alors défini comme l'intersection de ce plan avec la sphère. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{out=nil}, si on affecte une variable de type liste à ce paramètre \argu{out}, alors la fonction ajoute à cette liste les deux points correspondant aux extrémités de l'arc caché, s'il y en a un, ce qui permet de les récupérer sans avoir à les calculer.
+    \end{itemize}
+    
+\subsubsection{Ajouter un grand cercle : g:DSbigcircle}
+
+La méthode \cmd{g:DSbigcircle(AB, options)} permet d'ajouter un grand cercle sur la sphère, l'argument \argu{AB} est une table de la forme $\{A,B\}$ où $A$ et $B$ sont deux points distincts de la sphère. Le grand cercle est alors le cercle de centre le centre de la sphère, et passant par $A$ et $B$. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{out=nil}, si on affecte une variable de type liste à ce paramètre \argu{out}, alors la fonction ajoute à cette liste les deux points correspondant aux extrémités de l'arc caché, s'il y en a un, ce qui permet de les récupérer sans avoir à les calculer.
+    \end{itemize}
+    
+\subsubsection{Ajouter un arc de grand cercle : g:DSarc}
+
+La méthode \cmd{g:DSarc(AB, sens, options)} permet d'ajouter un arc de grand cercle sur la sphère, l'argument \argu{AB} est une table de la forme $\{A,B\}$ où $A$ et $B$ sont deux points distincts de la sphère, on trace alors l'arc de grand cercle allant de $A$ vers $B$. L'argument \argu{sens} vaut $1$ ou $-1$ pour indiquer le sens de l'arc. Lorsque $A$ et $B$ ne sont pas diamétralement opposés, le plan $OAB$ (où $O$ est le centre de la sphère) est orienté avec $\vec{OA}\wedge\vec{OB}$. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{arrows=0}, trois valeurs possibles : $0$ (pas de flèche), $1$ (une flèche en $B$), $2$ (flèche en $A$ et en $B$).
+        \item \opt{normal=nil}, permet de préciser un vecteur normal au plan $OAB$ lorsque ces trois points sont alignés.
+    \end{itemize}
+
+\subsubsection{Ajouter un angle : g:DSangle}
+
+La méthode \cmd{g:DSangle(B, A, C, r, sens, options)} où \argu{A}, \argu{B} et \argu{C} sont trois points de la sphère, permet de dessiner un arc de grand cercle sur la sphère pour représenter l'angle $(\vec{AB},\vec{AC})$ avec un rayon de \argu{r}. L'argument \argu{sens} vaut $1$ ou $-1$ pour indiquer le sens de l'arc, le plan $ABC$ est orienté avec $\vec{AB}\wedge\vec{AC}$. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{arrows=0}, trois valeurs possibles : $0$ (pas de flèche), $1$ (une flèche en $B$), $2$ (flèche en $A$ et en $B$).
+        \item \opt{normal=nil}, permet de préciser un vecteur normal au plan $OAB$ lorsque ces trois points sont alignés.
+    \end{itemize}
+    
+\subsubsection{Ajouter une facette sphérique : g:DSfacet}
+
+La méthode \cmd{g:DSfacet(F, options)} où \argu{F} est une liste de points de la sphère, permet de dessiner la facette représentée par \argu{F}, les arêtes étant des arcs de grands cercles. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{fill=""}, chaîne représentant la couleur de remplissage (aucune par défaut),
+        \item \opt{fillopacity=0.3}, opacité de la couleur de remplissage.
+    \end{itemize}
+    
+\subsubsection{Ajouter une courbe sphérique : g:DScurve}
+
+La méthode \cmd{g:DScurve(L, options)} où \argu{L} est une liste de points de la sphère, permet de dessiner la courbe représentée par \argu{L}. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{out=nil}, si on affecte une variable de type table à cette option \opt{out}, alors la fonction ajoute à cette liste les points correspondant aux extrémités des parties cachées.
+    \end{itemize}
+    
+Nous allons maintenant traiter d'objets qui ne sont pas forcément sur la sphère, mais qui peuvent la traverser, ou être à l'intérieur, ou à l'extérieur.
+
+\subsubsection{ Ajouter un segment : g:DSseg}
+
+La méthode \cmd{g:DSseg(AB, options)} permet d'ajouter un segment, l'argument \argu{AB} est une table de la forme $\{A,B\}$ où $A$ et $B$ sont deux points de l'espace. La fonction traite les interactions avec la sphère. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{arrows=0}, trois valeurs possibles : $0$ (pas de flèche), $1$ (une flèche en $B$), $2$ (flèche en $A$ et en $B$).
+    \end{itemize}
+    
+\subsubsection{Ajouter une droite : g:DSline}
+
+La méthode \cmd{g:DSline(d, options)} permet d'ajouter une droite, l'argument \argu{d} est une table de la forme $\{A,u\}$ où $A$ et un point de la droite et $u$ un vecteur directeur (deux points 3D). La fonction traite les interactions avec la sphère. Le segment tracé est obtenu en intersectant la droite avec la fenêtre 3D, il peut être vide si la fenêtre est trop étroite. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{arrows=0}, trois valeurs possibles : $0$ (pas de flèche), $1$ (une flèche en $B$), $2$ (flèche en $A$ et en $B$).
+        \item \opt{scale=1}, permet de modifier la taille du segment tracé.
+    \end{itemize}
+    
+\subsubsection{ Ajouter une ligne polygonale : g:DSpolyline}
+
+La méthode \cmd{g:DSpolyline(L, options)} permet d'ajouter une ligne polygonale, l'argument \argu{L} est une liste de points de l'espace, ou une liste de listes de points de l'espace. La fonction traite les interactions avec la sphère. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{arrows=0}, trois valeurs possibles : $0$ (pas de flèche), $1$ (une flèche en $B$), $2$ (flèche en $A$ et en $B$).
+        \item \opt{close=false}, indique si la ligne doit être refermée.
+    \end{itemize}    
+
+\subsubsection{Ajouter un plan : g:DSplane}
+
+La méthode \cmd{g:DSplane(P, options)} permet d'ajouter le contour d'un plan, l'argument \argu{P} est une table de la forme $\{A,n\}$ où $A$ est un point du plan et $n$ un vecteur normal. La fonction dessine un parallélogramme représentant le plan \argu{P} en traitant les interactions avec la sphère. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{scale=1}, permet de changer la taille du parallélogramme,
+        \item \opt{angle=0}, angle en degrés, permet de faire pivoter le parallélogramme autour de la droite perpendiculaire passant par le centre de la sphère.
+        \item \opt{trace=true}, permet de dessiner ou non, l'intersection du plan avec la sphère lorsqu'elle n'est pas vide.
+    \end{itemize}    
+
+\subsubsection{Ajouter un label : g:DSlabel}
+
+La méthode \cmd{g:DSlabel(text1, anchor1, options1, text2, anchor2, options2, \ldots)} permet d'ajouter un ou plusieurs labels sur le même principe que la méthode \cmd{g:Dlabel3d()}, sauf qu'ici la fonction traite les cas où le point d'ancrage est à l'intérieur de la sphère, derrière la sphère ou devant la sphère. Dans le cas où il est à l'intérieur la couleur du label est donnée par l'option de la sphère \opt{insidelabelcolor} qui vaut \val{"darkgray"} par défaut.
+
+\subsubsection{Ajouter des points : g:DSdots et g:DSstars}
+
+La méthode \cmd{g:DSdots(dots, options)} permet d'ajouter des points dans la scène, l'argument \argu{dots} est une liste de points 3D. La fonction dessine les points en gérant les interactions avec la sphère. \writeoptions :
+    \begin{itemize}
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{mark\_options=""}, chaîne qui sera passée directement à l'instruction \drawcmd.
+    \end{itemize}
+Dans le cas où un point est à l'intérieur de la sphère, ou sur la face cachée, la couleur du point est donnée par l'option de la sphère \opt{insidelabelcolor} qui vaut \val{"darkgray"} par défaut.
+
+La méthode \cmd{g:DSstars(dots, options)} permet d'ajouter des points \textbf{sur} la sphère, l'argument \argu{dots} est une liste de points 3D qui seront projetés sur la sphère. La fonction dessine ces points en forme d'astérisque. \writeoptions :
+    \begin{itemize}
+        \item \opt{style=<style courant de ligne>}, 
+        \item \opt{color=<couleur courante des lignes>},
+        \item \opt{width=<épaisseur courante des lignes en dixième de point>},
+        \item \opt{opacity=<opacité courante des lignes>},
+        \item \opt{hidden=ld.Hiddenlines},
+        \item \opt{scale=1}, permet de changer la taille du point,
+        \item \opt{circled=false}, permet d'ajouter une cercle autour de l'étoile,
+        \item \opt{fill=""}, chaîne représentant une couleur, lorsqu'elle n'est pas vide, l'astérisque est remplacée par une facette hexagonale cerclée et remplie avec la couleur donnée par cette option.
+    \end{itemize}   
+Les points qui sont sur la face cachée de la sphère ont la couleur donnée par l'option de la sphère \opt{insidelabelcolor} qui vaut \val{"darkgray"} par défaut.
+
+\subsubsection{Stéréographie inverse : g:DSinvstereo\_curve et g:DSinvstereo\_polyline}
+
+La méthode \cmd{g:DSinvstereo\_curve(L, options)}, où \argu{L} est une ligne polygonale 3D représentant une courbe tracée sur un plan d'équation $z=$cte, dessine sur la sphère l'image de \argu{L} par stéréographie inverse, le pôle étant le point \emph{C+r*vecK}, où $C$ est le centre de la sphère et $r$ le rayon.
+
+La méthode \cmd{g:DSinvstereo\_polyline(L, options)}, où \argu{L} est une ligne polygonale 3D tracée sur un plan d'équation $z=$cte, dessine sur la sphère l'image de $L$ par stéréographie inverse, le pôle étant le point \emph{C+r*vecK}, où $C$ est le centre de la sphère et $r$ le rayon.
+
+Dans les deux cas, les \argu{options} sont les mêmes que pour la méthode \cmd{g:DScurve()}.
+
+\subsubsection{Exemples}
+
+\begin{demo}{Cube dans une sphère}
+\begin{luadraw}{name=cube_in_sphere}
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-9,9,-4,5},viewdir={25,70},size={16,8}}
+require 'luadraw_spherical'
+g:Linewidth(6); ld.Hiddenlinestyle = "dashed"
+local a = 4
+local O = Origin
+local cube = ld.parallelep(O,a*vecI,a*vecJ,a*vecK)
+local G = pt3d.isobar3d(cube.vertices)
+cube = ld.shift3d(cube,-G) -- pour centrer le cube à l'origine
+local R = pt3d.abs(cube.vertices[1])
+
+local dessin = function()
+    g:DSpolyline({{O,5*vecI},{O,5*vecJ},{O,5*vecK}},{arrows=1, width=8}) -- axes
+    g:DSplane({a/2*vecK,vecK},{color="blue",scale=0.9,angle=20}); 
+    g:DScircle({-a/2*vecK,vecK},{color="blue"})
+    g:DSpolyline( ld.facetedges(cube) ); g:DSlabel("$O$",O,{pos="W"})
+    g:Dspherical()
+end
+
+g:Saveattr(); g:Viewport(-9,0,-4,5); g:Coordsystem(-5,5,-5,5)
+ld.Hiddenlines = true; g:Define_sphere({radius=R, arrowBstyle = "-stealth"})
+dessin()
+g:Dlabel3d("$x$",5*vecI,{pos="SW"},"$y$",5*vecJ,{pos="E"},"$z$",5*vecK,{pos="N"})
+g:Dlabel("Hiddenlines=true",0.5-4.5*cpx.I,{})
+g:Restoreattr()
+
+g:Saveattr(); g:Viewport(0,9,-4,5); g:Coordsystem(-5,5,-5,5)
+ld.Hiddenlines = false; g:Define_sphere({radius=R,opacity=0.7, arrowBstyle = "-stealth"} )
+dessin()
+g:Dlabel3d("$x$",5*vecI,{pos="SW"},"$y$",5*vecJ,{pos="E"},"$z$",5*vecK,{pos="N"})
+g:Dlabel("Hiddenlines=false, opacity=0.7",0.5-4.5*cpx.I,{})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Courbe sphérique}
+
+\begin{demo}{Fenêtre de Viviani}
+\begin{luadraw}{name=courbe_spherique}
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Origin, vecI, vecJ, vecK, M, Ms = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M, pt3d.Ms
+
+local g = ld.graph3d:new{window={-4.5,4.5,-4.5,4.5},viewdir={30,60},margin={0,0,0,0},size={10,10}}
+require 'luadraw_spherical'
+g:Linewidth(6); ld.Hiddenlinestyle = "dotted"
+ld.Hiddenlines = false; 
+local C = ld.cylinder(M(1.5,0,-3.5),1.5,M(1.5,0,3.5),35,true)
+local L = ld.parametric3d( function(t) return Ms(3,t-math.pi/2,t) end, -math.pi,math.pi) -- la courbe
+g:Define_sphere({arrowBstyle = "-stealth"})
+g:DSpolyline(ld.facetedges(C),{color="gray"}) -- affichage cylindre
+g:DSpolyline({{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}},{arrows=1}) --axes
+ld.Hiddenlines=true; g:DScurve(L,{width=12,color="blue"}) -- courbe avec partie cachée
+g:Dspherical()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Pour ne pas nuire à la lisibilité du dessin, les parties cachées n'ont pas été affichées sauf celle de la courbe.
+
+\paragraph{Un pavage sphérique}
+
+\begin{demo}{Un pavage sphérique}
+\begin{luadraw}{name=pavage_spherique}
+local ld = luadraw
+local Origin = ld.pt3d.Origin
+
+local g = ld.graph3d:new{window={-3,3,-3,3},viewdir={30,60},size={10,10}}
+require 'luadraw_spherical'
+local poly = require "luadraw_polyhedrons"
+g:Linewidth(6); ld.Hiddenlines = true; ld.Hiddenlinestyle = "dotted"
+local P = ld.poly2facet( poly.octahedron(Origin, ld.sM(30,10)) )
+local colors = {"Crimson","ForestGreen","Gold","SteelBlue","SlateGray","Brown","Orange","Navy"}
+g:Define_sphere()
+for k,F in ipairs(P) do
+    g:DSfacet(F,{fill=colors[k],style="noline",fillopacity=0.7})  -- facettes sans les bords
+end
+for _, A in ipairs(ld.facetedges(P)) do
+    g:DSarc(A,1,{width=8}) -- chaque arête est un arc de grand cercle
+end
+g:Dspherical()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+Pour ce pavage sphérique, on a choisi un octaèdre régulier de centre identique celui de la sphère et avec un sommet sur la sphère (et donc tous les sommets sont sur la sphère).
+
+\paragraph{Tangentes à la sphère issues d'un point}
+
+\begin{demo}{Tangentes à la sphère issues d'un point}
+\begin{luadraw}{name=tangent_to_sphere}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, M = pt3d.Origin, pt3d.M
+
+local g = ld.graph3d:new{window={-4,5.5,-4,4},viewdir={30,60},size={10,10}}
+require 'luadraw_spherical'
+ld.Hiddenlines=true; g:Linewidth(6)
+local O, I = Origin, M(0,6,0)
+local S,S1 = {O, 3}, {(I+O)/2,pt3d.abs(I-O)/2}
+-- le cerlce de tangence est l'intersection entre S et S1
+local C,r,n = ld.interSS(S,S1) 
+local L = ld.circle3d(C,r,n)[1] -- liste de points du cercle
+local dots, lines = {}, {}
+-- draw
+g:Define_sphere({opacity=1})
+g:DScircle({C,n},{color="red"})
+for k = 1, math.floor(#L/4) do
+    local A = L[4*(k-1)+1]
+    table.insert(dots,A)
+    table.insert(lines,{I, 2*A-I})
+end
+g:DSpolyline(lines ,{color="gray"})
+g:DSstars(dots) -- dessin de points sur la sphère
+g:DSdots({O,I});  -- points dans la scène
+g:DSlabel("$I$",I,{pos="S",node_options="red"},"$O$",O,{})
+g:Dspherical()
+g:Dseg3d({O,dots[1]},"gray,dashed"); g:Dangle3d(O,dots[1],I,0.2,"gray")
+g:Show() 
+\end{luadraw}
+\end{demo}
+
+\paragraph{Stéréographie inverse}
+
+\begin{demo}{Méthodes \emph{DSinvstereo\_curve} et \emph{DSinvstereo\_polyline}}
+\begin{luadraw}{name=stereographic_curve}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, M, vecJ, vecK = pt3d.Origin, pt3d.M, pt3d.vecJ, pt3d.vecK
+
+local g = ld.graph3d:new{window3d={-5,5,-2,2,-2,2},window={-4.25,4.25,-2.5,2},size={10,10}, viewdir={40,70}}
+ld.Hiddenlines = true; ld.Hiddenlinestyle="dashed"; g:Linewidth(6)
+require 'luadraw_spherical'
+local C, R = Origin, 1
+local a = -R
+local P = ld.planeEq(0,0,1,-a)
+local L = {M(2,0,a), M(2,2.5,a), M(-1,2,a)}
+local L2 = ld.circle3d(M(2.25,-1,a),0.5,vecK)[1]
+local A, B = (L[2]+L[3])/2, L2[20]
+local a,b = table.unpack( ld.inv_projstereo({A,B},{C,R},C+R*vecK) )
+g:Dplane(P,vecJ,6,6,15,"draw=none,fill=Beige")
+g:Define_sphere( {center=C,radius=R, color="SlateGray!30", show=true} )
+g:DSpolyline(L,{color="blue",close=true}); g:DSinvstereo_polyline(L,{color="red",width=8,close=true})
+g:DSpolyline(L2,{color="Navy"}); g:DSinvstereo_curve(L2,{color="Brown",width=6})
+g:DSplane(P,{scale=1.5})
+g:DSpolyline({{C+R*vecK,A},{C+R*vecK,B}}, {color="ForestGreen",width=8})
+g:DSpolyline({{-vecK,2*vecK}}, {arrows=1})
+g:DSstars({C+R*vecK,a,b}, {scale=0.75})
+g:Dspherical()
+g:Dballdots3d({A,B},"ForestGreen",0.75)
+g:Show()
+\end{luadraw}
+\end{demo}

@@ -1,0 +1,66 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\draw[line width=0.1pt,color={rgb,1:red,0.5;green,0;blue,1},left color={rgb,1:red,0.5;green,0;blue,1},right color={rgb,1:red,0.2804;green,0.3382;blue,0.9852},shading angle=180.0] (0.9,0.9) -- (0.45,0.9) -- (0.45,1.7) -- (0.9,1.7)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.2804;green,0.3382;blue,0.9852},left color={rgb,1:red,0.2804;green,0.3382;blue,0.9852},right color={rgb,1:red,0.0608;green,0.6365;blue,0.9411},shading angle=180.0] (0.9,1.7) -- (0.45,1.7) -- (0.45,2.5) -- (0.9,2.5)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.0608;green,0.6365;blue,0.9411},left color={rgb,1:red,0.0608;green,0.6365;blue,0.9411},right color={rgb,1:red,0.1667;green,0.866;blue,0.866},shading angle=180.0] (0.9,2.5) -- (0.45,2.5) -- (0.45,3.3) -- (0.9,3.3)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.1667;green,0.866;blue,0.866},left color={rgb,1:red,0.1667;green,0.866;blue,0.866},right color={rgb,1:red,0.3863;green,0.9841;blue,0.7674},shading angle=180.0] (0.9,3.3) -- (0.45,3.3) -- (0.45,4.1) -- (0.9,4.1)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.3863;green,0.9841;blue,0.7674},left color={rgb,1:red,0.3863;green,0.9841;blue,0.7674},right color={rgb,1:red,0.6137;green,0.9841;blue,0.6412},shading angle=180.0] (0.9,4.1) -- (0.45,4.1) -- (0.45,4.9) -- (0.9,4.9)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.6137;green,0.9841;blue,0.6412},left color={rgb,1:red,0.6137;green,0.9841;blue,0.6412},right color={rgb,1:red,0.8333;green,0.866;blue,0.5},shading angle=180.0] (0.9,4.9) -- (0.45,4.9) -- (0.45,5.7) -- (0.9,5.7)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.8333;green,0.866;blue,0.5},left color={rgb,1:red,0.8333;green,0.866;blue,0.5},right color={rgb,1:red,1;green,0.6365;blue,0.3382},shading angle=180.0] (0.9,5.7) -- (0.45,5.7) -- (0.45,6.5) -- (0.9,6.5)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.6365;blue,0.3382},left color={rgb,1:red,1;green,0.6365;blue,0.3382},right color={rgb,1:red,1;green,0.3382;blue,0.1716},shading angle=180.0] (0.9,6.5) -- (0.45,6.5) -- (0.45,7.3) -- (0.9,7.3)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.3382;blue,0.1716},left color={rgb,1:red,1;green,0.3382;blue,0.1716},right color={rgb,1:red,1;green,0;blue,0},shading angle=180.0] (0.9,7.3) -- (0.45,7.3) -- (0.45,8.1) -- (0.9,8.1)--cycle;%
+\draw[] (0.9,0.9) -- (0.9,8.1) -- (0.45,8.1) -- (0.45,0.9)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.8784;green,1;blue,1},left color={rgb,1:red,0.8784;green,1;blue,1},right color={rgb,1:red,0.6845;green,0.8932;blue,0.9891},shading angle=180.0] (2.7,0.9) -- (2.25,0.9) -- (2.25,1.7) -- (2.7,1.7)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.6845;green,0.8932;blue,0.9891},left color={rgb,1:red,0.6845;green,0.8932;blue,0.9891},right color={rgb,1:red,0.5669;green,0.7878;blue,0.9678},shading angle=180.0] (2.7,1.7) -- (2.25,1.7) -- (2.25,2.5) -- (2.7,2.5)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.5669;green,0.7878;blue,0.9678},left color={rgb,1:red,0.5669;green,0.7878;blue,0.9678},right color={rgb,1:red,0.7543;green,0.6876;blue,0.9046},shading angle=180.0] (2.7,2.5) -- (2.25,2.5) -- (2.25,3.3) -- (2.7,3.3)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.7543;green,0.6876;blue,0.9046},left color={rgb,1:red,0.7543;green,0.6876;blue,0.9046},right color={rgb,1:red,0.8833;green,0.5996;blue,0.7857},shading angle=180.0] (2.7,3.3) -- (2.25,3.3) -- (2.25,4.1) -- (2.7,4.1)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.8833;green,0.5996;blue,0.7857},left color={rgb,1:red,0.8833;green,0.5996;blue,0.7857},right color={rgb,1:red,0.9246;green,0.5299;blue,0.583},shading angle=180.0] (2.7,4.1) -- (2.25,4.1) -- (2.25,4.9) -- (2.7,4.9)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.9246;green,0.5299;blue,0.583},left color={rgb,1:red,0.9246;green,0.5299;blue,0.583},right color={rgb,1:red,0.9608;green,0.5438;blue,0.4941},shading angle=180.0] (2.7,4.9) -- (2.25,4.9) -- (2.25,5.7) -- (2.7,5.7)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.9608;green,0.5438;blue,0.4941},left color={rgb,1:red,0.9608;green,0.5438;blue,0.4941},right color={rgb,1:red,0.9935;green,0.6136;blue,0.481},shading angle=180.0] (2.7,5.7) -- (2.25,5.7) -- (2.25,6.5) -- (2.7,6.5)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.9935;green,0.6136;blue,0.481},left color={rgb,1:red,0.9935;green,0.6136;blue,0.481},right color={rgb,1:red,0.9739;green,0.7495;blue,0.5098},shading angle=180.0] (2.7,6.5) -- (2.25,6.5) -- (2.25,7.3) -- (2.7,7.3)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.9739;green,0.7495;blue,0.5098},left color={rgb,1:red,0.9739;green,0.7495;blue,0.5098},right color={rgb,1:red,0.9412;green,0.902;blue,0.549},shading angle=180.0] (2.7,7.3) -- (2.25,7.3) -- (2.25,8.1) -- (2.7,8.1)--cycle;%
+\draw[] (2.7,0.9) -- (2.7,8.1) -- (2.25,8.1) -- (2.25,0.9)--cycle;%
+\draw[] (2.7,0.9) -- (2.25,0.9);%
+\draw[] (2.7,1.9286) -- (2.25,1.9286);%
+\draw[] (2.7,2.9571) -- (2.25,2.9571);%
+\draw[] (2.7,3.9857) -- (2.25,3.9857);%
+\draw[] (2.7,5.0143) -- (2.25,5.0143);%
+\draw[] (2.7,6.0429) -- (2.25,6.0429);%
+\draw[] (2.7,7.0714) -- (2.25,7.0714);%
+\draw[] (2.7,8.1) -- (2.25,8.1);%
+\draw[-] (2.7,0.9) node[right] {\small $0$} (2.7,1.9286) node[right] {\small $1$} (2.7,2.9571) node[right] {\small $2$} (2.7,3.9857) node[right] {\small $3$} (2.7,5.0143) node[right] {\small $4$} (2.7,6.0429) node[right] {\small $5$} (2.7,7.0714) node[right] {\small $6$} (2.7,8.1) node[right] {\small $7$};%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0;blue,0},left color={rgb,1:red,1;green,0;blue,0},right color={rgb,1:red,1;green,0.1098;blue,0},shading angle=90.0] (3.6,5.4) -- (3.6,6.3) -- (4.2,6.3) -- (4.2,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.1098;blue,0},left color={rgb,1:red,1;green,0.1098;blue,0},right color={rgb,1:red,1;green,0.2196;blue,0},shading angle=90.0] (4.2,5.4) -- (4.2,6.3) -- (4.8,6.3) -- (4.8,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.2196;blue,0},left color={rgb,1:red,1;green,0.2196;blue,0},right color={rgb,1:red,1;green,0.3333;blue,0},shading angle=90.0] (4.8,5.4) -- (4.8,6.3) -- (5.4,6.3) -- (5.4,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.3333;blue,0},left color={rgb,1:red,1;green,0.3333;blue,0},right color={rgb,1:red,1;green,0.4431;blue,0},shading angle=90.0] (5.4,5.4) -- (5.4,6.3) -- (6,6.3) -- (6,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.4431;blue,0},left color={rgb,1:red,1;green,0.4431;blue,0},right color={rgb,1:red,1;green,0.5569;blue,0},shading angle=90.0] (6,5.4) -- (6,6.3) -- (6.6,6.3) -- (6.6,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.5569;blue,0},left color={rgb,1:red,1;green,0.5569;blue,0},right color={rgb,1:red,1;green,0.6667;blue,0},shading angle=90.0] (6.6,5.4) -- (6.6,6.3) -- (7.2,6.3) -- (7.2,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.6667;blue,0},left color={rgb,1:red,1;green,0.6667;blue,0},right color={rgb,1:red,1;green,0.7804;blue,0},shading angle=90.0] (7.2,5.4) -- (7.2,6.3) -- (7.8,6.3) -- (7.8,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.7804;blue,0},left color={rgb,1:red,1;green,0.7804;blue,0},right color={rgb,1:red,1;green,0.8902;blue,0},shading angle=90.0] (7.8,5.4) -- (7.8,6.3) -- (8.4,6.3) -- (8.4,5.4)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,1;green,0.8902;blue,0},left color={rgb,1:red,1;green,0.8902;blue,0},right color={rgb,1:red,1;green,1;blue,0},shading angle=90.0] (8.4,5.4) -- (8.4,6.3) -- (9,6.3) -- (9,5.4)--cycle;%
+\draw[] (3.6,5.4) -- (9,5.4) -- (9,6.3) -- (3.6,6.3)--cycle;%
+\draw[] (3.6,5.4) -- (3.6,6.3);%
+\draw[] (4.95,5.4) -- (4.95,6.3);%
+\draw[] (6.3,5.4) -- (6.3,6.3);%
+\draw[] (7.65,5.4) -- (7.65,6.3);%
+\draw[] (9,5.4) -- (9,6.3);%
+\draw[-] (3.6,5.4) node[below] {\small $0$} (4.95,5.4) node[below] {\small $0.25$} (6.3,5.4) node[below] {\small $0.5$} (7.65,5.4) node[below] {\small $0.75$} (9,5.4) node[below] {\small $1$};%
+\draw[line width=0.1pt,color={rgb,1:red,0.267;green,0.0049;blue,0.3294},left color={rgb,1:red,0.267;green,0.0049;blue,0.3294},right color={rgb,1:red,0.2814;green,0.1558;blue,0.4692},shading angle=90.0] (3.6,3.6) -- (3.6,2.7) -- (4.2,2.7) -- (4.2,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.2814;green,0.1558;blue,0.4692},left color={rgb,1:red,0.2814;green,0.1558;blue,0.4692},right color={rgb,1:red,0.245;green,0.2877;blue,0.5373},shading angle=90.0] (4.2,3.6) -- (4.2,2.7) -- (4.8,2.7) -- (4.8,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.245;green,0.2877;blue,0.5373},left color={rgb,1:red,0.245;green,0.2877;blue,0.5373},right color={rgb,1:red,0.1906;green,0.4071;blue,0.5561},shading angle=90.0] (4.8,3.6) -- (4.8,2.7) -- (5.4,2.7) -- (5.4,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.1906;green,0.4071;blue,0.5561},left color={rgb,1:red,0.1906;green,0.4071;blue,0.5561},right color={rgb,1:red,0.1476;green,0.5117;blue,0.557},shading angle=90.0] (5.4,3.6) -- (5.4,2.7) -- (6,2.7) -- (6,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.1476;green,0.5117;blue,0.557},left color={rgb,1:red,0.1476;green,0.5117;blue,0.557},right color={rgb,1:red,0.1197;green,0.6185;blue,0.5363},shading angle=90.0] (6,3.6) -- (6,2.7) -- (6.6,2.7) -- (6.6,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.1197;green,0.6185;blue,0.5363},left color={rgb,1:red,0.1197;green,0.6185;blue,0.5363},right color={rgb,1:red,0.208;green,0.7187;blue,0.4729},shading angle=90.0] (6.6,3.6) -- (6.6,2.7) -- (7.2,2.7) -- (7.2,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.208;green,0.7187;blue,0.4729},left color={rgb,1:red,0.208;green,0.7187;blue,0.4729},right color={rgb,1:red,0.431;green,0.8085;blue,0.3465},shading angle=90.0] (7.2,3.6) -- (7.2,2.7) -- (7.8,2.7) -- (7.8,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.431;green,0.8085;blue,0.3465},left color={rgb,1:red,0.431;green,0.8085;blue,0.3465},right color={rgb,1:red,0.7099;green,0.8688;blue,0.1693},shading angle=90.0] (7.8,3.6) -- (7.8,2.7) -- (8.4,2.7) -- (8.4,3.6)--cycle;%
+\draw[line width=0.1pt,color={rgb,1:red,0.7099;green,0.8688;blue,0.1693},left color={rgb,1:red,0.7099;green,0.8688;blue,0.1693},right color={rgb,1:red,0.9932;green,0.9062;blue,0.1439},shading angle=90.0] (8.4,3.6) -- (8.4,2.7) -- (9,2.7) -- (9,3.6)--cycle;%
+\draw[] (3.6,3.6) -- (9,3.6) -- (9,2.7) -- (3.6,2.7)--cycle;%
+\draw[] (3.6,3.6) -- (3.6,2.7);%
+\draw[] (4.95,3.6) -- (4.95,2.7);%
+\draw[] (6.3,3.6) -- (6.3,2.7);%
+\draw[] (7.65,3.6) -- (7.65,2.7);%
+\draw[] (9,3.6) -- (9,2.7);%
+\draw[-] (3.6,3.6) node[above] {\small $0$} (4.95,3.6) node[above] {\small $0.25$} (6.3,3.6) node[above] {\small $0.5$} (7.65,3.6) node[above] {\small $0.75$} (9,3.6) node[above] {\small $1$};%
+\draw[-] (0.675,0.9) node[below] {\small No value} (2.475,0.9) node[below] {\small \parbox{1.95cm}{minmax=\{0,7\}\\values=8}} (6.3,6.3) node[above] {\small dir=1, length=6, width=1} (6.3,2.7) node[below] {\small dir=1, length=6, width=-1};%
+\end{scope}%
+\end{tikzpicture}%

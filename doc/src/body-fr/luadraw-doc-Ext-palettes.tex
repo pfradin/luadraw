@@ -1,0 +1,17 @@
+\subsection{Le module \emph{luadraw\_palettes}}
+
+Le module \cmd{luadraw\_palettes}\footnote{Ce module est une contribution de \href{https://github.com/projetmbc/for-writing/tree/main/@prism}{Christphe BAL}.} définit $261$ palettes de couleurs portant chacune un nom. Une palette est une liste (table) de couleurs qui sont elles-mêmes des listes de trois valeurs numériques entre $0$ et $1$ (composantes rouge, verte et bleue). La liste de ces palettes ainsi que leur rendu, peuvent être visualisés dans ce \href{luadraw_palettes_list.pdf}{document}. 
+
+\textbf{Ce module n'ajoute pas de nouvelles méthodes graphiques, mais il renvoie une table de définitions de couleurs}, plus la fonction \cmd{getPal(palname, options)} Par conséquent, il s'utilise ainsi (exemple) :
+\begin{Luacode}
+local pal = require 'luadraw_palettes'
+local color = pal.Blackbody
+local BlackbodyTransformed = pal.getPal( -- renvoie une nouvelle palette
+    color, -- nom d'une palette
+    {
+    extract = {2, 5, 8, 9}, -- numéros des couleurs à extraire
+    shift = 1, -- décalage parmi les couleurs extraites, ce qui donne ici: 5,8,9,2
+    reverse = true -- inversion de l'ordre, ce qui donne ici: 2,9,8,5    
+    }
+)
+\end{Luacode}

@@ -1,0 +1,185 @@
+\subsection{Le module \emph{luadraw\_log\_axes}}
+
+Ce module ne renvoie rien, il ajoute de nouvelles méthodes graphiques à la classe \emph{ld.graph} ainsi qu'une fonction dans l'espace de noms \emph{luadraw}.
+
+Le module \emph{luadraw\_log\_axes} permet d'afficher une grille semi-logarithmique ou logarithmique, et de placer des points sur cette grille ou de dessiner des lignes polygonales. La création de cette grille entraîne une modification de la matrice 2D du graphe, pour cette raison le dessin se déroule en trois temps :
+    \begin{enumerate}
+        \item Initialisation de la grille avec la méthode \cmd{g:Beginlogview()}.
+        \item Le dessin avec les méthodes \cmd{g:Dlogpolyline()}, \cmd{g:Dlogdots()}, \cmd{Dlogline()} et \cmd{g:Dloglabel()}.
+        \item La fin de l'utilisation de la grille avec la méthode \cmd{g:Endlogview()}, ce qui restitue la matrice d'origine et permet d'ajouter de compléter éventuellement le dessin en coordonnées "normales" dans la fenêtre d'origine.
+    \end{enumerate}
+    
+\subsubsection{Initialisation :  g:Beginlogview()}  
+
+ L'initialisation de la grille ainsi que son affichage sont gérés par la méthode :
+ \cmdln{g:Beginlogview(type, xmin, xmax, ymin, ymax, options).}
+ 
+ \begin{itemize}
+     \item L'argument \argu{type} permet de préciser le type de grille souhaitée, les valeurs possibles sont les chaînes: \val{"logx"}, \val{"logy"} ou bien \val{"logxy"}.
+    \item Les quatre arguments \argu{xmin}, \argu{xmax}, \argu{ymin} et \argu{ymax} définissent les intervalles des valeurs sur les deux axes, celles-ci sont totalement indépendantes de la fenêtre 2D du graphe.
+    \item L'argument\argu{options} est une table dont les champs définissent les options. Celles-ci sont (avec leur valeurs pas défaut):
+    \begin{itemize}
+         \item \opt{viewport=<fenêtre 2D courante>)}. Cette option est une table de la forme $\{x_1,x_2,y_1,y_2\}$, elle indique quelle zone de la fenêtre 2D du graphique doit être utilisée pour dessiner la grille. Par défaut, c'est la fenêtre courante en entier (celle définie par l'option \opt{window} à la création du graphe).
+         
+         \item \opt{clip=\true}. Booléen indiquant si la grille doit clipper les dessins. Le clipping est désactivé après l'exécution de la méthode \cmd{g:Endlogview()}.
+         
+        \item \opt{grid=\{\true,\true\}}. Cette option permet d'afficher ou non les traits verticaux de la grille (correspondant à l'axe des $x$, ainsi que les traits horizontaux de la grille (correspondant à l'axe des $y$).
+                
+        \item \opt{unit=\{"",""\}}. Cette option permet de préciser de combien en combien vont les graduations sur les axes \textbf{non logarithmiques}. La valeur par défaut signifie qu'il faut prendre la valeur du pas (\opt{xstep} sur $Ox$, ou \opt{ystep} sur $Oy$), SAUF lorsque l'option \opt{labeltext} n'est pas la chaîne vide, dans ce cas \opt{unit} prend la valeur $1$.
+        
+        \item \opt{nbsubdiv=\{0 ou 3, 0 ou 3\}}. Cette option permet de préciser le nombre de subdivisions entre deux graduations principales sur l'axe. Lorsque l'axe est non logarithmique la valeur par défaut est nulle, sinon la valeur par défaut est de $3$.
+        
+        \item \opt{xstep=nil ou 1} et \opt{ystep=nil ou 1}. Cette option précise le pas sur les axes. Si l'axe est non logarithmique alors la valeur par défaut est de $1$. Si l'axe est logarithmique alors cette option représente l’écart entre la première graduation (celle qui correspond à la valeur minimale) et la deuxième graduation principale; s’il y a plusieurs décades, alors cette option vaut \val{nil} par défaut et chaque décade est découpée en $9$ parties, s’il y a une seule décade cette option vaut par défaut le dixième de l’intervalle des valeurs.
+        
+        \item \opt{defaultloglabels=\{2,3,5,10\}}. Cette liste de valeurs est utilisée pour déterminer quelles sont les valeurs par décade sur les axes logarithmiques.
+        
+        \item \opt{xdecadeloglabels=\nil} et \opt{ydecadeloglabels=\nil}. Cette option s'applique aux axes logarithmiques. Elle précise la liste des valeurs de la \textbf{première décade}, ces valeurs donneront les graduations principales et les labels pour toutes les décades. Si la valeur minimale sur l'axe est \emph{vmin}, alors la première décade est l'intervalle $[\mathrm{vmin};10\times\mathrm{vmin}]$, par défaut cette liste de valeurs est donnée par le calcul : $\{2\times\mathrm{vmin}, 3\times\mathrm{vmin}, 5\times\mathrm{vmin}, 10\times\mathrm{vmin}\}$ (il est inutile de préciser la première valeur \emph{vmin}, celle-ci est automatiquement ajoutée). La liste $\{2,3,5,10\}$ est la valeur par défaut de l'option \opt{defaultloglabels}.
+        
+        \item \opt{xexponent=0} et \opt{yexponent=0}. Cette option s'applique aux axes logarithmiques. Lorsque par exemple \opt{xexponent=2} tous les labels de l'axe des $x$ sont divisés par $10^2$, et dans la légende sera ajoutée la chaîne : $(\times10^2)$. C'est le même principe pour l'axe des $y$ s'il est logarithmique.
+        
+        \item \opt{xaddloglabels=\{\}} et \opt{yaddloglabels=\{\}}. Cette option s'applique aux axes logarithmiques. Elle permet d'ajouter une liste de valeurs qui donneront des labels supplémentaires, ces valeurs doivent être comprises entre les valeurs minimale et maximale de l'axe.
+        
+        \item \opt{tickpos=\{0.5,0.5\}}. Cette option précise la position des graduations par rapport à chaque axe, ce sont deux nombres entre $0$ et $1$, la valeur par défaut de $0.5$ signifie qu'ils sont centrés sur l'axe ($0$ et $1$ représentent les extrémités).
+        
+        \item \opt{xyticks=\{0.2,0.2\}}. Cette option précise la longueur des graduations sur les axes.
+        
+        \item \opt{xylabelsep=\{0,0\}}. Cette option précise la distance entre les labels et les graduations sur les axes.
+        
+        \item \opt{originloc=<coin inférieur gauche>}. Cette option précise le point origine des graduations pour l'axe non logarithmique.
+        
+        \item \opt{originnum=\{minimum,minimum\}}. Cette option précise la valeur au point origine des graduations (graduation numéro $0$) pour l'axe non logarithmique. 
+        
+        La formule qui définit le label à la graduation numéro $n$ est : 
+        \codeln{(originnum + unit*n)"labeltext"/labelden.}
+        
+        \item \opt{legend=\{"",""\}}. Cette option permet de préciser une légende pour les axes. Par défaut la légende de l'axe des $x$ est située sous l'axe et au milieu, et la légende de l'axe des $y$ est située à gauche de l'axe, au milieu, et est écrite verticalement.
+        
+        \item \opt{legendpos=\{0.5,0.5\}}. Cette option précise la position (entre $0$ et $1$) de la légende par rapport à chaque axe.
+        
+        \item \opt{legendsep=\{-0.5,-1\} }. Cette option précise la distance entre la légende et l'axe. La légende est de l'autre côté de l'axe par rapport aux graduations.
+        
+        \item \opt{legendangle=\{0,90\}}. Cette option précise l'angle (en degrés) que doit faire la légende pour l'axe. 
+        
+        \item \opt{legendstyle=\{"S","N"\}}. Précise le style de label pour les légendes, avec la valeur \val{"auto"} celui-ci est déterminé automatiquement, sinon on peut utiliser les valeurs: \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+        
+        \item \opt{labelpos=\{"bottom","left"\}}. Cette option précise la position des labels par rapport à l'axe. Pour l'axe $Ox$, les valeurs possibles sont : \val{"none"}, \val{"bottom"} ou \val{"top"}, pour l'axe $Oy$ c'est :  \val{"none"}, \val{"right"} ou \val{"left"}.
+        
+        \item \opt{labelstyle=\{"S","W"\}}. Cette option définit le style des labels pour chaque axe. Les valeurs possibles sont : \val{"auto"}, \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
+        
+        \item \opt{labelangle=\{0,0\}}. Cette option définit pour chaque axe l'angle des labels en degrés par rapport à l'horizontale.
+        
+        \item \opt{labelcolor=\{"",""\}}. Cette option permet de choisir une couleur pour les labels sur chaque axe. La chaîne vide représente la couleur par défaut.
+        
+        \item \opt{labelden=\{1,1\}}. Cette option précise le dénominateur des labels (entier) pour l'axe non logarithmique. 
+        
+        \item \opt{labeltext=\{"",""\}}. Cette option définit le texte qui sera ajouté au numérateur des labels pour l'axe non logarithmique.
+             
+        \item \opt{xynode\_options=""}. Chaîne de caractères qui sera transmise telle quelle à l'instruction \verb|\node{}| pour tous les labels sur les deux axes (mais pas pour les légendes).
+        
+        \item \opt{xnode\_options=xynode\_options}. Chaîne de caractères qui sera transmise telle quelle à l'instruction \verb|\node{}| pour tous les labels sur l'axe des $x$ (mais pas pour la légende).
+        
+         \item \opt{ynode\_options=xynode\_options}. Chaîne de caractères qui sera transmise telle quelle à l'instruction \verb|\node{}| pour tous les labels sur l'axe des $y$ (mais pas pour la légende).
+        
+        \item \opt{use\_siunitx=\{siunitx,siunitx\}}. Cette option précise si les valeurs numériques doivent être formatées en utilisant le paquet \emph{siunitx}, la valeur par défaut est celle de la variable globale \varglob{siunitx} qui vaut \false par défaut.
+        
+        \item \opt{mylabels=""}. Cette option permet d'imposer des labels personnels sur l'axe non logarithmique. Lorsqu'il y en a, la valeur passée à l'option doit être une liste du type : \code{\{pos1,"text1",pos2,"text2",\ldots\}}. Le nombre \argu{pos1} représente une abscisse dans le repère \code{(A,pas)} ($A$ étant l'origine de l'axe), ce qui correspond au point d'affixe \code{A+pos1*pas}, le pas étant soit \opt{xstep} soit \opt{ystep} suivant l'axe.
+        
+        \item \opt{gridstyle="solid"}. Cette option définit le style ligne pour la grille principale.
+        
+        \item \opt{subgridstyle="solid"}. Cette option définit le style ligne pour la grille secondaire. Une grille secondaire apparaît lorsqu'il y a des subdivisions sur un des axes.
+        \item  \opt{gridcolor="gray"}. Ceci définit la couleur de la grille principale.
+        \item \opt{subgridcolor="lightgray"}. Ceci définit la couleur de la grille secondaire.
+        \item \opt{gridwidth=4}. Épaisseur de trait de la grille principale (ce qui fait 0.4pt).
+        \item \opt{subgridwidth=2}. Épaisseur de trait de la grille secondaire (ce qui fait 0.2pt).
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Méthodes de dessin et conversion}
+
+\begin{itemize}
+    \item La méthode \cmd{g:Dlogpolyline(L \fac{, close, draw\_options)}} permet de dessiner la ligne polygonale 2D \argu{L} sur la grille, la conversion des coordonnées est automatique. L'argument \argu{close} est un booléen indiquant si la ligne doit être refermée (\false par défaut), et l'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera transmise à l'instruction \drawcmd.
+    
+    \item La méthode \cmd{g:Dlogdots(L \fac{, mark\_options})} permet de dessiner sur la grille le nuage de points contenu dans \argu{L} (nombre complexe, ou liste de nombres complexes, ou liste de listes de nombres complexes), la conversion des coordonnées est automatique. l'argument \argu{mark\_options} est une chaîne (vide par défaut) qui sera transmise à l'instruction \drawcmd.
+    
+    \item La méthode \cmd{g:Dlogline(A, B \fac{, draw\_options})} permet de dessiner sur la grille la droite passant par les points \argu{A} et \argu{B} (la conversion des coordonnées est automatique). L'argument \argu{draw\_options} est une chaîne (vide par défaut) qui sera transmise à l'instruction \drawcmd.
+    
+    \item La méthode \cmd{g:Dloglabel(text1, anchor1, options1, ...)} fait la même chose que la méthode \cmd{g:Dlabel()} sauf que les coordonnées sont d'abord converties pour s'adapter à la grille.
+    
+    \item Fonction de conversion : \cmd{ld.Zlog(z)} où \argu{z} est un nombre complexe, renvoie l'affixe sur la grille du point correspondant.
+\end{itemize}
+
+\subsubsection{Fin de l'utilisation de la grille : g:Endlogview()}
+
+La méthode \cmd{g:Endlogview()} restaure la  matrice initiale du graphe ainsi que la fenêtre 2D.
+
+\subsubsection{Exemples}
+
+\begin{demo}{Axe des $x$ logarithmique}
+\begin{luadraw}{name=logx_example}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local log10 = math.log10
+
+local g = ld.graph:new{ size={14,10,0} }
+require 'luadraw_log_axes'
+g:Beginlogview("logx", 1, 100, -0.2, 2.2, {
+   nbsubdiv={3,1},
+   ystep = 0.2,
+   legend={"La droite $(AB)$ et la courbe $y=\\log_{10}(x)$ sont confondues","$y=\\log_{10}(x)$"}
+})
+local L = ld.cartesian(function(x) return log10(x) end, 1,100)
+local A, B = 1, Z(100,2)
+g:Dlogline(A,B, "Pink,line width=2.4pt")
+g:Dlogpolyline(L,"blue") 
+g:Dlogdots({A,B})
+g:Dloglabel("$A$", A, {pos="SE"}, "$B$", B, {pos="NW"})
+g:Endlogview()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\begin{demo}{Les deux autres cas de figure.}
+\begin{luadraw}{name=logy_and_logxy_example}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+local  exp = math.exp
+
+local g = ld.graph:new{ window={-10,10,-5,5}, size={18,10,0} }
+require 'luadraw_log_axes'
+g:Beginlogview("logy", -1, 5, 0.2, 200, { viewport={0.25,10,-5,4.5},
+    nbsubdiv = {1,1},
+    legendsep = {-0.5,-0.5},
+    legend = {"La droite $(AB)$ et la courbe $y=\\exp(x)$ sont confondues",""}
+})
+local L = ld.cartesian(exp, -1, 5)
+local A, B = Z(-1,exp(-1)), Z(5,exp(5))
+g:Dlogline(A,B, "Pink,line width=2.4pt")
+g:Dlogpolyline(L,"blue") 
+g:Dlogdots({A,B})
+g:Dloglabel("$A$", A, {pos="SE"}, "$B$", B, {pos="NW"})
+g:Endlogview()
+
+g:Beginlogview("logxy", 9, 100, 7e2, 1e6, { viewport={-10,-0.25,-5,4.5},
+    nbsubdiv = {8,1},
+    xaddloglabels={100},
+    legendsep = {-0.5,-0.75},
+    yexponent=2,
+    yaddloglabels={1e6}, 
+    labelangle={-90,0}, labelstyle={"E","W"},
+    legend = {"La droite $(AB)$ et la courbe $y=x^3$ sont confondues",""}
+})
+local L = ld.cartesian(function(x) return x^3 end, 9, 100)
+local A, B = Z(10,1e3), Z(90,729e3)
+g:Dlogline(A,B, "Pink,line width=2.4pt")
+g:Dlogpolyline(L,"blue") 
+g:Dlogdots({A,B})
+g:Dloglabel("$A$", A, {pos="SE"}, "$B$", B, {pos="NW"})
+g:Endlogview()
+-- drawing on the "normal" 2D window
+g:Dlabel("$y=\\mathrm{e}^x$ avec l'axe $Oy$ logarithmique.",Z(5,4.5),{pos="N"},
+  "$y=x^3$ avec les deux axes logarithmiques.",Z(-5,4.5),{})
+g:Show()
+\end{luadraw}
+\end{demo}

@@ -1,0 +1,361 @@
+\subsection{Le module \emph{luadraw\_povray}}
+
+\newcommand*{\povray}{POV-Ray\xspace}%
+
+Ce module ne renvoie rien, il ajoute de nouvelles méthodes graphiques à la classe \emph{ld.graph3d} ainsi qu'une fonction dans l'espace de noms \emph{luadraw}.
+
+\subsubsection{Prérequis et introduction}
+Avant toute chose, le logiciel \povray doit être installé sur votre ordinateur en version ligne de commande (version non graphique).
+\begin{itemize}
+    \item Sous linux : \povray est forcément en ligne de commande et s'installe avec le gestionnaire de paquets.
+    \item Sous macOS : la version de \povray en ligne de commande peut être installée via \href{https://formulae.brew.sh/formula/povray\#default)}{HomeBrew}.
+    \item Sous windows : l'installateur est à télécharger sur le site de \href{https://www.povray.org/download/}{\povray}.
+\end{itemize}
+
+
+Ce module permet de créer des fichiers sources (relativement basiques) pour le logiciel \povray (en ligne de commande) et de les compiler à la volée. Une fois créée, l'image (format \emph{png}) peut être incluse automatiquement dans le graphique en cours, ce qui permet de dessiner dessous et dessus. L'image s'insérera parfaitement, c'est à dire que les repères 3D du graphique et de l'image seront parfaitement identiques, à condition d'être en mode de \textbf{projection orthographique}. Les fichiers sources et images sont créés dans le dossier de travail de \luadrawenv. Les fichiers sources peuvent être évidemment compilés à part par l'utilisateur, les options à transmettre à \povray sont écrites en commentaires au début du source. Le source est en trois parties : un préambule, la déclaration des objets, et le rendu des objets.
+
+\subsubsection{Réglages par défaut}
+
+L'utilisation de ce module nécessite certains réglages par défaut qui peuvent dépendre du système d'exploitation, ces valeurs par défaut peuvent être modifiées avec la fonction: 
+\cmdln{ld.povray\_default(options)}
+\writeoptions :
+\begin{itemize}
+    \item \opt{bg=""}, cette option permet de définir le fond, soit c'est une chaîne vide (valeur par défaut) alors le fond sera transparent (indispensable si on doit dessiner sous l'image), soit c'est une chaîne non vide et alors ce doit un nom de couleur connu de \povray, soit c'est une table de la forme $\{r,g,b\}$ représentant une couleur avec les valeurs $r$, $g$ et $b$ entre $0$ et $1$.
+    
+    \item \opt{shadow=true}, ce booléen indique si les objets doivent créer une ombre ou pas (ce booléen peut être modifié localement pour chaque objet créé).
+    
+    \item \opt{imagescale=1}, cette option permet de modifier la taille de l'image \emph{png} produite, pour des valeurs supérieures à $1$ cela augmente évidemment son poids.
+    
+    \item \opt{param="-V +A +FN"}, ce sont les paramètres de base transmis à \povray, à ceux-ci s'ajouteront automatiquement la largeur et la hauteur de l'image, ainsi que l'option "+UA" si le fond doit être transparent.
+    
+    \item \opt{pov\_cmd=}, nom de la commande pour exécuter \povray, sous unix la valeur par défaut est \val{"povray"}, sous windows la valeur par défaut est \val{"pvengine64.exe"}.
+    
+    \item \opt{pov\_cmd\_ext=""}, chaîne de caractères qui est ajoutée à la fin de chaque commande envoyée à \povray (vide par défaut).
+    
+    \item \opt{win\_param\_ext="/RENDER /EXIT"}, paramètres supplémentaires qui ne concernent que windows.
+    
+    \item \opt{include=\{\}}, cette option permet de demander à \povray d'inclure des fichiers \emph{*.inc}, par exemple : \par
+    \hfil\opt{include=\{"textures.inc", "colors.inc"\}}\hfil\par ces deux fichiers sont normalement distribués avec \povray, le premier définit des textures, le second des couleurs. Par défaut, aucune inclusion n'est faite.
+\end{itemize}
+
+Si vous modifiez une de ces options, la valeur que vous lui donnez devient la nouvelle valeur par défaut pour toute la suite du document, mais il n'est pas nécessaire de répéter cette fonction dans chaque graphique de votre document utilisant \povray, il suffit de le faire une seule fois dans le préambule, par exemple, sous macOS si vous avec installé \povray via \emph{HomeBrew}, alors ceci convient:
+
+\begin{minted}{TeX}
+\documentclass{standalone}%
+\usepackage[svgnames]{xcolor}
+\usepackage[3d]{luadraw}
+\directlua{%
+require "luadraw_povray"
+luadraw.povray_default( {pov_cmd = "/opt/homebrew/bin/povray"} )
+}%
+...
+\end{minted}
+Bien sûr, si les valeurs par défaut conviennent à votre système (cela devrait être le cas sous linux), vous n'avez pas besoin d'utiliser la fonction \cmd{ld.povray\_default()}.
+
+\subsubsection{Avant la création des objets}
+
+Il faut \textbf{obligatoirement initialiser} le dessin \povray avec la méthode : 
+\cmdln{g:Pov\_new(options).}
+L'argument \argu{options} est exactement le même que pour la fonction précédente \cmd{ld.povray\_default()}, sauf que l'effet sera uniquement local au graphique en cours.
+
+
+\subsubsection{Création des objets}
+
+Les objets sont créés à partir de méthodes sur le format \cmd{g:Pov\_<command>(<data>, options)}. Chaque objet est d'abord déclaré dans le source \povray en portant un nom (comme une variable), puis cet objet est ensuite "rendu" dans la troisième partie du source avec une texture définie à partir des options.
+
+L'argument \emph{options} est une table dont les champs définissent les options de l'objet, voici les \textbf{options communes à tous les objets} avec leur valeur par défaut:
+\begin{itemize}
+    \item \opt{name="object<num>"}, chaîne de caractères représentant le nom de l'objet créé, par défaut c'est le mot "object" suivi d'un numéro (ordre d'apparition). Donner un nom est utile lorsqu'on a besoin de réutiliser l'objet par la suite.
+    
+    \item \opt{shadow=true}, booléen indiquant si l'objet crée une ombre.
+    
+    \item \opt{render=true}, booléen indiquant si l'objet doit être affiché. On peut ne pas vouloir afficher un objet lorsque celui-ci intervient dans la construction d'un autre objet par exemple.
+    
+    \item Options définissant la texture de base, celle-ci est composée d'un \emph{pigment} (couleur + opacité) et d'un \emph{finish} (ambient + diffuse + phong):
+        \begin{itemize}
+            \item \opt{color=ld.White}, cette option peut être soit une table au format $\{r,g,b\}$ (avec $r$, $g$ et $b$ entre $0$ et $1$), soit une chaîne de caractères, auquel cas celle-ci doit représenter une couleur connue de \povray, ou bien une texture définie uniquement avec un \emph{pigment} (par exemple \opt{color="Blue\_Sky3"}, ce nom est défini dans le fichier \emph{textures.inc}).
+            
+            \item \opt{usepalette=nil}, cette option permet d'utiliser une palette de couleurs, la syntaxe est \opt{usepalette=\{palette, func, minmax\}} où \argu{palette} est la liste (table) des couleurs, chacune d'elles étant une liste au format $\{r,g,b\}$ avec $r$, $g$ et $b$ ente $0$ et $1$, l'argument \argu{func} est une chaîne qui définit le type de gradient, ce peut être soit \val{"x"} ou \val{"y"} ou \val{"z"} (dans ce cas, l'argument \argu{mimax} doit être une liste contenant la valeur minimale et la valeur maximale), soit une chaîne de la forme \val{"function{ <expression dépendant de x, y, z> }"}, l'expression qui dépend de $x$, $y$ et $z$ est une fonction (pour \povray) qui doit renvoyer une valeur entre $0$ et $1$ (dans ce cas, l'argument \argu{minmax} est inutile).
+            
+            \item \opt{opacity=1}, nombre entre $0$ et $1$ définissant l'opacité de l'objet.
+            
+            \item \opt{ambient=0.35}, \opt{diffuse=0.8} et \opt{phong=0.5} : trois paramètres définissant le \emph{finish}.
+            
+            \item \opt{mytexture=nil}, ce paramètre permet définir sous forme d'une chaîne sa propre texture, ou bien de donner le nom d'une texture déjà connue de \povray, dans ce cas les paramètres précédents ne sont pas pris en compte. Par exemple: \opt{mytexture="texture\{Silver\_Metal\}"} (cette texture est déclarée dans le fichier \emph{textures.inc}).
+        \end{itemize}
+        
+    \item \opt{matrix=nil}, matrice de transformation 3D qui s'appliquera localement à l'objet. La matrice 3D de transformation globale du graphique est également prise en compte.
+    
+    \item \opt{clipbox=nil}, cette option permet de définir une liste (table) d'objets pour clipper celui qui est en cours de construction, ces objets peuvent être : soit un objet déjà créé, dans ce cas on donne son nom sous forme d'une chaîne, soit une boite, dans ce cas on donne une table de la forme \emph{\{M(xinf,yinf,zinf), M(xsup,ysup,zsup)\}} (cela représente une diagonale de la boîte), soit une sphère, dans ce cas on donne une table de la forme \emph{\{center,radius\}}, où \emph{center} est un point 3D et \emph{radius} un nombre positif.
+    
+    \item \opt{clipplane=nil}, cette option permet de définir une liste (table) de plans pour clipper l'objet en cours de construction, chaque plan doit être de la forme $\{A,n\}$ où $A$ est un point du plan (point 3D) et $n$ un vecteur normal au plan. Seule la partie de l'objet se situant dans le demi-espace contenant $n$ est conservée.
+\end{itemize}
+
+\subsubsection{Liste des objets prédéfinis}
+
+Voici la liste des objets que l'on peut dessiner avec les méthodes correspondantes :
+\begin{itemize}
+    \item \textbf{Surfaces implicites} d'équation $f(x,y,z)=0$. C'est la méthode :
+    \cmdln{g:Pov\_implicit( povfunction, luafunction, options).}
+    
+    L'argument \argu{povfunction} est une chaîne contenant l'expression de $f(x,y,z)$, \povray connaît les fonctions mathématiques, il faut cependant savoir que la fonction puissance est la fonction \emph{pow}: $x\mapsto \mathrm{pow}(x,n)$, et que \povray ne gère pas les erreurs de calculs comme la division par zéro par exemple.
+    
+    Les options sont celles qui ont déjà été données, plus l'option spécifique : \opt{containedby=<fenêtre 3D courante>}, celle-ci indique dans quelle boîte (ou sphère) seront faits les calculs, par défaut cette boîte est la fenêtre 3D du graphique en cours. Une boîte est une table de la forme \emph{\{M(xinf,yinf,zinf), M(xsup,ysup,zsup)\}} (cela représente une diagonale de la boîte), une sphère est une table de la forme $\{C,r\}$, où $C$ est le centre (point 3D) et $r$ le rayon. Exemple :
+    \begin{Luacode}
+    local f = function(x,y,z) return x^2+y^2+z^2 - 1 end
+    local r = 1.1
+    g:Pov_implicit("x*x+y*y+z*z-1", f, {color=ld.SteelBlue, containedby={M(-r,-r,-r), M(r,r,r)}})
+    \end{Luacode}
+
+    \item \textbf{Surfaces paramétrées}. Deux syntaxes possibles :
+    \begin{enumerate}
+        \item La méthode : \cmd{g:Pov\_surface( f, u1, u2, v1, v2, options)}
+        
+        dessine la surface (lissée) paramétrée par la fonction \argu{f}$\colon(u,v) \mapsto f(u,v)\in \mathbf R^3$. L'intervalle pour le paramètre $u$ est donné par \argu{u1} et \argu{u2}. L'intervalle pour le paramètre $v$ est donné par \argu{v1} et \argu{v2}. Les options sont celles qui ont déjà été données, plus deux options spécifiques : 
+        \begin{itemize}
+            \item \opt{grid=\{25,25\}}, cette option définit le nombre de points à calculer pour le paramètre $u$ suivi du nombre de points à calculer pour le paramètre $v$ ($25$ par défaut).
+            \item \opt{clip=\false}, avec la valeur \true la surface est clippée par la fenêtre 3D courante.
+        \end{itemize}
+        Exemple :
+        \begin{Luacode}
+        local f = function(x,y) return M(x,y,x^2+y^2) end
+        g:Pov_surface(f,-2,2,-2,2, {color=ld.SteelBlue, clip=true})
+        \end{Luacode}
+        
+        \item La méthode : \cmd{g:Pov\_surface( xfunc, yfunc, zfunc, u1, u2, v1, v2, options)}
+
+        dessine la surface paramétrée par $(u,v)\mapsto (x(u,v), y(u,v), z(u,v))$. Les arguments \argu{xfunc}, \argu{yfunc} et \argu{zfunc} sont trois chaînes contenant respectivement les expressions $x(u,v)$, de $y(u,v)$ et de $z(u,v)$.
+        Les arguments \argu{u1} et \argu{u2}, respectivement \argu{v1} et \argu{v2},  définissent les bornes de l'intervalle pour le paramètre $u$, respectivement pour le paramètre $v$.
+        Les options sont celles qui ont déjà été données, plus deux options spécifiques : 
+        \begin{itemize}
+            \item \opt{containedby=<fenêtre 3D courante>}, celle-ci indique dans quelle boîte (ou sphère) seront faits les calculs, par défaut cette boîte est la fenêtre 3D du graphique en cours. Une boîte est une table de la forme \emph{\{M(xinf,yinf,zinf), M(xsup,ysup,zsup)\}} (cela représente une diagonale de la boîte), une sphère est une table de la forme $\{C,r\}$, où $C$ est le centre (point 3D) et $r$ le rayon. 
+            \item \opt{max\_grad=nil}, valeur numérique (optionnelle) permettant d'optimiser les calculs, voici ce que dit l'aide de \povray sur ce nombre :
+            \begin{small}
+            \begin{verbatim}
+    The max_gradient is the maximum magnitude of all six partial derivatives 
+    over the specified ranges of u and v.
+    Take dx/du, dx/dv, dy/du, dy/dv, dz/du, and dz/dv and calculate them over 
+    the entire range.
+    The max_gradient should be at least the maximum (absolute value) of all of those values.
+    Choosing a too small of a value will create holes or artifacts in the object.
+            \end{verbatim}
+            \end{small}
+        \end{itemize}
+         Exemple :
+        \begin{Luacode}
+        g:Pov_surface("x", "y", "x*x+y*y",-2,2,-2,2, {color=ld.SteelBlue, max_grad=4})
+        \end{Luacode}
+        Remarque : il s'agit de la même surface dans les deux exemples, mais la deuxième méthode est plus longue, et si on ne précise par l'option \opt{max\_grad=4} alors on n'a pas la surface en entier. 
+        \end{enumerate}
+          
+
+    \item \textbf{Polyèdre ou liste de facettes}. C'est la méthode: \cmdln{g:Pov\_facet(F, options).}
+    
+    L'argument \argu{F} est soit un polyèdre, soit une liste de facettes. Les options sont les options communes, plus les options spécifiques suivantes (avec les valeurs par défaut): 
+    \begin{itemize}
+        \item \opt{edge=false}, booléen indiquant si les arêtes doivent être dessinées.
+        \item \opt{edgestyle=<style de ligne courant>}, style des arêtes.
+        \item \opt{edgecolor=ld.Black}, couleur des arêtes.
+        \item \opt{edgewidth=<épaisseur courante>}, épaisseur des arêtes (en dixième de point).
+        \item \opt{hidden=false}, booléen indiquant si les arêtes cachées doivent être dessinées.
+        \item \opt{hiddenstyle=ld.Hiddenlinestyle}, style des arêtes cachées.
+    \end{itemize}
+    Exemple:
+    \begin{Luacode}
+    local T1 = tetra(M(-1,-1,-1), 3*vecI, 3*vecJ, M(1,1,3))
+    g:Pov_facet(T1, {color=ld.SteelBlue, edge=true, hidden=true})
+    \end{Luacode}
+    Remarque: le dessin des arêtes cachées n'est pas toujours optimal, il peut être parfois plus intéressant de les dessiner avec TikZ par dessus l'image.
+    
+    
+    \item \textbf{Ligne polygonale}. C'est la méthode:\cmdln{g:Pov\_polyline(L, options).}
+    L'argument \argu{L} est soit une liste de points 3D, soit une liste de listes de points 3D. Les options sont les options communes, plus les options spécifiques suivantes (avec les valeurs par défaut): 
+        \begin{itemize}
+        \item \opt{style=<style de ligne courant>}, style de la ligne.
+        \item \opt{width=<épaisseur courante>}, épaisseur de la ligne.
+        \item \opt{close=false}, booléen indiquant si la ligne doit être refermée.
+        \item \opt{arrows=0}, trois valeurs possibles: soit $0$ (pas de flèche),  soit $1$ (une flèche à la fin), soit $2$ (une flèche au début et à la fin).
+        \item \opt{arrowscale=1}, permet de jouer sur la taille des flèches.
+        \item \opt{hidden=false}, booléen indiquant si les parties cachées doivent être dessinées.
+        \item \opt{hiddenstyle=ld.Hiddenlinestyle}, style des parties cachées.
+    \end{itemize}
+    Exemple: dessin des axes
+    \begin{Luacode}
+    g:Pov_polyline({{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, {arrows=1,width=8})
+    \end{Luacode}
+    
+    \item \textbf{Points 3D}. C'est la méthode : \cmdln{g:Pov\_dots(L, options).}
+    L'argument \argu{L} est une liste de points 3D. Les options sont les options communes, plus les options spécifiques suivantes (avec les valeurs par défaut): 
+        \begin{itemize}
+        \item \opt{style="ball"}, deux styles possibles: \val{"ball"} (sphère) ou bien \val{"box"} (boite aux faces parallèles à la fenêtre 3D).
+        \item \opt{dotscale=1}, permet de jouer sur la taille des points.
+    \end{itemize} 
+    
+% à traduire    
+    \item \textbf{Un plan}. C'est la méthode : \cmdln{g:Pov\_plane(P, options).}
+    L'argument \argu{P} est une table de la forme $\{A,n\}$ où $A$ est un point du plan \argu{P} (point 3D) et $n$ un vecteur normal au plan. Le plan est automatiquement clippé par la fenêtre 3D. Les options sont les options de \cmd{g:Pov\_facet()}, plus l'option spécifique \opt{scale=1}.
+    
+    \item \textbf{Un cercle}. C'est la méthode : \cmdln{g:Pov\_circle(A, R, N, options).}
+    Elle dessine le cercle de centre \argu{A}, de rayon \argu{R}, l'argument \argu{N} désigne un vecteur normal au plan du cercle. Ce sont les options communes.
+    
+     \item \textbf{Les axes}. C'est la méthode : \cmdln{g:Pov\_axes(O, options).}
+    Elle trace les axes en prenant le point \argu{O} (point 3D) comme point d'intersection. Les options sont les mêmes que pour \cmd{g:Pov\_polyline()}. Il n'y a ni graduations, ni légende.
+    
+    \item \textbf{Les solides de base}. Ce sont les méthodes:
+        \begin{itemize}
+            \item \cmd{g:Pov\_sphere(center, radius, options)}, qui dessine la sphère de centre  \argu{center} (point 3D) et de rayon \argu{radius}. Ce sont les options communes.
+
+            \item \cmd{g:Pov\_torus(center, R, r, N, options)}, qui dessine le tore de centre \argu{center} (point 3D) et de grand rayon \argu{R}, de petit rayon \argu{r}, dans le plan normal au vecteur \argu{N}. Ce sont les options communes.
+            
+            \item \cmd{g:Pov\_cylinder(A, R, B, options)}, qui dessine le cylindre d'axe $(AB)$ allant de \argu{A} jusqu'à \argu{B} (points 3D), et de rayon \argu{R}. Ce sont les options communes plus l'option spécifique \opt{hollow=false} qui indique si le cylindre est creux ou non.
+
+            \item \cmd{g:Pov\_cone(A, R, B \fac{ r, options})}, qui dessine le cône d'axe $(AB)$ allant de \argu{A} jusqu'à \argu{B} (points 3D), et de rayon \argu{R} à l'extrémité \argu{A}, et de rayon \argu{r} à l'extrémité \argu{B}. Le rayon \argu{r} est optionnel et vaut $0$ par défaut, dans ce cas, \argu{B} est le sommet du cône. Ce sont les options communes plus l'option spécifique \opt{hollow=false} qui indique si le cône est creux ou non.
+            
+            \item \cmd{g:Pov\_box(A, B, options)}, qui dessine une boîte dont les faces sont parallèles à celles de la fenêtre 3D du graphique, les points 3D \argu{A} et \argu{B} représente une diagonale de cette boîte, plus précisément \argu{A}$=$M(xinf, yinf, zinf) et \argu{B}$=$M(xsup, ysup, zsup). Ce sont les options communes.
+        \end{itemize}
+
+    \item \textbf{CSG géométrie}. Ce sont les méthodes suivantes (pour chacune d'elles les options sont les options communes):
+        \begin{itemize}
+            \item \cmd{g:Pov\_union(list, options)}, où \argu{list} est une liste d'objets \povray, ces objets peuvent être, soit le nom d'un objet déjà créé, soit une commande \povray sous forme de chaîne. Le résultat sera considéré comme un seul objet.
+            
+            \item \cmd{g:Pov\_intersection(list, options)}, où \argu{list} est une liste d'objets \povray, ces objets peuvent être, soit le nom d'un objet déjà créé, soit une commande \povray sous forme de chaîne. Le résultat est la partie commune à ces objets.
+            
+            \item \cmd{g:Pov\_merge(list, options)}, où \argu{list} est une liste d'objets \povray, ces objets peuvent être, soit le nom d'un objet déjà créé, soit une commande \povray sous forme de chaîne. Cette commande fonctionne comme l'union, mais supprime les surfaces internes (contrairement à l'union), ceci est utile en cas de transparence.
+            
+            \item \cmd{g:Pov\_difference(list, options)}, où \argu{list} est une liste \textbf{deux} objets \povray, ces objets peuvent être, soit le nom d'un objet déjà créé, soit une commande \povray sous forme de chaîne. Le résultat la différence : objet1 moins objet2.
+        \end{itemize}
+        
+    \item \textbf{Écrire directement dans le source}, avec les méthodes suivantes:
+        \begin{itemize}
+            \item \cmd{g:Pov\_comment(comment)}, qui écrit la chaîne \argu{comment} dans le source sous forme de commentaire.
+            \item \cmd{g:Pov\_special(code)}, qui écrit telle quelle la chaîne \argu{code} dans le source, ce doit donc être du code \povray. Il faut savoir que le point 3D qui se note \emph{M(x,y,z)} dans \luadrawenv, s'écrit dans le code \povray: \emph{<-x,y,z>}, le repère \povray n'est donc pas notre repère usuel et il est indirect...
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Sauvegarde, exécution, inclusion}
+
+\begin{itemize}
+    \item \textbf{Sauvegarde et exécution}. Lorsque tous les objets ont été créés, la sauvegarde et l'exécution du fichier par \povray se font avec la méthode : \cmdln{g:Pov\_exec(\fac{filename}).}
+    L'argument \argu{filename} doit être un nom de fichier sans chemin ni extension, mais il est optionnel, par défaut c'est le nom du graphique en cours qui est utilisé. Le fichier créé portera l'extension \emph{pov} et sera enregistré dans le dossier de travail de \luadrawenv (celui-ci est contenu dans la variable \varglob{cachedir}). La commande utilisée pour l'exécution s'affiche dans le terminal, ainsi que les retours du logiciel \povray, ce qui permet de voir s'il a rencontré une erreur. La construction de l'image apparaît à l'écran, mais la fenêtre se ferme dès la fin du rendu\footnote{Cela dépend de votre système d'exploitation.}. L'image porte le même nom que le source, sauf bien sûr l'extension qui est \emph{png} au lieu de \emph{pov}.
+    
+    \textbf{NB} : l'exécution de \povray nécessite une compilation du document avec l'option \emph{-shell-escape} ou \emph{-enable-write18}. Une fois l'image obtenue, l'option n'est plus nécessaire s'il n'y a pas eu de modification de celle-ci.
+    
+    \item \textbf{Enregistrement seul}.  Celui-ci se fait avec la méthode : \cmdln{g:Pov\_save(\fac{filename}).}
+    Avec les mêmes remarques que précédemment pour l'argument \argu{filename}.
+
+    \item \textbf{Inclusion de l'image}. Une fois celle-ci obtenue, l'image peut être incluse dans le graphique avec la méthode : \cmdln{g:Pov\_show(\fac{filename}).}
+    Si l'argument \argu{filename} n'est pas précisé alors il s'agit du nom du graphique en cours, sinon \argu{filename} doit être un nom complet de fichier image (avec extension). L'inclusion se fait avec \verb|\includegraphics[]{filename}|.
+\end{itemize}
+
+\subsubsection{Exemples}
+
+\paragraph{Intersection de deux surfaces implicites}
+
+\begin{demo}{Intersection de deux surfaces implicites}
+\begin{luadraw}{name=intersection_surf}
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Z, M = cpx.Z, pt3d.M
+
+local g = ld.graph3d:new{window3d={0,1,0,1,0,2}, window={-0.25,1.5,-0.5,2.25}, size={10,10,0}, viewdir={-50,60}}
+local sqrt = math.sqrt
+require "luadraw_povray"
+local f = function(x,y,z) return x^3+y^3-z end
+local h = function(x,y,z) return (x*sqrt(1-y^2)+y*sqrt(1-x^2))^3-z end
+local L = ld.implicit(function(x,y) return f(x,y,0)-h(x,y,0) end,0.01,1,0.01,1,{25,25})
+L = ld.map(function(z) return M(z.re,z.im,z.re^3+z.im^3) end, L[1])  -- courbe intersection
+-- utilisation de povray
+g:Pov_new()
+g:Pov_implicit("pow(x,3)+pow(y,3)-z", f, {color=ld.SteelBlue})
+g:Pov_implicit("z-pow(x*sqrt(1-y*y)+y*sqrt(1-x*x),3)", h, {color=ld.Crimson, containedby={M(0,0,0),M(0.999,0.999,2)}})
+g:Pov_exec()
+-- dessin
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="lightgray",xyzstep=0.5, drawbox=true})
+g:Pov_show() --Pov-Ray image
+g:Dpolyline3d(L, "line width=1.2pt,dotted,Navy") --on dessine la courbe par dessus l'image
+local d = 0.1
+g:Dsquare(Z(-0.25,2.25), Z(-0.25,2.25-d),1,"draw=none,fill=Crimson")
+g:Dsquare(Z(-0.25,2.25-2*d), Z(-0.25,2.25-3*d),1,"draw=none,fill=SteelBlue")
+g:Dlabel("$z=(x\\sqrt{1-y^2}+y\\sqrt{1-x^2})^3$", Z(-0.25+d,2.25-d/2) , {pos="E"},
+    "$z=x^3+y^3$", Z(-0.25+d,2.25-5*d/2),{})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+
+\paragraph{Cercles de Villarceau}
+
+\begin{demo}{Cercles de Villarceau}
+\begin{luadraw}{name=Villarceau_circles}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-6.5,6.5,-5,5},margin={0,0,0,0}, size={10,10}, viewdir={20,65}}
+require "luadraw_povray"
+local R, r = 3, 1
+local N = ld.rotate3d(vecK, math.asin(r/R)*ld.rad, {Origin, vecJ})
+local P = {Origin, -N}
+-- utilisation de povray
+g:Pov_new({bg=ld.LightGray})
+g:Pov_torus(Origin, R, r, vecK, {color=ld.SteelBlue, clipplane=P})
+g:Pov_plane(P,{color=ld.SeaGreen, opacity=0.4, edge=true, scale=0.9})
+g:Pov_axes(Origin,{color=ld.Gold,arrows=1})
+g:Pov_dots(Origin, {dotscale=1.5})
+g:Pov_circle( M(0,r,0),R,N,{color=ld.Crimson, width=12})
+g:Pov_circle( M(0,-r,0),R,N,{color=ld.Crimson, width=12})
+g:Pov_exec()
+-- dessin
+g:Pov_show()
+local F = g:Plane2facet(P,0.9)
+g:Dpolyline3d({{-r*vecJ,-r*vecJ+vecK},{-(R+r)*vecJ,-(R+r)*vecJ+vecK}})
+g:Dpolyline3d({{r*vecJ,r*vecJ+vecK},{(R+r)*vecJ,(R+r)*vecJ+vecK}})
+g:Dpolyline3d({{-r*vecJ+vecK,-(R+r)*vecJ+vecK}, {r*vecJ+vecK,(R+r)*vecJ+vecK}}, "stealth-stealth")
+g:Ddots3d({-r*vecJ, r*vecJ})
+g:Dlabel3d("$x$",5*vecI,{pos="SW"},"$y$", 5*vecJ,{pos="SE"}, "$z$",5*vecK,{pos="N"},
+  "$R$", -(R/2+r)*vecJ+vecK, {}, "$R$", (R/2+r)*vecJ+vecK, {},
+  "bitangent plane to the torus", F[1], {pos="NW", dir={vecJ,pt3d.prod(N,vecJ)}},
+  "$-r$",-r*vecJ,{pos="S"}, "$r$", r*vecJ,{} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Trous dans une demi-sphère}
+
+\begin{demo}{Trous dans une demi-sphère}
+\begin{luadraw}{name=holes_in_hemisphere}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-5,5,-4,5}, size={10,10}, bg="lightgray"}
+require "luadraw_povray"
+local O, R = Origin, 4
+local A, r = 2*R/3*vecJ, R/3
+local P = {Origin, vecK}
+local base = ld.circle3d(A,r,vecK)[1] --base circulaire du cylindre (liste de points 3D)
+local Cylborder = {}
+for _, C in ipairs(base) do -- on projette chaque point C de la base sur la demi-sphère verticalement
+    table.insert(Cylborder,C + math.sqrt(R^2-pt3d.abs2(C))*vecK)
+end -- Cylborder est maintenant l'intersection entre la demi-sphère et le cylindre
+-- utilisation de povray 
+g:Pov_new()
+g:Pov_sphere(Origin, R, {name="sph", clipplane=P, render=false}) -- only declaration
+g:Pov_cylinder(A-vecK, r, A+R*vecK, {name="cyl1", render=false })
+g:Pov_union({"cyl1", "cyl1 rotate 90*z"}, {name="cylext", render=false})
+g:Pov_cylinder(A-vecK, r-0.001, A+R*vecK, {name="cyl2", render=false }) 
+-- le rendu
+g:Pov_difference({"sph","cylext"}, {color=ld.Blue, opacity=0.7})
+g:Pov_union( {"cyl2", "cyl2 rotate 90*z"}, {color=ld.LightBlue,opacity=0.8,clipbox="sph"})
+g:Pov_axes(Origin,{color=ld.Gold,arrows=1})
+g:Pov_exec()
+-- dessin
+g:Dcircle3d(O,R,vecK,"line width=1.2pt"); g:Dcircle3d(A,r,vecK,"line width=1.2pt")
+g:Dcircle3d(ld.rotate3d(A,-90,{Origin,vecK}), r,vecK,"line width=1.2pt")
+g:Pov_show()
+g:Dpolyline3d( {Cylborder, ld.rotate3d(Cylborder,-90,{Origin,vecK})}, "red, line width=1.2pt")
+g:Dlabel3d("$x$",5*vecI,{pos="S"}, "$y$", 5*vecJ, {pos="SE"}, "$z$", 5*vecK, {pos="N"})
+g:Show()
+\end{luadraw}
+\end{demo}

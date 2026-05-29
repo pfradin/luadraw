@@ -6,6 +6,6 @@ installfiles = {}
 sourcefiles  = {}
 unpackfiles  = {}
 tdsdirs = {
-  files           = "tex/lualatex/luadraw",
-  ["doc/luadraw"] = "doc/lualatex/luadraw",
+  files  = "tex/lualatex/luadraw",
+  doc    = "doc/lualatex/luadraw",
 }

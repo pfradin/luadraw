@@ -1,0 +1,20 @@
+\subsection{Le module \emph{luadraw\_fields}}
+
+
+Ce module ne renvoie rien, il ajoute de nouvelles méthodes graphiques à la classe \emph{ld.graph} ainsi qu'une nouvelle fonction dans l'espace de noms \emph{luadraw}. Ce sont celles qui ont été données à la fin du chapitre $1$ pour le dessin des champs de vecteurs et des champs de gradient. On y trouve:
+
+\begin{itemize}
+    \item La fonction \cmd{ld.field(f, x1, x2, y1, y2 \fac{, grid, length})} qui renvoie le champ de vecteurs (liste de segments). L'argument \argu{f} est une fonction \argu{f}$\colon(x,y)\mapsto f(x,y))\in\mathbf R^2$ ($f(x,y)$ est une liste de deux réels). Le champ est calculé sur le pave $[x_1;x_2]\times[y_1;y_2]$. L'argument \argu{grid} vaut par défaut $\{25,25\}$, c'est le nombre de subdivisions de l'intervalle $[x_1;x_2]$ et celui de l'intervalle $[y_1;y_2]$. L'argument \argu{length} permet d'imposer la longueur des vecteurs (tous les vecteurs ont la même longueur), par défaut une longueur est calculée en fonction des pas sur chacun des deux axes.
+    
+    \item La méthode \cmd{g:Dvectorfield(f, options)} fait le dessin du champ de vecteurs associé à la fonction \argu f. \writeoptions :
+        \begin{itemize}
+            \item \opt{view=<fenêtre par défaut>}, liste de la forme \opt{view=\{x1,x2,y1,y2\}} permettant de définir le pavé $[x_1;x_2]\times [y_1;y_2]$. Par défaut c'est la fenêtre choisie lors de la création du graphe.
+            \item \opt{grid=\{25,25\}}, liste de deux entiers qui permet de définir les subdivisions suivant les deux axes.
+            \item \opt{length=nil}, permet d'imposer la longueur des vecteurs, par défaut une longueur est calculée en fonction des pas sur chacun des deux axes.
+            \item \opt{draw\_options=""}, chaîne contenant les options de dessin qui seront passées à TikZ.
+        \end{itemize}
+        
+    \item La méthode \cmd{g:Dgradientfield(f, options)} fait le dessin du champ de gradient associé à la fonction \textbf{numérique} \argu{f}$\colon(x,y)\mapsto f(x,y)\in \mathbf R$. L'argument \argu{options} est identique à celui de la méthode \cmd{Dvectorfield()}.
+\end{itemize}
+
+Un exemple de ces deux méthodes a déjà été donné page \pageref{fields}.

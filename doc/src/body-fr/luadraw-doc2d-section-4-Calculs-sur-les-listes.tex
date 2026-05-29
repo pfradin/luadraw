@@ -1,0 +1,315 @@
+\section{Calculs sur les listes}
+
+\subsection{concat}
+
+La fonction \cmd{ld.concat(table1, table2, \ldots)} concatène toutes les tables passées en argument, et renvoie la table qui en résulte.
+
+\begin{itemize}
+ \item Chaque argument peut être un réel, un complexe ou une table.
+\item Exemple : l'instruction \code{ld.concat(1,2,3,{4,5,6},7)} renvoie la table \val{\{1,2,3,4,5,6,7\}}.
+\end{itemize}
+
+\subsection{cut}
+
+La fonction \cmd{ld.cut(L, A \fac{, before})} permet de couper \argu{L} au point \argu{A} qui est supposé être situé sur la ligne \argu{L} (qui est soit une liste de complexes, soit une ligne polygonale c'est-à-dire une liste de listes de complexes). Si l'argument \argu{before} vaut \false (valeur par défaut), alors la fonction renvoie la partie située avant \argu{A}, suivie de la partie située après \argu{A}, sinon c'est l'inverse.
+
+\subsection{cutpolyline}
+
+La fonction \cmd{ld.cutpolyline(L, D \fac{, close})} permet de couper la ligne polygonale \argu{L} avec la droite \argu{D}. L'argument \argu{L} doit être une liste de complexes ou une liste de listes de complexes, l'argument \argu{D} est une liste de la forme \code{\{A,u\}} où $A$ est un complexe (point de la droite) et $u$ un complexe non nul (vecteur directeur de la droite). L'argument \argu{close} indique si la ligne \argu{L} doit être refermée (\false par défaut). La fonction renvoie trois choses:
+\begin{itemize}
+    \item La partie de \argu{L} qui est dans le demi-plan défini par la droite à "gauche" de $u$ (c'est à dire contenant le point $A+iu$) (c'est une ligne polygonale),
+    \item suivi de la partie de \argu{L} qui est dans l'autre demi-plan (ligne polygonale),
+    \item suivi de la liste des points d'intersection entre \argu{L} et la droite \argu{D}.
+\end{itemize}
+
+\begin{demo}{Illustrer un exercice de programmation linéaire}
+\begin{luadraw}{name=cutpolyline}
+local ld = luadraw
+local g = ld.graph:new{window={-5,5,-5,5}, size={10,10},margin={0,0,0,0}}
+g:Linewidth(6)
+local i = ld.cpx.I
+local P = g:Box2d() -- polygone représentant la fenêtre 2D
+local D1, D2, D3 = {0,1+i}, {2.5,-i}, {-3*i,-1-i/4} -- trois droites
+local P1 = ld.cutpolyline(P,D1,true)
+local P2 = ld.cutpolyline(P,D2,true)
+local P3 = ld.cutpolyline(P,D3,true)
+g:Daxes({0,1,1},{grid=true,gridcolor="LightGray",arrows="->",legend={"$x$","$y$"}})
+g:Filloptions("horizontal","blue"); g:Dpolyline(P1,true,"draw=none")
+g:Filloptions("fdiag","red"); g:Dpolyline(P2,true,"draw=none")
+g:Filloptions("bdiag","green"); g:Dpolyline(P3,true,"draw=none")
+g:Filloptions("none","black",1)
+g:Linewidth(8)
+g:Dline(D1,"blue"); g:Dline(D2,"red"); g:Dline(D3,"green")
+g:Dlabel(
+  "$x-y\\leqslant 0$",-3-3*i,{pos="N",dir={1+i,-1+i},dist=0.1,node_options="fill=white,fill opacity=0.8"},
+  "$x-2.5\\geqslant0$", 2.5+i,{dir={-i,1}},
+  "$-\\frac{x}{4}+y+3\\leqslant0$", -3-15/4*i,{pos="S",dir={1+i/4,i-1/4}})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{cutpolyline2}
+
+La fonction \cmd{ld.cutpolyline2(P, f, sg, \fac{, close})} permet de couper le polygone \argu{P} avec la courbe représentative de la fonction \argu{f}. L'argument \argu{P} doit être une liste de nombres complexes, l'argument \argu{f} est une fonction \argu{f}$\colon x \mapsto f(x)\in \mathbf R$. L'argument \argu{sg} est soit \val{">"}, soit \val{"<"}, dans le premier cas, la fonction renvoie la partie du polygone \argu{P} dont les points vérifient $y>f(x)$, dans le second cas ce sont les points vérifiant $y<f(x)$. L'argument facultatif \argu{close} indique si \argu{P} doit être refermé. 
+
+\begin{demo}{cutpolyline2}
+\begin{luadraw}{name=cupolyline2}
+local ld = luadraw
+local g = ld.graph:new{window = {-4, 4, -4, 4}, size ={10,10}}
+g:Daxes({0,1,1}, {grid=true, arrows="-Stealth", legend={"$x$","$y$"}})
+local f = function(x) return 1.5*math.sin(x) end
+local P = ld.polyreg(0,3,5) -- pentagone
+local L = ld.cutpolyline2(P,f,'<',true) -- partie du polygone située sous la courbe de f
+g:Dpolyline(L,true,"draw=none,fill=pink,fill opacity=0.6")
+g:Linewidth(12)
+g:Dcartesian(f, {draw_options="blue"})
+g:Dpolyline(P,true,"red")
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{getbounds}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.getbounds(L)} renvoie les bornes \val{xmin,xmax,ymin,ymax} de la ligne polygonale \argu{L}.
+    \item Exemple : \code{local xmin,xmax,ymin,ymax=ld.getbounds(L)} (où \argu{L} désigne une ligne polygonale).
+\end{itemize}
+
+\subsection{getdot}
+La fonction \cmd{ld.getdot(x, L)} renvoie le point d'abscisse \argu{x} (réel entre $0$ et $1$) le long de la composante connexe \argu{L} (liste de complexes). L'abscisse $0$ correspond au premier point et l'abscisse $1$ au dernier, plus généralement, \argu{x} correspond à un pourcentage de la longueur de \argu{L}.
+
+\subsection{insert}
+La fonction \cmd{ld.insert(table1, table2 \fac{, pos})} insère les éléments de \argu{table2} dans \argu{table1} à la position \argu{pos}.
+
+\begin{itemize}
+    \item L'argument \argu{table2} peut être un réel, un complexe ou une table.
+    \item L'argument \argu{table1} doit être une variable qui désigne une table, celle-ci sera modifiée par la fonction.
+    \item Si l'argument \argu{pos} vaut \nil, l'insertion se fait à la fin de \argu{table1}.
+    \item Exemple : si une variable $L$ vaut \val{\{1,2,6\}}, alors après l'instruction \code{ld.insert(L,{3,4,5},3)}, la variable $L$ sera égale à \val{\{1,2,3,4,5,6\}}.
+\end{itemize}
+
+\subsection{interCC}
+La fonction \cmd{ld.interCC(C1, C2)} renvoie l'intersection cercle \argu{C1} avec le cercle \argu{C2}, où \code{C1=\{O1,r1\}} (cercle de centre $O_1$ et de rayon $r_1$), et \code{C2=\{O2,r2\}} (cercle de centre $O_2$ et de rayon $r_2$). La fonction renvoie une liste contenant $1$ ou $2$ points, ou bien le cercle en entier si l'intersection n'est pas vide, sinon elle renvoie \nil.
+
+\begin{demo}{Tangentes à un cercle \{O,2\} et à une ellipse \{O,3,2\} issues d'un point}
+\begin{luadraw}{name=interCC}
+local ld = luadraw
+local cpx = ld.cpx
+local g = ld.graph:new{window={-10,10,-5,5}, margin={0,0,0,0},size={16,8}}
+local i = cpx.I
+-- pour le cercle {O,2}
+g:Saveattr(); g:Viewport(-10,0,-5,5); g:Coordsystem(-4,6,-5,5)
+local O = -1
+local C1, I = {O, 2}, 4-i
+local C2 = {(O+I)/2,cpx.abs(I-O)/2}
+local rep = ld.interCC(C1,C2) -- points de tangence
+g:Dcircle(C1,"blue"); g:Dcircle(C2,"dashed")
+g:Dhline(I,rep[1],"red"); g:Dhline(I,rep[2],"red") --demi-tangentes
+g:Ddots(rep); g:Ddots({O,I}); g:Dlabel("$I$",I,{pos="SE"},"$O$",O,{pos="W"},
+  "tangentes au cercle issues de $I$",1-5*i,{pos="N"})
+g:Restoreattr()
+-- pour l'ellipse (E) : {O,3,2}
+g:Saveattr(); g:Viewport(0,10,-5,5); g:Coordsystem(-4,6,-5,5)
+local mat = {0,1.5,i} -- cette matrice transforme un cercle {01,2} en l'ellipse (E)
+local inv_mat = ld.invmatrix(mat) -- matrice inverse
+local O1, I1 = table.unpack( ld.mtransform({O,I},inv_mat) ) -- antécédents de O et de I
+C1 = {O1, 2}
+C2 = {(O1+I1)/2,cpx.abs(I1-O1)/2}
+rep = ld.interCC(C1,C2) -- points de tangence (tangentes issues de I1)
+g:Composematrix(mat) -- on applique la matrice pour retrouver l'ellipse, la tangence est conservée
+g:Dcircle(C1,"blue"); g:Dcircle(C2,"dashed")
+g:Dhline(I1,rep[1],'red'); g:Dhline(I1,rep[2],"red")
+g:Ddots(rep); g:Ddots({O1,I1}); g:Dlabel("$I$",I1,{pos="SE"},"$O$",O1,{pos="W"},
+  "tangentes à l'ellipse issues de $I$",1-5*i,{pos="N"})
+g:Restoreattr()
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsection{interD}
+La fonction \cmd{ld.interD(d1, d2)} renvoie le point d'intersection des droites \argu{d1} et \argu{d2}, une droite est une liste de deux complexes : un point de la droite et un vecteur directeur.
+
+\subsection{interDC}
+La fonction \cmd{ld.interDC(d, C)} renvoie l'intersection de la droite \argu{d} avec le cercle \argu{C}, où \code{d=\{A,u\}} (droite passant par $A$ et dirigée par $u$), et \code{C=\{O,r\}} (cercle de centre $O$ et de rayon $r$). La fonction renvoie une liste contenant $1$ ou $2$ points  si l'intersection n'est pas vide, elle renvoie \nil sinon.
+
+
+\subsection{interDL}
+La fonction \cmd{ld.interDL(d, L)} renvoie la liste des points d'intersection entre la droite \argu{d} et la ligne polygonale \argu{L}.
+
+\subsection{interL}
+La fonction \cmd{ld.interL(L1, L2)} renvoie la liste des points d'intersection des lignes polygonales définies par \emph{L1} et \emph{L2}, ces deux arguments sont deux listes de complexes ou deux listes de listes de complexes).
+
+\subsection{interP}
+La fonction \cmd{ld.interP(P1, P2)} renvoie la liste des points d'intersection des chemins définis par \argu{P1} et \argu{P2}, ces deux arguments sont deux listes de complexes et d'instructions (voir \emph{Dpath} page \pageref{Dpath}).
+
+
+\subsection{linspace}
+La fonction \cmd{ld.linspace(a, b \fac{, nbdots})} renvoie une liste de \argu{nbdots} nombres équirépartis de \argu{a} jusqu'à \argu{b}. Par défaut \argu{nbdots} vaut $50$.
+
+\subsection{map}
+La fonction \cmd{ld.map(f, list)} applique la fonction \argu{f} à chaque élément de la \argu{list} et renvoie la table des résultats. Lorsqu'un résultat vaut \nil, c'est le complexe \val{cpx.Jump} qui est inséré dans la liste.
+
+\subsection{merge}
+La fonction \cmd{ld.merge(L \fac{, epsilon})} recolle si c'est possible, les composantes connexes de \argu{L} qui doit être une liste de listes de complexes, la fonction renvoie une nouvelle ligne polygonale. Les comparaisons se font à \argu{epsilon} près, par défaut on a \argu{epsilon}$=10^{-10}$.
+
+\subsection{polyline2path}
+La fonction \cmd{ld.polyline2path(L)} où \argu{L} est une liste de nombres complexes ou une liste de listes de nombres complexes, renvoie \argu{L} sous la forme d'un chemin (que l'on peut dessiner avec la méthode \cmd{g:Dpath()}).
+
+\subsection{range}
+La fonction \cmd{ld.range(a, b \fac{, step})} renvoie la liste des nombres de \argu{a} jusqu'à \argu{b} avec un pas égal à \argu{step}, celui-ci vaut $1$ par défaut.
+
+\subsection{read\_csv\_file}
+La fonction \cmd{ld.read\_csv\_file(file, options)} permet la lecture d'un fichier \emph{csv}. L'argument \argu{file} est une chaîne de caractères représentant le fichier avec extension: \code{"<name>.csv"}. L'argument \argu{options} est une table dont les champs représentent les options, celles-ci sont (avec leur valeur par défaut):
+\begin{itemize}
+    \item \opt{header=true}, avec la valeur \true cela signifie que la première ligne du fichier contient les noms des colonnes.
+    
+    \item \opt{dic=false}, avec la valeur \true cela signifie que le résultat renvoyé sera une liste de dictionnaires (un par ligne), les clés de ces dictionnaires étant les noms des colonnes. Avec la valeur \false (valeur par défaut) le résultat est une liste de listes de valeurs (une liste de valeurs par ligne). Lorsque l'option \opt{header} a la valeur \false, l'option \opt{dic} reste automatiquement à \false.
+    
+    \item \opt{sep=","}, chaîne de caractères indiquant le séparateur des valeurs sur chaque ligne.
+    
+    \item \opt{num=true}, booléen indiquant si les valeurs doivent automatiquement être converties en valeurs numériques (lorsque cette conversion échoue, la valeur reste une chaîne de caractères).
+    
+    \item \opt{comment="\%\%"}, chaîne de caractères annonçant un commentaire (une ligne commençant par ces caractères est ignorée). \textbf{Attention} : la recherche utilise la méthode \emph{match} de Lua, méthode pour laquelle le caractère \% est un caractère spécial, il doit être doublé ("\%\%") pour être considéré comme un caractère.
+\end{itemize}
+Le résultat renvoyé par cette fonction est une séquence constituée dans cet ordre par:
+    \begin{enumerate}
+        \item Une liste de listes de résultats (une liste de résultats par ligne).
+        \item La liste des valeurs de la première ligne lorsque l'option \opt{header} a la valeur \true.
+    \end{enumerate}
+
+
+\subsection{Fonctions de clipping}
+
+\begin{itemize}
+    \item La fonction \cmd{ld.clipseg(A, B, xmin, xmax, ymin, ymax)} clippe le segment $[A;B]$ (nombres complexes) avec la fenêtre $[x_{\mathrm{min}};x_{\mathrm{max}}]\times [y_{\mathrm{min}};y_{\mathrm{max}}]$ et renvoie le résultat.
+    
+    \item La fonction \cmd{ld.clipline(d, xmin, xmax, ymin, ymax)} clippe la droite \argu{d} avec la fenêtre $[x_{\mathrm{min}};x_{\mathrm{max}}]\times [y_{\mathrm{min}};y_{\mathrm{max}}]$ et renvoie le résultat. La droite \argu{d} est une liste de deux complexes : un point et un vecteur directeur.
+    
+    \item La fonction \cmd{ld.clippolyline(L, xmin, xmax, ymin, ymax \fac{, close})} clippe la ligne polygonale \argu{L} avec la fenêtre $[x_{\mathrm{min}};x_{\mathrm{max}}]\times [y_{\mathrm{min}};y_{\mathrm{max}}]$ et renvoie le résultat. L'argument \argu{L} est une liste de complexes ou une liste de listes de complexes. L'argument facultatif \argu{close} (\false par défaut) indique si la ligne polygonale doit être refermée.
+    
+    \item La fonction \cmd{ld.clipdots(L, xmin, xmax, ymin, ymax)} clippe la liste de points (nombres complexes) \argu{L} avec la fenêtre $[x_{\mathrm{min}};x_{\mathrm{max}}]\times [y_{\mathrm{min}};y_{\mathrm{max}}]$ et renvoie le résultat (les points extérieurs sont simplement exclus). L'argument \argu{L} est une liste de complexes ou une liste de listes de complexes.
+\end{itemize}
+
+\subsection{Ajout de fonctions mathématiques}
+
+Outre les fonctions associées aux méthodes graphiques qui font des calculs et renvoient une ligne polygonale (comme \cmd{ld.cartesian}, \cmd{ld.periodic}, \cmd{ld.implicit}, \cmd{ld.odesolve}, etc), le paquet \luadrawenv ajoute quelques fonctions mathématiques qui ne sont pas proposées nativement dans le module \emph{math}.
+
+\subsubsection{Évaluation protégée : evalf}
+La fonction \cmd{ld.evalf(f, \ldots)} permet d'évaluer \code{f(\ldots)} et de renvoyer le résultat s'il n'y a pas d'erreur d'exécution par Lua, dans le cas contraire, la fonction renvoie \nil. Exemple, l'exécution de :
+\begin{Luacode}
+local Z = cpx.Z
+local f = function(a,b)
+    return 2*Z(a,1/b)
+end
+print(f(1,0))
+\end{Luacode}
+provoque l'erreur d'exécution \verb|attempt to perform arithmetic on a nil value| (dans la console), car ici \code{Z(1,1/0)} renvoie \nil, et Lua n'accepte pas un argument égal à \nil dans un calcul. Par contre, l'exécution de :
+\begin{Luacode}
+local Z = cpx.Z
+local f = function(a,b)
+    return 2*Z(a,1/b)
+end
+print(ld.evalf(f,1,0))
+\end{Luacode}
+ne provoque pas d'erreur de la part de Lua, et il n'y a pas d'affichage non plus dans la console puisque la valeur à afficher est \nil.
+
+\subsubsection{int}
+La fonction \cmd{ld.int(f, a, b)} renvoie une valeur approchée de l'intégrale de la fonction \argu{f} sur l'intervalle $[a;b]$ (deux nombres complexes). La fonction \argu{f} est à variable réelle et à valeurs réelles ou complexes. La méthode utilisée est la méthode de Simpson accélérée deux fois avec la méthode de Romberg.
+
+\paragraph{Exemple :}
+\begin{TeXcode}
+$\int_0^1 e^{t^2}\mathrm d t \approx \directlua{tex.sprint(int(function(t) return math.exp(t^2) end, 0, 1))}$
+\end{TeXcode}
+\paragraph{Résultat :} $\int_0^1 e^{t^2}\mathrm d t \approx \directlua{tex.sprint(luadraw.int(function(t) return math.exp(t^2) end, 0, 1))}$.
+
+\subsubsection{gcd}
+La fonction \cmd{ld.gcd(a, b)} renvoie le plus grand diviseur commun entre \argu{a} et \argu{b} deux entiers.
+
+\subsubsection{lcm}
+La fonction \cmd{ld.lcm(a, b)} renvoie le plus petit diviseur commun strictement positif entre \argu{a} et \argu{b} deux entiers.
+
+\subsubsection{nth\_root}
+La fonction \cmd{ld.nth\_root(n, x)} renvoie la racine énième du réel\argu{x}, l'argument \argu{n} doit être un entier.
+
+\subsubsection{solve}
+La fonction \cmd{ld.solve(f, a, b \fac{, n, df})} fait une résolution numérique de l'équation $f(x)=0$ dans l'intervalle $[a;b]$, l'argument \argu{f} est la fonction, \argu{a}, \argu{b} sont deux nombres complexes. L'intervalle est subdivisé en $n$ morceaux ($25$ par défaut). L'argument facultatif \argu{df} et une fonction qui représente la dérivée de \argu{f}, lorsque cet argument est absent, une approximation de la dérivée est utilisée. La méthode mise en œuvre est une variante de la méthode de Newton. La fonction renvoie une liste de nombres ou bien \nil.
+
+\paragraph{Exemple 1 :}
+\begin{TeXcode}
+\begin{luacode}
+local ld = luadraw
+resol = function(f,a,b)
+    local y = ld.solve(f,a,b)
+    if y == nil then tex.sprint("\\emptyset")
+    else
+        local str = y[1]
+        for k = 2, #y do
+            str = str..", ".. y[k]
+        end
+        tex.sprint(str)
+    end
+end
+\end{luacode}
+\def\solve#1#2#3{\directlua{resol(#1,#2,#3)}}%
+\begin{luacode}
+f1 = function(x) return math.cos(x)-x end
+f2 = function(x) return x^3-2*x^2+1/2 end
+\end{luacode}
+La résolution de l'équation $\cos(x)=x$ dans $[0;\frac{\pi}2]$ donne $\solve{f1}{0}{math.pi/2}$.\par
+La résolution de l'équation $\cos(x)=x$ dans $[\frac{\pi}2;\pi]$ donne $\solve{f1}{math.pi/2}{math.pi}$.\par
+La résolution de l'équation $x^3-2x^2+\frac12=0$ dans $[-1;2]$ donne : $\{\solve{f2}{-1}{2}\}$.
+\end{TeXcode}
+\paragraph{Résultat :}\ \par
+
+\begin{luacode}
+local ld = luadraw
+resol = function(f,a,b)
+    local y = ld.solve(f,a,b)
+    if y == nil then tex.sprint("\\emptyset")
+    else
+        local str = y[1]
+        for k = 2, #y do
+            str = str..", ".. y[k]
+        end
+        tex.sprint(str)
+    end
+end
+\end{luacode}
+\def\solve#1#2#3{\directlua{resol(#1,#2,#3)}}%
+\begin{luacode}
+f1 = function(x) return math.cos(x)-x end
+f2 = function(x) return x^3-2*x^2+1/2 end
+\end{luacode}
+
+La résolution de l'équation $\cos(x)=x$ dans $[0;\frac{\pi}2]$ donne $\solve{f1}{0}{math.pi/2}$.\par
+La résolution de l'équation $\cos(x)=x$ dans $[\frac{\pi}2;\pi]$ donne $\solve{f1}{math.pi/2}{math.pi}$.\par
+La résolution de l'équation $x^3-2x^2+\frac 12=0$ dans $[-1;2]$ donne : $\{\solve{f2}{-1}{2}\}$.
+
+\paragraph{Exemple 2 :} on souhaite tracer la courbe de la fonction $f$ définie par la condition :
+\[\forall x\in \mathbf R,\ \int_x^{f(x)} \exp(t^2)\mathrm d t = 1.\]
+On a deux méthodes possibles :
+\begin{enumerate}
+    \item On considère la fonction $G\colon (x,y) \mapsto \int_x^y \exp(t^2)\mathrm d t-1$, et on dessine la courbe implicite d'équation $G(x,y)=0$.
+    \item On détermine un réel $y_0$ tel que $\int_0^{y_0}\exp(t^2)\mathrm d t = 1$ et on dessine la solution de l'équation différentielle $y'=e^{x^2-y^2}$ vérifiant la  condition initiale $y(0)=y_0$.
+\end{enumerate}
+Dessinons les deux :
+\begin{demo}{Fonction $f$ définie par $\int_x^{f(x)} \exp(t^2)\mathrm d t = 1$.}
+\begin{luadraw}{name=int_solve}
+local ld = luadraw
+local Z = ld.cpx.Z
+local g = ld.graph:new{window={-3,3,-3,3},size={10,10}}
+local h = function(t) return math.exp(t^2) end
+local G = function(x,y) return ld.int(h,x,y)-1 end
+local H = function(y) return G(0,y) end
+local F = function(x,y) return math.exp(x^2-y^2) end
+local y0 = ld.solve(H,0,1)[1] -- solution de H(x)=0
+g:Daxes({0,1,1}, {arrows="->"})
+g:Dimplicit(G, {draw_options="line width=4.8pt,Pink"})
+g:Dodesolve(F,0,y0,{draw_options="line width=0.8pt"})
+g:Lineoptions("dashed","gray",4); g:DlineEq(1,-1,0); g:DlineEq(1,1,0) -- bissectrices
+g:Dlabel("${\\mathcal C}_f$",Z(2.15,2),{pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+On voit que les deux courbes se superposent bien, cependant la première méthode (courbe implicite) est beaucoup plus gourmande en calculs, la méthode 2 est donc préférable.

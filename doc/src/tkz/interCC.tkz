@@ -1,0 +1,23 @@
+\begin{tikzpicture}[line join=round]%
+\begin{scope}%
+\clip (0,0) rectangle (16.0,8.0);%
+\begin{scope}%
+\draw[blue] (4,4) .. controls (4,4.888) and (3.288,5.6) .. (2.4,5.6) .. controls (1.512,5.6) and (0.8,4.888) .. (0.8,4) .. controls (0.8,3.112) and (1.512,2.4) .. (2.4,2.4) .. controls (3.288,2.4) and (4,3.112) .. (4,4);%
+\draw[dashed] (6.4396,3.6) .. controls (6.4396,4.732) and (5.532,5.6396) .. (4.4,5.6396) .. controls (3.268,5.6396) and (2.3604,4.732) .. (2.3604,3.6) .. controls (2.3604,2.468) and (3.268,1.5604) .. (4.4,1.5604) .. controls (5.532,1.5604) and (6.4396,2.468) .. (6.4396,3.6);%
+\draw[red] (6.4,3.2) -- (0,1.8649);%
+\draw[red] (6.4,3.2) -- (0,7.5827);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(2.7267,2.4337)} plot coordinates {(3.304,5.3201)};%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(2.4,4)} plot coordinates {(6.4,3.2)};%
+\draw[-] (6.4,3.2) node[below right] {$I$} (2.4,4) node[left] {$O$} (4,0) node[above] {tangentes au cercle issues de $I$};%
+\end{scope}%
+\begin{scope}%
+\draw[blue] (12.8,4) .. controls (12.8,4.888) and (11.732,5.6) .. (10.4,5.6) .. controls (9.068,5.6) and (8,4.888) .. (8,4) .. controls (8,3.112) and (9.068,2.4) .. (10.4,2.4) .. controls (11.732,2.4) and (12.8,3.112) .. (12.8,4);%
+\draw[dashed] (14.4881,3.6) .. controls (14.4881,4.3726) and (13.5589,4.992) .. (12.4,4.992) .. controls (11.2411,4.992) and (10.3119,4.3726) .. (10.3119,3.6) .. controls (10.3119,2.8274) and (11.2411,2.208) .. (12.4,2.208) .. controls (13.5589,2.208) and (14.4881,2.8274) .. (14.4881,3.6);%
+\draw[red] (14.4,3.2) -- (8,1.7824);%
+\draw[red] (14.4,3.2) -- (8.7296,8);%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(11.1567,2.4816)} plot coordinates {(12.2855,4.9899)};%
+\draw[mark=*,mark size=1.4pt] plot coordinates {(10.4,4)} plot coordinates {(14.4,3.2)};%
+\draw[-] (14.4,3.2) node[below right] {$I$} (10.4,4) node[left] {$O$} (12.4,0) node[above] {tangentes à l'ellipse issues de $I$};%
+\end{scope}%
+\end{scope}%
+\end{tikzpicture}%

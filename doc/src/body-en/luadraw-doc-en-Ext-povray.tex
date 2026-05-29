@@ -1,0 +1,362 @@
+\subsection{The \emph{luadraw\_povray} Module}
+
+\newcommand*{\povray}{POV-Ray\xspace}%
+
+This module does not return anything; it adds new graphics methods to the \emph{ld.graph3d} class, as well as a function in the namespace \emph{luadraw}.
+
+\subsubsection{Prerequisites and introduction}
+
+First and foremost, the \povray software must be installed on your computer in its command-line version (non-graphical version).
+\begin{itemize}
+\item On Linux: \povray is always a command-line application and is installed using the package manager.
+\item On macOS: the command-line version of \povray can be installed via \href{https://formulae.brew.sh/formula/povray\#default)}{HomeBrew}.
+\item On Windows: the installer can be downloaded from the \href{https://www.povray.org/download/}{\povray} website.
+\end{itemize}
+
+This module enables the creation of (relatively simple) source files for the \povray software (command-line version) and allows them to be compiled on the fly. Once created, the resulting image (in \emph{png} format) can be automatically included in the current graphic, allowing further drawing both underneath and on top of it.
+The image is inserted with perfect alignment, meaning that the 3D reference frames of the graphic and of the image will match exactly, provided that the system operates in \textbf{orthographic projection} mode.
+Source files and generated images are created in the working directory of \luadrawenv. The source files can of course be compiled separately by the user; the parameters to be passed to \povray are written in comments at the beginning of the source file.
+The source file is divided into three parts: a preamble, the object declarations, and the rendering of those objects.
+
+\subsubsection{Default Settings}
+
+Using this module requires certain default settings that may vary depending on the operating system. These default values ​​can be modified using the function:
+\cmdln{ld.povray\_default(options)} 
+\writeoptions :
+\begin{itemize}
+\item \opt{bg=""} This option defines the background. It can be an empty string (default value), in which case the background will be transparent (essential if drawing under the image), or a non-empty string, in which case it must be a color name known to \povray, or an array of the form $\{r,g,b\}$ representing a color with the values ​​$r$, $g$, and $b$ between $0$ and $1$.
+
+\item \opt{shadow=true}, this boolean indicates whether objects should cast a shadow or not (this boolean can be modified locally for each object created).
+
+\item \opt{imagescale=1}, this option allows you to change the size of the generated \emph{png} image; values ​​greater than $1$ obviously increase its file size.
+
+\item \opt{param="-V +A +FN"}, these are the basic parameters passed to \povray. The image width and height will be automatically added to these, as well as the "+UA" option if the background should be transparent.
+
+\item \opt{pov\_cmd=}, the name of the command to run \povray. On Unix, the default value is \val{"povray"}, and on Windows, the default value is \val{"pvengine64.exe"}.
+
+\item \opt{pov\_cmd\_ext=""}, a string that is appended to the end of each command sent to \povray.
+
+\item \opt{win\_param\_ext="/RENDER /EXIT"}, additional parameters that only apply to Windows.
+
+\item \opt{include=\{\}}, this option allows \povray to include \emph{*.inc} files, for example: \par
+\hfil\opt{include=\{"textures.inc", "colors.inc"\}}\hfil\par These two files are normally distributed with \povray; the first defines textures, the second colors. By default, no inclusions are made.
+\end{itemize}
+
+If you modify one of these options, the value you assign becomes the new default value for the rest of the document. However, it's not necessary to repeat this function in every graph in your document using \povray; it only needs to be done once in the preamble. For example, on macOS, if you installed \povray via \emph{HomeBrew}, then this is suitable:
+
+
+\begin{minted}{TeX}
+\documentclass{standalone}%
+\usepackage[svgnames]{xcolor}
+\usepackage[3d]{luadraw}
+\directlua{%
+require "luadraw_povray"
+luadraw.povray_default( {pov_cmd = "/opt/homebrew/bin/povray"} )
+}%
+...
+\end{minted}
+
+Of course, if the default values ​​are suitable for your system (this should be the case under Linux), you do not need to use the function \cmd{ld.povray\_default()}.
+
+
+\subsubsection{Before Creating Objects}
+
+The \povray must be initialized using the method:\cmdln{g:Pov\_new(options).}
+The argument \argu{options} is exactly the same as for the previous function \cmd{ld.povray\_default()}, except that the effect will be local to the current graph only.
+
+\subsubsection{Creation of Objects}
+
+Objects are created using methods following the format \cmd{g:Pov\_<command>(<data>, options)}. Each object is first declared in the \povray source file with a name (similar to a variable), and then this object is "rendered" in the third section of the source file with a texture defined from the options.
+
+The argument \argu{options} is a table whose fields specify the options of the object. The following are the \textbf{options common to all objects}, along with their default values:
+\begin{itemize}
+    \item \opt{name="object<num>"}, a string representing the name of the created object. By default, it is the word "object" followed by a number (its order of appearance). Assigning a name is useful when the object needs to be reused later.
+
+    \item \opt{shadow=true}, a Boolean indicating whether the object casts a shadow.
+
+    \item \opt{render=true}, a Boolean indicating whether the object should be displayed. It may be desirable not to render an object if it is only used in the construction of another one.
+
+    \item Options defining the base texture, composed of a \emph{pigment} (color + opacity) and a \emph{finish} (ambient + diffuse + phong):
+        \begin{itemize}
+            \item \opt{color=ld.White}, this option may be either a table in the form $\{r,g,b\}$ (with $r$, $g$, and $b$ between $0$ and $1$), or a string that must represent a color known to \povray. It can also refer to a texture defined only by a \emph{pigment} (for example, \opt{color="Blue\_Sky3"}, where this name is defined in the file \emph{textures.inc}).
+
+            \item \opt{usepalette=nil}, this option allows the use of a color palette. The syntax is \opt{usepalette=\{palette, func, minmax\}} where \argu{palette} is the list (table) of colors, each of which is a list in the format $\{r,g,b\}$ with $r$, $g$, and $b$ between $0$ and $1$. The argument \argu{func} is a string that defines the gradient type; it can be either \val{"x"}, \val{"y"}, or \val{"z"} (in this case, the argument \argu{minmax} must be a list containing the minimum and maximum values), or a string of the form \val{"function{ <expression depending on x, y, z> }"}. The expression that depends on $x$, $y$, and $z$ is a function (for \povray) that must return a value between $0$ and $1$ (in this case, the \argu{minmax} argument is not needed).
+            
+            \item \opt{opacity=1}, a real number between $0$ and $1$ defining the object’s opacity.
+
+            \item \opt{ambient=0.35}, \opt{diffuse=0.8}, and \opt{phong=0.5}: three parameters defining the \emph{finish}.
+
+            \item \opt{mytexture=nil}, this parameter allows specifying a texture directly as a string or referencing an existing \povray texture. In that case, the previous parameters are ignored. For example: \opt{mytexture="texture\{Silver\_Metal\}"} (this texture is declared in the file \emph{textures.inc}).
+        \end{itemize}
+
+    \item \opt{matrix=nil}, a 3D transformation matrix applied locally to the object. The global 3D transformation matrix of the graphic is also taken into account.
+
+    \item \opt{clipbox=nil}, this option defines a list (table) of objects used to clip the object being constructed. These objects may be: an existing object, referenced by its name as a string; a box, specified as a table of the form \emph{\{M(xmin,ymin,zmin), M(xmax,ymax,zmax)\}} (representing the box diagonal); or a sphere, given as a table \emph{\{center,radius\}}, where \emph{center} is a 3D point and \emph{radius} a positive number.
+
+    \item \opt{clipplane=nil}, this option defines a list (table) of planes to clip the object being constructed. Each plane must be of the form $\{A, n\}$, where $A$ is a point on the plane (a 3D point) and $n$ the normal vector to the plane. Only the part of the object lying in the half-space containing $n$ is preserved.
+\end{itemize}
+
+
+\subsubsection{List of Predefined Objects}
+
+The following is the list of objects that can be drawn using the corresponding methods:
+\begin{itemize}
+    \item \textbf{Implicit surfaces} defined by the equation \(f(x,y,z)=0\). The corresponding method is: \cmdln{g:Pov\_implicit( povfunction, luafunction, options).}
+
+    The argument \argu{povfunction} is a string containing the expression of \(f(x,y,z)\). \povray supports standard mathematical functions; however, note that the power function is written as \emph{pow}, i.e. \(x \mapsto \mathrm{pow}(x,n)\), and that \povray does not handle numerical errors such as division by zero.
+
+    The options are those already described, plus the specific option \opt{containedby=<current 3D window>}, which specifies the box (or sphere) within which the computations are carried out. By default, this box is the current 3D window of the graphic. A box is given as a table of the form \emph{\{M(xinf,yinf,zinf), M(xsup,ysup,zsup)\}} (representing a diagonal of the box), and a sphere is a table of the form $\{C,r\}$, where $C$ is the center (a 3D point) and $r$ the radius. Example:
+    \begin{Luacode}
+    local f = function(x,y,z) return x^2+y^2+z^2 - 1 end
+    local r = 1.1
+    g:Pov_implicit("x*x+y*y+z*z-1", f, {color=ld.SteelBlue, containedby={M(-r,-r,-r), M(r,r,r)}})
+    \end{Luacode}
+
+    \item \textbf{Parameterized Surfaces}. Two possible syntaxes:
+
+    \begin{enumerate}
+        \item The method: \cmd{g:Pov\_surface(f, u1, u2, v1, v2, options)}
+        
+        draws the (smoothed) surface parameterized by the function \argu{f}$\colon(u,v) \mapsto f(u,v)\in \mathbf R^3$. The interval for the parameter $u$ is given by \argu{u1} and \argu{u2}. The interval for the parameter $v$ is given by \argu{v1} and \argu{v2}. The options are those already provided, plus two specific options:
+        \begin{itemize}
+        \item \opt{grid=\{25,25\}}, this option defines the number of points to calculate for the parameter $u$ followed by the number of points to calculate for the parameter $v$ ($25$ by default).
+        \item \opt{clip=\false}, with the value \true the surface is clipped to the current 3D window.
+        \end{itemize}
+        Example:
+        \begin{Luacode}
+        local f = function(x,y) return M(x,y,x^2+y^2) end
+        g:Pov_surface(f,-2,2,-2,2, {color=ld.SteelBlue, clip=true})
+        \end{Luacode}
+        
+        \item The method: \cmd{g:Pov\_surface(xfunc, yfunc, zfunc, u1, u2, v1, v2, options)}
+        
+        draws the surface parameterized by $(u,v)\mapsto (x(u,v), y(u,v), z(u,v))$. The arguments \argu{xfunc}, \argu{yfunc}, and \argu{zfunc} are three strings containing the expressions $x(u,v)$, $y(u,v)$, and $z(u,v)$, respectively. The arguments \argu{u1} and \argu{u2}, respectively \argu{v1} and \argu{v2}, define the interval bounds for the parameter $u$ and for the parameter $v$, respectively. The options are those already given, plus two specific options:
+        \begin{itemize}
+        \item \opt{containedby=<current 3D window>}, this indicates in which box (or sphere) the calculations will be performed; by default, this box is the 3D window of the current graph. A box is a table of the form \emph{\{M(xinf,yinf,zinf), M(xsup,ysup,zsup)\}} (this represents a diagonal of the box), a sphere is a table of the form $\{C,r\}$, where $C$ is the center (3D point) and $r$ is the radius.
+        
+        \item \opt{max\_grad=nil}, numerical value (optional) allowing calculations to be optimized, here is what the \povray help says about this number: 
+        \begin{small} 
+        \begin{verbatim} 
+        The max_gradient is the maximum magnitude of all six partial derivatives 
+        over the specified ranges of u and v. 
+        Take dx/du, dx/dv, dy/du, dy/dv, dz/du, and dz/dv and calculate them over 
+        the entire range. 
+        The max_gradient should be at least the maximum (absolute value) of all of those values. 
+        Choosing a too small of a value will create holes or artifacts in the object. 
+        \end{verbatim}
+        \end{small}
+        \end{itemize}
+        Example:
+        \begin{Luacode}
+        g:Pov_surface("x", "y", "x*x+y*y",-2,2,-2,2, {color=ld.SteelBlue, max_grad=4})
+        \end{Luacode}
+        Note: This is the same surface in both examples, but the second method is longer, and if the \opt{max\_grad=4} option is not specified, then the entire surface is not drawn.
+    \end{enumerate}
+
+    \item \textbf{Polyhedron or list of facets}. This is the method:\cmdln{g:Pov\_facet(F, options).}
+    The argument \argu{F} is either a polyhedron or a list of facets. The options include the common ones, plus the following specific options (with their default values): 
+    \begin{itemize}
+        \item \opt{edge=false}, boolean indicating whether edges should be drawn.
+        \item \opt{edgestyle=<current line style>}, style of the edges.
+        \item \opt{edgecolor=ld.Black}, color of the edges.
+        \item \opt{edgewidth=<current line width>}, width of the edges.
+        \item \opt{hidden=false}, boolean indicating whether hidden edges should be drawn.
+        \item \opt{hiddenstyle=ld.Hiddenlinestyle}, style of hidden edges.
+    \end{itemize}
+    Example:
+    \begin{Luacode}
+    local T1 = tetra(M(-1,-1,-1), 3*vecI, 3*vecJ, M(1,1,3))
+    g:Pov_facet(T1, {color=ld.SteelBlue, edge=true, hidden=true})
+    \end{Luacode}
+    Note: drawing hidden edges is not always optimal; sometimes it is better to draw them with TikZ over the rendered image.
+    
+    
+    \item \textbf{Polygonal line}. This is the method:\cmdln{g:Pov\_polyline(L, options).}
+    The argument \argu{L} is either a list of 3D points or a list of lists of 3D points. The options include the common ones, plus the following specific options (with their default values): 
+    \begin{itemize}
+        \item \opt{style=<current line style>}, line style.
+        \item \opt{width=<current line width>}, line width.
+        \item \opt{close=false}, boolean indicating whether the line should be closed.
+        \item \opt{arrows=0}, three possible values: $0$ (no arrow), $1$ (arrow at the end), or $2$ (arrows at both start and end).
+        \item \opt{arrowscale=1}, scale factor for arrow size.
+        \item \opt{hidden=false}, boolean indicating whether hidden parts should be drawn.
+        \item \opt{hiddenstyle=ld.Hiddenlinestyle}, style of hidden parts.
+    \end{itemize}
+    Example: drawing the axes
+    \begin{Luacode}
+    g:Pov_polyline({{-5*vecI,5*vecI},{-5*vecJ,5*vecJ},{-5*vecK,5*vecK}}, {arrows=1,width=8})
+    \end{Luacode}
+    
+    \item \textbf{3D points}. This is the method: \cmdln{g:Pov\_dots(L, options).}
+    The argument \argu{L} is a list of 3D points. The options include the common ones, plus the following specific options (with their default values): 
+        \begin{itemize}
+            \item \opt{style="ball"}, two possible styles: \val{"ball"} (sphere) or \val{"box"} (a box with faces parallel to the 3D window).
+            \item \opt{dotscale=1}, scale factor for dot size.
+        \end{itemize}
+       
+    \item \textbf{A plane}. This is the method: \cmdln{g:Pov\_plane(P, options).}
+    The argument \argu{P} is a table of the form $\{A, n\}$, where $A$ is a point on the plane \argu{P} (a 3D point) and $n$ is a vector normal to the plane. The plane is automatically clipped by the 3D window. The options are the options of \cmd{g:Pov\_facet()}, plus the specific option \opt{scale=1}.
+    
+    \item \textbf{A circle}. This is the method: \cmdln{g:Pov\_circle(A, R, N, options).}
+    It draws the circle with center \argu{A}, radius \argu{R}, and normal vector \argu{N} specifying the plane of the circle. These are the common options.
+    
+     \item \textbf{Axes}.This is the method: \cmdln{g:Pov\_axes(O, options).}
+    It draws the axes using point \argu{O} (3D point) as the intersection point. The options are the same as for \cmd{g:Pov\_polyline()}. There are no graduations or legend.   
+    
+    \item \textbf{Basic solids}. These are the methods:
+        \begin{itemize}
+            \item \cmd{g:Pov\_sphere(center, radius, options)}, which draws a sphere with center \argu{center} (3D point) and radius \argu{radius}. These are the common options.
+    
+            \item \cmd{g:Pov\_torus(center, R, r, N, options)}, which draws a torus centered at \argu{center} (3D point), with major radius \argu{R}, minor radius \argu{r}, lying in the plane normal to vector \argu{N}. These are the common options.
+    
+            \item \cmd{g:Pov\_cylinder(A, R, B, options)}, which draws a cylinder along the axis $(AB)$ from \argu{A} to \argu{B} (3D points), with radius \argu{R}. These are the common options plus the specific option \opt{hollow=false}, indicating whether the cylinder is hollow or not.
+    
+            \item \cmd{g:Pov\_cone(A, R, B \fac{, r, options})}, which draws a cone along the axis $(AB)$ from \argu{A} to \argu{B} (3D points), with radius \argu{R} at end \argu{A} and radius \argu{r} at end \argu{B}. The radius \argu{r} is optional and defaults to \(0\); in that case, \argu{B} is the apex of the cone. These are the common options plus the specific option \opt{hollow=false}, indicating whether the cone is hollow or not.
+    
+            \item \cmd{g:Pov\_box(A, B, options)}, which draws a box whose faces are parallel to those of the 3D window of the graphic. The 3D points \argu{A} and \argu{B} define a diagonal of the box, more precisely \argu{A} $=$ M(xinf, yinf, zinf) and \argu{B} $=$ M(xsup, ysup, zsup). These are the common options.
+        \end{itemize}
+            
+    \item \textbf{CSG geometry}. These are the following methods (for each of them, the options are the common options):
+        \begin{itemize}
+            \item \cmd{g:Pov\_union(list, options)}, where \argu{list} is a list of \povray objects; these objects may be either the name of an already created object or a POV-Ray command given as a string. The result is treated as a single object.
+            
+            \item \cmd{g:Pov\_intersection(list, options)}, where \argu{list} is a list of \povray objects; these objects may be either the name of an already created object or a \povray command given as a string. The result is the common part of these objects.
+            
+            \item \cmd{g:Pov\_merge(list, options)}, where \argu{list} is a list of \povray objects; these objects may be either the name of an already created object or a \povray command given as a string. This command works like union, but removes internal surfaces (unlike union), which is useful in the case of transparency.
+            
+            \item \cmd{g:Pov\_difference(list, options)}, where \argu{list} is a list of \textbf{two} \povray objects; these objects may be either the name of an already created object or a \povray command given as a string. The result is the difference: object1 minus object2.
+        \end{itemize}
+    
+    \item \textbf{Writing directly to the source}, with the following methods:
+        \begin{itemize}
+            \item \cmd{g:Pov\_comment(comment)}, which writes the string \argu{comment} to the source as a comment.
+            \item \cmd{g:Pov\_special(code)}, which writes the string \argu{code} verbatim to the source; it must therefore be valid \povray code. Note that a 3D point written as \emph{M(x, y, z)} in \luadrawenv is written in \povray code as \emph{<-x, y, z>}; the \povray coordinate system is thus not our usual one and is left-handed.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Save, execution, inclusion}
+
+\begin{itemize}
+    \item \textbf{Save and execution}. Once all objects have been created, saving and executing the file with \povray is done using the method: \cmdln{g:Pov\_exec(\fac{filename}).}
+    The argument \argu{filename} must be a filename without path or extension, but it is optional; by default, the name of the current graphic is used. The created file will have the \emph{pov} extension and will be saved in the \luadrawenv working directory (this directory is stored in the \varglob{cachedir} variable). The command used for execution is displayed in the terminal, along with the output from the \povray software, allowing you to see if it encountered an error. The image construction appears on screen, but the window closes as soon as rendering is complete\footnote{It depends on your operating system.}. The image has the same name as the source, except the extension which is \emph{png} instead of \emph{pov}.
+    
+    \textbf{NB}: \povray execution requires compiling the document with the \emph{-shell-escape} or \emph{-enable-write18} option. Once the image is obtained, this option is no longer necessary unless the image has been modified.
+    
+    \item \textbf{Save only}. This is done with the method: \cmdln{g:Pov\_save(\fac{filename}).}
+    With the same remarks as previously for the \argu{filename} argument.
+
+    \item \textbf{Image inclusion}. Once obtained, the image can be included in the graphic with the method: \cmdln{g:Pov\_show(\fac{filename}).}
+    If the \argu{filename} argument is not specified, it refers to the name of the current graphic; otherwise, \argu{filename} must be a complete image filename (with extension). The inclusion is done with \verb|\includegraphics[]{filename}|.
+\end{itemize}
+
+\subsubsection{Examples}
+
+\paragraph{Intersection of two implicit surfaces}
+
+\begin{demo}{Intersection of two implicit surfaces}
+\begin{luadraw}{name=intersection_surf}
+local ld = luadraw
+local cpx, pt3d = ld.cpx, ld.pt3d
+local Z, M = cpx.Z, pt3d.M
+
+local g = ld.graph3d:new{window3d={0,1,0,1,0,2}, window={-0.25,1.5,-0.5,2.25}, size={10,10,0}, viewdir={-50,60}}
+local sqrt = math.sqrt
+require "luadraw_povray"
+local f = function(x,y,z) return x^3+y^3-z end
+local h = function(x,y,z) return (x*sqrt(1-y^2)+y*sqrt(1-x^2))^3-z end
+local L = ld.implicit(function(x,y) return f(x,y,0)-h(x,y,0) end,0.01,1,0.01,1,{25,25})
+L = ld.map(function(z) return M(z.re,z.im,z.re^3+z.im^3) end, L[1])  -- intersection curve
+-- using povray
+g:Pov_new()
+g:Pov_implicit("pow(x,3)+pow(y,3)-z", f, {color=ld.SteelBlue})
+g:Pov_implicit("z-pow(x*sqrt(1-y*y)+y*sqrt(1-x*x),3)", h, {color=ld.Crimson, containedby={M(0,0,0),M(0.999,0.999,2)}})
+g:Pov_exec()
+-- drawing
+g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="lightgray",xyzstep=0.5, drawbox=true})
+g:Pov_show() --Pov-Ray image
+g:Dpolyline3d(L, "line width=1.2pt,dotted,Navy") --we draw the curve over the image
+local d = 0.1
+g:Dsquare(Z(-0.25,2.25), Z(-0.25,2.25-d),1,"draw=none,fill=Crimson")
+g:Dsquare(Z(-0.25,2.25-2*d), Z(-0.25,2.25-3*d),1,"draw=none,fill=SteelBlue")
+g:Dlabel("$z=(x\\sqrt{1-y^2}+y\\sqrt{1-x^2})^3$", Z(-0.25+d,2.25-d/2) , {pos="E"},
+    "$z=x^3+y^3$", Z(-0.25+d,2.25-5*d/2),{})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Villarceau circles}
+
+\begin{demo}{Villarceau circles}
+\begin{luadraw}{name=Villarceau_circles}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-6.5,6.5,-5,5},margin={0,0,0,0}, size={10,10}, viewdir={20,65}}
+require "luadraw_povray"
+local R, r = 3, 1
+local N = ld.rotate3d(vecK, math.asin(r/R)*ld.rad, {Origin, vecJ})
+local P = {Origin, -N}
+-- using povray
+g:Pov_new({bg=ld.LightGray})
+g:Pov_torus(Origin, R, r, vecK, {color=ld.SteelBlue, clipplane=P})
+g:Pov_plane(P,{color=ld.SeaGreen, opacity=0.4, edge=true, scale=0.9})
+g:Pov_axes(Origin,{color=ld.Gold,arrows=1})
+g:Pov_dots(Origin, {dotscale=1.5})
+g:Pov_circle( M(0,r,0),R,N,{color=ld.Crimson, width=12})
+g:Pov_circle( M(0,-r,0),R,N,{color=ld.Crimson, width=12})
+g:Pov_exec()
+-- drawing
+g:Pov_show()
+local F = g:Plane2facet(P,0.9)
+g:Dpolyline3d({{-r*vecJ,-r*vecJ+vecK},{-(R+r)*vecJ,-(R+r)*vecJ+vecK}})
+g:Dpolyline3d({{r*vecJ,r*vecJ+vecK},{(R+r)*vecJ,(R+r)*vecJ+vecK}})
+g:Dpolyline3d({{-r*vecJ+vecK,-(R+r)*vecJ+vecK}, {r*vecJ+vecK,(R+r)*vecJ+vecK}}, "stealth-stealth")
+g:Ddots3d({-r*vecJ, r*vecJ})
+g:Dlabel3d("$x$",5*vecI,{pos="SW"},"$y$", 5*vecJ,{pos="SE"}, "$z$",5*vecK,{pos="N"},
+  "$R$", -(R/2+r)*vecJ+vecK, {}, "$R$", (R/2+r)*vecJ+vecK, {},
+  "bitangent plane to the torus", F[1], {pos="NW", dir={vecJ,pt3d.prod(N,vecJ)}},
+  "$-r$",-r*vecJ,{pos="S"}, "$r$", r*vecJ,{} )
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\paragraph{Holes in an half sphere}
+
+\begin{demo}{Holes in a hemisphere}
+\begin{luadraw}{name=holes_in_hemisphere}
+local ld = luadraw
+local pt3d = ld.pt3d
+local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M
+
+local g = ld.graph3d:new{window={-5,5,-4,5}, size={10,10}, bg="lightgray"}
+require "luadraw_povray"
+local O, R = Origin, 4
+local A, r = 2*R/3*vecJ, R/3
+local P = {Origin, vecK}
+local base = ld.circle3d(A,r,vecK)[1] --circular base of the cylinder (list of 3D points)
+local Cylborder = {}
+for _, C in ipairs(base) do -- we project each point C of the base onto the half-sphere
+    table.insert(Cylborder,C + math.sqrt(R^2-pt3d.abs2(C))*vecK)
+end -- Cylborder is now the intersection between the half-sphere and the cylinder
+-- using povray 
+g:Pov_new()
+g:Pov_sphere(Origin, R, {name="sph", clipplane=P, render=false}) -- only declaration
+g:Pov_cylinder(A-vecK, r, A+R*vecK, {name="cyl1", render=false })
+g:Pov_union({"cyl1", "cyl1 rotate 90*z"}, {name="cylext", render=false})
+g:Pov_cylinder(A-vecK, r-0.001, A+R*vecK, {name="cyl2", render=false }) 
+-- renderings
+g:Pov_difference({"sph","cylext"}, {color=ld.Blue, opacity=0.7})
+g:Pov_union( {"cyl2", "cyl2 rotate 90*z"}, {color=ld.LightBlue,opacity=0.8,clipbox="sph"})
+g:Pov_axes(Origin,{color=ld.Gold,arrows=1})
+g:Pov_exec()
+-- drawing
+g:Dcircle3d(O,R,vecK,"line width=1.2pt"); g:Dcircle3d(A,r,vecK,"line width=1.2pt")
+g:Dcircle3d(ld.rotate3d(A,-90,{Origin,vecK}), r,vecK,"line width=1.2pt")
+g:Pov_show()
+g:Dpolyline3d( {Cylborder, ld.rotate3d(Cylborder,-90,{Origin,vecK})}, "red, line width=1.2pt")
+g:Dlabel3d("$x$",5*vecI,{pos="S"}, "$y$", 5*vecJ, {pos="SE"}, "$z$", 5*vecK, {pos="N"})
+g:Show()
+\end{luadraw}
+\end{demo}
+

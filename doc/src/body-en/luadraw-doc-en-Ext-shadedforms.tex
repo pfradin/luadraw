@@ -1,0 +1,159 @@
+\subsection{The \emph{luadraw\_shadedforms} module}
+
+This module does not return anything; it adds new graphics methods to the \emph{ld.graph} class. It allows you to draw polygonal lines or fill a shape using a color gradient.
+
+\subsubsection{Dshadedpolyline}
+
+The function \cmd{g:Dshadedpolyline(L, palette, options)} enables the rendering of the two-dimensional polygonal line \argu{L}) with a continuous color gradient determined by the computational method and the selected \argu{palette}. The argument \argu{L} may be either a list of complex numbers or a list of lists of complex numbers. The \argu{palette} is a list of colors, each color being represented as a list of three real numbers between \(0\) and \(1\), corresponding respectively to the red, green, and blue components. \writeoptions:
+\begin{itemize}
+    \item \opt{values="x"}: for each point in \argu{L}, a numerical value is computed, which determines the associated color according to the chosen palette. The \opt{values} option specifies the evaluation mode and may take one of the following forms:
+        \begin{itemize}
+            \item \val{"x"} (default): the value corresponds to the point’s abscissa;
+            \item \val{"y"}: the value corresponds to the point’s ordinate;
+            \item a function \val{f}\(\colon(x,y)\mapsto f(x,y)\in\mathbf{R}\): the value for each point \((x,y)\) in \argu{L} is given by \(f(x,y)\).
+        \end{itemize}
+    \item \opt{width=<current line width>}: specifies the line thickness in tenths of a point.
+    \item \opt{close=false}: a Boolean value indicating whether the polygonal line should be closed.
+    \item \opt{clip=nil} — this option can be either \nil (default) or a table \emph{\{x1,x2,y1,y2\}}. In the former case, the line is clipped by the current two-dimensional window \textbf{after} applying the graph’s 2D transformation matrix; in the latter, the line is clipped by the window \([x_1;x_2]\times[y_1;y_2]\) \textbf{before} the transformation.
+\end{itemize}
+
+This procedure transforms \argu{L} into a sequence of trapezoids, which are subsequently filled using a smooth color gradient.
+
+\begin{demo}{Shaded polyline}
+\begin{luadraw}{name=shading_polyline}
+local ld = luadraw
+local cpx = ld.cpx
+local i, Z = cpx.I, cpx.Z
+
+local g = ld.graph:new{size={10,10},bg="lightgray", margin={0,0,0,0}}
+require 'luadraw_shadedforms'
+-- first example diff. equation y'= x^2+y^2-1 (=f(x,y))
+local x1,x2,y1,y2 = -3,3,-3,3
+local A = Z(0,1/2) -- initial condition
+local f = function(x,y) 
+    return x^2+y^2-1
+end
+local S = ld.odesolve(f, A.re, A.im, x1, x2, 150) -- S is a matrix {X,Y}
+local L = {} -- to convert {X,Y} into the complex numbers list L
+for k = 1, #S[1] do table.insert(L, Z(S[1][k],S[2][k])) end 
+L = ld.clippolyline(L,-2.5,2.4,y1,y2)[1] -- L is the solution curve
+g:Dshadedpolyline(L, ld.palRainbow, {values=f, width=12}) -- solution drawn with rainbow color map using function f
+-- second example
+L = ld.polar(function(t) return 2*math.cos(3*t) end, -math.pi, math.pi)
+local f = function(x,y) return cpx.abs(Z(x,y)) end -- here the value will be the modulus
+g:Shift(2-2.5*i)
+g:Dshadedpolyline(L, ld.palAutumn, {values=f, width=12})
+-- third example
+g:Shift(-4.5+5*i)
+g:Dshadedpolyline( ld.polyreg(0,2,8), ld.palGasFlame, {values="y", width=24, close=true})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dcolorbar}
+
+The method \cmd{g:Dcolorbar(A, pal, options)} allows you to draw a rectangle with a color gradient from a palette, optionally with a gradation. The argument \argu{A} is a complex number; it is the reference point for constructing the rectangle. The argument \argu{pal} is a color palette (a list of lists of the form $\{r,g,b\}$ where $r$, $g$, and $b$ are between $0$ and $1$). \writeoptions:
+
+\begin{itemize}
+    \item \opt{minmax=\{0,1\}}, a list containing the minimum value (which will be assigned to the first color of the palette) and the maximum value (which will be assigned to the last color of the palette). Thus, any numeric value between \emph{min} and \emph{max} corresponds to a color in the palette.
+
+    \item \opt{dir=cpx.I}, direction of the longer side of the rectangle (this vector is automatically normalized), so by default the rectangle is vertical.
+
+    \item \opt{length=8}, length of the rectangle.
+
+    \item \opt{width=0.5}, width of the rectangle. The vertices of the rectangle are:\par
+\hfil\verb|A, A+length*dir, A+length*dir+width*cpx.I*dir, A+width*cpx.I*dir|\hfil\par
+
+    \item \opt{values​​=0}, this option allows you to define either the number of numeric values ​​displayed equally within the interval \opt{minmax} (none by default), or the list of numeric values ​​displayed (in this case \opt{values} must be a list of numeric values ​​within the interval \opt{minmax}).
+
+    \item \opt{addvalues​​=nil}, this option allows you to define a list of numeric values ​​to display in addition to the \emph{min} and \emph{max} values. This option takes precedence over the previous one.
+
+    \item \opt{digits=2}, the number of decimal places for the numeric displays.
+
+    \item \opt{labelpos="E"} option positions the labels relative to anchor points (\val{"N"}, \val{"NE"}, \val{"E"}, \val{"SE"}, \val{"S"}, \val{"SW"}, "\val{W"}, \val{"NW"}). The labels are positioned along the \emph{(A, dir)} axis.
+\end{itemize}
+
+\begin{demo}{Color bars}
+\begin{luadraw}{name=Dcolorbar}
+local ld = luadraw
+local Z = ld.cpx.Z
+
+local g = ld.graph:new{size={10,10}, bbox=false}
+g:Labelsize("small")
+require 'luadraw_shadedforms'
+local pal = require 'luadraw_palettes'
+g:Dcolorbar(Z(-4,-4), pal.Rainbow)
+g:Dcolorbar(Z(-2,-4), pal.GasFlame, {minmax={0,7},values=8})
+g:Dcolorbar(Z(-1,1), pal.Autumn, {dir=1,length=6,width=1,addvalues={0.25,0.5,0.75},labelpos="S"})
+g:Dcolorbar(Z(-1,-1), pal.Viridis, {dir=1,length=6,width=-1,addvalues={0.25,0.5,0.75},labelpos="N"})
+g:Dlabel("No value", Z(-4.25,-4),{pos="S"},
+    "\\parbox{1.95cm}{minmax=\\{0,7\\}\\\\values=8}", Z(-2.25,-4), {},
+    "dir=1, length=6, width=1", Z(2,2), {pos="N"},
+    "dir=1, length=6, width=-1", Z(2,-2),{pos="S"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dshadedrectangle}
+
+\noindent\textbf{NB}: Using this method requires the \emph{shadings} library.
+
+The \cmd{g:Dshadedrectangle(x1, x2, y1, y2, pal, options)} method fills the rectangle $[x_1;x_2]\times [y_1;y_2]$ with a gradient of colors extracted from the \argu{pal} palette. Each point $(x,y)$ in the rectangle has a color from the palette, calculated from a value $f(x,y)$ where $f$ is a numeric function defined on the rectangle. \writeoptions:
+
+\begin{itemize}
+    \item \opt{values​​=function(x,y) return cpx.abs(Z(x,y)) end}, this option defines the function $f$ used to calculate the color of each point. The maximum value of $f$ on the rectangle will correspond to the last color in the palette, and the minimum value of $f$ will correspond to the first color in the palette. By default, this function is the modulus.
+
+    \item \opt{grid=\{15,15\}}, this option defines the number of subdivisions for the interval $[x_1;x_2]$ and for the interval $[y_1;y_2]$. The finer the subdivision, the longer the display will take.
+
+    \item \opt{bar="none"} allows you to add or not add a legend using the \emph{Dcolorbar} method. This option can be: \val{"none"}, \val{"right"}, \val{"bottom"}, \val{"left"}, or \val{"top"}.
+    
+    \item \opt{bardist=1}, the distance between the rectangle and the legend, if there is one.
+
+    \item \opt{baroptions=\{\}}, a list of options for the \cmd{Dcolorbar()} method if there is a legend.
+
+    \item \opt{out=nil}, if a list variable is assigned to this parameter \opt{out}, then the method adds the two values ​​\emph{min} and \emph{max} of the $f$ function to this list (which allows you to retrieve these two values ​​if necessary).
+\end{itemize}
+
+\begin{demo}{Shaded rectangle}
+\begin{luadraw}{name=Dshadedrectangle}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{window={-4,6,-5.5,5.5}, size={10,10}, bbox=false}
+require 'luadraw_shadedforms'
+require 'luadraw_fields'
+local pal = require 'luadraw_palettes'
+g:Labelsize("small")
+local f = function(x,y) return {math.cos(x+y), x} end -- vector field
+local Nf = function(x,y) local A = f(x,y); return cpx.abs(Z(A[1],A[2])) end -- modulus of f(x,y)
+g:Dshadedrectangle(-4,4,-5,5, pal.Picnic, {values=Nf, bar="right", baroptions={addvalues={0.5,1.5,2.5,3.5}}})
+g:Dvectorfield(f,{view={-4,4,-5,5},draw_options="-stealth"})
+g:Dgradbox({Z(-4,-5),Z(4,5),1,1}, {title="vector field $f(x,y)=(\\cos(x+y),x)$"})
+g:Show()
+\end{luadraw}
+\end{demo}
+
+\subsubsection{Dshadedregion}
+
+The method \cmd{g:Dshadedregion(apath, pal, options)} fills the region defined by the path \argu{apath} with a gradient of colors extracted from the palette \argu{pal}. This method uses the previous one (\cmd{Dshadedrectangle()}) on the rectangle defined by the bounding box of the path. Each point $(x,y)$ in this rectangle has a color from the palette, calculated from a value $f(x,y)$ where $f$ is a numeric function defined on this rectangle. The drawing is clipped to the path. The argument \argu{options} is the same as that of the previous method \cmd{Dshadedrectangle()}.
+
+\begin{demo}{Shaded region}
+\begin{luadraw}{name=Dshadedregion}
+local ld = luadraw
+local cpx = ld.cpx
+local Z = cpx.Z
+
+local g = ld.graph:new{window={-4.5,6,-4.5,5}, size={10,10},bg="lightgray", bbox=false}
+g:Labelsize("small")
+require 'luadraw_shadedforms'
+local pal = require 'luadraw_palettes'
+local L1, L2 = -2, 2
+local f = function(x,y) 
+    local z = Z(x,y)
+    return (cpx.abs(z-L1)-cpx.abs(z-L2))^2
+end
+g:Dshadedregion({4,0,4,3,"e"}, pal.getPal(pal.Grays,{reverse=true}), {values=f, grid={20,20}})
+g:Show()
+\end{luadraw}
+\end{demo}
