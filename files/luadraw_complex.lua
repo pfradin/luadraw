@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -305,16 +305,14 @@ function ld.insert(t1,t2,pos)
         end
     end
     if (type(t1) ~= "table") then return end
-    if type(t2) == "number" then inserer(Z(t2,0)) 
+    if type(t2) == "number" then t2 = complex:new(t2,0) end
+    if complex.isComplex(t2) then inserer(t2) 
     else
-        if complex.isComplex(t2) then inserer(t2) 
-        else
-            if type(t2) == "table" then
-                for _,x in ipairs(t2) do
-                    inserer(x)
-                end
-            else inserer(t2) 
+        if type(t2) == "table" then
+            for _,x in ipairs(t2) do
+                inserer(x)
             end
+        else inserer(t2) 
         end
     end
 end

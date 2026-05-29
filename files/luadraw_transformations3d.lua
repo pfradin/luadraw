@@ -1,6 +1,6 @@
 -- luadraw_transformations3d.lua (chargé par luadraw_graph3d.lua)
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -261,7 +261,7 @@ function ld.rotateaxe3d(L,v1,v2,center)
     center = center or Origin
     if (v1 == nil) or (v2 == nil) or (v1 == v2) then return L end
     v1 = pt3d.normalize(v1); v2 = pt3d.normalize(v2)
-    local theta = angle3d(v1,v2) --en radians
+    local theta = pt3d.angle3d(v1,v2) --en radians
     local u = pt3d.prod(v1,v2)
     if pt3d.N1(u) < 1e-12 then --u ==0
         u = pt3d.prod(v1,vecI)

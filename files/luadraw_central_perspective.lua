@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -299,7 +299,7 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         if color ~= "" then 
             self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
         end
-        if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
+        --if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
         --visible part
         if color ~= "" then 
             self:Filloptions("gradient", gradStyleSide..",shading angle="..ld.strReal(angle),args.opacity)

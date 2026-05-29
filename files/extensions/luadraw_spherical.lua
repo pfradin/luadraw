@@ -1,6 +1,6 @@
 -- luadraw_spherical.lua 
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -298,6 +298,7 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
     elseif arrows == 2 then arrowA = 1; arrowB = 1
     end
     local I, r, n = table.unpack( sphere.horizon )
+    
     local add_seg_out = function(U,V,arrow)
         local dev, der = ld.splitseg({U,V},{I,n})
         if #der ~= 0 then 
@@ -447,7 +448,7 @@ function graph3d:DSarc(AB,sens,options)
     else
         local M1, M2
         if ld.projection_mode == "central" then
-            M2, M1 = interCS({C,R,u}, {(C+cam)/2, pt3d.abs(C-cam)/2} )
+            M2, M1 = ld.interCS({C,R,u}, {(C+cam)/2, pt3d.abs(C-cam)/2} )
             if (M2 ~= nil) and (M1 ~= nil) and (pt3d.det(cam-C,u,M1-C) < 0) then 
                 M1, M2 = M2, M1 
             end
@@ -587,25 +588,25 @@ function graph3d:DSstars(dots,options)
         if visibledot(A) then -- A est visible
             if fill ~= "" then
                 self:DSfacet({B1,B2,B3,C1,C2,C3},{style="noline",fill=fill, width=1, fillopacity=0.5, hidden=hidden})
-                self:DScircle(plane(B1,C1,B2),{color=color, width=1, hidden=hidden}) 
+                self:DScircle(ld.plane(B1,C1,B2),{color=color, width=1, hidden=hidden}) 
             else
                 self:DSarc({B1,C1},1,{color=color, width=width, hidden=hidden})
                 self:DSarc({B2,C2},1,{color=color, width=width, hidden=hidden})
                 self:DSarc({B3,C3},1,{color=color, width=width, hidden=hidden})
-                if circled then self:DScircle(plane(B1,C1,B2),{color=color, width=1, hidden=hidden}) end
+                if circled then self:DScircle(ld.plane(B1,C1,B2),{color=color, width=1, hidden=hidden}) end
             end
         else
             local old_hiddenlinestyle = ld.Hiddenlinestyle
             ld.Hiddenlinestyle = "solid"
             if fill ~= "" then
                 --self:DSfacet({B1,B2,B3,C1,C2,C3},{style="noline",fill=insidelabelcolor, width=1, fillopacity=0.5, hidden=hidden})
-                self:DScircle(plane(B1,C1,B2),{color=insidelabelcolor, width=width, hidden=hidden})
+                self:DScircle(ld.plane(B1,C1,B2),{color=insidelabelcolor, width=width, hidden=hidden})
             else
                 --print(B1,C1,B2,C2,B3,C3)
                 self:DSarc({B1,C1},1,{color=insidelabelcolor, width=width, hidden=hidden})
                 self:DSarc({B2,C2},1,{color=insidelabelcolor, width=width, hidden=hidden})
                 self:DSarc({B3,C3},1,{color=insidelabelcolor, width=width, hidden=hidden})
-                if circled then self:DScircle(plane(B1,C1,B2),{color=insidelabelcolor, width=1, hidden=hidden}) end
+                if circled then self:DScircle(ld.plane(B1,C1,B2),{color=insidelabelcolor, width=1, hidden=hidden}) end
             end
             ld.Hiddenlinestyle = old_hiddenlinestyle
         end
@@ -648,7 +649,7 @@ function graph3d:DSfacet(facet, options)
                 local u =  pt3d.prod(pred-Ct,A-Ct)
                 if pt3d.N1(u) < 1e-12 then u = vecK end
                 if ld.projection_mode == "central" then
-                    M2, M1 = interCS({Ct,R,u}, {(Ct+cam)/2, pt3d.abs(Ct-cam)/2} )
+                    M2, M1 = ld.interCS({Ct,R,u}, {(Ct+cam)/2, pt3d.abs(Ct-cam)/2} )
                 else
                     local n1 = pt3d.normalize( pt3d.prod(u,N) )
                     M1, M2 = Ct+R*n1, Ct-R*n1
@@ -666,7 +667,7 @@ function graph3d:DSfacet(facet, options)
                 local u =  pt3d.prod(pred-Ct,A-Ct)
                 if pt3d.N1(u) < 1e-12 then u = vecK end
                 if ld.projection_mode == "central" then
-                    M2, M1 = interCS({Ct,R,u}, {(Ct+cam)/2, pt3d.abs(Ct-cam)/2} )
+                    M2, M1 = ld.interCS({Ct,R,u}, {(Ct+cam)/2, pt3d.abs(Ct-cam)/2} )
                 else
                     local n1 = pt3d.normalize( pt3d.prod(u,N) )
                     M1, M2 = Ct+R*n1, Ct-R*n1

@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -130,6 +130,29 @@ function ld.facet2plane(L)
         end
     end
     return rep
+end
+
+function ld.plane2rectangle(P,V,L1,L2) -- or plane2rectangle(P,L1,L2)
+-- P = {A, u} is a plane
+-- V is a vector in the plane P
+-- L1 and L2 are length
+-- returns the plane as a rectangular facet
+    local A, u = table.unpack(P)
+    if (V ~= nil) and (type(V) ~= "number") then
+        u = pt3d.normalize(u)
+        V = pt3d.normalize(V)
+        local W = pt3d.prod(u,V)
+        V = L1*V
+        W = L2*W
+        local Dep = A-W/2-V/2
+        return {Dep, Dep+V, Dep+V+W, Dep+W}
+    else 
+        L2 = L1; L1 = V
+        if L1 == nil then L1 = 5 end
+        if L2 == nil then L2 = L1 end
+        local F = {M(0,-L1/2,-L2/2), M(0,L1/2,-L2/2), M(0,L1/2,L2/2), M(0,-L1/2,L2/2)}
+        return ld.shift3d( ld.rotateaxe3d( F, M(1,0,0), u), A)
+    end
 end
     
 function ld.poly2facet(P) -- conversion polyèdre -> liste facettes 3d
@@ -430,6 +453,8 @@ end
 function ld.facetedges(F)
 -- F est une liste de facettes avec point3d ou bien un polyedre
 -- la fonction renvoie la liste des arêtes (ligne polygonale 3d)
+    if (F == nil) or (type(F) ~= "table") then return end
+    if pt3d.isPoint3d(F[1]) then F = {F} end
     local P = F
     if P.vertices == nil then P = ld.facet2poly(F) end
     local rep = {}
@@ -1431,62 +1456,4 @@ function ld.obj_surface(f,u1,u2,v1,v2,grid) -- or obj_surface(f, uvmesh) with uv
     end
     result.normals = normals
     return result
-end
-
-------------------------- csv -------------------------------------------
-
-function ld.read_csv_file(file, options)
--- file is the name of the csv file: "<name>.csv"
--- options is a table with fields:
-    -- header = true (indcates if the first line is the column names)
-    -- dic = false (if true the output will be a list of dictionaries)
-    -- sep = "," (separator)
-    -- num = true (automatic conversion to numerical values)
-
-    options = options or {}
-    local header = options.header 
-    if header == nil then header = true end
-    local dic = options.dic or false  
-    if not header then dic = false end
-    local sep = options.sep or "," 
-    local num = true  
-    if options.num ~= nil then num = options.num end
-    
-    local trim = function(s) -- removes leading and trailing spaces
-        return s:match("^%s*(.-)%s*$")
-    end
-
-    local data = {}
-    local head_line
-    if header then head_line = {} end
-    local lg = 1
-    for line in io.lines(file) do
-        if (lg == 1) and header then
-            for part in string.gmatch(line, "([^"..sep.."]+)") do
-                table.insert(head_line, trim(part))
-            end
-        else
-            local result = {}
-            for part in string.gmatch(line, "([^"..sep.."]+)") do
-                if num then
-                    local x = tonumber(part)
-                    if x ~= nil then table.insert(result, x)
-                    else table.insert(result, trim(part))
-                    end
-                else table.insert(result, trim(part))
-                end
-            end
-            if dic then
-                local res = {}
-                for k, key in ipairs(head_line) do
-                    res[key] = result[k]
-                end
-                table.insert(data, res)
-            else
-                table.insert(data, result)
-            end
-        end
-        lg = lg + 1
-    end
-  return data, head_line
 end

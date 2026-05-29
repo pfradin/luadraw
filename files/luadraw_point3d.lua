@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -102,7 +102,7 @@ end
 -- arrondir
 function point3d.round(u, nbDeci)
     if (u == nil) then return end    
-    return point3d:new( round(u.x,nbDeci), round(u.y,nbDeci), round(u.z,nbDeci) )
+    return point3d:new( ld.round(u.x,nbDeci), ld.round(u.y,nbDeci), ld.round(u.z,nbDeci) )
 end
 
 -- norme 1

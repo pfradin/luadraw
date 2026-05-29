@@ -1,6 +1,6 @@
 -- luadraw_povray.lua
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -337,7 +337,7 @@ function graph3d:Pov_do_preamble()
     end
     local rep = {}
     Pov_size = " +W"..tostring(W).." +H"..tostring(H).." "
-    pov_writeln("//luadraw "..luadraw_version)
+    pov_writeln("//luadraw "..ld.version)
     pov_writeln("//options:"..Pov_size..param)
     pov_writeln("#version 3.7;")
     for _,incfile in ipairs(Pov_includefiles) do

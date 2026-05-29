@@ -1,6 +1,6 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -671,4 +671,66 @@ function ld.curvilinear_param(L,close) -- curvilinear parametrization
         end
     end
     return l,total_len
+end
+
+------------------------- csv -------------------------------------------
+
+function ld.read_csv_file(file, options)
+-- file is the name of the csv file: "<name>.csv"
+-- options is a table with fields:
+    -- header = true (indcates if the first line is the column names)
+    -- dic = false (if true the output will be a list of dictionaries)
+    -- sep = "," (separator)
+    -- num = true (automatic conversion to numerical values)
+
+    options = options or {}
+    local header = options.header 
+    if header == nil then header = true end
+    local dic = options.dic or false  
+    if not header then dic = false end
+    local sep = options.sep or "," 
+    local comment = options.comment or "%%" 
+    --% doit être doublé car c'est un caractère spécial de match et co
+    local num = true  
+    if options.num ~= nil then num = options.num end
+    
+    local trim = function(s) -- removes leading and trailing spaces
+        return s:match("^%s*(.-)%s*$")
+    end
+
+    local data = {}
+    local head_line
+    if header then head_line = {} end
+    local lg = 1
+    for line in io.lines(file) do
+        if line ~= "" and not line:match("^"..comment) then
+            if (lg == 1) and header then
+                for part in string.gmatch(line, "([^"..sep.."]+)") do
+                    table.insert(head_line, trim(part))
+                end
+            else
+                local result = {}
+                for part in string.gmatch(line, "([^"..sep.."]+)") do
+                    if num then
+                        local x = tonumber(part)
+                        if x ~= nil then table.insert(result, x)
+                        else table.insert(result, trim(part))
+                        end
+                    else table.insert(result, trim(part))
+                    end
+                end
+                if dic then
+                    local res = {}
+                    for k, key in ipairs(head_line) do
+                        res[key] = result[k]
+                    end
+                    table.insert(data, res)
+                else
+                    table.insert(data, result)
+                end
+            end
+            lg = lg + 1
+        end
+    end
+  return data, head_line
 end

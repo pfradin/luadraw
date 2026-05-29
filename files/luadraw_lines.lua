@@ -1,7 +1,7 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -88,9 +88,9 @@ function ld.cut(L,A,before)
             table.insert(av,B)
             -- on teste si A est dans le segment [B,C]
             local z = cpx.bar(A-B)*(C-A)
-            if (z.re >= 0) and ld.isNul(z.im) then -- c'est bon math.abs(z.im) < 1e-4 then --
-                if A ~= B then table.insert(av,A) end
-                if A ~= C then table.insert(ap,A) end
+            if (z.re >= 0) and ld.isNul(z.im) and (cpx.abs2(B-A) <= cpx.abs2(B-C)) then -- c'est bon math.abs(z.im) < 1e-4 then --
+                if not (A == B) then table.insert(av,A) end
+                if not (A == C) then table.insert(ap,A) end
                 for j = k, #cp do 
                     table.insert(ap,cp[j])
                 end
@@ -200,12 +200,13 @@ function ld.seg(a,b,scale) -- appelée par la méthode Dseg
     a = toComplex(a)
     b = toComplex(b)
     scale = scale or 1
-    if scale ~= 1 then
-        local u = b-a
-        local l = cpx.abs(u)
-        local d = (scale-1)*l/2
-        u = d*u/cpx.abs(u)
+    if (type(scale) == "number") and (scale ~= 1) then
+        local u = (scale-1)*(b-a)/2
         return {a-u,b+u}
+    elseif type(scale) == "table" then
+        local sc1, sc2 = table.unpack(scale)
+        local u = b-a
+        return {a-sc1*u, b+sc2*u}
     else
         return {a,b} -- une composante à 2 points
     end
@@ -227,12 +228,16 @@ function ld.rectangle(a,b,c)
 -- renvoie le rectangle ayant comme sommets  consécutifs a et b (complexe) tel que le côté opposé passe par c.
     a = toComplex(a)
     b = toComplex(b)
-    c = toComplex(c)
-    if (a == nil) or (b == nil) or (c == nil) or (a == b) then return end
-    local u = b-a
-    local a1, b1 = ld.proj(a,{c,u}), ld.proj(b,{c,u})
-    if (a1 == nil) or (b1 == nil) then return end
-    return {a,b,b1,a1}
+    if (a == nil) or (b == nil) or (a == b) then return end
+    if c ~= nil then
+        c = toComplex(c)
+        local u = b-a
+        local a1, b1 = ld.proj(a,{c,u}), ld.proj(b,{c,u})
+        if (a1 == nil) or (b1 == nil) then return end
+        return {a,b,b1,a1}
+    else -- rectangle with corners a and b
+        return {a, Z(b.re,a.im), b, Z(a.re,b.im)}
+    end
 end
 
 function ld.parallelogram(a,u,v)
@@ -653,7 +658,7 @@ function ld.interL(L1, L2)
     
     local interLL = function(L1,L2)
     -- calcule et renvoie la liste des points d'intersection deux composantes connexes L1 et L2 (liste de complexes)
-    -- L1 et L2 sont supposés être deux liste de complexes d'au moins 2 nombres.
+    -- L1 et L2 sont supposés être deux listes de complexes d'au moins 2 nombres.
         if (L1 == nil) or (type(L1) ~= "table") or (#L1 <= 1) or (L2 == nil) or (type(L2) ~= "table") or (#L2 <= 1)
         then return end
         local res = {}
@@ -993,30 +998,12 @@ function ld.cutpolyline(L,line,close)
     return res, res2, coupe -- returns the two polygons and intersection points
 end
 
-function ld.cutpolyline2(C1,f,sg,close) 
--- C1 is a list of complex numbers representing a region
+function ld.cutpolyline2(R,f,sg,close) 
+-- R is a list of complex numbers or a list of lists of complex numbers representing a region
 -- f is fonction x->f(x) real
 -- sg is ">" or "<"
 -- close = true/false to close or not C1
--- The function returns the outline of the region contained in C1 and satisfying y>f(x) or y<f(x) depending on the value of sg
-    local oldepsilon = ld.epsilon
-    ld.epsilon = 1e-12
-    --if (type(C1[1]) ~= "number") or (not isComplex(C1[1])) then C1 = C1[1] end -- first component
-    if close and (not (C1[1] == C1[#C1])) then table.insert(C1, C1[1]) end
-    local x1,x2,y1,y2 = ld.getbounds(C1)
-    local C2
-    if sg == ">" then
-        C2 = ld.clippolyline(ld.cartesian(f, x1-0.5, x2+0.5), x1-0.5, x2+0.5,-math.huge, y2+0.5)[1]
-        table.insert(C2,1, Z(C2[1].re, math.max(C2[1].im,y2+0.5)))
-        table.insert(C2, Z(C2[#C2].re, math.max(C2[#C2].im,y2+0.5)))
-        table.insert(C2,C2[1])
-    else
-        C2 = ld.clippolyline(ld.cartesian(f, x1-0.5, x2+0.5), x1-0.5, x2+0.5, y1-0.5, math.huge)[1]
-        table.insert(C2,1, Z(C2[1].re, math.min(C2[1].im,y1-0.5)))
-        table.insert(C2, Z(C2[#C2].re, math.min(C2[#C2].im,y1-0.5)))
-        table.insert(C2,C2[1])
-        C2 = ld.reverse(C2)
-    end
+-- The function returns the outline of the region contained in C1 and satisfying y>f(x) if sg=">" or y<f(x) if sg="<"
 
     local test = function(A)
         if sg == ">" then
@@ -1025,46 +1012,104 @@ function ld.cutpolyline2(C1,f,sg,close)
             return A.im < f(A.re)
         end
     end
-    
-    local L = ld.interL(C2,C1)
-    if L == nil then
-        if test(C1[1]) then return C1
-        elseif ld.inside(C2[1],C1) then return C2
-        else return 
-        end
-    end
-    local rep = {}
-    local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
-    local C1B, C1A = ld.cut(C1,L1) -- C1B = avant L1, C1A = après L1
-    table.remove(C1A) --on enlève le dernier
-    C1 = concat(C1A, C1B)
-    local C2B, C2A = ld.cut(C2,L1) -- C2B = avant L1, C2A = après L1
-    table.remove(C2A) --on enlève le dernier
-    C2 = concat(C2A, C2B) ;   
-    -- on parcourt L par paire (L1,L2)
-    local L2 = table.remove(L,1)
-    table.insert(L,L1)
-    local aux, aux2, A, k = {}, {}
-    for j, z in ipairs(L)  do
-        L1 = L2; L2 = z
-        k = 1; A = C1[2]
-        while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end -- point suivant L1 dans C1
-        if test(A) then -- on prend la partie [L1,L2] de C1
-            aux = ld.cut(C1,L2)
-        else -- on prend la partie [L1,L2] de C2
-            aux = ld.cut( ld.cut(C2,L1,true), L2)
-            if aux == nil then
-                aux2 = ld.cut(C2,L1,true)
-                table.remove(aux2)
-                aux = concat(aux2, ld.cut(C2,L2))
+
+    local cutpolyline2cp = function(C1) 
+        local oldepsilon = ld.epsilon
+        ld.epsilon = 1e-12
+        local i = cpx.I
+        if close and (not (C1[1] == C1[#C1])) then table.insert(C1, C1[1]) end
+        local x1,x2,y1,y2 = ld.getbounds(C1)
+        local C2
+        if sg == ">" then
+            C2 = ld.clippolyline(ld.cartesian(f, x1-0.5, x2+0.5), x1-0.5, x2+0.5,-math.huge, y2+0.5)[1]
+            if C2 ~= nil then 
+                local z = Z(x1-0.5, C2[1].im)
+                if not (z == C2[1]) then table.insert(C2,1, z) end
+                z = Z(x1-0.5, math.max(C2[1].im,y2+0.5))
+                if not (z == C2[1]) then table.insert(C2,1, z) end
+                
+                z = Z(x2+0.5, C2[#C2].im)
+                if not (z == C2[#C2]) then table.insert(C2, z) end
+                z = Z(C2[#C2].re, math.max(C2[#C2].im,y2+0.5))
+                if not (z == C2[#C2]) then table.insert(C2, z) end
+                table.insert(C2,C2[1])
+            end
+        else
+            C2 = ld.clippolyline(ld.cartesian(f, x1-0.5, x2+0.5), x1-0.5, x2+0.5, y1-0.5, math.huge)[1]
+            if C2 ~= nil then 
+                local z = Z(x1-0.5, C2[1].im)
+                if not (z == C2[1]) then table.insert(C2,1, z) end
+                z = Z(x1-0.5, math.min(C2[1].im,y1-0.5))
+                if not (z == C2[1]) then table.insert(C2,1, z) end
+                
+                z = Z(x2+0.5, C2[#C2].im)
+                if not (z == C2[#C2]) then table.insert(C2, z) end
+                z = Z(x2+0.5, math.min(C2[#C2].im,y1-0.5))
+                if not (z == C2[#C2]) then table.insert(C2, z) end
+                table.insert(C2,C2[1])
             end
         end
-        table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
-        if #C1 == 0 then  return end
-        ld.insert(rep,aux)
+        if C2 == nil then
+            if test(C1[1]) then return {C1}
+            else return
+            end
+        end
+        local L = ld.interL(C1,C2)
+        if L == nil then
+            if test(C1[1]) then return {C1}
+            elseif ld.inside(C2[1],C1) then return {C2}
+            else return 
+            end
+        end
+        local rep = {}
+        local L1 = L[1] -- premier point commun, on réorganise C1 et C2 pour commencer par L1
+        local C1B, C1A = ld.cut(C1,L1) -- C1B = avant L1, C1A = après L1
+        table.remove(C1A) --on enlève le dernier
+        C1 = ld.concat(C1A, C1B)
+        local C1aux = table.copy(C1)
+        local C2B, C2A = ld.cut(C2,L1) -- C2B = avant L1, C2A = après L1
+        table.remove(C2A) --on enlève le dernier
+        C2 = ld.concat(C2A, C2B)
+        -- on parcourt L par paire (L1,L2)
+        if L[#L] ~= L1 then table.insert(L,L[1]) end
+        local L2 = table.remove(L,1)
+        while L[1] == L1 do table.remove(L,1) end
+        local aux, aux2, A, k = {}, {}
+        for _, z in ipairs(L)  do
+            L1 = L2; L2 = z; aux = nil
+            k = 2; A = C1[2]
+            if A ~= nil then
+                while (cpx.abs(L1-A) < 0.1) and (k<#C1) do k=k+1; A = C1[k] end 
+                -- point suivant L1 dans C1
+                if test(A) then -- on prend la partie [L1,L2] de C1
+                    aux = ld.cut(C1,L2)
+                    table.insert(rep,aux)
+                end
+            end
+            k = 2; A = C2[2]
+            if A ~= nil then
+                while (cpx.abs(L1-A) < 0.15) and (k<#C2) do k=k+1; A = C2[k] end -- point suivant L1 dans C2
+                if ld.inside(A,C1aux) then -- on prend la partie [L1,L2] de C2
+                    aux = ld.cut(C2,L2)
+                    table.insert(rep,aux)
+                end
+            end
+            C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
+            C2 = ld.cut(C2,L2,true) -- on coupe C2 avant L2
+            if (C1==nil) or (C2==nil) then break end
+        end
+        ld.epsilon = oldepsilon
+        rep = ld.merge(rep)
+        return rep
     end
-    table.insert(rep,C2[1])
-    ld.epsilon = oldepsilon
+    
+    if (R == nil) or (type(R) ~= "table") or (#R==0) then return end
+    if (type(R[1]) == "number") or cpx.isComplex(R[1]) then R = {R} end
+    local rep = {}
+    for _, cp in ipairs(R) do
+        local aux = cutpolyline2cp(cp)
+        if aux ~= nil then rep = ld.concat(rep, aux) end
+    end
     return rep
 end
 
@@ -1072,7 +1117,7 @@ function ld.inequalities(constraints, x1,x2,y1,y2)
     -- constraints = {f1, sg1, f2, sg2, ...} where fi are functions (x->fi(x) real) and sgi = '>' or'<'
     -- returns the outline of the region satisfying the conditions y>fi(x) or y<fi(x) in [x1;x2]x[y1;y2]
     local f, sg
-    local P = {Z(x1,y1), Z(x2,y1), Z(x2,y2), Z(x1,y2),Z(x1,y1)}
+    local P = {{Z(x1,y1), Z(x2,y1), Z(x2,y2), Z(x1,y2),Z(x1,y1)}}
     local n = #constraints  -- number of arguments
     for i = 1, n-1, 2 do   -- step = 2
         f, sg = constraints[i], constraints[i+1]  -- 2 args
@@ -1084,20 +1129,168 @@ function ld.inequalities(constraints, x1,x2,y1,y2)
 end
 
 
+function ld.implicit_inequality(f,sg,x1,x2,y1,y2,grid)
+-- f = function (x,y) -> f(x,y) real
+-- sg = ">" or "<"
+-- returns the outline of the region satisfying the condition f(x,y)>0 or f(x,y)<0 in [x1;x2]x[y1;y2]
+-- grid = {n1, n2} which means that the interval [x1,x2] is cut into n1 pieces, and the interval [y1,y2] into n2 pieces.
+    local tolerance = 1e-6
+    
+    local dist = function(a,b)
+            return cpx.abs(b-a)
+        end
+    
+    local dicho = function(a,b) -- a,b sont deux tables { Z(x,y),f(x,y)}  retourne "none" ou un point
+            local z1, z2, f1, f2 = a[1], b[1], a[2], b[2]
+            if f1*f2 <= 0 then
+                for _ = 1, 10 do --while cpx.abs(z2-z1) >= tolerance do
+                    local z3 = (z1+z2)/2
+                    local fm = f(z3.re,z3.im)
+                    if f1*fm <= 0 then  z2 = z3 else z1 = z3; f1=fm end
+                end
+                return (z1+z2)/2
+            end
+            return "none"
+        end
+        
+    local test = function(fi)
+        if sg == ">" then return fi>=0
+        else return fi <= 0
+        end
+    end
+    
+    local  N, P = grid[2], grid[1]    
+    local xpas, ypas = (x2-x1)/P, (y2-y1)/N
+    local Grid = {} -- grille de points { Z(xi,yj), f(xi,yj) }
+    local y = y1    
+    for _ = 1, N+1 do
+        local ligne = {}
+        local x = x1
+        for _ = 1, P+1 do
+            table.insert(ligne, {Z(x,y), f(x,y)} )
+            x = x+xpas
+        end
+        table.insert(Grid, ligne)
+        y = y+ypas
+    end
+    
+    local AretesV = {}
+    for I = 1, N do
+        local cp = {}
+        for J = 1, P+1 do
+            table.insert(cp, dicho( Grid[I][J], Grid[I+1][J]) )  -- arête verticale
+        end
+        table.insert(AretesV, cp)
+    end
+    local AretesH = {}
+    for I = 1, N+1 do
+        local cp = {}
+        for J = 1, P do
+            table.insert(cp, dicho( Grid[I][J], Grid[I][J+1]) )  -- arête horizontale
+        end
+        table.insert(AretesH, cp)        
+    end
+    local rep = {}
+    for I = 1,N do
+        for J = 1, P do
+            local a, b, c, d = Grid[I][J], Grid[I][J+1], Grid[I+1][J+1], Grid[I+1][J]
+            local z1, z2, z3, z4 = a[1], b[1], c[1], d[1]
+            local m1 = AretesV[I][J] -- point sur arête verticale gauche de la maille
+            local m2 = AretesH[I][J] --point sur arête horizontale basse de la maille
+            local m3 = AretesV[I][J+1] --point sur arête verticale droite de la maille
+            local m4 = AretesH[I+1][J] --point sur arête horizontale haute de la maille
+            if (m1 == "none") and (m2 == "none") and (m3 == "none") and (m4 == "none") then
+                -- maille non coupée, on teste si elle est du bon côté
+                if test(a[2]) then --maille dans la solution
+                    if z1.re <= x1 then table.insert( rep, {z4,z1} ) end --coté gauche
+                    if z2.re >= x2 then table.insert( rep, {z2,z3} ) end --coté droit
+                    if z1.im <= y1 then table.insert( rep, {z1,z2} ) end --coté bas
+                    if z3.im >= y2 then table.insert( rep, {z3,z4} ) end --coté haut
+                end
+            else
+                if test(a[2]) then
+                    if z1.re <= x1 then 
+                        if m1 ~= "none" then table.insert(rep, {z1,m1}) else table.insert(rep, {z1,z4}) end
+                    end
+                    if z1.im <= y1 then 
+                        if m2 ~= "none" then table.insert(rep, {z1,m2}) else table.insert(rep, {z1,z2}) end
+                    end
+                end
+                if test(b[2]) then
+                    if z2.re >= x2 then 
+                        if m3 ~= "none" then table.insert(rep, {z2,m3}) else table.insert(rep, {z2,z3}) end
+                    end
+                    if z2.im <= y1 then 
+                        if m2 ~= "none" then table.insert(rep, {z2,m2}) end
+                    end
+                end
+                if test(c[2]) then
+                    if z3.re >= x2 then 
+                        if m3 ~= "none" then table.insert(rep, {z3,m3}) end
+                    end
+                    if z3.im >= y2 then 
+                        if m4 ~= "none" then table.insert(rep, {z3,m4}) else table.insert(rep, {z3,z4}) end
+                    end
+                end
+                if test(d[2]) then
+                    if z4.re <= x1 then 
+                        if m1 ~= "none" then table.insert(rep, {z4,m1}) end
+                    end
+                    if z4.im >= y2 then 
+                        if m4 ~= "none" then table.insert(rep, {z4,m4}) end
+                    end
+                end
+                if m1 ~= "none" then
+                    if (m2 ~= "none") then
+                        table.insert( rep, {m1,m2} )
+                    else if (m3 ~= "none") then
+                            table.insert( rep, {m1,m3} )
+                        else if (m4 ~= "none") then
+                                table.insert( rep, {m1,m4} )
+                             end
+                        end
+                    end
+                end
+                if m2 ~= "none" then
+                    if (m3 ~= "none") then
+                        table.insert( rep, {m3,m2} )
+                    else    if (m4 ~= "none") then
+                                table.insert( rep, {m4,m2} )
+                            end
+                    end
+                end
+                if (m3 ~= "none") then
+                    if (m4 ~= "none") then
+                       table.insert( rep, {m3,m4} )
+                    end
+                end
+            end
+        end
+    end
+    if #rep > 0 then 
+        return ld.polyline2path( ld.merge(rep) )
+    end -- on renvoie le résultat en recollant les segments avec merge
+end
+
+
 -- recoller des composantes connexes, utilisé par les courbes implicites
 function ld.merge(List,eps)
 -- L est une liste de liste de complexes
 -- on essaie de recoller au mieux les composantes connexes de L si possible
 -- la fonction renvoie le résultat
--- les comparaisons se font à  eps près (par défaut eps=10^(-10) )
+-- les comparaisons se font à  eps près (par défaut eps=0)
     eps = eps or 0
+    local equal
     local res = {}
     local L = table.copy(List)
     if eps == 0 then
         equal = cpx.equal
     else
-        equal = function(z1,z2)
-            return cpx.abs(z1-z2) < eps
+        equal = function(u,u)
+            u = cpx.toComplex(u)
+            v = cpx.toComplex(v)
+        if (u == nil) or (v == nil) then return end
+            return cpx.abs(u-v) < eps
         end
     end
     local test = function(t1,t2)
@@ -1740,11 +1933,26 @@ function ld.inside(I,L)
     local close = function(P) -- il faut fermer L si ce n'est pas fait, mais sans modifier L
         local res, aux = {}, {}
         for _, cp in ipairs(P) do
-            if cp[1] ~= cp[#cp] then aux = table.copy(cp), table.insert(aux,cp[1]) else aux = cp end
+            if cpx.abs(cp[1]-cp[#cp])>1e-4 then 
+                aux = table.copy(cp), table.insert(aux,cp[1]) 
+            else aux = cp end
             table.insert(res,aux)
         end
         return res
     end
+    
+    local remove_duplicates = function(R)
+        R = ld.map(cpx.toComplex,R)
+        table.sort(R, 
+            function(e1,e2) return (e1.re < e2.re) or ((e1.re == e2.re) and (e1.im < e2.im)) end)
+        local old, S = R[1], {R[1]}
+        for k = 2, #R do -- on élimine les doublons
+            local z = R[k]
+            if not cpx.isNul(z-old) then table.insert(S,z); old = z end
+        end
+        return S
+    end
+    
     I = toComplex(I) 
     if I == nil then return false end
     if (L == nil) or (type(L) ~= "table") then return false end
@@ -1753,18 +1961,21 @@ function ld.inside(I,L)
     if (type(L[1]) == "number") or isComplex(L[1]) -- on a une liste de complexes
     then L = {L} 
     end
-    local stop, epsilon = false, 1e-17
+    local stop = false
     for _,cp in ipairs(L) do
         for _, z in ipairs(cp) do
             z = toComplex(z)
-            stop = math.abs(I.im-z.im) > epsilon
+            stop = stop or (math.abs(I.im-z.im) > ld.epsilon)
+            if stop then break end
         end
+        if stop then break end
     end
     if not stop then return true end -- ligne plate contenant I
     local R = Z(xmin-1,I.im) -- R est sur l'horizontale passant par I et hors de L
     local res = ld.interL({R,I}, close(L))
     if res == nil then return false
     else
+        res = remove_duplicates(res)
         return (#res%2 == 1)
     end
 end
@@ -1804,7 +2015,6 @@ function ld.cap(C1, C2) -- contour de l'intersection de C1 et C2
                 table.remove(aux2)
                 aux = concat(aux2, ld.cut(C2,L2))
             end
-            
         end
         table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
         ld.insert(rep,aux)
@@ -1965,21 +2175,32 @@ function ld.cvx_hull2d(L)
 end
 
 -- conversion ligne polygonale -> bande
-function ld.line2strip(L,wd,closed,ends)
+function ld.line2strip(L,wd,closed,ends,mode)
 -- L is a list of complex numbers or a list of list od complex numbers
 -- wd is the width of the strip (cm)
 -- closed boolean indicating whether the line should be closed
+-- ends = "none" (or false), "butt" (or true)  or "round"
 -- ends boolean indicating whether the two end segments should be drawn
+-- mode = "center" (default), "left" or "right"
 -- returns a path
     if (L == nil) or (type(L) ~= "table") then return end
     local oldEpsilon = ld.epsilon
     epsilon = 1e-10
-    local ep = wd/2
     local i = cpx.I
     closed = closed or false
-    if closed then ends = false end
-    if ends == nil then ends = true end
-    if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
+    if closed then ends = "none" end
+    if ends == nil then ends = "butt" end
+    if ends == true then ends = "butt"
+    elseif ends == false then ends = "none"
+    end
+    mode = mode or "center"
+    local epL, epR = wd/2, wd/2
+    if mode == "left" then
+        epL, epR = wd, 0
+    elseif mode == "right" then
+        epL, epR = 0, wd
+    end
+    if (type(L[1]) == "number") or cpx.isComplex(L[1]) then L = {L} end
     local ret, aux = {}
     local bord, dessus, first, a, b, c, u, v, w
     for _, cp1 in ipairs(L) do
@@ -1996,8 +2217,13 @@ function ld.line2strip(L,wd,closed,ends)
             table.insert(cp,a)
         end
         v = i*cpx.normalize(b-a)
-        bord = {a-ep*v,a+ep*v}; dessus= {bord[2],"l"}
-        first = bord[1]; table.insert(aux,first); table.insert(aux,"m")
+        bord = {a-epR*v,a+epL*v}; dessus= {bord[2],"l"}
+        first = bord[1]; 
+        if ends == "round" then
+            ld.insert(aux, {bord[2], "m", a + (epL-epR)/2*v, first, wd/2, 1, "ca"} )
+        else
+            table.insert(aux,first); table.insert(aux,"m")
+        end
         c = b; b = a; v = v/i
         for _, z in ipairs(cp) do
             a = b; b = c; c = z; u  = -v; v = cpx.normalize(c-b)
@@ -2006,24 +2232,23 @@ function ld.line2strip(L,wd,closed,ends)
             else
                 w = cpx.normalize(u+v)
                 if w == nil then
-                    bord = {b+ep*i*u, b-ep*i*u}
+                    bord = {b+epR*i*u, b-epL*i*u}
                 else
                     bord = ld.projO( bord,{b,w},u)
-                    if cpx.abs(bord[1])>12 then
-                        print(a, b, c)
-                    end
                 end
-                --if (cpx.abs(bord[1]-proj(bord[1],{a,b-a}))<=2*ep) and (cpx.abs(bord[2]-proj(bord[1],{a,b-a}))<=2*ep) then
-                    table.insert(aux,bord[1]); table.insert(dessus,1,bord[2])
-                --end
+                table.insert(aux,bord[1]); table.insert(dessus,1,bord[2])
             end
         end
-        if ends then
-            aux = concat(aux,{c-ep*v*i, c+ep*v*i}, dessus,"cl")
+        if ends == "butt" then
+            aux = ld.concat(aux,{c-epR*v*i, c+epL*v*i}, dessus,"cl")
+            ld.insert(ret, aux)
+        elseif ends == "round" then
+            local m = c + (epL-epR)/2*v*i
+            aux = ld.concat(aux,{c-epR*v*i, "l", m, c+epL*v*i, wd/2, 1, "ca"}, dessus,"cl")
             ld.insert(ret, aux)
         else
-            ld.insert(aux,{c-ep*i*v,"l"}); ld.insert(dessus,{c+ep*i*v,"m"},1)
-            ret = concat(ret, aux,dessus)
+            ld.insert(aux,{c-epR*i*v,"l"}); ld.insert(dessus,{c+epL*i*v,"m"},1)
+            ret = ld.concat(ret, aux,dessus)
         end
     end
     ld.epsilon = oldEpsilon

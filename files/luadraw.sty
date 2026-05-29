@@ -1,10 +1,10 @@
-% luadraw.sty version 3.0 du 07/05/2026%
+% luadraw.sty version 3.1 du 29/05/2026%
 %% ---------------------------------------%
 %% Copyright (C) 2026 Patrick Fradin%
 %% ---------------------------------------%
 % Ce package fournit un environnement de dessin avec lua%
 %%
-% \begin{luadraw}{<options>}%
+% \begin{luadraw}{<options>}% ou \begin{luadraw*}{<options>}
 %  <code lua>%
 % \end{luadraw}%
 %%%%%%%% ATTENTION : compilation avec lualatex uniquement !%
@@ -31,7 +31,7 @@
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2026/05/07 version 3.0, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2026/05/29 version 3.1, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%
@@ -42,7 +42,24 @@
 \usetikzlibrary{arrows.meta}%%
 \usetikzlibrary{decorations.markings}%%
 \usetikzlibrary{backgrounds}%%
-%
+
+% patch from Davd Carlisle to correct a bug in luacode
+% https://tex.stackexchange.com/questions/762807/the-linebreak-syntax-bug-with-luacode
+\renewcommand \luacode@strip@sp@look {%
+  \expandafter\ifx\luacode@spaceother\@let@token
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi{%
+    \afterassignment\luacode@strip@sp@peek
+    \let\@let@token=
+  }{%
+    \luacode@strip@sp@def!%
+  }}%
+\def \luacode@strip@sp@def #1\@nil{%
+  \expandafter\def\expandafter\luacode@curr\expandafter{\@gobble#1}}%
+%%% end of patch
+
 \def\luadraw@TkzDir{_luadraw/}% répertoire de travail par défaut%
 \directlua{luadraw = {}}
 \directlua{luadraw.cachedir = ""}

@@ -1,6 +1,6 @@
 -- luadraw_decorated.lua
--- date 2026/05/07
--- version 3.0
+-- date 2026/05/29
+-- version 3.1
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -315,11 +315,13 @@ function graph:Dseg(segm,scale,draw_options) -- ou Dseg({a,b}, options)
 end
 
 -- 2D line --
-function graph:Dline(d,B,draw_options) -- or g:Dline(d,B,options)
+function graph:Dline(d,B,draw_options,scale) -- or g:Dline(d,B,options)
 -- options = {draw_options="", label="", anchor1d=nil, anchor=Z(0.5,0.5), dir=nil, node_options=""}
     local A, u = nil, nil
     if (d == nil) then return end
-    if (type(B) ~= "number") and (not cpx.isComplex(B)) then draw_options = B; B = nil end
+    if (type(B) ~= "number") and (not cpx.isComplex(B)) then 
+        scale = draw_options; draw_options = B; B = nil 
+    end
     if (B ~= nil) then 
         B = cpx.toComplex(B)
         d = cpx.toComplex(d)
@@ -336,12 +338,14 @@ function graph:Dline(d,B,draw_options) -- or g:Dline(d,B,options)
     local options = draw_options or {}
     if type(draw_options) ~= "string" then draw_options = options.draw_options or "" end
     local label = options.label or ""
+    scale = scale or options.scale or 1
     if not ld.isID(self.matrix) then
         A, u = ld.applymatrix(A,self.matrix), ld.applyLmatrix(u,self.matrix)
     end
     local X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
     local res = ld.clipline({A,u},X1,X2,Y1,Y2)
     if res ~= nil then
+        res = ld.seg(res[1], res[2],scale)
         local commande = self:drawcmd(draw_options)
         if cpx.dot(u,res[2]-res[1]) > 0 then -- le sens est important s'il y a une flèche
             self:Write(commande..self:Coord(res[1]))
