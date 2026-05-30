@@ -15,7 +15,7 @@ Of course, all 2D and 3D drawing methods remain usable.
 \begin{itemize}
          \item \cmd{ld.sM(x, y, z)}: returns a point on the sphere; this is the point $I$ on the sphere such that the half-line $[O,I)$ ($O$ being the center of the sphere) passes through the point $A$ with Cartesian coordinates $(x,y,z)$. It is the projection of the point $M(x,y,z)$ onto the sphere from the center.
         \item \cmd{ld.sM(theta, phi)}: where \argu{theta} and \argu{phi} are angles in degrees, returns a point on the sphere, whose spherical coordinates are \emph{(R,theta,phi)} where $R$ is the radius of the sphere.
-        \item \cmd{ld.toSphere(A)}: returns the projection of point \argu A onto the sphere from the center.
+        \item \cmd{ld.toSphere(A)}: returns the projection of point \argu{A} onto the sphere from the center.
 \end{itemize}
 
 
@@ -30,7 +30,7 @@ The sphere is defined using the method \cmd{g:Define\_sphere( options )}, where 
     \item \opt{opacity=\val{1}},
     \item \opt{mode=\val{ld.mBorder}}, sphere display mode (possible values: \val{ld.mWireframe} or \val{ld.mGrid} or \val{ld.mBorder}),
     \item \opt{edgecolor=\val{"lightgray"}},
-    \item \opt{edgestyle="\val{solid"}},
+    \item \opt{edgestyle=\val{"solid"}},
     \item \opt{hiddenstyle=\val{ld.Hiddenlinestyle}},
     \item \opt{hiddencolor=\val{"gray"}},
     \item \opt{edgewidth=\val{4}},

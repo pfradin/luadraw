@@ -9,7 +9,7 @@ This module does not return anything; it adds new graphics methods to the \emph{
 First and foremost, the \povray software must be installed on your computer in its command-line version (non-graphical version).
 \begin{itemize}
 \item On Linux: \povray is always a command-line application and is installed using the package manager.
-\item On macOS: the command-line version of \povray can be installed via \href{https://formulae.brew.sh/formula/povray\#default)}{HomeBrew}.
+\item On macOS: the command-line version of \povray can be installed via \href{https://formulae.brew.sh/formula/povray\#default)}{Homebrew}.
 \item On Windows: the installer can be downloaded from the \href{https://www.povray.org/download/}{\povray} website.
 \end{itemize}
 
@@ -42,7 +42,7 @@ Using this module requires certain default settings that may vary depending on t
 \hfil\opt{include=\{"textures.inc", "colors.inc"\}}\hfil\par These two files are normally distributed with \povray; the first defines textures, the second colors. By default, no inclusions are made.
 \end{itemize}
 
-If you modify one of these options, the value you assign becomes the new default value for the rest of the document. However, it's not necessary to repeat this function in every graph in your document using \povray; it only needs to be done once in the preamble. For example, on macOS, if you installed \povray via \emph{HomeBrew}, then this is suitable:
+If you modify one of these options, the value you assign becomes the new default value for the rest of the document. However, it's not necessary to repeat this function in every graph in your document using \povray; it only needs to be done once in the preamble. For example, on macOS, if you installed \povray via \emph{Homebrew}, then this is suitable:
 
 
 \begin{minted}{TeX}

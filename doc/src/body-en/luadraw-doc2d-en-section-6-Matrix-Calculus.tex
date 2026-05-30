@@ -21,7 +21,7 @@ The function \cmd{ld.invmatrix(M)} calculates and returns the inverse of the mat
 
 \subsubsection{matrixof}
 \begin{itemize}
-    \item The function \cmd{ld.matrixof(f)} calculates and returns the matrix of \argu{f} (which must be an affine application of the complex plane.
+    \item The function \cmd{ld.matrixof(f)} calculates and returns the matrix of \argu{f} (which must be an affine application of the complex plane).
     \item Example: \code{ld.matrixof(function(z) return ld.proj(z,{0,Z(1,-1)}) end)} returns \par
 \val{\{0,Z(0.5,-0.5),Z(-0.5,0.5)\}} (matrix of the orthogonal projection onto the second bisector).
 \end{itemize}

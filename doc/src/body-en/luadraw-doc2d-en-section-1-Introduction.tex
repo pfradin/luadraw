@@ -69,7 +69,7 @@ local pt3d = ld.pt3d -- shortcut for the pt3d class
 
 \begin{itemize}
 \item In the preamble, you must declare the \luadrawenv package: \verb|\usepackage[global options]{luadraw}|
-\item Compilation is done with LuaLatex \textbf{exclusively}.
+\item Compilation is done with LuaLaTeX \textbf{exclusively}.
 \item The colors in the \emph{luadraw} environment are strings that must correspond to colors known to TikZ. It is strongly recommended to use the \emph{xcolor} package with the \emph{svgnames} option.
 \end{itemize}
 
@@ -149,7 +149,7 @@ In addition, the following functions are added:
     \item perfect equality: \cmd{cpx.equal(z1,z2)},
     \item complex exponential: \cmd{cpx.exp(z)},
     \item the complex hyperbolic cosine and sine: \cmd{cpx.cosh(z)} and \cmd{cpx.sinh(z)},
-    \item the power function $a$: cmd{cpx.pow(z,a)} (the calculation uses the main argument of $z$),
+    \item the power function $a$: \cmd{cpx.pow(z,a)} (the calculation uses the main argument of $z$),
     \item scalar product: \cmd{cpx.dot(z1, z2)}, where the complex numbers represent vector affixes,
     \item determinant: \cmd{cpx.det(z1, z2)},
     \item the oriented angle (in radians) between two non-zero vectors: \cmd{cpx.angle(z1, z2)}
@@ -204,7 +204,7 @@ The \emph{ld.graph} class is defined in the \luadrawenv package. This class is i
 
 \item \opt{bbox=true/false}. This option (optional) indicates whether a bounding box should be added to the graph so that it has the desired size. Everything outside of it is clipped by TikZ. By default, this parameter is set to \true. With the value \false, no bounding box is added, but everything outside the 2D window, except for the paths, is clipped by \luadrawenv. The graph size can be smaller than the requested size.
 
-\item \opt{pictureoptions=""}. This option (optional) is a string containing options that will be passed to the \emph{tikzpicture} envoironment like this:
+\item \opt{pictureoptions=""}. This option (optional) is a string containing options that will be passed to the \emph{tikzpicture} environment like this:
 \begin{TeXcode}
 \begin{tikzpicture}[line join=round <,pictureoptions>]
 \end{TeXcode}

@@ -36,7 +36,7 @@ local Origin, vecI, vecJ, vecK, M = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
 
 local g = ld.graph3d:new{viewdir={"central",-10,60}, window={-5,6.5,-6.5,6},bg="gray", size={10,10}}
 local P1 = ld.planeEq(1,1,1,-2) -- plane of equation x+y+z-2=0
-local P2 = {Origin, vecK-vecJ} -- plane passing through O and normal to (1,1,1)
+local P2 = {Origin, vecK-vecJ} -- plane passing through O and normal to (0,-1,1)
 local D = ld.interPP(P1,P2) -- line of intersection between P1 and P2 (D = {A,u})
 local posD = D[1]+1.85*D[2] -- to place the label
 ld.Hiddenlines = true; ld.Hiddenlinestyle = "dotted" -- display of hidden lines as dotted lines
@@ -64,7 +64,7 @@ The \cmd{g:addFacet(F, options)} method, where \argu{F} is a facet or a list of 
 
 The \cmd{g:addPoly(P, options)} method allows you to add the polyhedron \argu{P} to the scene.
 
-In both cases, the \argu{options} argument is a table whose fileds define these options (with their default values) are:
+In both cases, the \argu{options} argument is a table whose fields define these options (with their default values) are:
 
 \begin{itemize}
     \item \opt{color="white"}: Sets the fill color of the facets. This color will be shaded depending on their inclination. By default, the edges of the facets are not drawn (only the fill).
@@ -115,15 +115,15 @@ In both cases, the optional argument \argu{options} is a table whose fields defi
 
 \subsubsection{Add a polygonal line: g:addPolyline}
 
-The method \cmd{g:addPolyline(L, options)}, where \argu{L} is a list of 3D points, or a list of lists of 3D points, adds \argu{L} to the scene. The \argu{options} argument is a table whose fileds define these options (with their default values) are:
+The method \cmd{g:addPolyline(L, options)}, where \argu{L} is a list of 3D points, or a list of lists of 3D points, adds \argu{L} to the scene. The \argu{options} argument is a table whose fields define these options (with their default values) are:
 \begin{itemize}
     \item \opt{style=<current line style>}: to set the line style; this is the current style by default.
-    \item \opt{color=}: line color.
+    \item \opt{color=<current line color>}: line color.
 
     \item \opt{close=false}: indicates whether the line \argu{L} (or each component of \argu{L}) should be closed.
      \item \opt{clip=false}: Indicates whether the line \argu{L} (or each component of \argu{L}) should be clipped by the 3D window.
 
-    \item \opt{width=<urrent  line width>}: line thickness in tenths of a point.
+    \item \opt{width=<current line width>}: line thickness in tenths of a point.
 
     \item \opt{opacity=1}: opacity of the line drawing ($1$ means no transparency).
 
@@ -145,7 +145,7 @@ The \cmd{g:addAxes(O, options)} method adds the axes ($O$,\emph{vecI}), ($O$,\em
     
 \subsubsection{Add a line: g:addLine}
 
-The \cmd{g:addLine(d, options)} method adds the line \argu{d} to the scene. This line is a table of the form $\{A,u\}$ where $A$ is a point on the line (3D point) and $u$ is a direction vector (non-zero 3D point). The optional argument \argu{options} is a table whose fileds define the options, these are those of the \cmd{g:addPolyline()} method, plus the \opt{scale=1} option: this number is a homothety ratio. The homothety is applied, with the center being the midpoint of the segment representing the line, and the ratio \opt{scale}. This allows you to adjust the size of the segment in its representation. This segment is the line clipped by the polyhedron given by the \opt{window3d} option (itself defined when the graph is created), which results in a segment (possibly empty).
+The \cmd{g:addLine(d, options)} method adds the line \argu{d} to the scene. This line is a table of the form $\{A,u\}$ where $A$ is a point on the line (3D point) and $u$ is a direction vector (non-zero 3D point). The optional argument \argu{options} is a table whose fields define the options, these are those of the \cmd{g:addPolyline()} method, plus the \opt{scale=1} option: this number is a homothety ratio. The homothety is applied, with the center being the midpoint of the segment representing the line, and the ratio \opt{scale}. This allows you to adjust the size of the segment in its representation. This segment is the line clipped by the polyhedron given by the \opt{window3d} option (itself defined when the graph is created), which results in a segment (possibly empty).
 
 \subsubsection{Adding a "right" angle: g:addAngle}
 
@@ -209,7 +209,7 @@ g:Show()
 
 \subsubsection{Adding points: g:addDots}
 
-The \cmd{g:addDots(dots, options)} method allows you to add 3D points to the scene. The argument \argu{dots} is either a 3D point or a list of 3D points. The optional argument \argu{options} is a table whose fields defin the options, these options are (with the default value):
+The \cmd{g:addDots(dots, options)} method allows you to add 3D points to the scene. The argument \argu{dots} is either a 3D point or a list of 3D points. The optional argument \argu{options} is a table whose fields define the options, these options are (with the default value):
 \begin{itemize}
     \item \opt{style="ball"}: String defining the dot style. These are all 2D point styles, plus the \val{"ball"} (sphere) style, which is the default.
     \item \opt{color="black"}: String defining the dot color.
@@ -217,9 +217,9 @@ The \cmd{g:addDots(dots, options)} method allows you to add 3D points to the sce
     \item \opt{matrix=ld.ID3d}: 3D transformation matrix. By default, this is the 3D identity matrix, i.e., the table \code{\{M(0,0,0),vecI,vecJ,vecK\}}.
 \end{itemize}
 
-\subsubsection{Adding Labels: g:addLabels}
+\subsubsection{Adding Labels: g:addLabel}
 
-The \cmd{g:addLabel(text1, anchor1, options1, text2, anchor2, options2, \ldots)} method allows you to add the labels \argu{text1}, \argu{text2}, etc. The (required) arguments \argu{anchor1}, \argu{anchor2}, etc., are 3D points representing the anchor points of the labels. The (required) arguments \argu{options1}, \argu{options2}, etc., tables whose fields define the options. These options are (with the dault value):
+The \cmd{g:addLabel(text1, anchor1, options1, text2, anchor2, options2, \ldots)} method allows you to add the labels \argu{text1}, \argu{text2}, etc. The (required) arguments \argu{anchor1}, \argu{anchor2}, etc., are 3D points representing the anchor points of the labels. The (required) arguments \argu{options1}, \argu{options2}, etc., are tables whose fields define the options. These options are (with the default value):
 \begin{itemize}
     \item \opt{color=<current color>}: String defining the label color.
     \item \opt{pos=<current style>}: A string defining the position of the label relative to the anchor point (as in 2D: \val{"N"}, \val{"NW"}, \val{"W"}, \ldots).
@@ -378,10 +378,10 @@ g:Dcrossdots3d({{B,N},{I,N},{O,N}},ld.rgb(coul),0.75) -- points in the sphere
 g:Dlabel3d("$O$", O, {pos="NW"})
 local L = C.visible[1] -- visible part of the intersection (arc of a circle)
 A1 = L[1]; A2 = L[#L] -- ends of L
-local F = g:Plane2facet(P) -- plan converted to facet
+local F = g:Plane2facet(P) -- plane converted to facet
 -- hole plane as 3D path, the hole is the outline of the part of the sphere above the plane
 ld.insert(F,{"l","cl",A1,"m",I,A2,r,-1,w,"ca",Origin,A1,R,-1,n,"ca"})
-g:Dpath3d( F,"fill=Beige,fill opacity=0.6") -- drawing of the perforated plan
+g:Dpath3d( F,"fill=Beige,fill opacity=0.6") -- drawing of the perforated plane
 g:Dhline( g:Proj3d({A,N})) -- half-line, upper part of the axis (AB)
 g:Dcrossdots3d({A,N},"black",0.75); g:Dballdots3d(J,"black",0.75)
 g:Dlabel3d("$A$", A, {pos="NW"}, "$I$", I, {}, "$B$", B, {pos="E"}, "$J$", J, {pos="S"})

@@ -39,7 +39,7 @@ The function \cmd{ld.ftransform3d(L, f)} returns the image of \argu{L} by the fu
 \item The function \cmd{ld.sym3d(L, P)} returns the image of \argu{L} by the orthogonal symmetry about the \argu{P} plane.
 \item The function \cmd{ld.sym3dO(L, P, v)} returns the image of \argu{L} by the symmetry about the \argu{P} plane and parallel to the direction of the \argu{v} vector (non-zero 3D point).
 \item The function \cmd{ld.dsym3d(L, d)} returns the image of \argu{L} by the orthogonal symmetry with respect to the line \argu{d}.
-\item The function \cmd{ld.psym3d(L, point)} returns the image of \argu{L} by the symmetry with respect to \argu{point} (3d point).
+\item The function \cmd{ld.psym3d(L, point)} returns the image of \argu{L} by the symmetry with respect to \argu{point} (3D point).
 \end{itemize}
 
 \subsubsection{Rotation: rotate3d, rotateaxe3d}
@@ -140,7 +140,7 @@ The method \cmd{g:Scale3d(factor \fac{, center})} modifies the 3D transformation
 
 \subsubsection{g:Setmatrix3d()}
 
-The \cmd{g:Setmatrix3d(M)} method assigns the matrix \argu M to the 3D transformation matrix of the graph \emph g.
+The \cmd{g:Setmatrix3d(M)} method assigns the matrix \argu{M} to the 3D transformation matrix of the graph \emph g.
 
 \subsubsection{g:Shift3d()}
 
@@ -155,7 +155,7 @@ The function \cmd{ld.clippolyline3d(L, poly \fac{, exterior, close})} clips the 
 
 \textbf{Note}: The result is not always satisfactory for the exterior part.
 
-\paragraph{Special case}: Clipping a 3D polygonal line \argu L with the current 3D window can be done with this function as follows:
+\paragraph{Special case}: Clipping a 3D polygonal line \argu{L} with the current 3D window can be done with this function as follows:
 \codeln{L=ld.clippolyline3d(L,g:Box3d())}
 
 Indeed, the \cmd{g:Box3d()} method returns the current 3D window as a parallelepiped.
@@ -164,10 +164,10 @@ Indeed, the \cmd{g:Box3d()} method returns the current 3D window as a parallelep
 
 The function \cmd{ld.clipline3d(line, poly)} clips the line \argu{line} with the \textbf{convex} polyhedron \argu{poly}; the function returns the part of the line inside the polyhedron. The argument \argu{line} is a table of the form $\{A,u\}$ where $A$ is a point on the line and $u$ is a direction vector (two 3D points).
 
-\paragraph{Special case}: Clipping a line \argu d with the current 3D window can be done with this function as follows:
-\codeln{d=clipline3d(d,g:Box3d())}
+\paragraph{Special case}: Clipping a line \argu{d} with the current 3D window can be done with this function as follows:
+\codeln{d=ld.clipline3d(d,g:Box3d())}
 
-Indeed, the \cmd{g:Box3d()} method returns the current 3D window as a parallelepiped (\argu d then becomes a segment).
+Indeed, the \cmd{g:Box3d()} method returns the current 3D window as a parallelepiped (\argu{d} then becomes a segment).
 
 \subsubsection{cutpolyline3d()}
 
@@ -186,7 +186,7 @@ The function \cmd{ld.getbounds3d(L)} returns the bounds \emph{xmin, xmax, ymin, 
 
 \subsubsection{interDP()}
 
-The function \cmd{ld.interDP(d, P)} calculates and returns (if it exists) the intersection between line \argu d and plane \argu P.
+The function \cmd{ld.interDP(d, P)} calculates and returns (if it exists) the intersection between line \argu{d} and plane \argu{P}.
 
 \subsubsection{interPP()}
 
@@ -206,7 +206,7 @@ The function \cmd{ld.interDS(d, S)} calculates and returns (if it exists) the in
 
 \subsubsection{interPS()}
 
-The function \cmd{ld.interPS(P, S)} calculates and returns (if it exists) the intersection between the plane \argu{P} and the sphere \argu{S}$=\{C,r\}$ with $C$ as the center (3d point) and $r$ as the radius of the sphere. The function returns either \nil (empty intersection) or a sequence of the form $I,r,n$, where $I$ is a 3D point representing the center of a circle, $r$ its radius, and $n$ a normal vector to the plane of the circle. This circle is the desired intersection.
+The function \cmd{ld.interPS(P, S)} calculates and returns (if it exists) the intersection between the plane \argu{P} and the sphere \argu{S}$=\{C,r\}$ with $C$ as the center (3D point) and $r$ as the radius of the sphere. The function returns either \nil (empty intersection) or a sequence of the form $I,r,n$, where $I$ is a 3D point representing the center of a circle, $r$ its radius, and $n$ a normal vector to the plane of the circle. This circle is the desired intersection.
 
 \subsubsection{interSS()}
 
@@ -222,7 +222,7 @@ The function \cmd{ld.merge3d(L \fac{, epsilon})} combines, if possible, the conn
 
 \subsubsection{split\_points\_by\_visibility()}
 
-The function \cmd{ld.split\_points\_by\_visibility(L, visible\_function)}, where \argu L is a list of 3D points, or a list of lists of 3D points, and where \argu{visible\_function} is a function such that \code{visible\_function(A)} returns \true if the 3D point $A$ is visible, \false otherwise, sorts the points of \argu L according to whether they are visible or not. The function returns a sequence of two tables: \emph{visible\_points}, \emph{hidden\_points}.
+The function \cmd{ld.split\_points\_by\_visibility(L, visible\_function)}, where \argu{L} is a list of 3D points, or a list of lists of 3D points, and where \argu{visible\_function} is a function such that \code{visible\_function(A)} returns \true if the 3D point $A$ is visible, \false otherwise, sorts the points of \argu{L} according to whether they are visible or not. The function returns a sequence of two tables: \emph{visible\_points}, \emph{hidden\_points}.
 
 \begin{demo}{A curve on a cylinder}
 \begin{luadraw}{name=curve_on_cylinder}

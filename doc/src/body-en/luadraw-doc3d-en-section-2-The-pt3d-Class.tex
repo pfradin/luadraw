@@ -32,7 +32,7 @@ The usual space is $\mathbf R^3$, so points and vectors are triplets of real num
 These operations are the usual operations with the usual symbols:
 \begin{itemize}
     \item Addition (+), difference (-), and negative (-).
-    \item The product by a scalar, if $k$ is a real number, \code{k*M(x,y,z)} returns \val{M(k*a,k*y,k*z)}.
+    \item The product by a scalar, if $k$ is a real number, \code{k*M(x,y,z)} returns \val{M(k*x,k*y,k*z)}.
     \item A 3D point can be divided by a scalar; for example, if $A$ and $B$ are two 3D points, then the midpoint is simply written $(A+B)/2$.
     \item The equality of two 3D points can be tested with the symbol =.
 \end{itemize}
@@ -59,9 +59,9 @@ These are:
 
     \item \cmd{pt3d.round(u, nbDeci)}: Returns a 3D point whose components are those of the 3D point \argu{u} rounded to \argu{nbDeci} decimal places.
 
-    \item \cmd{pt3d.isobar3d(L)}: Returns the isobarycenter of the 3D points in the list (table) \argu{L} (elements of \argu{u} that are not 3D points are ignored).
+    \item \cmd{pt3d.isobar3d(L)}: Returns the isobarycenter of the 3D points in the list (table) \argu{L} (elements of \argu{L} that are not 3D points are ignored).
 
-    \item \cmd{pt3d.insert3d(L, A \fac{, epsilon})}: This function inserts the 3D point \argu{A} into the list \argu{u}L, which must be a \textbf{variable} (and which will therefore be modified). Point \argu{A} is inserted \textbf{without duplicates} and the function returns its position (index) in list \argu{L} after insertion. The (optional) argument \argu{epsilon} is $0$ by default, indicating how closely the comparisons are made.
+    \item \cmd{pt3d.insert3d(L, A \fac{, epsilon})}: This function inserts the 3D point \argu{A} into the list \argu{L}, which must be a \textbf{variable} (and which will therefore be modified). Point \argu{A} is inserted \textbf{without duplicates} and the function returns its position (index) in list \argu{L} after insertion. The (optional) argument \argu{epsilon} is $0$ by default, indicating how closely the comparisons are made.
 \end{itemize}
 
 

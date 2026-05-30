@@ -4,7 +4,7 @@ This module does not return anything; it adds new graphics methods to the \emph{
 
 \subsubsection{Dshadedpolyline}
 
-The function \cmd{g:Dshadedpolyline(L, palette, options)} enables the rendering of the two-dimensional polygonal line \argu{L}) with a continuous color gradient determined by the computational method and the selected \argu{palette}. The argument \argu{L} may be either a list of complex numbers or a list of lists of complex numbers. The \argu{palette} is a list of colors, each color being represented as a list of three real numbers between \(0\) and \(1\), corresponding respectively to the red, green, and blue components. \writeoptions:
+The function \cmd{g:Dshadedpolyline(L, palette, options)} enables the rendering of the two-dimensional polygonal line \argu{L} with a continuous color gradient determined by the computational method and the selected \argu{palette}. The argument \argu{L} may be either a list of complex numbers or a list of lists of complex numbers. The \argu{palette} is a list of colors, each color being represented as a list of three real numbers between \(0\) and \(1\), corresponding respectively to the red, green, and blue components. \writeoptions:
 \begin{itemize}
     \item \opt{values="x"}: for each point in \argu{L}, a numerical value is computed, which determines the associated color according to the chosen palette. The \opt{values} option specifies the evaluation mode and may take one of the following forms:
         \begin{itemize}

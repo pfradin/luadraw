@@ -7,7 +7,7 @@ This section groups together functions that construct geometric figures without 
 \begin{itemize}
     \item The function \cmd{ld.circumcircle(a, b, c)} (or \cmd{ld.circumcircle(\{a, b, c\})}), where \argu{a}, \argu{b}, and \argu{c} are three points (three complex numbers), returns the circumcircle of the triangle formed by these three points, in the form of a sequence: $C,r$, where $C$ is the center of the circle (a complex number), and $r$ is its radius.
 
-    \item The function \cmd{ld.incircle3d(a, b, c)} (or \cmd{ld.incircle3d(\{a, b, c\})}), where \argu{a}, \argu{b}, and \argu{c} are three points (three complex numbers), returns the incircle of the triangle formed by these three points, as a sequence: $C,r$, where $C$ is the center of the circle (a complex number), and $r$ is its radius.
+    \item The function \cmd{ld.incircle(a, b, c)} (or \cmd{ld.incircle(\{a, b, c\})}), where \argu{a}, \argu{b}, and \argu{c} are three points (three complex numbers), returns the incircle of the triangle formed by these three points, as a sequence: $C,r$, where $C$ is the center of the circle (a complex number), and $r$ is its radius.
 \end{itemize}
 
 \subsection{cvx\_hull2d()}
@@ -43,7 +43,7 @@ g:Show()
 
 The function \cmd{ld.voronoi(L \fac{, window})}, where \argu{L} is a list of distinct complex numbers, determines the Voronoi diagram of the points in the list \argu{L}. This function returns a list of elements of the form \code{\{A,polygon\}}, where \code{A} is a point in the list \argu{L}, and \code{polygon} is a list of complex numbers representing the vertices of the cell associated with \code{A}. Thus, there is one cell for each point in \argu{L}. The cell for point \code{A} contains the points in the plane that are closer to \code{A} than to other points in \argu{L}. This function uses Delaunay triangulation. The optional argument \argu{window}, which defaults to \code{\{-5,5,-5,5\}}, is used to clip Voronoi cells that are unbounded; this window is automatically enlarged if necessary to contain all the points of \argu{L} as well as all the centers of the circles circumscribed about the Delaunay triangles (note: this does not change the 2D window of the current graph).
 
-\begin{demo}{Voronoï diagram}
+\begin{demo}{Voronoi diagram}
 \begin{luadraw}{name=voronoi}
 local ld = luadraw
 local g = ld.graph:new{ bbox=true, margin={0,0,0,0}, size={10,10}}

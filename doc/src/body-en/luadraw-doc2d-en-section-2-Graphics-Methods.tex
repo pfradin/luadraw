@@ -83,7 +83,7 @@ This is the \cmdln{g:Filloptions(style \fac{, color, opacity, evenodd})} method 
     \item \val{"bdiag"}: descending hatching from left to right,
     \item \val{"fdiag"}: ascending hatching from left to right,
     \item \val{"horizontal"}: horizontal hatching,
-    \item \val{"`vertical"}: vertical hatching,
+    \item \val{"vertical"}: vertical hatching,
     \item \val{"hvcross"}: horizontal and vertical hatching,
     \item \val{"diagcross"}: descending and ascending diagonals,
     \item \val{"gradient"}: in this case, the fill is done with a gradient defined with the method \cmd{g:Gradstyle(string)}, this style is passed as is to the \drawcmd instruction. By default, the string defining the gradient style is:
@@ -205,20 +205,20 @@ The \cmd{g:Dseg(seg \fac{, scale, draw\_options})} method draws the segment defi
 
 \subsubsection{Dtangent}
 \begin{itemize}
-    \item The \cmd{g:Dtangent(p, t0 \fac{, length, draw\_options})} method draws the tangent to the curve parameterized by \argu{p}: \(t \mapsto p(t)\) (with complex values), at the parameter point \argu{t0}. If the argument \argu{long} is \nil (the default value), then the entire line is drawn; otherwise, it is a segment of \argu{length}. The argument \argu{draw\_options} is a string (empty by default) that will be passed as is to the \drawcmd instruction.
-    \item The function \cmd{ld.tangent(p, t0 \fac{, length})} returns either the line or a segment (depending on whether \argu{long} is \nil or not).
+    \item The \cmd{g:Dtangent(p, t0 \fac{, length, draw\_options})} method draws the tangent to the curve parameterized by \argu{p}: \(t \mapsto p(t)\) (with complex values), at the parameter point \argu{t0}. If the argument \argu{length} is \nil (the default value), then the entire line is drawn; otherwise, it is a segment of \argu{length}. The argument \argu{draw\_options} is a string (empty by default) that will be passed as is to the \drawcmd instruction.
+    \item The function \cmd{ld.tangent(p, t0 \fac{, length})} returns either the line or a segment (depending on whether \argu{length} is \nil or not).
 \end{itemize}
 
 \subsubsection{DtangentC}
 \begin{itemize}
     \item The method \cmd{g:DtangentC(f, x0 \fac{, length, draw\_options})} draws the tangent to the Cartesian curve with equation \(y=f(x)\), at the abscissa point \argu{x0}. If the argument \argu{length} is \nil (the default value), then the entire line is drawn; otherwise, it is a segment of \argu{length}. The argument \argu{draw\_options} is a string (empty by default) that will be passed as is to the instruction \drawcmd.
-    \item The function \cmd{ld.tangentC(f, x0 \fac{, length})} returns either the line or a segment (depending on whether \argu{long} is \nil or not).
+    \item The function \cmd{ld.tangentC(f, x0 \fac{, length})} returns either the line or a segment (depending on whether \argu{length} is \nil or not).
 \end{itemize}
 
 \subsubsection{DtangentI}
 \begin{itemize}
     \item The method \cmd{g:DtangentI(f, x0, y0 \fac{, length, draw\_options})} draws the tangent to the implicit curve with equation \(f(x,y)=0\), at the assumed point \argu{(x0,y0)} on the curve. If the argument \argu{length} is \nil (the default value), then the entire line is drawn; otherwise, it is a segment of \argu{length}. The argument \argu{draw\_options} is a string (empty by default) that will be passed as is to the instruction \drawcmd.
-    \item The function \cmd{ld.tangentI(f, x0, y0 \fac{, length})} returns either the line or a segment (depending on whether \argu{long} is \nil or not).
+    \item The function \cmd{ld.tangentI(f, x0, y0 \fac{, length})} returns either the line or a segment (depending on whether \argu{length} is \nil or not).
 \end{itemize}
 
 
@@ -579,7 +579,7 @@ The second element \code{\{ \{a1,b1\},\{a2,b2\},\ldots\}} means that on $[x_1;x_
     \item The arguments \argu{t0} and \argu{Y0} give the initial conditions with $Y_0=\{y_1(t_0), \ldots, y_n(t_0)\}$ (the $y_i$ numbers are real), or $Y_0=y_1(t_0)$ when $n=1$.
     \item The arguments \argu{tmin} and \argu{tmax} define the resolution interval; this must contain \argu{t0}.
     \item The argument \argu{nbdots} indicates the number of points calculated on either side of \argu{t0}.
-    \item The optional argu \emph{method} is a string that can be \val{"rkf45"} (default), or \val{"rk4"}. In the first case, we use the Runge Kutta-Fehlberg method (with variable step size), in the second case, it is the classic Runge-Kutta method of order $4$.
+    \item The optional argument \emph{method} is a string that can be \val{"rkf45"} (default), or \val{"rk4"}. In the first case, we use the Runge Kutta-Fehlberg method (with variable step size), in the second case, it is the classic Runge-Kutta method of order $4$.
     \item As output, the function returns the following matrix (list of lists of real numbers):
 
 \begin{TeXcode}
@@ -589,10 +589,10 @@ The second element \code{\{ \{a1,b1\},\{a2,b2\},\ldots\}} means that on $[x_1;x_
 The first component is the list of values ​​of $t$ (in ascending order), the second is the list of (approximate) values ​​of the component $y_1$ corresponding to these values ​​of $t$, etc.
 \end{itemize}
 
-    \item The method \cmd{g:DplotXY(X, Y \fac{, draw\_options, clip})}, where the arguments \argu{X} and \argu{Y} are two lists of real numbers of the same length, draws the polygonal line consisting of the points $(X[k],Y[k])$. The argument \argu{draw\_options} is a string (empty by default) that will be passed as is to the \drawcmd instruction. The The argument \argu{clip} is either \nil (default value) or a table \code{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix. In the second case, the line is clipped by the window $[x_1;x_2]\times[y_1;y_2]$ \textbf{before} being transformed by the graph's matrix.
+    \item The method \cmd{g:DplotXY(X, Y \fac{, draw\_options, clip})}, where the arguments \argu{X} and \argu{Y} are two lists of real numbers of the same length, draws the polygonal line consisting of the points $(X[k],Y[k])$. The argument \argu{draw\_options} is a string (empty by default) that will be passed as is to the \drawcmd instruction. The argument \argu{clip} is either \nil (default value) or a table \code{\{x1,x2,y1,y2\}}. In the first case, the line is clipped by the current 2D window \textbf{after} its transformation by the graph's 2D matrix. In the second case, the line is clipped by the window $[x_1;x_2]\times[y_1;y_2]$ \textbf{before} being transformed by the graph's matrix.
 
-\begin{demo}{A Lokta-Volterra differential system}
-\begin{luadraw}{name=lokta_volterra}
+\begin{demo}{A Lotka-Volterra differential system}
+\begin{luadraw}{name=lotka_volterra}
 local ld = luadraw
 local cpx = ld.cpx
 local g = ld.graph:new{window={-5,50,-0.5,5},size={10,10,0}, border=true}
@@ -874,7 +874,7 @@ g:Show()
 
 \begin{itemize}
     \item The argument \argu{dots} can be either a single point (i.e., a complex number), a list (a table) of complex numbers, or a list of lists of complex numbers. The points are drawn in the current color of the line plot.
-     \item The \argu{mark\_options} argument is an string (empty by default) )that will be passed as is to the \drawcmd instruction (local modifications), for example:
+     \item The \argu{mark\_options} argument is an string (empty by default) that will be passed as is to the \drawcmd instruction (local modifications), for example:
 \begin{TeXcode}
 mark_options = "color=green, line width=1.2, scale=0.25"
 \end{TeXcode}
@@ -882,7 +882,7 @@ mark_options = "color=green, line width=1.2, scale=0.25"
     \item Two methods to globally modify the appearance of points:
     \begin{itemize}
         \item The \cmd{g:Dotstyle(style)} method defines the point style. The \argu{style} argument is a  string that defaults to \val{"*"}. The possible styles are those of the \emph{plotmarks} library.         
-        \item The \cmd{g:Dotscale(scale)} method allows you to adjust the dot size. The \argu{scale} argument is a positive integer that defaults to $1$. It is used to multiply the default dot size. The current line width also affects the dot size. For "solid" dot styles (e.g., the \val{""triangle*""} style), the current fill style and color are used by the library.
+        \item The \cmd{g:Dotscale(scale)} method allows you to adjust the dot size. The \argu{scale} argument is a positive integer that defaults to $1$. It is used to multiply the default dot size. The current line width also affects the dot size. For "solid" dot styles (e.g., the \val{"triangle*"} style), the current fill style and color are used by the library.
     \end{itemize}
 \end{itemize}
 
@@ -923,7 +923,7 @@ Global options for labels:
 \begin{itemize}
     \item The \argu{text} argument is a string; it is the label.
     \item The \argu{anchor} argument is a complex representing the label's anchor point.
-    \item The argument \argu{options} is a table whose fields are the possible options. These are identical to those of the \cmd{Dlabel} method, plus the \opt{mark\_options="""} option, which is a string that will be passed as is to the \drawcmd instruction when drawing the anchor point.
+    \item The argument \argu{options} is a table whose fields are the possible options. These are identical to those of the \cmd{Dlabel} method, plus the \opt{mark\_options=""} option, which is a string that will be passed as is to the \drawcmd instruction when drawing the anchor point.
 \end{itemize}
 \end{itemize}
 
@@ -1012,7 +1012,7 @@ g:Show()
 \end{luadraw}
 \end{demo}
 
-    \item The function \cmd{ld.tcurve(L} returns a curve passing through given points as a path, with tangent vectors (left and right) imposed at each point. The argument \argu{L} is a table of the form:
+    \item The function \cmd{ld.tcurve(L)} returns a curve passing through given points as a path, with tangent vectors (left and right) imposed at each point. The argument \argu{L} is a table of the form:
 \begin{Luacode}
 L = {point1,{t1,a1,t2,a2}, point2,{t1,a1,t2,a2}, ..., pointN,{t1,a1,t2,a2}}
 \end{Luacode}
@@ -1057,9 +1057,9 @@ local ld = luadraw
 local g = ld.graph:new{window={-5,5,-5,5},size={10,10}}
 local i = ld.cpx.I
 local Dcolored_polyreg = function(c,a,nb,r,wd,colors)
--- c=center, a=vertice, nb=number of sides, r=radius, wd=width in point, colors=list of colors
+-- c=center, a=vertex, nb=number of sides, r=radius, wd=width in point, colors=list of colors
     local L = ld.polyreg(c,a,nb)
-    ld.insert(L,{r,"cla"}) --polygon width rounded corners (radius=r)
+    ld.insert(L,{r,"cla"}) --polygon with rounded corners (radius=r)
     local angle = 360/nb
     local b = a
     for k = 1, nb do
@@ -1113,7 +1113,7 @@ The axes are plotted using the method \cmd{g:Daxes(\fac{\{A, xstep, ystep\}, opt
     \item The argument \argu{options} is a table whose fields are the possible options. Here are these options with their default values:
 
     \begin{itemize}
-        \item \opt{showaxe={1,1}}. This option specifies whether or not the axes should be plotted ($1 or $0). The first value is for the $x$-axis and the second for the $y$-axis.
+        \item \opt{showaxe={1,1}}. This option specifies whether or not the axes should be plotted ($1$ or $0$). The first value is for the $x$-axis and the second for the $y$-axis.
     
         \item \opt{arrows="-"}. This option allows you to add an arrow to the axes (no arrow by default; enter \val{"->"}for example to add an arrow).
     
@@ -1139,7 +1139,7 @@ The axes are plotted using the method \cmd{g:Daxes(\fac{\{A, xstep, ystep\}, opt
         \item \opt{legendsep=\{ld.defaultlegendsep,ld.defaultlegendsep\}}. This option specifies the distance between the legend and the axis. The legend is on the other side of the axis from the graduations.
         \item \opt{legendangle=\{"auto","auto"\}}. This option specifies the angle (in degrees) that the legend should make for the axis. The default value \val{"auto"} means that the legend must be parallel to the axis if the \opt{labelstyle} option is also set to \val{"auto"}, otherwise the legend is horizontal.
         \item \opt{legendstyle=\{"auto","auto"\}}. Specifies the label style for the legends; with the value \val{"auto"}, it is determined automatically; otherwise, the following values ​​can be used:  \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
-        \item \opt{labelpos=\{"bottom","left"\}}. This option specifies the position of the labels relative to the axis. For the $x$-axis, the possible values ​​are: \val{"none"}, \val{"bottom"} ou \val{"top"}, for the $y$-axis it is:  \val{"none"}, \val{"right"} ou \val{"left"}.
+        \item \opt{labelpos=\{"bottom","left"\}}. This option specifies the position of the labels relative to the axis. For the $x$-axis, the possible values ​​are: \val{"none"}, \val{"bottom"} or \val{"top"}, for the $y$-axis it is:  \val{"none"}, \val{"right"} or \val{"left"}.
 
         \item \opt{labelden=\{1,1\}}. ​​This option specifies the denominator of the labels (integer) for the axis. Remember that the formula that defines the label at graduation number $n$ is: \codeln{(originnum + unit*n)"labeltext"/labelden.}
         \item \opt{labeltext=\{"",""\}}. This option defines the text that will be added to the numerator of the labels for the axis.
@@ -1226,7 +1226,7 @@ The methods \cmd{g:DaxeX(\fac{\{A, xstep\}, options})} and \cmd{g:DaxeY(\fac{\{A
 
         \item \opt{legendstyle="auto"}. Specifies the label style for the legend. With the value \emph{"auto"}, the style is determined automatically; otherwise, the following values ​​can be used:  \val{"N"}, \val{"NW"}, \val{"W"}, \val{"SW"}, \val{"S"}, \val{"SE"}, \val{"E"}, \val{"NE"}.
 
-        \item \opt{labelpos="bottom"} for $x$-axis and \opt{labelpos="left"} for $y$-axis. This option specifies the position of the labels relative to the axis. For the $x$-axis, the possible values ​​are: \val{"none"}, \val{"bottom"} ou \val{"top"}, for the $y$-axis it is:  \val{"none"}, \val{"right"} ou \val{"left"}.
+        \item \opt{labelpos="bottom"} for $x$-axis and \opt{labelpos="left"} for $y$-axis. This option specifies the position of the labels relative to the axis. For the $x$-axis, the possible values ​​are: \val{"none"}, \val{"bottom"} or \val{"top"}, for the $y$-axis it is:  \val{"none"}, \val{"right"} or \val{"left"}.
 
         \item \opt{labelden=1}. This option specifies the denominator of the labels (integer) for the axis. The formula that defines the label at graduation number $n$ is: 
 \codeln{(originnum + unit*n)"labeltext"/labelden.}
@@ -1479,9 +1479,9 @@ g:Dimage(filename,Z(-5,5),{pos="SE", graphics_options=g_options})
 g:IDmatrix()
 g:Dimage(filename,Z(-5,-5),{pos="SE", matrix={0,1,-i}, graphics_options=g_options})
 g:Dlabel( "Original", Z(-5,5),{pos="SE"},
-"Vertical symetry", Z(5,5), {pos="SW"},
+"Vertical symmetry", Z(5,5), {pos="SW"},
 "Rotation (global)", Z(5,-5), {pos="NW"},
-"Horizontal symetry", Z(-5,-5), {pos="NE"} )
+"Horizontal symmetry", Z(-5,-5), {pos="NE"} )
 g:Show()
 \end{luadraw}
 \end{demo}
@@ -1549,7 +1549,7 @@ To use these in the \luadrawenv environment, you can:
 
     \item The \cmd{ld.hsb(h, s, b \fac{, table})} function returns the color as a string understandable by TikZ. The \argu{h} (hue) argument must be a number between $0$ and $360$, the \argu{s} (saturation) argument must be between $0$ and $1$, and the \argu{b} (brightness) argument must also be between $0$ and $1$. The (optional) argument \argu{table} is a boolean (false by default) that indicates whether the result should be returned as a table $\{r,g,b\}$ or not (by default it is as a string).
 
-    \item The function \cmd{ld.mixcolor(color1, proportion1, color2, proportion1, ..., colorN, proportionN)} mixes the colors \argu{color1}, ...,\argu{colorN} in the requested proportions and returns the resulting color as a string understandable by TikZ, followed by the same color as a table $\{r,g,b\}$. Each color must be a table of three components $\{r,g,b\}$.
+    \item The function \cmd{ld.mixcolor(color1, proportion1, color2, proportion2, ..., colorN, proportionN)} mixes the colors \argu{color1}, ...,\argu{colorN} in the requested proportions and returns the resulting color as a string understandable by TikZ, followed by the same color as a table $\{r,g,b\}$. Each color must be a table of three components $\{r,g,b\}$.
     
     \item The function \cmd{ld.mixpalette(pal, percent, color)} returns a new palette after mixing each color from the palette \argu{pal} with \argu{color}. The argument \argu{pal} is a list of colors, each of which is a table of three components $\{r,g,b\}$, the argument \argu{percent} is a number between $0$ and $100$, and the argument \argu{color} is a color in the form of a table $\{r,g,b\}$.
 

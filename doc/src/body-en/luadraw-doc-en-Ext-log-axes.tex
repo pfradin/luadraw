@@ -6,7 +6,7 @@ The \emph{luadraw\_log\_axes} module allows you to display a semi-logarithmic or
 
 \begin{enumerate}
     \item Initializing the grid with the \cmd{g:Beginlogview()} method.
-    \item Drawing with the \cmd{g:Dlogplyline()} and \cmd{g:Dlogdots()} methods.
+    \item Drawing with the \cmd{g:Dlogpolyline()} and \cmd{g:Dlogdots()} methods.
     \item Ending the grid with the \cmd{g:Endlogview()} method, which restores the original matrix and allows you to optionally add to the drawing in "normal" coordinates in the original window.
 \end{enumerate}
 
@@ -21,7 +21,7 @@ The grid initialization and display are handled by the method:
     \item The argument \argu{options} is an array whose fields define the options. These are (with their default values):
     
     \begin{itemize}
-    \item \opt{viewport=<current 2D window>)}. This option is an array of the form $\{x_1,x_2,y_1,y_2\}$, indicating which area of ​​the graph's 2D window should be used to draw the grid. By default, it's the entire current window (the one defined by the \opt{window} option when the graph was created).
+    \item \opt{viewport=<current 2D window>}. This option is an array of the form $\{x_1,x_2,y_1,y_2\}$, indicating which area of ​​the graph's 2D window should be used to draw the grid. By default, it's the entire current window (the one defined by the \opt{window} option when the graph was created).
     
     \item \opt{clip=\true}. Boolean indicating whether the grid should clip the drawings. Clipping is disabled after the execution of the \cmd{g:Endlogview()} method.
     

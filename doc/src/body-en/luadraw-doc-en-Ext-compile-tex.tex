@@ -14,7 +14,7 @@ The \cmd{ld.compile\_tex\_default(options)} function allows you to modify the de
     \item \opt{pdflatexcmd=\val{"pdflatex"}},
     \item \opt{pstoeditcmd=\val{"pstoedit"}},
     \item \opt{pdf2pscmd=\val{"pdf2ps"}},
-    \item \opt{preamble=}\verb|"\\documentclass[12pt]{article}\n"}|,
+    \item \opt{preamble=}\verb|"\\documentclass[12pt]{article}\n"|,
     \item \opt{usepackage=}\verb|"\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"|.
 \end{itemize}
 
@@ -74,7 +74,7 @@ The process unfolds in several steps:
 
     \item \opt{drawbox=false}: allows you to draw or not draw the bounding box,
 
-    \item \opt{draw\_options=""}: string containing the options that will be be passed directly to the \drawcmd command.
+    \item \opt{draw\_options=""}: string containing the options that will be passed directly to the \drawcmd command.
 \end{itemize}
 
 The result can also be transformed into a polygonal line using the function \cmd{ld.compiled\_tex2polyline(L \fac{, scale})} where \argu{L} is the result returned by the \cmd{ld.compile\_tex()} function. The optional argument \argu{scale} allows you to adjust the size; it can be a number or a table of two numbers: \emph{\{scaleX, scaleY\}}.
@@ -125,7 +125,7 @@ With the option \opt{polyline=false} (default value), the output can be drawn us
     \item \opt{color=<default current color>},
     \item \opt{hollow=false}, enables or disables the filling of shapes. With the value \true, only the outlines are drawn. 
     \item \opt{drawbox=false}: allows you to draw or not draw the bounding box,
-    \item \opt{draw\_options=""}: string containing the options that will be be passed directly to the \drawcmd command.
+    \item \opt{draw\_options=""}: string containing the options that will be passed directly to the \drawcmd command.
 \end{itemize}
 
 \begin{demo}{Write on a cylinder}
@@ -139,7 +139,7 @@ require 'luadraw_compile_tex'
 
 function curve_on_cylinder(curve,cylinder,screenNormal) 
 -- curve is a 3D polyline on a cylinder
--- cylinder = {A,r,B} estle cylindre
+-- cylinder = {A,r,B} is the cylinder
 -- this function separate the visible part from the hidden part of the curve
     local A,r,B = table.unpack(cylinder)
     local U = B-A

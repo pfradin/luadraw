@@ -133,7 +133,7 @@ g:Show()
 The method \cmd{g:Darc3d(B, A, C, r, direction, options)} draws a circular arc centered at \argu{A} (3D point), with radius \argu{r}, extending from \argu{B} (3D point) to \argu{C} (3D point) in the clockwise direction if the argument \argu{direction} is $1$, and in the counterclockwise direction otherwise. This arc is drawn in the plane containing the three points \argu{A}, \argu{B}, and \argu{C}. When these three points are collinear, the option \opt{normal} (non-zero 3D point) must be specified, which represents a normal vector to the plane. This plane is oriented by the cross product $\vec{AB}\wedge\vec{AC}$ or by the vector \opt{normal} if specified. The argument \argu{options} is an array whose fields define the possible options, which are (with their default values):
 
 \begin{itemize}
-    \item \opt{normal\=nil}: a non-zero 3D point representing a normal vector to plane $(ABC)$. It is optional if the three points are not collinear.
+    \item \opt{normal=nil}: a non-zero 3D point representing a normal vector to plane $(ABC)$. It is optional if the three points are not collinear.
 
     \item \opt{arc\_options=\val{""}}: a string passed to the \drawcmd instruction for drawing the arc.
 
@@ -160,7 +160,7 @@ The method \cmd{g:Darc3d(B, A, C, r, direction, options)} draws a circular arc c
     \item \opt{bezier=\true}: To draw the arc with Bézier curves, with the value \false, the arc is a polygonal line. When TikZ adds an arrow to the end of a Bézier curve, it undergoes a slight deformation that can create an artifact when the angular sector needs to be painted; in this case, it is better to use the \opt{bezier=\false} option.
 \end{itemize}
 
-\begin{demo}{Method \emph{g:Ddecoratedarc3d()}}
+\begin{demo}{Method \emph{g:Darc3d()}}
 \begin{luadraw}{name=decorated_arcs3D}
 local ld = luadraw
 local pt3d = ld.pt3d

@@ -108,13 +108,13 @@ for x = 1, Lg do -- loop over the positions matrix to determine the facets to dr
                 if (z == ht) or (positions[x][y][z+1] == 0) then -- no cube above so face up
                     table.insert(dessus,{M(x,y,z),M(x-1,y,z),M(x-1,y-1,z),M(x,y-1,z)}) -- insert top face
                 end
-                if (y == lg) or (positions[x][y+1][z] == 0) then -- no cube on the right so face up
+                if (y == lg) or (positions[x][y+1][z] == 0) then -- right face visible
                     table.insert(gauche,{M(x,y,z),M(x,y,z-1),M(x-1,y,z-1),M(x-1,y,z)}) -- insert right face
                 end
-                if (y == 1) or (positions[x][y-1][z] == 0) then -- no cube on the left so face up
+                if (y == 1) or (positions[x][y-1][z] == 0) then -- left face visible
                     table.insert(gauche,{M(x,y-1,z),M(x-1,y-1,z),M(x-1,y-1,z-1),M(x,y-1,z-1)}) -- insert left face
                 end                    
-                if (x == Lg) or (positions[x+1][y][z] == 0) then -- no cube in front so face up
+                if (x == Lg) or (positions[x+1][y][z] == 0) then -- front face visible
                     table.insert(devant,{M(x,y,z),M(x,y-1,z),M(x,y-1,z-1),M(x,y,z-1)}) -- insert front face
                 end
                 if (x == 1) or (positions[x-1][y][z] == 0) then -- no cube behind so back face visible
@@ -187,7 +187,7 @@ local H1, H2 = ld.cutfacet(H,plane)
 -- Drawing
  -- faces not visible under the plane, fill only
 g:Dpolyline3d( ld.border(H2),"left color=white, right color=DarkSeaGreen, draw=none")
-g:Dsphere( M(0,0,b), r, {mode=mBorder,color="Orange"}) -- small sphere
+g:Dsphere( M(0,0,b), r, {mode=ld.mBorder,color="Orange"}) -- small sphere
  -- visible faces below the plane
 g:Dpolyline3d( ld.border(V2),"left color=white, right color=DarkSeaGreen, fill opacity=0.4")
 g:Dpolyline3d({S,P}) -- segment [S,P] which is partially below the plane
@@ -224,7 +224,7 @@ We want to draw a cone with a section through a plane and two spheres inside thi
 \end{enumerate}
 
 \subsection{Volume defined by a double integral}
-\begin{demo}{Volume correspondant à $\int_{x_1}^{x_2}\int_{y_1}^{y_2}f(x,y)dxdy$}
+\begin{demo}{Volume corresponding to $\int_{x_1}^{x_2}\int_{y_1}^{y_2}f(x,y)dxdy$}
 \begin{luadraw}{name=volume_integrale}
 local ld = luadraw
 local M = ld.pt3d.M
@@ -276,8 +276,8 @@ end
 g:Dboxaxes3d({grid=true, gridcolor="gray",fillcolor="LightGray", drawbox=false, 
     xyzstep=0.25, zlabelstyle="W",zlabelsep=0})
 g:Lineoptions(nil,"Navy",8)  
-g:Dpolyline3d(arriere,close,"fill=Crimson, fill opacity=0.6") -- rear face (flat)
-g:Filloptions("fdiag","black"); g:Dpolyline3d(dessous,close) -- below
+g:Dpolyline3d(arriere,true,"fill=Crimson, fill opacity=0.6") -- rear face (flat)
+g:Filloptions("fdiag","black"); g:Dpolyline3d(dessous,true) -- below
 g:Dmixfacet(avant,{color="Crimson",opacity=0.7,mode=ld.mShadedOnly}, dessus,{color="cyan",opacity=1})
 g:Filloptions("none"); g:Dpolyline3d(ld.concat(ld.border(avant),ld.border(dessus)))
 g:Show() 

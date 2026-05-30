@@ -81,7 +81,7 @@ The \emph{graph3d} class is defined in the \luadrawenv package using the global 
 
     \item The option \opt{adjust2d} indicates whether the 2D window that will contain the projection of the 3D drawing should be determined automatically (\false by default). This 2D window corresponds to the \opt{window} option.
 
-    \item The option \opt{viewdir} is a table that defines the projection method and the two viewing angles (in degrees). By default  \opt{viewdir=\{"ortho","30,60\}} (orthographic projection). The following figure shows what these two angles correspond to.
+    \item The option \opt{viewdir} is a table that defines the projection method and the two viewing angles (in degrees). By default  \opt{viewdir=\{"ortho",30,60\}} (orthographic projection). The following figure shows what these two angles correspond to.
 
 \begin{center}
 \begin{luadraw}{name=viewdir}
@@ -143,7 +143,7 @@ g:Show()
 \end{itemize}
 
 \begin{center}
-\begin{luadraw}{name=perpectives}
+\begin{luadraw}{name=perspectives}
 local ld, cpx, pt3d = luadraw, luadraw.cpx, luadraw.pt3d
 local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK 
 local Z, Zp, deg = cpx.Z, cpx.Zp, ld.deg

@@ -6,7 +6,7 @@ All 2D graphics methods apply. Added to this is the ability to draw polygonal li
 
 The method that applies the 3D matrix and performs the projection onto the screen (plane passing through the origin and normal to the unit vector directed towards the observer and defined by the viewing angles) is: \cmd{g:Proj3d(L)} where \argu{L} is either a 3D point, a list of 3D points, or a list of lists of 3D points. This function returns complex numbers (affixes of the projected points onto the screen).
 
-\textbf{Warning}: when the 3D matrix of the graph is an affin transformation but not linear, the projection onto the screen of a vector $u$ in space is not \code{g:Proj3d(u)}, but \code{g:Proj3d(A+u)-g:Proj3d(A)} where $A$ denotes any point in space. To avoid these calculations, the method \cmd{g:Proj3dV()} has been introduced, it projects the \textbf{vectors} onto the screen, and returns complex numbers (affixes of the projected vectors onto the screen).
+\textbf{Warning}: when the 3D matrix of the graph is an affine transformation but not linear, the projection onto the screen of a vector $u$ in space is not \code{g:Proj3d(u)}, but \code{g:Proj3d(A+u)-g:Proj3d(A)} where $A$ denotes any point in space. To avoid these calculations, the method \cmd{g:Proj3dV()} has been introduced, it projects the \textbf{vectors} onto the screen, and returns complex numbers (affixes of the projected vectors onto the screen).
 
 \subsection{Line Drawing}
 
@@ -38,7 +38,7 @@ The \cmd{g:Line3d2seg(d \fac{, scale})} method returns a table consisting of two
 
     \item The \cmd{ld.arc3d(B, A, C, r, sens \fac{, normal})} function returns the list of points of this arc (3D polygonal line).
 
-    \item The \cmd{ld.arc3db(B, A, C, r, sens \fac{, normal})} function returns this arc as a 3D path ((see \emph{Dpath3d} page \pageref{Dpath3d})) using Bézier curves. 
+    \item The \cmd{ld.arc3db(B, A, C, r, sens \fac{, normal})} function returns this arc as a 3D path (see \emph{Dpath3d} page \pageref{Dpath3d}) using Bézier curves.
 \end{itemize}
 
 \subsubsection{Circle: Dcircle3d}
@@ -50,7 +50,7 @@ Another possible syntax: \cmd{g:Dcircle3d(C \fac{, draw\_options, clip})} where 
 
     \item The \cmd{ld.circle3d(I, R, normal)} function returns the list of points on this circle (3D polygonal line).
 
-    \item The \cmd{ld.circle3db(I, R, normal)} function returns this circle as a 3D path ((see \emph{Dpath3d} page \pageref{Dpath3d})) using Bézier curves.
+    \item The \cmd{ld.circle3db(I, R, normal)} function returns this circle as a 3D path (see \emph{Dpath3d} page \pageref{Dpath3d}) using Bézier curves.
 \end{itemize}
 
 \subsubsection{3D Path: Dpath3d}\label{Dpath3d}
@@ -90,7 +90,7 @@ g:Dlabel3d(
   "$O$", O, {pos="NW"},
   "$\\theta$", (B+C)/2, {pos="N", dist=0.15},
   "$\\varphi$", (A+E)/2, {pos="S",dist=0.25})
-g:Dlabel("viewdir=\\{"ortho","$\\theta,\\varphi$\\} (in degrees)",-5*i,{pos="N"}) -- label 2D
+g:Dlabel("viewdir=\\{'ortho',$\\theta,\\varphi$\\} (in degrees)",-5*i,{pos="N"}) -- label 2D
 g:Show()
 \end{luadraw}      
 \end{Luacode}
@@ -245,9 +245,9 @@ There are three ways to draw 3D points. For the first two, the argument \argu{L}
 \begin{itemize}
     \item The \cmd{g:Ddots3d(L \fac{, mark\_options, clip})} method. The principle is the same as in the 2D version; the points are drawn in the current line color with the current style. The \argu{mark\_options} argument is an optional string that will be passed as is to the \drawcmd instruction (local modifications). The \argu{clip} argument is set to \false by default; it indicates whether the plot should be clipped to the current 3D window.
 
-    \item The \cmd{g:Dballdots3d(L \fac{, color, scale, clip})} method draws the points of \argu{L} as a sphere. The optional \argu{color} argument specifies the color of the sphere (\val{"black"}" by default), and the optional \argu{scale} argument allows you to change the size of the sphere ($1$ by default).
+    \item The \cmd{g:Dballdots3d(L \fac{, color, scale, clip})} method draws the points of \argu{L} as a sphere. The optional \argu{color} argument specifies the color of the sphere (\val{"black"} by default), and the optional \argu{scale} argument allows you to change the size of the sphere ($1$ by default).
 
-    \item The \cmd{g:Dcrossdots3d(L \fac{, color, scale, clip})} method draws the points of \argu{L} as a plane cross. The argument \argu{L} is a list of the form \{3D point, normal vector\} or \{ \{3D point, normal vector\}, \{3D point, normal vector\}, ...\}. For each 3D point, the associated normal vector is used to determine the plane containing the cross. The optional \argu{color} argument specifies the color of the sphere (\val{"black"}" by default), and the optional \argu{scale} argument allows you to change the size of the sphere ($1$ by default).
+    \item The \cmd{g:Dcrossdots3d(L \fac{, color, scale, clip})} method draws the points of \argu{L} as a plane cross. The argument \argu{L} is a list of the form \{3D point, normal vector\} or \{ \{3D point, normal vector\}, \{3D point, normal vector\}, ...\}. For each 3D point, the associated normal vector is used to determine the plane containing the cross. The optional \argu{color} argument specifies the color of the cross (\val{"black"} by default), and the optional \argu{scale} argument allows you to change the size of the cross ($1$ by default).
 \end{itemize}
 
 \begin{demo}{A tetrahedron and the centers of gravity of each face}
@@ -266,7 +266,7 @@ g:Dcrossdots3d({G,u}, "blue",0.75)
 g:Dpolyline3d({{F[1],G,F[2]},{G,F[3]}},"dotted")
 end
 -- drawing of the tetrahedron constructed on A, B, C and D
-g:Dpoly( ld.tetra(A,u,v,w),{mode=mShaded,opacity=0.7,color="Crimson"})
+g:Dpoly( ld.tetra(A,u,v,w),{mode=ld.mShaded,opacity=0.7,color="Crimson"})
 -- drawing of the center of gravity of visible faces
 for _, F in ipairs({{A,B,D},{A,C,D}}) do
     local G, u = pt3d.isobar3d(F), pt3d.prod(F[2]-F[1],F[3]-F[1])
@@ -287,16 +287,16 @@ The method for placing a label in space is:
 \begin{itemize}
     \item The arguments \argu{text1}, \argu{text2}, \ldots, are strings; they are the labels.
 
-    \item The arguments argu{anchor1}, \argu{anchor2}, \ldots, are 3D points representing the anchor points of the labels.
+    \item The arguments \argu{anchor1}, \argu{anchor2}, \ldots, are 3D points representing the anchor points of the labels.
 
-     \item T\argu{options1}, \argu{options2}, \ldots, allow you to locally define the label options. These options are (with their default value)!
+     \item The arguments \argu{options1}, \argu{options2}, \ldots, allow you to locally define the label options. These options are (with their default value):
 
 \begin{itemize}
-    \item \opt{pos="center"}: indicates the label's position in the screen plane relative to the anchor point. It can be \val{"N"} for north, \val{"NE"} for northeast, \val{"NW"} for northwest, or \val{"S"}, \val{"SE"}, \val{"SW"}. By default, it is \val{""center""}, and in this case, the label is centered on the anchor point.
+    \item \opt{pos="center"}: indicates the label's position in the screen plane relative to the anchor point. It can be \val{"N"} for north, \val{"NE"} for northeast, \val{"NW"} for northwest, or \val{"S"}, \val{"SE"}, \val{"SW"}. By default, it is \val{"center"}, and in this case, the label is centered on the anchor point.
 
-     \item \opt{dist=0}: distance in cm between the label and its anchor point when \opt{pos} is not equal to \val{""center""}.
+     \item \opt{dist=0}: distance in cm between the label and its anchor point when \opt{pos} is not equal to \val{"center"}.
 
-    \item \opt{dir=\{\}}: indicates the direction of writing in space, the empty list means the default direction). In general, \code{dir=\{dirX,dirY,dep\}}, the three values ​​\emph{dirX}, \emph{dirY} and \emph{dep} are three 3D points representing three vectors. The first two indicate the direction of writing, the third a displacement (translation) of the label relative to the anchor point.
+    \item \opt{dir=\{\}}: indicates the direction of writing in space, the empty list means the default direction. In general, \code{dir=\{dirX,dirY,dep\}}, the three values ​​\emph{dirX}, \emph{dirY} and \emph{dep} are three 3D points representing three vectors. The first two indicate the direction of writing, the third a displacement (translation) of the label relative to the anchor point.
 
     \item \opt{node\_options=""}: string intended to receive options that will be passed directly to TikZ in the \emph{\textbackslash node[]} instruction.
 
@@ -308,13 +308,13 @@ The method for placing a label in space is:
 
 \subsection{Basic Solids (Without Facets)}
 
-The four methods described below are sensitive to the global variable \varglob{Hiddenlines} which is \false by default.
+The four methods described below are sensitive to the global variable \varglob{ld.Hiddenlines} which is \false by default.
 
 \subsubsection{Cylinder: Dcylinder}
 
 Draw a cylinder with a circular base (right or tilted). Several possible syntaxes:
 \begin{itemize}
-    \item Old syntax: \cmd{g:Dcylinder(A, V, r \fac{, options})} draws a right cylinder, where \argu{A} is a 3D point representing the center of one of the circular faces, \argu{V} is a 3D point, a vector representing the axis of the cone, the center of the opposite circular face is the point $A+V$ (this face is orthogonal to $V$), and \argu{r} is the radius of the circular base.
+    \item Old syntax: \cmd{g:Dcylinder(A, V, r \fac{, options})} draws a right cylinder, where \argu{A} is a 3D point representing the center of one of the circular faces, \argu{V} is a 3D point, a vector representing the axis of the cylinder, the center of the opposite circular face is the point $A+V$ (this face is orthogonal to $V$), and \argu{r} is the radius of the circular base.
 
     \item Syntax: \cmd{g:Dcylinder(A, r, B \fac{, options})} draws a right cylinder, where \argu{A} is a 3D point representing the center of one of the circular faces, \argu{B} is the center of the opposite face, and \argu{r} is the radius. The cylinder is right, meaning that the circular faces are orthogonal to the axis $(AB)$.
 
@@ -323,7 +323,7 @@ Draw a cylinder with a circular base (right or tilted). Several possible syntaxe
 
 For all three syntaxes, \argu{options} is a table whose fields define the options. These options are (with their default values):
 \begin{itemize}
-    \item \opt{mode=ld.mWireframe}, two possibles values, \val{ld.mGrid} or \val{ld.mWireframe}. In \val{ld.mWireframe} mode, this is a wireframe drawing; in \val{ld.mGrid} mode, this is a grid drawing (as if there were facets).
+    \item \opt{mode=ld.mWireframe}, two possible values, \val{ld.mGrid} or \val{ld.mWireframe}. In \val{ld.mWireframe} mode, this is a wireframe drawing; in \val{ld.mGrid} mode, this is a grid drawing (as if there were facets).
 
     \item \opt{hiddenstyle=ld.Hiddenlinestyle}, sets the line style for hidden areas (set it to \val{"noline"} to hide them). By default, this option has the value of the global variable \varglob{ld.Hiddenlinestyle}, which is itself initialized with the value \val{"dotted"}.
 
@@ -331,7 +331,7 @@ For all three syntaxes, \argu{options} is a table whose fields define the option
 
     \item \opt{edgecolor=<current color>}, sets the color of the lines.
     
-    \item \opt{edgestyle=<currrent style>}, defines the line style for visible edges.
+    \item \opt{edgestyle=<current style>}, defines the line style for visible edges.
 
     \item \opt{edgewidth=<current width>}, sets the thickness of the visible edges in tenths of a point.    
 
@@ -344,7 +344,7 @@ For all three syntaxes, \argu{options} is a table whose fields define the option
 where \emph{<color>} denotes the color used, and \emph{<l>}, \emph{<m>}, \emph{<r>} are three numbers between $0$ and $100$, these three numbers constitute the parameters of the gradient in the form of a table \emph{\{<l>,<m>,<r>\}}:
         \begin{itemize}
             \item For the side of the cylinder, it's the \opt{gradside} option, by default: \opt{gradside=\{50,10,100\}}.
-            \item For the cylinder section, it's the \opt{gradsection} option, by défaut : \opt{gradsection=\{25,18,50\}}.
+            \item For the cylinder section, it's the \opt{gradsection} option, by default: \opt{gradsection=\{25,18,50\}}.
         \end{itemize}
 \end{itemize}
 
@@ -362,7 +362,7 @@ Draw a circular cone (right or inclined). Several possible syntaxes:
 
 For all three syntaxes, \argu{options} is a table whose fields define the options. These options are (with their default values):
 \begin{itemize}
-    \item \opt{mode=ld.mWireframe}, two possibles values, \val{ld.mGrid} or \val{ld.mWireframe}. In \val{ld.mWireframe} mode, this is a wireframe drawing; in \val{ld.mGrid} mode, this is a grid drawing (as if there were facets).
+    \item \opt{mode=ld.mWireframe}, two possible values, \val{ld.mGrid} or \val{ld.mWireframe}. In \val{ld.mWireframe} mode, this is a wireframe drawing; in \val{ld.mGrid} mode, this is a grid drawing (as if there were facets).
 
     \item \opt{hiddenstyle=ld.Hiddenlinestyle}, sets the line style for hidden areas (set it to \val{"noline"} to hide them). By default, this option has the value of the global variable \varglob{ld.Hiddenlinestyle}, which is itself initialized with the value \val{"dotted"}.
 
@@ -370,7 +370,7 @@ For all three syntaxes, \argu{options} is a table whose fields define the option
 
     \item \opt{edgecolor=<current color>}, sets the color of the lines.
     
-    \item \opt{edgestyle=<currrent style>}, defines the line style for visible edges.
+    \item \opt{edgestyle=<current style>}, defines the line style for visible edges.
 
     \item \opt{edgewidth=<current width>}, sets the thickness of the visible edges in tenths of a point.    
 
@@ -383,7 +383,7 @@ For all three syntaxes, \argu{options} is a table whose fields define the option
 where \emph{<color>} denotes the color used, and \emph{<l>}, \emph{<m>}, \emph{<r>} are three numbers between $0$ and $100$, these three numbers constitute the parameters of the gradient in the form of a table \emph{\{<l>,<m>,<r>\}}:
         \begin{itemize}
             \item For the side of the cone, it's the \opt{gradside} option, by default: \opt{gradside=\{50,10,100\}}.
-            \item For the cone section, it's the \opt{gradsection} option, by défaut : \opt{gradsection=\{25,18,50\}}.
+            \item For the cone section, it's the \opt{gradsection} option, by default: \opt{gradsection=\{25,18,50\}}.
         \end{itemize}
 \end{itemize}
 
@@ -399,7 +399,7 @@ Draw a truncated cone with a circular base (right or slanted). Two possible synt
 
 In both cases, \argu{options} is a table whose fields define the options. These options are (with their default values):
 \begin{itemize}
-    \item \opt{mode=ld.mWireframe}, two possibles values, \val{ld.mGrid} or \val{ld.mWireframe}. In \val{ld.mWireframe} mode, this is a wireframe drawing; in \val{ld.mGrid} mode, this is a grid drawing (as if there were facets).
+    \item \opt{mode=ld.mWireframe}, two possible values, \val{ld.mGrid} or \val{ld.mWireframe}. In \val{ld.mWireframe} mode, this is a wireframe drawing; in \val{ld.mGrid} mode, this is a grid drawing (as if there were facets).
 
     \item \opt{hiddenstyle=ld.Hiddenlinestyle}, sets the line style for hidden areas (set it to \val{"noline"} to hide them). By default, this option has the value of the global variable \varglob{ld.Hiddenlinestyle}, which is itself initialized with the value \val{"dotted"}.
 
@@ -407,7 +407,7 @@ In both cases, \argu{options} is a table whose fields define the options. These 
 
     \item \opt{edgecolor=<current color>}, sets the color of the lines.
     
-    \item \opt{edgestyle=<currrent style>}, defines the line style for visible edges.
+    \item \opt{edgestyle=<current style>}, defines the line style for visible edges.
 
     \item \opt{edgewidth=<current width>}, sets the thickness of the visible edges in tenths of a point.    
 
@@ -420,7 +420,7 @@ In both cases, \argu{options} is a table whose fields define the options. These 
 where \emph{<color>} denotes the color used, and \emph{<l>}, \emph{<m>}, \emph{<r>} are three numbers between $0$ and $100$, these three numbers constitute the parameters of the gradient in the form of a table \emph{\{<l>,<m>,<r>\}}:
         \begin{itemize}
             \item For the side of the cone, it's the \opt{gradside} option, by default: \opt{gradside=\{50,10,100\}}.
-            \item For the cone section, it's the \opt{gradsection} option, by défaut : \opt{gradsection=\{25,18,50\}}.
+            \item For the cone section, it's the \opt{gradsection} option, by default: \opt{gradsection=\{25,18,50\}}.
         \end{itemize}
 \end{itemize}
 
@@ -434,7 +434,7 @@ The \cmd{g:Dsphere(A, r \fac{, options})} method draws a sphere.
     \item \argu{r} is the radius of the sphere.
     \item \argu{options} is a table whose fields define the options. These options are (with their default values):
 \begin{itemize}
-    \item \opt{mode=ld.mWireframe}, three possibles values, \val{ld.mGrid} or \val{ld.mWireframe} or \val{ld.mBorder}. In \val{ld.mWireframe} mode, the outline (circle) and the equator are drawn; in \val{ld.mGrid} mode, the outline with meridians and spindles (grid) is drawn; and in \val{ld.mBorder} mode, the outline only is drawn.
+    \item \opt{mode=ld.mWireframe}, three possible values, \val{ld.mGrid} or \val{ld.mWireframe} or \val{ld.mBorder}. In \val{ld.mWireframe} mode, the outline (circle) and the equator are drawn; in \val{ld.mGrid} mode, the outline with meridians and spindles (grid) is drawn; and in \val{ld.mBorder} mode, the outline only is drawn.
 
     \item \opt{hiddenstyle=ld.Hiddenlinestyle}, sets the line style for hidden areas (set it to \val{"noline"} to hide them). By default, this option has the value of the global variable \varglob{ld.Hiddenlinestyle}, which is itself initialized with the value \val{"dotted"}.
 
@@ -446,7 +446,7 @@ The \cmd{g:Dsphere(A, r \fac{, options})} method draws a sphere.
     
     \item \opt{edgecolor=<current color>}, sets the color of the lines.    
 
-    \item \opt{edgestyle=<currrent style>}, defines the line style for visible edges.
+    \item \opt{edgestyle=<current style>}, defines the line style for visible edges.
 
     \item \opt{edgewidth=<current width>}, sets the thickness of the visible edges in tenths of a point.
 \end{itemize}

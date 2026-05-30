@@ -11,7 +11,7 @@ This section groups together functions that construct geometric figures without 
 
 \subsection{Convex Hull: cvx\_hull3d()}
 
-The function \cmd{ld.cvx\_hull3d(L)}, where \argu{L}is a list of \textbf{distinct} 3D points, calculates and returns the convex hull of \argu{L} as a list of facets.
+The function \cmd{ld.cvx\_hull3d(L)}, where \argu{L} is a list of \textbf{distinct} 3D points, calculates and returns the convex hull of \argu{L} as a list of facets.
 
 \begin{demo}{Using cvx\_hull3d()}
 \begin{luadraw}{name=cvx_hull3d}
@@ -34,11 +34,11 @@ g:Show()
 
 \subsection{Planes: plane(), planeEq(), orthoframe(), plane2ABC()}
 
-A plane in space is a table of the form $\{A,n\}$ where $A$ is a point in the plane (3d point) and $n$ is a normal vector to the plane (non-zero 3D point).
+A plane in space is a table of the form $\{A,n\}$ where $A$ is a point in the plane (3D point) and $n$ is a normal vector to the plane (non-zero 3D point).
 \begin{itemize}
     \item The function \cmd{ld.plane(A, B, C)} returns the plane passing through the three 3D points \argu{A}, \argu{B} and \argu{C} (if they are not aligned, otherwise the result is \nil).
 
-    \item The function \cmd{ld.planeEq(a, b, c, d)} returns the plane whose Cartesian equation is $ax+by+cz+d=0$ (if the coefficients \argu{a}, \argu{a} and \argu{a} are not all zero, otherwise the result is \nil).
+    \item The function \cmd{ld.planeEq(a, b, c, d)} returns the plane whose Cartesian equation is $ax+by+cz+d=0$ (if the coefficients \argu{a}, \argu{b} and \argu{c} are not all zero, otherwise the result is \nil).
 
     \item The function \cmd{ld.plane2ABC(P)}, where \argu{P}$=\{A,n\}$ denotes a plane, returns a sequence of three 3D points $A,B,C$, belonging to the plane, and such that $(A,\vec{AB},\vec{AC})$ is a direct orthonormal frame of this plane.
 
@@ -76,14 +76,14 @@ g:Show()
 \subsection{Circumscribed Sphere, Inscribed Sphere: circumsphere(), insphere()}
 
 \begin{itemize}
-    \item The function \cmd{ld.circumsphere(A, B, C, D)}, where \argu{A}, \argu{B}, \argu{C} and \argu{D} are four non-coplanar 3D points, returns the sphere circumscribed within the tetrahedron formed by these four points, as a sequence: $I,R$, where $I$ is the center of the sphere, and $R$ its radius.
+    \item The function \cmd{ld.circumsphere(A, B, C, D)}, where \argu{A}, \argu{B}, \argu{C} and \argu{D} are four non-coplanar 3D points, returns the sphere circumscribed about the tetrahedron formed by these four points, as a sequence: $I,R$, where $I$ is the center of the sphere, and $R$ its radius.
 
     \item The function \cmd{ld.insphere(A, B, C, D)}, where \argu{A}, \argu{B}, \argu{C} and \argu{D} are four non-coplanar 3D points, returns the sphere inscribed within the tetrahedron formed by these four points, as a sequence: $I,R$, where $I$ is the center of the sphere, and $R$ its radius.
 \end{itemize}
 
 \subsection{Fixed-length tetrahedron: tetra\_len()}
 
-The function \cmd{ld.tetra\_len(ab, ac, ad, bc, bd, cd)} calculates the vertices $A,B,C,D$ of a tetrahedron whose edge lengths are given, i.e., such that $AB=$\argu{ab}, $AC=$\argu{ac}, $AD=$\argu{ad}, $BC=$\argu{bc}, $BD=$\argu{bd} and $CD=$\argu{cd}. The function returns the sequence of four points $A,B,C,D$. Vertex $A$ is always the point $M(0,0,0)$ (\varglob{pt3d.Origin}) and vertex $B$ is always the point \code{ab*pt3d.vecI} and vertex $C$ in the $xy$ plane. The tetrahedron as a polyhedron can then be constructed with the function \cmd{tetra(A, B-A, C-A, D-A)}.
+The function \cmd{ld.tetra\_len(ab, ac, ad, bc, bd, cd)} calculates the vertices $A,B,C,D$ of a tetrahedron whose edge lengths are given, i.e., such that $AB=$\argu{ab}, $AC=$\argu{ac}, $AD=$\argu{ad}, $BC=$\argu{bc}, $BD=$\argu{bd} and $CD=$\argu{cd}. The function returns the sequence of four points $A,B,C,D$. Vertex $A$ is always the point $M(0,0,0)$ (\varglob{pt3d.Origin}) and vertex $B$ is always the point \code{ab*pt3d.vecI} and vertex $C$ in the $xy$ plane. The tetrahedron as a polyhedron can then be constructed with the function \cmd{ld.tetra(A, B-A, C-A, D-A)}.
 
 \begin{demo}{A tetrahedron with fixed edge lengths}
 \begin{luadraw}{name=tetra_len}

@@ -43,15 +43,15 @@ The function \cmd{g:Dpoly(P, options)} allows you to represent the polyhedron \a
     \item \opt{edgecolor=<current line color>}: This is a string that defines the edge color.
     \item \opt{hiddenstyle=ld.Hiddenlinestyle}: This is a string that defines the line style of hidden edges. By default, this is the value contained in the global variable \varglob{ld.Hiddenlinestyle} (which itself is \val{"dotted"} by default).
     \item \opt{hiddencolor=<current line color>}: This is a string that defines the color of hidden edges.
-    \item \opt{edgewidth=<current lien width>}: This ie the line thickness of edges in tenths of a point.
+    \item \opt{edgewidth=<current line width>}: This is the line thickness of edges in tenths of a point.
     \item \opt{opacity=1} : This is a number between 0 and 1 that allows you to set transparency or not on the facets.
-    \item \opt{backcull=false}: When this bollean is \true, facets considered invisible (normal vectors not directed towards the observer) are not displayed. This option is useful for convex polyhedra because it reduces the number of facets to draw.
+    \item \opt{backcull=false}: When this boolean is \true, facets considered invisible (normal vectors not directed towards the observer) are not displayed. This option is useful for convex polyhedra because it reduces the number of facets to draw.
     \item \opt{twoside=true}: Boolean that defaults to true, meaning that both sides of the facets (inner and outer) are distinguished; the two sides will not have exactly the same color.
     \item \opt{color="white"}: String defining the fill color of the facets.
     \item \opt{usepalette=nil}:  this option allows you to specify a color palette for painting the facets as well as a calculation mode, the syntax is: \opt{usepalette=\{palette,mode\}}, where \argu{palette} designates a table of colors which are themselves tables of the form $\{r,g,b\}$ where $r$, $g$ and $b$ are numbers between $0$ and $1$. The argument  \argu{mode} can be :
     \begin{itemize}
         \item one of the strings: \val{"x"}, \val{"y"}, \val{"z"}. In the first case, for example, facets with the minimum x-coordinate at their centroid have the first color in the palette, facets with the maximum x-coordinate at their centroid have the last color in the palette, and for the others, the color is calculated based on the x-coordinate of the centroid by linear interpolation.
-        \item a function: \argu{mode}$\colon f \mapsto \mathrm{mode}(f)\in\mathbb R$, where $f$ denotes a facet (a list of 3D points). Facets with the minimum value have the first color in the palette, those with the minimum value have the last color in the palette, and for the others, the color is calculated by linear interpolation.
+        \item a function: \argu{mode}$\colon f \mapsto \mathrm{mode}(f)\in\mathbb R$, where $f$ denotes a facet (a list of 3D points). Facets with the minimum value have the first color in the palette, those with the maximum value have the last color in the palette, and for the others, the color is calculated by linear interpolation.
     \end{itemize}
 \end{itemize}
 
@@ -127,7 +127,7 @@ The following functions return a polyhedron, that is, a table with two fields: a
 
     \item \cmd{ld.frustum(C, R, r, V \fac{, nbfacet, open})} returns a right frustum. \argu{C} (3D point) is the center of the circular base of radius \argu{R}, and vector \argu{V} directs the axis of the frustum. The center of the other circular base is point $C+V$, and its radius is \argu{r} (the bases are orthogonal to \argu{V}). The optional argument \argu{nbfacet} is $35$ by default (number of lateral facets). The optional argument \argu{open} is a Boolean indicating whether the frustum is open or not (\false by default). If it is open, only the lateral facets are returned.
 
-    \item \cmd{ld.frustum(C, R, r, V, A \fac{, nbfacet, open})} returns a frustum of a cone. \argu{C} (3D point) is the center of the circular base of radius \argu{R}, the center of the other circular base is point \argu{A}, and its radius is \argu{r}. The bases are orthogonal to vector \argu{C}, but not necessarily orthogonal to axis $(AC)$. The optional argument \argu{nbfacet} is $35$ by default (number of lateral facets). The optional argument \argu{open} is a Boolean indicating whether the frustum is open or not (\false by default). If it is open, only the lateral facets are returned.
+    \item \cmd{ld.frustum(C, R, r, V, A \fac{, nbfacet, open})} returns a frustum of a cone. \argu{C} (3D point) is the center of the circular base of radius \argu{R}, the center of the other circular base is point \argu{A}, and its radius is \argu{r}. The bases are orthogonal to vector \argu{V}, but not necessarily orthogonal to axis $(AC)$. The optional argument \argu{nbfacet} is $35$ by default (number of lateral facets). The optional argument \argu{open} is a Boolean indicating whether the frustum is open or not (\false by default). If it is open, only the lateral facets are returned.
 
     \item \cmd{ld.sphere(A, R \fac{, nbu, nbv})} returns the sphere with center \argu{A} (3D point) and radius \argu{R}. The optional argument \argu{nbu} represents the number of spindles ($36$ by default) and the optional argument \argu{nbv} the number of parallels ($20$ by default).
 \end{itemize}
@@ -219,7 +219,7 @@ g:Show()
 
 \subsection{Reading from an obj file}
 
-The function \cmd{ld.read\_obj\_file(file)}\footnote{This function is a contribution by Christophe BAL.} allows you to read the contents of the file \emph{obj} designated by the string \argu{file}. The function reads the vertex definitions (lines beginning with \verb|v |), and the lines defining the facets (lines beginning with \verb|f |). The other lines are ignored. The function returns a sequence consisting of the polyhedron, followed by a list of four real numbers \code{\{x1,x2,y1,y2,z1,z2\}} representing the 3D bounding box of the polyhedron.
+The function \cmd{ld.read\_obj\_file(file)}\footnote{This function is a contribution by Christophe BAL.} allows you to read the contents of the file \emph{obj} designated by the string \argu{file}. The function reads the vertex definitions (lines beginning with \verb|v |), and the lines defining the facets (lines beginning with \verb|f |). The other lines are ignored. The function returns a sequence consisting of the polyhedron, followed by a list of six real numbers \code{\{x1,x2,y1,y2,z1,z2\}} representing the 3D bounding box of the polyhedron.
 
 \begin{demo}{Mask of Nefertiti}
 \begin{luadraw}{name=lecture_obj}
@@ -255,7 +255,7 @@ In both cases, the result is not a list of facets but a table with three fields:
 There are two possible methods:
 \begin{enumerate}
     \item For a solid $S$ in the form of a list of facets (with 3D points), the method is:
-cmdln{g:Dfacet(S, options)}
+\cmdln{g:Dfacet(S, options)}
 where \argu{S} is the list of facets and \argu{options} is a table defining the options. These are:
     \begin{itemize}
         \item \opt{mode=ld.mShaded}: Sets the representation mode. The possible values are:
@@ -270,15 +270,15 @@ where \argu{S} is the list of facets and \argu{options} is a table defining the 
         \item \opt{edgecolor=<current line color>}: This is a string that defines the edge color.
         \item \opt{hiddenstyle=ld.Hiddenlinestyle}: This is a string that defines the line style of hidden edges. By default, this is the value contained in the global variable \varglob{ld.Hiddenlinestyle} (which itself is \val{"dotted"} by default).
         \item \opt{hiddencolor=<current line color>}: This is a string that defines the color of hidden edges.
-        \item \opt{edgewidth=<current lien width>}: This ie the line thickness of edges in tenths of a point.
+        \item \opt{edgewidth=<current line width>}: This is the line thickness of edges in tenths of a point.
         \item \opt{opacity=1} : This is a number between 0 and 1 that allows you to set transparency or not on the facets.
-        \item \opt{backcull=false}: When this bollean is \true, facets considered invisible (normal vectors not directed towards the observer) are not displayed. This option is useful for convex polyhedra because it reduces the number of facets to draw.
+        \item \opt{backcull=false}: When this boolean is \true, facets considered invisible (normal vectors not directed towards the observer) are not displayed. This option is useful for convex polyhedra because it reduces the number of facets to draw.
         \item \opt{twoside=true}: Boolean that defaults to true, meaning that both sides of the facets (inner and outer) are distinguished; the two sides will not have exactly the same color.
         \item \opt{color="white"}: String defining the fill color of the facets.
         \item \opt{usepalette=nil}:  this option allows you to specify a color palette for painting the facets as well as a calculation mode, the syntax is: \opt{usepalette=\{palette,mode\}}, where \argu{palette} designates a table of colors which are themselves tables of the form $\{r,g,b\}$ where $r$, $g$ and $b$ are numbers between $0$ and $1$. The argument  \argu{mode} can be :
         \begin{itemize}
             \item one of the strings: \val{"x"}, \val{"y"}, \val{"z"}. In the first case, for example, facets with the minimum x-coordinate at their centroid have the first color in the palette, facets with the maximum x-coordinate at their centroid have the last color in the palette, and for the others, the color is calculated based on the x-coordinate of the centroid by linear interpolation.
-            \item a function: \argu{mode}$\colon f \mapsto \mathrm{mode}(f)\in\mathbb R$, where $f$ denotes a facet (a list of 3D points). Facets with the minimum value have the first color in the palette, those with the minimum value have the last color in the palette, and for the others, the color is calculated by linear interpolation.
+            \item a function: \argu{mode}$\colon f \mapsto \mathrm{mode}(f)\in\mathbb R$, where $f$ denotes a facet (a list of 3D points). Facets with the minimum value have the first color in the palette, those with the maximum value have the last color in the palette, and for the others, the color is calculated by linear interpolation.
         \end{itemize}
     \end{itemize}
 
@@ -360,7 +360,7 @@ g:Show()
 
 \subsubsection{cylindrical\_surface()}
 
-The function \cmd{ld.cylindrical\_surface(r, z, u1, u2, theta1, theta2 \fac{, grid, addwall})} returns the surface parameterized as cylindrical by \emph{r(u,theta), theta, z(u,theta)}. The arguments \argu{r} and \argu{z} are therefore two real-valued functions of $u$ and $\theta$. The interval for $u$ is given by \argu{u1} and \argu{u2}. The interval for $\theta$ is given by \argu{theta1} and \argu{theta2} (in radians). The optional parameter \argu{grid} is $\{25,25\}$ by default; it defines the number of points to calculate for $u$ followed by the number of points to calculate for $v$. The parameter \argu{addwall} is $0$ or \val{"v"} or \val{"z"} or \val{"vz"} ($0$ by default). When this option is \val{"v"}  ou \val{"vz"}, the function returns, after the list of facets composing the surface, a list of separating facets (walls or partitions) between each "layer" of facets, a layer corresponds to two consecutive values ​​of the angle $\theta$\footnote{These partitions are in fact planes of equation $\theta=$constant}. When this option is set to \val{"z"}  ou \val{"vz"}, the function returns, after the list of facets composing the surface, a list of separating facets (walls or partitions) between each "layer" of facets. A layer corresponds to two consecutive values ​​of the dimension $z$\footnote{These partitions are actually planes with the equation $z=$constant}, the values ​​of $z$ are calculated from the values ​​of the parameter $u$ and with the value \argu{theta1}. This is useful when $z$ only depends on $u$ (and therefore not on $\theta$). This option can be useful with the \cmd{g:Dscene3d()} method (only), because the separating partitions form a partition of space isolating the surface facets, which avoids unnecessary intersection calculations between them. This is particularly the case with non-convex surfaces.
+The function \cmd{ld.cylindrical\_surface(r, z, u1, u2, theta1, theta2 \fac{, grid, addwall})} returns the surface parameterized as cylindrical by \emph{r(u,theta), theta, z(u,theta)}. The arguments \argu{r} and \argu{z} are therefore two real-valued functions of $u$ and $\theta$. The interval for $u$ is given by \argu{u1} and \argu{u2}. The interval for $\theta$ is given by \argu{theta1} and \argu{theta2} (in radians). The optional parameter \argu{grid} is $\{25,25\}$ by default; it defines the number of points to calculate for $u$ followed by the number of points to calculate for $\theta$. The parameter \argu{addwall} is $0$ or \val{"v"} or \val{"z"} or \val{"vz"} ($0$ by default). When this option is \val{"v"}  or \val{"vz"}, the function returns, after the list of facets composing the surface, a list of separating facets (walls or partitions) between each "layer" of facets, a layer corresponds to two consecutive values ​​of the angle $\theta$\footnote{These partitions are in fact planes of equation $\theta=$constant}. When this option is set to \val{"z"}  or \val{"vz"}, the function returns, after the list of facets composing the surface, a list of separating facets (walls or partitions) between each "layer" of facets. A layer corresponds to two consecutive values ​​of the dimension $z$\footnote{These partitions are actually planes with the equation $z=$constant}, the values ​​of $z$ are calculated from the values ​​of the parameter $u$ and with the value \argu{theta1}. This is useful when $z$ only depends on $u$ (and therefore not on $\theta$). This option can be useful with the \cmd{g:Dscene3d()} method (only), because the separating partitions form a partition of space isolating the surface facets, which avoids unnecessary intersection calculations between them. This is particularly the case with non-convex surfaces.
 
 \begin{demo}{Surfaces using the \emph{addwall} option}
 \begin{luadraw}{name=surface_with_addWall}
@@ -390,11 +390,11 @@ g:Show()
 \end{demo}
 
 \subsubsection{curve2cone()}
-The function \cmd{ld.curve2cone(f, t1, t2, S, options)} constructs a cone with vertex \argu{S} (3D point) and the base curve parametrized by \argu{f}$\colon t\mapsto f(t)\in\mathbf R^3$ on the interval defined by \argu{t1} et \argu{t2}. The argument \argu{options} is an table whose fields define the options, which are (with thier default value):
+The function \cmd{ld.curve2cone(f, t1, t2, S, options)} constructs a cone with vertex \argu{S} (3D point) and the base curve parametrized by \argu{f}$\colon t\mapsto f(t)\in\mathbf R^3$ on the interval defined by \argu{t1} and \argu{t2}. The argument \argu{options} is an table whose fields define the options, which are (with their default value):
 \begin{itemize}
     \item \opt{nbdots=15}: minimum number of points on the curve to calculate.
     
-    \item \opt{ratio=0}: number representing the homothety ratio (centered at vertex \argu{S}) to construct the other part of the cone, with the value $0$ ther is no second part.    
+    \item \opt{ratio=0}: number representing the homothety ratio (centered at vertex \argu{S}) to construct the other part of the cone, with the value $0$ there is no second part.
      
     \item \opt{nbdiv=0}: positive integer indicating the number of times the interval between two consecutive values ​​of the parameter $t$ can be bisected (dichotomized) when the corresponding points are too far apart.
     
@@ -425,7 +425,7 @@ g:Show()
 
 \subsubsection{curve2cylinder()}
 
-The function \cmd{ld.curve2cylinder(f, t1, t2, V \fac{, options})} constructs a cylinder with axis directed by the vector \argu{V} (3D point) and with a base parameterized by \argu{f}$\colon t\mapsto f(t)\in\mathbf R^3$ on the interval defined by \argu{t1} and \argu{t2}. The second base is the translation of the first with the vector $V$. The argument \argu{options} is an table whose fields define the options, which are (with thier default value):
+The function \cmd{ld.curve2cylinder(f, t1, t2, V \fac{, options})} constructs a cylinder with axis directed by the vector \argu{V} (3D point) and with a base parameterized by \argu{f}$\colon t\mapsto f(t)\in\mathbf R^3$ on the interval defined by \argu{t1} and \argu{t2}. The second base is the translation of the first with the vector $V$. The argument \argu{options} is an table whose fields define the options, which are (with their default value):
 \begin{itemize}
     \item \opt{nbdots=15}: minimum number of points on the curve to calculate.
     
@@ -448,7 +448,7 @@ local cos, sin, pi = math.cos, math.sin, math.pi
 
 local g = ld.graph3d:new{ window3d={-5,5,-5,5,-4,4},window={-9,8,-10.5,5.5},
     viewdir={"central",39,64}, size={10,10}}
-local f = function(t) return M(4*cos(t)-cos(4*t),4*sin(t)-sin(4*t),-4) end -- courbe dans le plan z=-3
+local f = function(t) return M(4*cos(t)-cos(4*t),4*sin(t)-sin(4*t),-4) end -- curve in the plane z=-4
 local V = 8*vecK
 local C = ld.curve2cylinder(f,-pi,pi,V,{nbdots=25,nbdiv=2})
 local plan = {M(0,0,2), -vecK} -- cutting plane z=2
@@ -464,7 +464,7 @@ g:Show()
 
 \subsubsection{line2tube(); section2tube()}
 
-The function \cmd{ld.line2tube(L, r \fac{, options})} constructs (as a list of facets) a tube centered on \argu{L}, which must be a 3D polygonal line (list of 3D points or list of lists of 3D points). The argument \argu{r} represents the radius of this tube. The argument \argu{options} is an table whose fields define the options, which are (with thier default value):
+The function \cmd{ld.line2tube(L, r \fac{, options})} constructs (as a list of facets) a tube centered on \argu{L}, which must be a 3D polygonal line (list of 3D points or list of lists of 3D points). The argument \argu{r} represents the radius of this tube. The argument \argu{options} is an table whose fields define the options, which are (with their default value):
 \begin{itemize}
     \item \opt{nbfacet=3}: number of lateral facets of the tube.
     
@@ -477,7 +477,7 @@ The function \cmd{ld.line2tube(L, r \fac{, options})} constructs (as a list of f
     \item \opt{obj=\false} : with the value \false this function returns a list of facets, with the value \true it returns a table with three fields: \code{\{vertices=\{3D points\}, facets=\{\{index1,\ldots\},\ldots\}, normals=\{3D vectors\}\}}.    
 \end{itemize}
 
-The function \cmd{ld.section2tube(section, L \fac{, options})} also constructs a tube centered on \argu{L}, which must be a list of 3D points. The argument \argu{section} must be a facet centered on the first point of \argu{L}; it represents a section of the tube to be constructed. The argument \argu{options} is an table whose fields define the options, which are (with thier default value):
+The function \cmd{ld.section2tube(section, L \fac{, options})} also constructs a tube centered on \argu{L}, which must be a list of 3D points. The argument \argu{section} must be a facet centered on the first point of \argu{L}; it represents a section of the tube to be constructed. The argument \argu{options} is an table whose fields define the options, which are (with their default value):
 \begin{itemize}
     \item \opt{nbfacet=3}: number of lateral facets of the tube.
     
@@ -511,7 +511,7 @@ g:Show()
 \end{demo}
 
 \subsubsection{rotcurve()}
-The function \cmd{ld.rotcurve(p, t1, t2, axe, angle1, angle2 \fac{, options})} constructs, as a list of facets, the surface swept by the curve parameterized by \argu{p}$\colon t\mapsto p(t)\in \mathbf R^3$ over the interval defined by \argu{t1} and \argu{t2}, by rotating it around \argu{axis} (which is a table of the form \{3D point, 3D vector\} representing an oriented line in space), by an angle ranging from \argu{angle1} (in degrees) to \argu{angle2}. The argument \argu{options} is an table whose fields define the options, which are (with thier default value):
+The function \cmd{ld.rotcurve(p, t1, t2, axe, angle1, angle2 \fac{, options})} constructs, as a list of facets, the surface swept by the curve parameterized by \argu{p}$\colon t\mapsto p(t)\in \mathbf R^3$ over the interval defined by \argu{t1} and \argu{t2}, by rotating it around \argu{axe} (which is a table of the form \{3D point, 3D vector\} representing an oriented line in space), by an angle ranging from \argu{angle1} (in degrees) to \argu{angle2}. The argument \argu{options} is an table whose fields define the options, which are (with their default value):
 \begin{itemize}
     \item \opt{grid=\{25,25\}}: table consisting of two numbers, the first being the number of points calculated for the t parameter, and the second being the number of points calculated for the angular parameter.
 
@@ -544,7 +544,7 @@ g:Show()
 
 \subsubsection{rotline()}
 
-The function \cmd{ld.rotline(L, axe, angle1, angle2 \fac{, options})} constructs, as a list of facets, the surface swept by the list of 3D points \argu{L} by rotating it around \argu{axis} (which is a table of the form \{3D point, 3D vector\} representing an oriented line in space), through an angle ranging from \argu{angle1} (in degrees) to \argu{angle2}. The argument \argu{options} is an table whose fields define the options, which are (with thier default value):
+The function \cmd{ld.rotline(L, axe, angle1, angle2 \fac{, options})} constructs, as a list of facets, the surface swept by the list of 3D points \argu{L} by rotating it around \argu{axe} (which is a table of the form \{3D point, 3D vector\} representing an oriented line in space), through an angle ranging from \argu{angle1} (in degrees) to \argu{angle2}. The argument \argu{options} is an table whose fields define the options, which are (with their default value):
 \begin{itemize}
     \item \opt{nbdots=25}: number of points calculated for the angular parameter.
 
@@ -579,7 +579,7 @@ An "edge" object is a table with two fields: one field named \emph{visible} that
 
      \item The method \cmd{g:Intersection3d(P, plane)}, where \argu{P} is a polyhedron or a list of facets, returns as an "edge" object the intersection between \argu{P} and the plane represented by \argu{plane} (it is a table of the form \{A,u\} where $A$ is a point on the plane and $u$ is a normal vector, so they are two 3D points).
 
-    \item The method \cmd{g:Dedges(edges, options)} allows you to draw \argu{edges}, which must be an "edge" object. The argument \argu{options} is an table whose fields define the options, which are (with thier default value):
+    \item The method \cmd{g:Dedges(edges, options)} allows you to draw \argu{edges}, which must be an "edge" object. The argument \argu{options} is an table whose fields define the options, which are (with their default value):
 \begin{itemize}
     \item \opt{hidden=false}: Boolean indicating whether hidden edges should be drawn.
     \item \opt{visible=true}: Boolean indicating whether visible edges should be drawn.
