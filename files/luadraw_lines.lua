@@ -1286,10 +1286,10 @@ function ld.merge(List,eps)
     if eps == 0 then
         equal = cpx.equal
     else
-        equal = function(u,u)
+        equal = function(u,v)
             u = cpx.toComplex(u)
             v = cpx.toComplex(v)
-        if (u == nil) or (v == nil) then return end
+            if (u == nil) or (v == nil) then return end
             return cpx.abs(u-v) < eps
         end
     end
