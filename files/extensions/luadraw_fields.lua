@@ -82,3 +82,42 @@ function graph:DplotXY(X,Y,draw_options)
     end
     self:Dpolyline(L,draw_options)
 end
+
+
+function ld.surfacefield(p, f, x1, x2, y1, y2, grid, long)
+    if grid == nil then grid = {25,25} end
+    local deltax, deltay = (x2-x1)/(grid[1]-1), (y2-y1)/(grid[2]-1)
+    if long == nil then long = math.min(deltax,deltay) end
+    local h = 1e-5
+    local vectors = {}
+
+    for i = 0, grid[1]-1 do
+        x = x1 + i*deltax
+        for j = 0, grid[2]-1 do
+            y = y1 + j*deltay
+            local P = p(x, y)
+            local A = f(x, y)
+            local px = (p(x+h, y) - p(x-h, y))/(2*h)
+            local py = (p(x, y+h) - p(x, y-h))/(2*h)
+            v = pt3d.normalize(A[1]*px + A[2]*py)
+            if v ~= nil then
+                table.insert(vectors, {P-long/2*v, P+long/2*v})
+            end
+        end
+    end
+    return vectors
+end
+
+function graph3d:Dsurfacefield(p, f, args)
+    args = args or {}
+    local window3d = args.window3d or self.param.viewport3d
+    local vectors = ld.surfacefield(
+        p, f,
+        window3d[1], window3d[2], window3d[3], window3d[4],
+        args.grid,
+        args.length
+    )
+    local clip = args.clip
+    if clip == nil then clip = true end
+    self:Dpolyline3d(vectors, false, args.draw_options, clip)
+end
