@@ -1,6 +1,6 @@
 -- luadraw__matrix.lua (chargé par luadraw__calc, qui charge avant luadraw_complex.lua)
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -115,7 +115,8 @@ function ld.invmatrix(M)
 end
 
 function ld.isID(m)  -- teste la matrice unité
-    return (toComplex(m[1]) == Z(0,0)) and (toComplex(m[2]) == Z(1,0)) and (toComplex(m[3]) == Z(0,1))
+    return (type(m) == "table") and (toComplex(m[1]) == Z(0,0)) and 
+    (toComplex(m[2]) == Z(1,0)) and (toComplex(m[3]) == Z(0,1))
 end
 
 ld.ID = { Z(0,0), Z(1,0), Z(0,1) } --matrice identité

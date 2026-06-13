@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -71,15 +71,22 @@ function ld.range(a, b, step)
     return res
 end
 
-function ld.linspace(a,b,nbdots)
+function ld.linspace(...)
+-- linspace(a1,b1,n1,b2,n2,...,bp,np)
+    local args = {...}
+    local res, b, nb, n, a = {}, args[1], #args
     local res = {}
-    nbdots = nbdots or 50
-    local pas = (b-a)/(nbdots-1)
-    local x = a
-    for _ = 1, nbdots do
-        table.insert(res,x)
-        x = x+pas
+    if nb == 2 then table.insert(args,50); nb = nb+1 end
+    for k = 2, nb-1, 2 do   -- avec un pas de 2 (2,4,6...)
+        a = b; b = args[k]; n = args[k+1] 
+        local pas = (b-a)/(n-1)
+        local x = a
+        for _ = 1, n-1 do
+            table.insert(res,x)
+            x = x+pas
+        end
     end
+    table.insert(res,b)
     return res
 end
 

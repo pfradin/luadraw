@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -26,12 +26,14 @@ function ld.getbounds3d(L)
     local xmin, xmax, ymin, ymax, zmin, zmax = A.x, A.x, A.y, A.y, A.z, A.z
     for _,cp in ipairs(L) do
         for _,A in ipairs(cp) do
-            if A.x < xmin then xmin = A.x end
-            if A.x > xmax then xmax = A.x end
-            if A.y < ymin then ymin = A.y end
-            if A.y > ymax then ymax = A.y end
-            if A.z < zmin then zmin = A.z end
-            if A.z > zmax then zmax = A.z end
+            --if isPoint3d(A) then
+                if A.x < xmin then xmin = A.x end
+                if A.x > xmax then xmax = A.x end
+                if A.y < ymin then ymin = A.y end
+                if A.y > ymax then ymax = A.y end
+                if A.z < zmin then zmin = A.z end
+                if A.z > zmax then zmax = A.z end
+            --end
         end
     end
     return xmin, xmax, ymin, ymax, zmin, zmax

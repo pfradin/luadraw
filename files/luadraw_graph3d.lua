@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -45,6 +45,7 @@ local projection_msg = {
 
 ld.Hiddenlines = false
 ld.Hiddenlinestyle = "dotted"
+ld.Hiddenlinescale = 2/3
 ld.top, ld.right, ld.bottom, ld.left, ld.all = 8, 4, 2, 1, 15
 ld.mWireframe, ld.mFlat, ld.mFlatHidden, ld.mShaded, ld.mShadedHidden, ld.mShadedOnly = 0, 1, 2, 3, 4, 5
 ld.mGrid = 1 -- cylinder, sphere, cone
@@ -59,6 +60,7 @@ ld.mBorder = 2 -- sphere
 local default_values = function() 
     ld.Hiddenlines = false
     ld.Hiddenlinestyle = "dotted"
+    ld.Hiddenlinescale = 2/3
 end
 
 local luadraw_graph2d = ld.graph --require "luadraw_graph2d"
@@ -528,8 +530,7 @@ function luadraw_graph3d:Dcircle3d(C,R,normal,draw_options,clip)
             else
                 chem = self:circle3db(C,R,normal)
             end        
-            local chem = ld.circle3db(C,R,normal)
-            local chem = ld.circle3db(C,R,normal)
+            --chem = ld.circle3db(C,R,normal)
             --self:Dpath(self:Proj3d(chem),draw_options)
             self:Dpath3d(chem,draw_options)
         end
@@ -1129,10 +1130,9 @@ function luadraw_graph3d:Dsphere(A,r,args)
     local oldlinewidth = self.param.linewidth
     self:Linecolor(args.edgecolor)
     local V = (3*self:ScreenY()+self.Normal)/4
+    self:Filloptions("none","black")
     if args.color ~= "" then
         self:Filloptions("gradient", "ball color="..args.color, args.opacity)
-    else
-        self:Filloptions("none")
     end
     --self:Dcircle(self:Proj3d(A),r)
     local mat = invmatrix3d( self.matrix3d )
@@ -1421,7 +1421,7 @@ function luadraw_graph3d:Dedges(edges,args)
 end
 
 -- pour le dessin de facettes
-local define_getcolor = function(F, pal, mode, default_color) -- used by drawfacet(), Dmixfacet() and addFacet()
+function ld.define_getcolor(F, pal, mode, default_color) -- used by drawfacet(), Dmixfacet() and addFacet()
 -- F = list of facets
 -- pal = palette of colors (rgb tables)
 -- mode = "x", "y", or "z"
@@ -1429,8 +1429,13 @@ local define_getcolor = function(F, pal, mode, default_color) -- used by drawfac
     default_color = default_color or White
     local getcolor
     if type(mode) == "function" then -- mode = function(f) where f is a facet
-        local values = map(mode,F)
-        local minV, maxV = math.min(table.unpack(values)), math.max(table.unpack(values))
+        local v
+        local minV, maxV = math.huge, -math.huge
+        for _, f in ipairs(F) do
+            v = mode(f)
+            if v < minV then minV = v end
+            if v > maxV then maxV = v end
+         end
         local diff = maxV-minV
         getcolor = function(f) -- f is a facet, returns the color of f
             if diff == 0 then return default_color
@@ -1512,7 +1517,7 @@ function luadraw_graph3d:drawfacet(S,args) -- internal use by Dpoly,and Dfacet, 
     local usepalette = args.usepalette -- palette = {Pal, "x", or "y" or "z" or function}, Pal is a list of colors in RGB table format
     if usepalette ~= nil then
         local pal, mode = table.unpack(usepalette)
-        getcolor = define_getcolor(S,pal,mode,coul)
+        getcolor = ld.define_getcolor(S,pal,mode,coul)
     end
  
     if (args.mode == ld.mShadedOnly) and (args.opacity ~= 1)  then self:Linestyle("noline") end
@@ -1737,7 +1742,7 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
                 end
             else
                 local pal, mode = table.unpack(args.usepalette)
-                args.getcolor = define_getcolor(face,pal,mode,args.color)
+                args.getcolor = ld.define_getcolor(face,pal,mode,args.color)
             end            
             for _, f in ipairs(face) do
                 table.insert(f,args) -- chaque facette est accompagnée de ses arguments
@@ -1814,6 +1819,7 @@ function luadraw_graph3d:addFacet(facet,args)
     local hidden = args.hidden
     if hidden == nil then hidden = ld.Hiddenlines end
     local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
+    local hiddenscale = args.hiddenscale or ld.Hiddenlinescale
     if twoside == nil then twoside = true end
     local edge = args.edge or false
     local edgecolor = args.edgecolor or self.param.linecolor
@@ -1834,7 +1840,7 @@ function luadraw_graph3d:addFacet(facet,args)
         end
     else
         local pal, mode = table.unpack(args.usepalette)
-        getcolor = define_getcolor(F,pal,mode,color)
+        getcolor = ld.define_getcolor(F,pal,mode,color)
     end    
     local res = {}
     local rep = {"facet"}
@@ -1858,7 +1864,7 @@ function luadraw_graph3d:addFacet(facet,args)
     end
     if edge then
         -- calcul des arêtes
-        ld.insert(res, self:addPolyline(ld.facetedges(F),{color=edgecolor, hidden=hidden, hiddenstyle=hiddenstyle, width=edgewidth, matrix=ID3d}))
+        ld.insert(res, self:addPolyline(ld.facetedges(F),{color=edgecolor, hidden=hidden, hiddenstyle=hiddenstyle, hiddenscale = hiddenscale, width=edgewidth, matrix=ID3d}))
     end
     table.insert(res,rep) -- rep = {"facet", liste de faces}
     self.matrix3d = oldmatrix
@@ -1912,20 +1918,25 @@ function luadraw_graph3d:addPolyline(Line,args)
     local arrows = args.arrows or 0
     local close = args.close or false
     local clip = args.clip or false
-    local arrowscale = args.arrowscale or 1
-    local hidden = args.hidden
-    if hidden == nil then hidden = ld.Hiddenlines end
+    local arrowscale = args.arrowscale or {1,1}
+    if type(arrowscale) == "number" then arrowscale = {arrowscale,arrowscale} end
+    local hidden = args.hidden or ld.Hiddenlines
     local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
+    local hiddenscale = args.hiddenscale or ld.Hiddenlinescale
     local matrix = args.matrix or ID3d
     matrix = composematrix3d(self.matrix3d,matrix)
     local oldmatrix = self.matrix3d
     self.matrix3d = ID3d
-        local rep = {}
+    local len_base = 0.25/self:Abs(1)
+    local arrow_height = len_base*arrowscale[2]
+    local arrow_radius = len_base*arrowscale[1]/3
+    local rep = {}
+    
     local darrow = function(a,v) -- dessin d'une flèche arrivant en a dans la direction v
-        local long = 0.25*arrowscale
-        v = -long*pt3d.normalize(v)
-        return ld.poly2facet(ld.cone(a,v,long/3,6,false))
+        local deltav = -arrow_height*pt3d.normalize(v)
+        return deltav, ld.poly2facet(ld.cone(a, deltav, arrow_radius ,6,false))
     end
+    
     if clip then Line = ld.clippolyline3d(Line,self:Box3d(),false,close) end
     if isPoint3d(Line[1]) then Line = {Line} end
     for _,L in ipairs(Line) do
@@ -1936,11 +1947,15 @@ function luadraw_graph3d:addPolyline(Line,args)
         local seg, n = {}, #L
         if arrows >= 1 then --flèche à l'arrivée
             local a, b = L[n], L[n-1]
-            ld.insert(rep, self:addFacet(darrow(a,a-b), {color=color, backcull=true, matrix=ID3d}))
+            local dh, arrow = darrow(a,a-b)
+            L[n] = L[n]+dh
+            ld.insert(rep, self:addFacet(arrow, {color=color, backcull=true, matrix=ID3d}))
         end
         if arrows == 2 then --flèche au départ
             local a, b = L[1], L[2]
-            ld.insert(rep, self:addFacet(darrow(a,a-b), {color=color, backcull=true, matrix=ID3d}))
+            local dh, arrow = darrow(a,a-b)
+            L[1] = L[1]+dh
+            ld.insert(rep, self:addFacet(arrow, {color=color, backcull=true, matrix=ID3d}))
         end
         local A, B, v = nil, L[1]
         for k = 2, n do
@@ -1952,7 +1967,7 @@ function luadraw_graph3d:addPolyline(Line,args)
         end
         table.insert(rep,{"seg", seg, style, color, width, opacity})
         if hidden then 
-            table.insert(rep,{"hidden",L,color,width,hiddenstyle})
+            table.insert(rep,{"hidden",L,color,width*hiddenscale,hiddenstyle})
         end
     end
     self.matrix3d = oldmatrix
@@ -2101,6 +2116,7 @@ function luadraw_graph3d:addPoly(P,args)
     local hidden = args.hidden
     if hidden == nil then hidden = ld.Hiddenlines end
     local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle   
+    local hiddenscale = args.hiddenscale or ld.Hiddenlinescale
     local matrix = args.matrix or ID3d
     matrix = composematrix3d(self.matrix3d,matrix)
     local oldmatrix = self.matrix3d
@@ -2113,7 +2129,7 @@ function luadraw_graph3d:addPoly(P,args)
     local edge = args.edge
     args.matrix = ID3d
     if args.edge then 
-        ld.insert(rep, self:addPolyline( ld.facetedges(P1),{color=args.edgecolor, clip=args.clip, hidden=hidden, hiddenstyle=hiddenstyle, width=args.edgewidth, matrix=ID3d}))
+        ld.insert(rep, self:addPolyline( ld.facetedges(P1),{color=args.edgecolor, clip=args.clip, hidden=hidden, hiddenstyle=hiddenstyle, hiddenscale = hiddenscale, width=args.edgewidth, matrix=ID3d}))
         args.edge = false
     end
     ld.insert(rep, self:addFacet( ld.poly2facet(P1), args ) )
@@ -2128,7 +2144,8 @@ function luadraw_graph3d:addAxes(O,args)
 -- args table à 7 champs (comme bdPolyline) plus un champ legend=true/false
 -- { color=défaut, style="solid", width=4, hidden=false, hiddenstyle="dotted", legend=true/false, opacity=1, arrows=0/1/2, arrowscale=1, matrix=ID3d, labels={"$x$", "$y$", "$z$"} }
     args = args or {}
-    local arrowscale = args.arrowscale or 1
+    local arrowscale = args.arrowscale or {1,1}
+    if type(arrowscale) == "number" then arrowscale = {arrowscale,arrowscale} end
     local legend = args.legend
     if legend == nil then legend = true end
     local labels = args.labels or {"$x$", "$y$", "$z$"}
@@ -2137,7 +2154,7 @@ function luadraw_graph3d:addAxes(O,args)
     local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
     ld.insert(rep, self:addPolyline( {{M(x1,y0,z0),M(x2,y0,z0)}, {M(x0,y1,z0),M(x0,y2,z0)},{M(x0,y0,z1),M(x0,y0,z2)}}, args ))    
     if legend then
-        local long = 0.25*arrowscale
+        local long = 0.25*arrowscale[2]/self:Abs(1)
         ld.insert(rep, self:addLabel(labels[1], M(x2+(x2-x1)/20,y0,z0), args))
         ld.insert(rep, self:addLabel(labels[2], M(x0,y2+(y2-y1)/20,z0), args))
         ld.insert(rep, self:addLabel(labels[3], M(x0,y0,z2+(z2-z1)/20), args))
@@ -2354,8 +2371,8 @@ function luadraw_graph3d:Dpath3d(L,draw_options,clip)
             aux = self:arc3db(table.unpack(aux))
         end
         if aux ~= nil then
-            if first ~= nil then table.insert(aux,2,"l") end -- pour relier au point précédent
             local newfirst = aux[#aux-1]
+            if first ~= nil then table.insert(aux,2,"l") end -- pour relier au point précédent
             Bezier()
             first = newfirst -- dernier point de l'arc
         end
@@ -2405,6 +2422,8 @@ local eps = 1e-10
     args.xgradlimits = args.xgradlimits or "auto"
     args.ygradlimits = args.ygradlimits or "auto"
     args.zgradlimits = args.zgradlimits or "auto"
+    local xlabels, ylabels, zlabels = args.xlabels , args.ylabels, args.zlabels
+    
     args.xyzticks = args.xyzticks or 0.2
     
     if args.labels == nil then args.labels = true end    
@@ -2508,28 +2527,39 @@ local eps = 1e-10
     local oldlinewidth = self.param.linewidth
     local oldarrows = self.param.arrows
     local oldlabelstyle = self.param.labelstyle
+    if xlabels == nil then
+        xlabels= {}
+        for x = args.xgradlimits[1], args.xgradlimits[2]+eps, args.xstep do table.insert(xlabels,x) end
+    else table.sort(xlabels)
+    end
+    if ylabels == nil then
+        ylabels= {}
+        for y = args.ygradlimits[1], args.ygradlimits[2]+eps, args.ystep do table.insert(ylabels,y) end
+    else table.sort(ylabels)
+    end
+    if zlabels == nil then
+        zlabels= {}
+        for z = args.zgradlimits[1], args.zgradlimits[2]+eps, args.zstep do table.insert(zlabels,z) end
+    else table.sort(zlabels)
+    end
     if args.grid then
         local res = {} -- grille sous forme de liste de segments
-        for y = yinf, ysup+eps, args.ystep do --grille x = x1
+        for y = args.ygradlimits[1], args.ygradlimits[2]+eps, args.ystep do --grille x = x1 et z = z1
             table.insert(res, {M(x1,y,zinf), M(x1,y,zsup)})
-        end
-        for z = args.zlimits[1], args.zlimits[2]+eps, args.zstep do --grille x = x1
-            table.insert(res, {M(x1,yinf,z), M(x1,ysup,z)})
-        end
-        for x = xinf, xsup+eps, args.xstep do --grille y = y1
-            table.insert(res, {M(x,y1,zinf), M(x,y1,zsup)})
-        end
-        for z = args.zlimits[1], args.zlimits[2]+eps, args.zstep do --grille y = y1
-            table.insert(res, {M(xinf,y1,z), M(xsup,y1,z)})
-        end
-        for x = xinf, xsup+eps, args.xstep do --grille z = z1
-            table.insert(res, {M(x,yinf,z1), M(x,ysup,z1)})
-        end
-        for y = yinf, ysup+eps, args.ystep do --grille z = z1
             table.insert(res, {M(xinf,y,z1), M(xsup,y,z1)})
         end
+        for z = args.zgradlimits[1], args.zgradlimits[2]+eps, args.zstep do --grille x = x1 et y = y1
+            table.insert(res, {M(x1,yinf,z), M(x1,ysup,z)})
+            table.insert(res, {M(xinf,y1,z), M(xsup,y1,z)})
+        end
+        for x = args.xgradlimits[1], args.xgradlimits[2]+eps, args.xstep do --grille y = y1 et z = z1
+            table.insert(res, {M(x,y1,zinf), M(x,y1,zsup)})
+            table.insert(res, {M(x,yinf,z1), M(x,ysup,z1)})
+        end
+
         if args.fillcolor ~= "" then
-            self:Filloptions("full",args.fillcolor,1); self:Lineoptions("noline")
+            self:Filloptions("full",args.fillcolor,1) --; self:Lineoptions("noline")
+            self:Lineoptions("solid",args.gridcolor,args.gridwidth,"-")
             self:Dpolyline3d({ {M(xsup,ysup,z1), M(xsup,yinf,z1), M(xinf,yinf,z1), M(xinf,ysup,z1)},
                   {M(x1,ysup,zsup), M(x1,yinf,zsup), M(x1,yinf,zinf), M(x1,ysup,zinf)},
                   {M(xsup,y1,zsup), M(xsup,y1,zinf), M(xinf,y1,zinf), M(xinf,y1,zsup)}}, true)
@@ -2552,13 +2582,21 @@ local eps = 1e-10
             ld.insert(labels, {args.xlegend,a+dirgrad,{}})
         end
         if args.xstep > 0 then
-            for x = args.xgradlimits[1], args.xgradlimits[2]+eps, args.xstep do
+            for x = args.xgradlimits[1], args.xgradlimits[2]+eps, args.xstep do -- ticks
                 A = axeOx+(x-xinf)*vecI
                 a = self:Proj3d(A); b = self:Proj3d(A+xdir)
                 u = (b-a)/self:Abs(b-a)
                 dirgrad = (args.xyzticks/2)*u
                 table.insert(grad,{a, a+dirgrad})
-                if args.labels then ld.insert(labels, {ld.gradLabel(x,1,""),a+dirgrad+args.xlabelsep*u,{}}) end
+            end
+            if args.labels then
+                for _, x in ipairs(xlabels) do -- labels
+                    A = axeOx+(x-xinf)*vecI
+                    a = self:Proj3d(A); b = self:Proj3d(A+xdir)
+                    u = (b-a)/self:Abs(b-a)
+                    dirgrad = (args.xyzticks/2)*u
+                    ld.insert(labels, {ld.gradLabel(x,1,""),a+dirgrad+args.xlabelsep*u,{}})
+                end
             end
             self:Dpolyline3d(grad)
             self:Dlabel(table.unpack(labels))
@@ -2576,13 +2614,21 @@ local eps = 1e-10
             ld.insert(labels, {args.ylegend,a+dirgrad,{}})
         end
         if args.ystep > 0 then
-            for x = args.ygradlimits[1], args.ygradlimits[2]+eps, args.ystep do
+            for x = args.ygradlimits[1], args.ygradlimits[2]+eps, args.ystep do -- ticks
                 A = axeOy+(x-yinf)*vecJ
                 a = self:Proj3d(A); b = self:Proj3d(A+ydir)
                 u = (b-a)/self:Abs(b-a)
                 dirgrad = (args.xyzticks/2)*u
                 table.insert(grad,{a, a+dirgrad})
-                if args.labels then ld.insert(labels, {ld.gradLabel(x,1,""),a+dirgrad+args.ylabelsep*u,{}}) end
+            end
+            if args.labels then
+                for _, x in ipairs(ylabels) do -- labels
+                    A = axeOy+(x-yinf)*vecJ
+                    a = self:Proj3d(A); b = self:Proj3d(A+ydir)
+                    u = (b-a)/self:Abs(b-a)
+                    dirgrad = (args.xyzticks/2)*u
+                    ld.insert(labels, {ld.gradLabel(x,1,""),a+dirgrad+args.ylabelsep*u,{}})
+                end
             end
             self:Dpolyline3d(grad)
             self:Dlabel(table.unpack(labels))
@@ -2606,7 +2652,15 @@ local eps = 1e-10
                 u = (b-a)/self:Abs(b-a)
                 dirgrad = (args.xyzticks/2)*u
                 table.insert(grad,{a, a+dirgrad})
-                if args.labels then ld.insert(labels, {ld.gradLabel(x,1,""),a+dirgrad+args.zlabelsep*u,{}}) end
+            end
+            if args.labels then
+                for _, x in ipairs(zlabels) do
+                    A = ld.pxy(axeOz)+x*vecK
+                    a = self:Proj3d(A); b = self:Proj3d(A+zdir)
+                    u = (b-a)/self:Abs(b-a)
+                    dirgrad = (args.xyzticks/2)*u
+                    ld.insert(labels, {ld.gradLabel(x,1,""),a+dirgrad+args.zlabelsep*u,{}})
+                end
             end
             self:Dpolyline3d(grad)
             self:Dlabel(table.unpack(labels))
@@ -2620,6 +2674,41 @@ local eps = 1e-10
             {mode=0, edgewidth=2, edgecolor="black", hiddenstyle="noline"})
         self:Enddeferred()
     end
+end
+
+----------- draw on a plane with 2D methods ---------------------------
+
+function luadraw_graph3d:BeginOnPlane(system2d, options)
+-- system2d = {A,u,v} designates a Cartesian coordinate system on a plane
+-- options = {labeldir = nil, clip = nil}
+    local A, u, v = table.unpack(system2d)
+    options = options or {}
+    local labeldir = options.labeldir 
+    local view = options.view -- clip={x1,x2,y1,y2}
+    self:Saveattr()
+    local u1, v1 = self:Proj3dV(u), self:Proj3dV(v)
+    if labeldir == "auto" then
+        self:Labeldir({u1,v1})
+    elseif labeldir ~= nil then
+        self:Labeldir(self:Proj3dV(labeldir))
+    end
+    local f = function(x,y)
+        local z = self:Proj3d( A + x*u + y*v )
+        return z.re, z.im
+    end
+    table.insert(self.post_processing, f)
+    if view ~= nil then
+        local x1,x2,y1,y2 = table.unpack(view)
+        local p = {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2),"l","cl"}
+        self:Dpath(p,"",true)
+        self.param.viewport = view
+        self.param.coordsystem = view
+    end
+end
+
+function luadraw_graph3d:EndOnPlane()
+    table.remove(self.post_processing)
+    self:Restoreattr()
 end
 
 return luadraw_graph3d

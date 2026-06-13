@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -123,13 +123,13 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         if n == nil then V = pt3d.normalize(pt3d.prod(n1,n2)) else V = pt3d.normalize(n) end
         if pt3d.abs(V)<1e-12 then V = pt3d.normalize(n) end
         B = A+r*n1; C = A+r*n2
-        local U = pt3d.prod(V, self.Normal)
-        if pt3d.abs(U)<1e-12 then --plans parallèles
-            local A1 = ld.interDP( {camera,A-camera},{Origin,N})
-            local alpha = pt3d.abs(A1-camera)/pt3d.abs(A-camera)
+        local U = pt3d.prod(V,self.Normal)
+        if pt3d.abs(U)<1e-16 then --plans parallèles
+            local A1 = ld.interDP( {camera,A-camera},{target,self.Normal})
+            local alpha = pt3d.abs(A1-camera)/pt3d.abs(A-camera)--*0.99
             --self:Darc(self:Proj3d(B), self:Proj3d(A), self:Proj3d(C),r*alpha,sens,draw_options)
-            return {B,A,C,r*alpha,sens,"ca"}
-        elseif math.abs( pt3d.dot(V,self.Normal) ) < 1e-3 then --plans perpendiculaires
+            return ld.arc3db(B,A,C,r*alpha,sens,n)
+        elseif math.abs( pt3d.dot(V,self.Normal) ) < 1e-8 then --plans perpendiculaires
             return {B,C,"l"} -- segment [C,B]
         else 
             local N2 = pt3d.normalize(pt3d.prod(U,V))
@@ -147,15 +147,17 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
             local x = a4.re
             local alpha = x/math.sqrt(1-y^2)
             local L = ld.mtransform(ld.ellipticarcb(b,0,c,alpha,1,sens), mat)
-            return map(function(z) if type(z) == "string" then return z else return self:Screenpos(z) end end, L)
-         end
+            local ret = map(function(z) if type(z) == "string" then return z else return self:Screenpos(z) end end, L)
+            ret[1] = B; ret[#ret-1] = C
+            return ret
+        end
     end
     
     function graph3d:circle3db(O,r,n)
         local U = pt3d.prod(n,self.Normal)
-        if pt3d.abs(U) < 1e-8 then -- U est nul
+        if pt3d.abs(U) < 1e-12 then -- U est nul
             U = pt3d.prod(n,vecJ)
-            if pt3d.abs(U) < 1e-8 then -- U est nul
+            if pt3d.abs(U) < 1e-12 then -- U est nul
                 U = pt3d.prod(n,vecI)
             end
         end
@@ -446,7 +448,7 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         local S = {A,r}
         local mat = ld.invmatrix3d( self.matrix3d )
         local cam = ld.mtransform3d(camera,mat)
-        local S1 = { (cam+S[1])/2, pt3d.abs(S[1]-cam)/2}
+        local S1 = { (cam+A)/2, pt3d.abs(A-cam)/2}
         local I,R,n = ld.interSS(S,S1)
         self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
         self:Dcircle3d(I,R,n)

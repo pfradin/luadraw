@@ -1,4 +1,4 @@
-# Package luadraw for LuaLaTeX version 3.1
+# Package luadraw for LuaLaTeX version 3.2
 
 * The *luadraw* package defines the environment of the same name, which lets you create mathematical graphs (2D and 3D) using the Lua language. These graphs are ultimately drawn by TikZ (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language, capable of performing calculations, using TikZ's graphics capabilities.  
 Run `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) required) or
@@ -9,6 +9,35 @@ and copy *doc* into texmf/doc/lualatex/luadraw/
 Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requis) ou
  copier le contenu de *files* dans : texmf/tex/lualatex/luadraw/  
  et copier le contenu de *doc*  : texmf/doc/lualatex/luadraw/
+ 
+**Version 3.2**
+
+* Added the methods *g:BeginOnplane()* and *g:EndOnPlane()*, which allow drawing on a plane in space using 2D graphics methods.
+
+* The *luadraw_fields* module now includes vector fields tangent to a surface. The *ld.surfacefield()* function calculates and returns the vector field, while the *g:Dsurfacefield()* method allows drawing the vector field with (or without) the surface.
+
+* The *ld.linspace()* function has a second possible syntax: *ld.linspace(a1, b1, n1, b2, n2, ..., bp, np)*, which returns a list of *n1* evenly distributed numbers from *a1* to *b1*, followed by *n2* evenly distributed numbers from *b1* to *b2* (without repeating *b1*), and so on.
+
+* In the *luadraw_spherical* module, the following functions have been added:
+
+    *ld.interGreatC(C1,C2)* which returns, as a sequence, the two points of intersection of the two great circles *C1* and *C2* belonging to the sphere.
+
+    *ld.interSphericalC(P1, P2)* which returns, as a sequence, the points of intersection (if they exist) between two circles belonging to the sphere (not necessarily great circles).
+
+    *ld.projstereo_Scircle(P, N, h)* which returns, as a path, the stereographic projection of a circle drawn on the sphere.
+
+    *ld.projstereo_Sfacet(L, N, h, close)* which returns, as a path, the stereographic projection of a spherical facet.
+
+* Added three options to the *g:Dboxaxes3d()* method: *xlabels={x1,...,xn}, *ylabels={y1,...,yn}, *zlabels={z1,...,zn}*. These options allow you to apply labels to the axes. By default, these options have the value *nil*, in which case the default labels (one per graduation mark) are displayed.
+
+* In the *luadraw_povray* module, there is a new option in the default settings: *arrowscale={1,1}*, which is a table of two numbers. The first is a scale factor for the radius of the base of the arrows (which are cones), and the second is a scale factor for the height of the arrows.
+
+In the *g:Pov_polyline()* and *g:addPolyline()* methods, the option of the same name can now be either an array of two numbers or a single number (in which case the two numbers are considered equal).
+
+* For 3D, there is a new global variable *ld.Hiddenlinescale* which defaults to *2/3*. This means that the thickness of hidden lines will be equal to the thickness of visible lines, multiplied by this number, when using the *g:Dscene3d()* method.
+
+* Bug fixes...
+
  
 **Version 3.1**
 
@@ -39,29 +68,5 @@ These three scales are optional and are set to $1$ by default; they determine th
 * In the function *read_csv_file()*, add the option *comment=<char>*, this indicates the characters that begin a line of comments.
 
 * All 2D methods for drawing lines or half-lines (*g:Dline()*, *g:Dperp()*,...) now have an *scale* option, like the *g:Dseg()* method. This option (which defaults to 1) can be a number (percentage) or a table of two numbers (percentages). The second case allows you to vary the two endpoints separately.
-
-* Bug fixes...
-
-
-**Version 3.0**
-
-This version introduces a major change: all data related to the *luadraw* package is now stored in the namespace (table) named *luadraw*. This necessitates the use of dot notation, for example, *luadraw.graph* instead of *graph*. However, it is possible to create shortcuts; for instance, the instruction `local ld = luadraw` will allow you to use *ld* instead of *luadraw* in dot notation. Refer to the very beginning of the documentation for more details.
-
-This change results in incompatibility with previous versions; however, the changes required to adapt older code are minimal, especially since there are no changes to the graphics methods (they were already encapsulated in two classes).
-
-This change also brings some (minor) modifications to extensions; refer to the documentation for more details.
-
-
-* Added a second possible syntax for the functions *ld.surface()* and *ld.obj_surface()*: *ld.surface(f, mesh)* and *ld.obj_surface(f, mesh)* where *mesh={{u1,...,u_n}, {v1,...,vm}}* (increasing list of values ​​of parameter *u* and increasing list of values ​​of parameter *v*).
-
-* In the *luadraw_decorations* module: the 2D and 3D line drawing methods have been overridden so that the *draw_options* argument, which is normally a string passed to the *\draw* instruction, can be replaced by a table whose fields represent possible options (such as adding a label). The method names remain unchanged, and the old syntax is still valid.
-
-* In the functions *ld.curve2cone()*, *ld.curve2cylinder()*, *ld.line2tube()*, *ld.section2tube()*, *ld.rotcurve()* and *ld.rotline()*, add the option *obj=true/false*; with the value *false* (default) the functions return a list of facets, with the value *true* they return a table {vertices={3D points}, facets=\{{index1,...},...}, normals={3D vectors}}}. If the *g:Dpoly()* method does not take into account the *normals* field, the *g:Pov_facet()* method of the *luadraw_povray* module, on the other hand, uses this field when it is present.
-
-* Added the function *ld.cutpolyline2(P,f,sg,close)* where *P* is a polygon (list of complex numbers), *f* is a function (x-> f(x) real), and *sg* is a string equal to ">" or "<". This function returns the outline of the part of the polygon satisfying the constraint *y>f(x)* or *y<f(x)* depending on the value of *sg*.
-
-* Added the method *g:Dinequalities(constraints, options)* which draws the set of points satisfying a constraint system of the type *y>fi(x)* or *y<fi(x)*.
-
-* In the *luadraw_povray* module: added the option *usepalette={palette, mode, minmax}*.
 
 * Bug fixes...

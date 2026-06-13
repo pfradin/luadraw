@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -259,6 +259,20 @@ function ld.whatis(x,msg)
         print(msg.."is a list of 3d points\nvalue = "..var2string(x))
     elseif point3d.isListOfListOfPt3d(x) then 
         print(msg.."is a list of lists of 3d points\nvalue = "..var2string(x))
+    elseif type(x) == "table" then
+            if x.vertices ~= nil then
+                print(msg.."is a polyhedron. The fields are\n")
+                for k, v in pairs(x) do
+                    ld.whatis(v, k)
+                end
+            elseif x.visible ~= nil then
+                print(msg.."is an 'edges' structure. The fields are\n")
+                for k, v in pairs(x) do
+                    ld.whatis(v, k)
+                end
+            else
+                print(msg.."is a "..type(x).."\n value ="..var2string(x) )
+            end
     else
         print(msg.."is a "..type(x).."\n value ="..var2string(x) )
     end

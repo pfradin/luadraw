@@ -1,6 +1,6 @@
 -- luadraw_povray.lua
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -37,6 +37,7 @@ local Pov_default_includefiles = {} --list of strings (inc files)
 local Pov_default_bg = ""
 local Pov_default_scale = 1
 local Pov_default_shadow = true
+local Pov_default_arrowscale = {1,1}
 
 local Pov_cmd_win = Pov_default_cmd_win
 local Pov_cmd_unix = Pov_default_cmd_unix
@@ -48,6 +49,7 @@ local Pov_size = ""
 local Pov_bg = Pov_default_bg
 local Pov_scale = Pov_default_scale
 local Pov_shadow = Pov_default_shadow
+local Pov_arrowscale = Pov_default_arrowscale
 
 function graph3d:Pov_clean()
     Pov_preamble = {""}
@@ -61,6 +63,7 @@ function ld.povray_default(options)
 -- options = {bg="" ,imagescale= 1, shadow=true, param="-V +A +FN", pov_cmd=default, win_param_ext=default, include={}, pov_cmd_ext=""}
     options = options or {}
     Pov_default_scale = options.imagescale or Pov_default_scale
+    Pov_default_arrowscale = options.arrowscale or Pov_default_arrowscale
     Pov_default_bg = options.bg or Pov_default_bg
     local shadow = options.shadow
     if shadow ~= nil then Pov_default_shadow = shadow end
@@ -79,6 +82,7 @@ function graph3d:Pov_new(options)
 -- options = {bg="" ,imagescale= 1, shadow=true, param="-V +A +FN", pov_cmd=default, win_param_ext=default, include={}, pov_cmd_ext=""}
     options = options or {}
     Pov_scale = options.imagescale or Pov_default_scale
+    Pov_arrowscale = options.arrowscale or Pov_default_arrowscale
     Pov_bg = options.bg or Pov_default_bg
     Pov_shadow = options.shadow
     if Pov_shadow == nil then Pov_shadow = Pov_default_shadow end
@@ -595,8 +599,9 @@ function graph3d:Pov_facet(F,options)
     local edge = options.edge or false
     local edgecolor = options.edgecolor or ld.Black
     local edgewidth = options.edgewidth or self.param.linewidth
-    local hidden = options.hidden or Hiddenlines
-    local hiddenstyle = options.hiddenstyle or Hiddenlinestyle
+    local hidden = options.hidden or ld.Hiddenlines
+    local hiddenscale = options.hiddenscale or ld.Hiddenlinescale
+    local hiddenstyle = options.hiddenstyle or ld.Hiddenlinestyle
     local triangulate = function(F) --triangulate facets or a polyhedron, returns polyhedron
         if F == nil then return end
         local rep = {}
@@ -661,7 +666,7 @@ function graph3d:Pov_facet(F,options)
     pov_writeln("  }")
     if edge then
         local L = ld.facetedges(F)
-        self:Pov_polyline(L, {color=edgecolor, style=edgestyle, hidden=hidden, hiddenstyle=hiddenstyle, matrix=options.matrix, clipbox = options.clipbox, clipplane=options.clipplane, shadow=options.shadow})
+        self:Pov_polyline(L, {color=edgecolor, style=edgestyle, hidden=hidden, hiddenstyle=hiddenstyle, hiddenscale=hiddenscale, matrix=options.matrix, clipbox = options.clipbox, clipplane=options.clipplane, shadow=options.shadow})
     end
 end
 
@@ -753,20 +758,24 @@ function graph3d:Pov_polyline(L, options)
     options = options or {}
     options.color = options.color or ld.Black
     options = define_options(self,options)
-    local width = options.width or self.param.linewidth
-    width = width*ld.pt/10
+    options.width = options.width or self.param.linewidth
+    local width = options.width*ld.pt/10/self:Abs(1)*0.667
     local arrows = options.arrows or 0
-    local arrowscale = options.arrowscale or 1
+    local arrowscale = options.arrowscale or Pov_arrowscale
+    if type(arrowscale) == "number" then arrowscale = {arrowscale,arrowscale} end
     local close = options.close or false
     local style = options.style or self.param.linestyle
     if style == "noline" then return end
-    local hidden = options.hidden or Hiddenlines
-    local hiddenstyle = options.hiddenstyle or Hiddenlinestyle
-
+    local hidden = options.hidden or ld.Hiddenlines
+    local hiddenstyle = options.hiddenstyle or ld.Hiddenlinestyle
+    local hiddenscale = options.hiddenscale or ld.Hiddenlinescale
+    
     if pt3d.isPoint3d(L[1]) then L = {L} end
     if not ld.isID3d(options.matrix) then L = ld.mtransform3d(L,options.matrix) end
     local listarrows, listdots
-    local arrows_radius = arrowscale*(width+0.075)
+    local arrows_radius = (options.width*ld.pt/10+0.05)/self:Abs(1)
+    local arrows_height = arrowscale[2]*arrows_radius*4 --0.25/self:Abs(1)
+    arrows_radius = arrowscale[1]*arrows_radius
     
     local prepare_cp = function(cp)
         local aux = table.copy(cp)
@@ -776,14 +785,14 @@ function graph3d:Pov_polyline(L, options)
         local n = #aux
         if arrows >= 1 then
             A = aux[n-1]; B = table.remove(aux)
-            d = pt3d.abs(B-A); h = arrows_radius*3*pt3d.normalize(A-B)--arrowscale*0.25*pt3d.normalize(A-B)
-            if d >= arrowscale*0.25 then table.insert(aux,B+h) end
+            d = pt3d.abs(B-A); h = arrows_height*pt3d.normalize(A-B)
+            if d >= arrows_height then table.insert(aux,B+h) end
             table.insert(listarrows,{B+h,arrows_radius,B})
         end
         if arrows == 2 then
             A = table.remove(aux,1); B = aux[1]
-            d = pt3d.abs(B-A); h = arrowscale*0.25*pt3d.normalize(B-A)
-            if d >= arrowscale*0.25 then table.insert(aux,A+h) end
+            d = pt3d.abs(B-A); h = arrows_height*pt3d.normalize(B-A)
+            if d >= arrows_height then table.insert(aux,A+h) end
             table.insert(listarrows,{A+h,arrows_radius,A})
         end
         listdots = aux
@@ -854,9 +863,15 @@ function graph3d:Pov_polyline(L, options)
     if options.render then write_rendering(options) end
     pov_writeln("  }")
     if hidden then
-        options.hidden = false; options.style = hiddenstyle; options.arrows = 0
-        options.name = options.name..'_hidden'
-        self:Pov_polyline( shift3d(L,500*self.Normal), options)
+        local args = {}
+        args.hidden = false 
+        args.style = hiddenstyle; 
+        args.width = options.width*hiddenscale
+        args.arrows = 0
+        args.name = options.name..'_hidden'
+        args.color = options.color
+        args.close = close
+        self:Pov_polyline( ld.shift3d(L,500*self.Normal), args)
     end
 end
 

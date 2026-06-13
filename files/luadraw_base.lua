@@ -1,6 +1,6 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,7 +8,7 @@
 --   https://www.ctan.org/license/lppl
 
 -- définition des paramètres graphiques
-luadraw.version = 3.1
+luadraw.version = 3.2
 require 'luadraw_real'
 local strReal = luadraw.strReal
 
@@ -37,6 +37,7 @@ function luadraw_base:new(args)  -- argument de la forme :
     graph.Xscale = (xscale or 1) ; graph.Yscale = (yscale or 1) 
     graph.Lmargin = (left or 0.5) ; graph.Rmargin = (right or 0.5) 
     graph.Tmargin = (top or 0.5) ; graph.Bmargin = (bottom or 0.5) 
+    graph.post_processing = {} -- list of functions
     if size ~= nil then -- la taille est imposée
         local large, haut, ratio = table.unpack(size)
         local Ratio = (ratio or (graph.Xscale / graph.Yscale))
@@ -74,6 +75,11 @@ function luadraw_base:coord(x,y) --convertit les coordonnées (x,y) de la fenêt
 end
 
 function luadraw_base:strCoord(x,y) --convertit en chaîne les coordonnées (x,y) de la fenêtre en coordonnées graphiques 
+    if #self.post_processing > 0 then
+        for k = #self.post_processing, 1, -1 do
+            x, y = self.post_processing[k](x,y)
+        end
+    end
     local u, v = self:coord(x,y)
     return "("..strReal(u)..","..strReal(v)..")"
 end

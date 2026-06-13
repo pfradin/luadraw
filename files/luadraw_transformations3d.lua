@@ -1,6 +1,6 @@
 -- luadraw_transformations3d.lua (chargé par luadraw_graph3d.lua)
--- date 2026/05/29
--- version 3.1
+-- date 2026/06/13
+-- version 3.2
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -109,7 +109,7 @@ function ld.dproj3d(L,d)
 -- image de L par la projection orthogonale sur la droite d = {point3d, vecteur 3d directeur}
 -- L est un point3d ou une liste de points 3d ou une liste de listes de points 3d
     local B, u = d[1], d[2]
-    if (B == nil) or (u == nil) or (pt3d.abs(u) == 0) or (pt3d.abs(v) == 0) then return end
+    if (B == nil) or (u == nil) or (pt3d.abs(u) == 0) then return end
     local D = pt3d.dot(u,u)
     
    local dproj1 = function(A) -- image d'un seul point
@@ -182,7 +182,7 @@ function ld.dsym3d(L,d)
 -- image de L par la symétrie orthogonale par rapport à la droite d = {point3d, vecteur 3d directeur}
 -- L est un point3d ou une liste de points 3d ou une liste de listes de points 3d
     local B, u = d[1], d[2]
-    if (B == nil) or (u == nil) or (pt3d.abs(u) == 0) or (pt3d.abs(v) == 0) then return end
+    if (B == nil) or (u == nil) or (pt3d.abs(u) == 0) then return end
     local D = pt3d.dot(u,u)
     
    local dsym1 = function(A) -- image d'un seul point
