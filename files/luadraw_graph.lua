@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -250,6 +250,7 @@ end
 function luadraw_graph:Savetofile(nom) 
   -- Ouverture du fichier en écriture seule
   -- Attention, si un fichier existe déjà avec ce nom, il sera écrasé !
+    local eol = "%\n"
     local file = io.open(nom, "w")
     if not file then
         print("I can't open the file "..nom)
@@ -258,25 +259,25 @@ function luadraw_graph:Savetofile(nom)
     if #self.deferredexport ~= 0 then self:Defaultattr() end
   -- On écrit dans le fichier    
     for _, lg in ipairs(self:beginDraw()) do
-        file:write(lg.."%\n")
+        file:write(lg..eol)
     end
     for _, lg in ipairs(self.advancedexport) do
-        if lg ~= "" then file:write(lg.."%\n") end
+        if lg ~= "" then file:write(lg..eol) end
     end
     if self.advanced then 
         file:write("\\end{scope}%\n\\begin{scope}%\n") 
     end
     for _, lg in ipairs(self.currentexport) do
-        if lg ~= "" then file:write(lg.."%\n") end
+        if lg ~= "" then file:write(lg..eol) end
     end
     if self.deferred then 
         file:write("\\end{scope}%\n\\begin{scope}%\n")
     end    
     for _, lg in ipairs(self.deferredexport) do
-        if lg ~= "" then file:write(lg.."%\n") end
+        if lg ~= "" then file:write(lg..eol) end
     end
     for _, lg in ipairs(self:endDraw()) do
-        file:write(lg.."%\n")
+        file:write(lg..eol)
     end
     file:close()
 end
@@ -303,13 +304,13 @@ local color2str = function(coul)
     if coul == nil then return end
     local strCoul
     if type(coul) == "table" then -- c'est une table {r,g,b}
-        strCoul = rgb(coul)
+        strCoul = ld.rgb(coul)
     else
         strCoul = coul
-        if string.sub(strCoul,1,1) == "{" then -- on retire les accolades
-            strCoul = string.sub(strCoul,2,#strCoul-1) 
-        end 
     end
+    if string.sub(strCoul,1,1) == "{" then -- on retire les accolades
+        strCoul = string.sub(strCoul,2,#strCoul-1) 
+    end 
     return strCoul
 end
 
@@ -1032,7 +1033,7 @@ end
 
 --courbe de bézier
 function luadraw_graph:Dbezier(L,draw_options) -- où L = {A1,c1,c2,A2,c3,c4,A3,...}
--- dessine une série de courbes de Bézier passant par A1, A1,... et ayant comme points de contrôle c1 et c2, puis c3,c4, ...
+-- dessine une série de courbes de Bézier passant par A1, A2,... et ayant comme points de contrôle c1 et c2, puis c3,c4, ...
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
     local a, c1, c2, b
     local i = 1
@@ -1748,7 +1749,7 @@ end
 function luadraw_graph:Dimage(file,anchor,options)
 -- file = string (full name of the image file)
 -- anchor = complex number
--- options = {pos="center", matrix=nil, name="", graphics_options=""}
+-- options = {pos="center", matrix=nil, name="", graphics_options="", node_options=""}
     local style = { ["N"] = "above", ["NE"] = "above right", ["NW"] = "above left",
                     ["S"] = "below", ["SE"] = "below right", ["SW"] = "below left",
                     ["W"] = "left", ["E"] = "right" }
@@ -1760,6 +1761,8 @@ function luadraw_graph:Dimage(file,anchor,options)
     local name = options.name or ""
     if name ~= "" then name = "("..name..") " end
     local graphics_options = options.graphics_options or ""
+    local node_options = options.node_options or ""
+    if node_options ~= "" then node_options = ','..node_options end
     local mat 
     if ld.isID(self.matrix) then
         mat = options.matrix 
@@ -1777,7 +1780,7 @@ function luadraw_graph:Dimage(file,anchor,options)
     else mat = ""
     end
     if pos ~= nil then pos = ","..pos else pos = "" end
-    local cmd = "\\node[line width=0.3pt,inner sep=-0.15pt"..mat..pos.."] "..name.."at ".. self:Coord(anchor).."{\\includegraphics["..graphics_options.."]{"..file.."}};"
+    local cmd = "\\node[line width=0.3pt,inner sep=-0.15pt"..mat..pos..node_options.."] "..name.."at ".. self:Coord(anchor).."{\\includegraphics["..graphics_options.."]{"..file.."}};"
     self:Writeln(cmd)
 end
 
@@ -1788,10 +1791,13 @@ function luadraw_graph:Dmapimage(file, parallelo, options)
     local name = options.name or ""
     local clip = options.clip or false
     local border = options.border_options or nil -- draw_options to draw the border
+    local graphics_options = options.graphics_options or ""
+    if graphics_options ~= "" then graphics_options = ","..graphics_options end
     local a, u, v = table.unpack( parallelo )
     if clip then self:Beginclip( {a, a+u,a+u+v,a+v,"l","cl"} ) end
         self:Dimage(file, Z(0,0),{pos="NE", name=name, matrix={a,u,v}, 
-            graphics_options="width=1cm,height=1cm"})
+            graphics_options="width=1cm,height=1cm"..graphics_options, 
+            node_options=options.node_options})
     if clip then self:Endclip() end
     if border ~= nil then
         self:Dpolyline(ld.parallelogram(a,u,v), true, border)

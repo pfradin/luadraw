@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -46,10 +46,11 @@ function ld.plane2ABC(P) -- returns 3 points of plane P={A,n}
     return A, A+u, A+v
 end
 
-function ld.planeEq(a,b,c,d)
+function ld.planeEq(a,b,c,d,inequality)
 -- renvoie le plan d'équation ax+by+cz+d=0
     local A, n
-    n = M(a,b,c)
+    if inequality == '<' then n = -M(a,b,c) else n = M(a,b,c) end
+    -- n is in the half space satisfying : ax+by+cz+d inequality 0
     if a ~= 0 then 
         A = M(-d/a,0,0)
     elseif b ~= 0 then
@@ -1330,7 +1331,7 @@ end
 function ld.facet2obj(F)
     -- F : list of facets (with 3D points) or polyhedron
     -- returns { vertices={}, facets={}, normals={} }
-    if F.vertices == nil then F = facet2poly(F) end
+    if F.vertices == nil then F = ld.facet2poly(F) end
     local res = {}
     res.vertices = table.copy(F.vertices)
     local Tfacets = {}
@@ -1455,5 +1456,115 @@ function ld.obj_surface(f,u1,u2,v1,v2,grid) -- or obj_surface(f, uvmesh) with uv
         table.insert(result.facets, facet)
     end
     result.normals = normals
+    return result
+end
+
+function ld.read_table3d(data,options) -- read 3D data, build facets and functions
+-- data is a list of {x y z ...} ( for example: data = ld.read_csv_file(...)
+-- options =  { header=nil, x=1, y=2, z=3, func={}, triangle=false, vertices=false, 
+-- edges=false, facets=true, bbox=false, order=nil}
+-- returns a table with fields: facets, vertices, edges, bbox, func
+    options = options or {}
+    local head = options.header
+    local colnamed = {}
+    if head ~= nil then
+        for k,name in ipairs(head) do
+            colnamed[name] = k
+        end
+    end
+    local x, y, z = options.x or 1, options.y or 2, options.z or 3
+    if type(x) == "string" then x = colnamed[x] end
+    if type(y) == "string" then y = colnamed[y] end
+    if type(z) == "string" then z = colnamed[z] end
+    local funclist = options.func or {}
+    if type(funclist) ~= "table" then funclist = {funclist} end
+    for k, f in ipairs(funclist) do
+        if type(f) == "string" then funclist[k] = colnames[f] end
+    end
+    local triangle = options.triangle or false
+    local vertex = options.vertices or false
+    local bbox = options.bbox or false
+    local facet = options.facets
+    if facet == nil then facet = true end
+    local edge = options.edges or false
+    local order = options.order
+    if order == nil then
+        if data[1][x] == data[2][x] then order = "x" else order = "y" end
+    end
+    local inverse = false
+    if order == "y" then x, y = y, x; inverse= true; order = "x" end
+    local result, vertices, facets, edges, functions, bbox3d = {}, {}, {}, {}, {}, {}
+    local nb, nbx, nby = #data
+    local oldx, xval = data[1][x]
+    local lg = {}
+    for index = 1, nb do
+        xval = data[index][x]
+         if xval ~= oldx then
+            if #lg > 0 then table.insert(vertices, lg); lg = {} end
+            oldx = xval
+        end
+        if inverse then
+            table.insert(lg, M(data[index][y], xval, data[index][z]) )
+        else
+            table.insert(lg, M(xval, data[index][y], data[index][z]) )
+        end
+    end
+    table.insert(vertices, lg) -- last line
+    if bbox then
+        bbox3d = {ld.getbounds3d(vertices)}
+    end
+    nbx = #vertices; nby = nb//nbx 
+    for _, func in ipairs(funclist) do --the column numbered 'func' became a function of x and y via linear interpolation.
+        local f = function(u,v)
+            if inverse then u, v = v, u end
+            local lgx = 1
+            while (lgx <= nb)  and (data[lgx][x] < u) do lgx = lgx + nby end
+            if (lgx == 1) then if (data[lgx][x] > u) then return else lgx = 1+nby end end
+            if (lgx > nb) then return end
+            local k = 0
+            while (k < nby) and (data[lgx+k][y] < v) do k = k+1 end
+            if (k == 0) then if (data[lgx+k][y] > v) then return else k = 1 end end
+            if (k == nby) then return end
+            local x1y1, x1y2, x2y1, x2y2 = lgx-1-nby+k, lgx-nby+k, lgx+k-1, lgx+k
+            local u1, u2, v1, v2 = data[lgx-1][x], data[lgx][x], data[lgx+k-1][y], data[lgx+k][y]
+            local tu, tv = (u-u1)/(u2-u1), (v-v1)/(v2-v1)
+            local V11, V12, V21, V22 = data[x1y1][func], data[x1y2][func],data[x2y1][func], data[x2y2][func]
+            local V1, V2 = V11+tv*(V12-V11), V21+tv*(V22-V21)
+            return V1+tu*(V2-V1)
+        end
+        table.insert(functions, f)
+    end 
+    if facet or edge then
+        for k = 1, nbx-1 do --construction of facets with or without triangulation, with or without edges
+            for j = 1, nby-1 do
+                local a, b, c, d
+                if inverse then
+                    a, d, c, b = vertices[k][j], vertices[k+1][j], vertices[k+1][j+1], vertices[k][j+1]
+                else
+                    a, b, c, d = vertices[k][j], vertices[k+1][j], vertices[k+1][j+1], vertices[k][j+1]
+                end
+                if facet then
+                    if triangle then
+                        if (pt3d.abs(d-b) < pt3d.abs(c-a)) then
+                            table.insert(facets,{a,b,d}); table.insert(facets,{b,c,d}) 
+                        else
+                            table.insert(facets,{a,b,c}); table.insert(facets,{a,c,d}) 
+                        end
+                    else table.insert(facets, {a,b,c,d})
+                    end
+                end
+                if edge then table.insert(edges, {a,b,c,d}) end
+            end
+        end
+    end
+    if #functions > 0 then 
+        if #functions == 1 then result.func = functions[1] 
+        else result.func = functions
+        end
+    end
+    if vertex then result.vertices = vertices end
+    if facet then result.facets = facets end
+    if edge then result.edges = edges end
+    if bbox then result.bbox = bbox3d end
     return result
 end

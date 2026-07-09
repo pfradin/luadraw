@@ -1,6 +1,6 @@
 -- luadraw_fields2d.lua
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -19,19 +19,24 @@ function ld.field(f,x1,x2,y1,y2,grid,long)
 -- f fonction de deux variables à valeurs dans R^2
 -- grid = {nbx, nby} : nombre de vecteurs suivant x et suivant y
 -- long = longueur d'un vecteur
+    local F = function(u,v)
+        return ld.evalf(f,u,v) -- protected evaluation
+    end
     if grid == nil then grid = {25,25} end
     local deltax, deltay = (x2-x1)/(grid[1]-1), (y2-y1)/(grid[2]-1) -- pas suivant x et y
     if long == nil then long = math.min(deltax,deltay) end -- longueur par défaut
     local vectors = {} -- contiendra la liste des vecteurs
-    local x, y, v = x1 
-    for _ = 1, grid[1] do -- parcours suivant x
-        y = y1
-        for _ = 1, grid[2] do -- parcours suivant y
-            v = f(x,y) -- on suppose que v est bien défini
-            v = Z(v[1],v[2]) -- passage en complexe
-            v = cpx.normalize(v)
+    local x, y, v = x1 + deltax/2
+    for _ = 1, grid[1]-1 do -- parcours suivant x
+        y = y1 + deltay/2
+        for _ = 1, grid[2]-1 do -- parcours suivant y
+            v = F(x,y) -- on suppose que v est bien défini
             if v ~= nil then
-                table.insert(vectors, {Z(x,y)-long/2*v, Z(x,y)+long/2*v} ) -- on ajoute le vecteur
+                v = Z(v[1],v[2]) -- passage en complexe
+                v = cpx.normalize(v)
+                if v ~= nil then
+                    table.insert(vectors, {Z(x,y)-long/2*v, Z(x,y)+long/2*v} ) -- on ajoute le vecteur
+                end
             end
             y = y+deltay
         end
@@ -87,16 +92,16 @@ end
 if ld.graph3d ~= nil then -- luadraw with option 3d 
     local pt3d = ld.pt3d
     
-    local vectorAt = function(p,f,u,v,length,arrow)
+    local vectorAt = function(p,Dpu,Dpv,f,u,v,length,arrow)
     -- p = surface parameterization p:(u,v) -> p(u,v) in R^3 (not necessary cartesian)
     -- f:(u,v) -> (f1(u,v), f2(u,v) in R^2 (field)
     -- arrow = false/true
         arrow = arrow or false
-        local h = 1e-6
         local P = p(u, v)
         local A = f(u, v)
-        local dpu = (p(u+h, v) - p(u-h, v))/(2*h)
-        local dpv = (p(u, v+h) - p(u, v-h))/(2*h)
+        local dpu = Dpu(u,v) --(p(u+h, v) - p(u-h, v))/(2*h)
+        local dpv = Dpv(u,v) --(p(u, v+h) - p(u, v-h))/(2*h)
+        if (P == nil) or (A == nil) or (dpu == nil) or (dpv == nil) then return end
         local V = pt3d.normalize(A[1]*dpu + A[2]*dpv)
         if V ~= nil then
             if arrow  then
@@ -116,6 +121,19 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
     -- grid ={nbu,nbv}
     -- length of segments
     -- returns list of vectors
+        local h = 1e-6
+        local F = function(u,v)
+            return ld.evalf(f,u,v) -- protected evaluation
+        end
+        local P = function(u,v)
+            return ld.evalf(p,u,v) -- protected evaluation
+        end
+        local Dpu = function(u,v)
+            return (p(u+h, v) - p(u-h, v))/(2*h)
+        end
+        local Dpv = function(u,v)
+            return (p(u, v+h) - p(u, v-h))/(2*h)
+        end
         grid = grid or {25,25}
         local deltau, deltav = (u2-u1)/(grid[1]-1), (v2-v1)/(grid[2]-1)
         length = length or math.min(deltau,deltav)
@@ -125,7 +143,7 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
         for i = 1, grid[1]-1 do
             v = v1 + deltav/2 --To prevent vectors from originating outside the surface
             for j = 1, grid[2]-1 do
-                V = vectorAt(p,f,u,v,length,arrows)
+                V = vectorAt(P,Dpu,Dpv,F,u,v,length,arrows)
                 if V ~= nil then 
                     table.insert(vectors,V) 
                 end
@@ -151,7 +169,19 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
         local different = function(A,B)
             return pt3d.N1(B-A)>1e-10
         end
-        
+        local h = 1e-6
+        local f1 = function(u,v)
+            return ld.evalf(f,u,v) -- protected evaluation
+        end
+        local P = function(u,v)
+            return ld.evalf(p,u,v) -- protected evaluation
+        end
+        local Dpu = function(u,v)
+            return (p(u+h, v) - p(u-h, v))/(2*h)
+        end
+        local Dpv = function(u,v)
+            return (p(u, v+h) - p(u, v-h))/(2*h)
+        end        
         local umesh, vmesh, nbu, nbv
         grid = grid or {25,25}
         arrow = arrow or false
@@ -180,7 +210,7 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
                 A = S[i][j+1]
                 if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) and ((first == cpx.Jump) or different(A,first)) then table.insert(aux,A) end
                 if #aux > 2 then 
-                    local V = vectorAt(p,f,cij[1],cij[2],length,arrows)
+                    local V = vectorAt(P,Dpu,Dpv,f1,cij[1],cij[2],length,arrows)
                     if V == nil then table.insert(vectors,"nil") else table.insert(vectors,V) end
                     table.insert(rep, {aux, #vectors}) 
                 end

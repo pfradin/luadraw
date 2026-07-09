@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -235,7 +235,8 @@ end
 
 local var2string
 var2string = function(T)
-    if (type(T) ~= "table") or isComplex(T) or point3d.isPoint3d(T) then return tostring(T)
+    if type(T) == "number" then return tostring(T)
+    elseif (type(T) ~= "table") or isComplex(T) or point3d.isPoint3d(T) then return tostring(T)
     else
         return "{ "..table.concat(map(var2string,T),", ").." }"
     end

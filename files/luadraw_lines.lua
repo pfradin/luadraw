@@ -1,7 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -717,7 +716,7 @@ function ld.interDL(d,L)
 --renvoie les points d'intersection entre la droite d={A,u} et la ligne polygonale L
     if (d == nil) or (type(d) ~= "table") or (#d ~= 2) then return end
     local xmin, xmax, ymin, ymax = ld.getbounds(L)
-    return ld.interL( clipline(d,xmin,xmax,ymin,ymax), L)
+    return ld.interL( ld.clipline(d,xmin,xmax,ymin,ymax), L)
 end
 
 -- intersection droite - cercle
@@ -1346,15 +1345,24 @@ function ld.line(A,B) -- appelée par la méthode Dline
     return {A, B-A}
 end
 
-function ld.lineEq(a,b,c) -- appelée par la méthode DlineEq
+function ld.lineEq(a,b,c, inequality) -- appelée par la méthode DlineEq
 -- renvoie la droite d'équation ax+by+c=0 sous la forme {A,u}
 -- où A est un point de u un vecteur directeur
     if (a == 0) and (b == 0) then return end
+    local A, u
     if a ~= 0 then
-        return {Z(-c/a,0), Z(-b,a)}
+        A, u = Z(-c/a,0), Z(-b,a)
     else
-        return { Z(0,-c/b), Z(-b,a) }
+        A, u = Z(0,-c/b), Z(-b,a) 
     end
+    if inequality ~= nil then 
+        local n -- normal vector
+        if inequality == '>' then n = Z(a,b) else n = -Z(a,b) end 
+        -- n is in the half plane satisfying : ax+by+c inequality 0
+        if cpx.det(u,n) < 0 then u = -u end
+        -- The half-plane satisfying the inequality is to the left of u
+    end
+    return {A, u}
 end
 
 function ld.perp(d,A) -- appelée par la méthode Dperp

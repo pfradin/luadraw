@@ -1,6 +1,6 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,7 +8,7 @@
 --   https://www.ctan.org/license/lppl
 
 -- définition des paramètres graphiques
-luadraw.version = 3.2
+luadraw.version = 3.3
 require 'luadraw_real'
 local strReal = luadraw.strReal
 
@@ -71,15 +71,15 @@ end
 
 
 function luadraw_base:coord(x,y) --convertit les coordonnées (x,y) de la fenêtre en coordonnées graphiques
-    return (x-self.Xmin)*self.Xscale, (y-self.Ymin)*self.Yscale
-end
-
-function luadraw_base:strCoord(x,y) --convertit en chaîne les coordonnées (x,y) de la fenêtre en coordonnées graphiques 
-    if #self.post_processing > 0 then
+   if #self.post_processing > 0 then
         for k = #self.post_processing, 1, -1 do
             x, y = self.post_processing[k](x,y)
         end
     end
+    return (x-self.Xmin)*self.Xscale, (y-self.Ymin)*self.Yscale
+end
+
+function luadraw_base:strCoord(x,y) --convertit en chaîne les coordonnées (x,y) de la fenêtre en coordonnées graphiques 
     local u, v = self:coord(x,y)
     return "("..strReal(u)..","..strReal(v)..")"
 end

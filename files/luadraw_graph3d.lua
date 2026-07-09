@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -141,6 +141,9 @@ local perspective = function(mode,k,alpha,d,look) -- change the type of projecti
     if f ~= nil then
         function luadraw_graph3d:Proj3d(L) -- we redefine Proj3d
             L = self:Mtransform3d(L) -- we apply the 3D matrix of the graph
+            if self.scalexyz ~= 1 then
+                L = ld.ftransform3d(L, self.scalexyz) -- we apply the scales on x, y and z axis
+            end
             return ld.ftransform3d(L,f) -- we return the projection on screen
         end  
     end
@@ -170,7 +173,16 @@ function luadraw_graph3d:new(args) -- argument de la forme :
     local x1,x2,y1,y2,z1,z2,xsc,ysc,zsc = table.unpack(graph3d.param.viewport3d)
     xsc = xsc or 1; ysc = ysc or 1; zsc = zsc or 1
     graph3d.param["viewport3d"] = {x1,x2,y1,y2,z1,z2,xsc,ysc,zsc}
-    graph3d.matrix3d =  {M(0,0,0), M(xsc,0,0), M(0,ysc,0), M(0,0,zsc)}
+    if (xsc ~= 1) or (ysc ~= 1) or (zsc ~= 1) then
+        graph3d.scalexyz = function(A) 
+            if pt3d.isPoint3d(A) then return M(xsc*A.x, ysc*A.y, zsc*A.z)
+            else return A
+            end
+        end
+    else
+        graph3d.scalexyz = 1
+    end
+    graph3d.matrix3d =  {M(0,0,0), M(1,0,0), M(0,1,0), M(0,0,1)}
     local a, b, mode = table.unpack( calc_viewdir(args.viewdir) )
     graph3d.param["viewdir"] = {a, b}-- viewdir theta et phi en degrés
     a = a*ld.deg; b = b*ld.deg; -- conversion en radians
@@ -395,6 +407,9 @@ function luadraw_graph3d:orthographic_Proj3d(L) -- projection de points sur l'é
     if (L == nil) or (type(L) ~= "table") then return end
     if not isID3d(self.matrix3d) then
         L = mtransform3d(L,self.matrix3d)
+    end
+    if self.scalexyz ~= 1 then
+        L = ld.ftransform3d(L, self.scalexyz) -- we apply the scales on x, y and z axis
     end
     local rep
     if isPoint3d(L) then rep = projAdot(L) -- un seul point
@@ -1458,10 +1473,12 @@ function ld.define_getcolor(F, pal, mode, default_color) -- used by drawfacet(),
     return getcolor
 end    
 
-function luadraw_graph3d:Adjust_color(F,color,contrast,twoside) -- used by drawfacet(), Dmixfacet() and addFacet()
+function luadraw_graph3d:Adjust_color(F,color,contrast,twoside, tbl_format) -- used by drawfacet(), Dmixfacet() and addFacet()
 -- F = facet, contrast in [0,1], twoside=true/false
 -- adjust color based on facet normal vector (scalar product between the normal vector of the facet and the vector directed towards the observer.)
 -- returns a color (string), normal vector and coef
+    tbl_format = tbl_format or false
+    tbl_format = tbl_format and (type(color) == "table") -- rgb table format
     local A, B, C, k, n, m, coef, ok, newcolor, N, r, g, b, neg, c, G, V
     if ld.projection_mode == "central" then G = pt3d.isobar3d(F); V = pt3d.normalize(ld.camera-G)
     else V = self.Normal
@@ -1494,10 +1511,11 @@ function luadraw_graph3d:Adjust_color(F,color,contrast,twoside) -- used by drawf
         else 
             r, g, b = table.unpack(color)
             if neg then 
-                newcolor = ld.rgb({c*(1+r)/2,c*(1+g)/2,c*(1+b)/2})
+                newcolor = { ld.round(c*(1+r)/2,3), ld.round(c*(1+g)/2,3), ld.round(c*(1+b)/2,3)}
             else
-                newcolor = ld.rgb({c*r,c*g,c*b})
+                newcolor = { ld.round(c*r,3), ld.round(c*g,3), ld.round(c*b,3)}
             end
+            if not tbl_format then newcolor = ld.rgb(newcolor) end
         end
         return newcolor, N, coef
     end
@@ -1519,7 +1537,7 @@ function luadraw_graph3d:drawfacet(S,args) -- internal use by Dpoly,and Dfacet, 
         local pal, mode = table.unpack(usepalette)
         getcolor = ld.define_getcolor(S,pal,mode,coul)
     end
- 
+    if args.reverse then S = ld.reverse_face_orientation(S) end
     if (args.mode == ld.mShadedOnly) and (args.opacity ~= 1)  then self:Linestyle("noline") end
     if (args.mode ~= ld.mShadedOnly) then self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth) end
     
@@ -1538,7 +1556,7 @@ function luadraw_graph3d:drawfacet(S,args) -- internal use by Dpoly,and Dfacet, 
             self:Filloptions("full",coul,args.opacity)
             if (args.mode == 5) then 
                 if (args.opacity == 1) then
-                    self:Lineoptions("solid",coul,1); self:Lineopacity(args.opacity)
+                    self:Lineoptions("solid",coul,1); self:Lineopacity(1)
                     self:Dpolyline3d(F,true)
                 else
                     self:Dpolyline3d(F,true)
@@ -1554,7 +1572,7 @@ function luadraw_graph3d:drawfacet(S,args) -- internal use by Dpoly,and Dfacet, 
                 self:Filloptions("full",coul,args.opacity)
                 if (args.mode == ld.mShadedOnly) then 
                     if (args.opacity == 1) then
-                        self:Lineoptions("solid",coul,1); self:Lineopacity(args.opacity)
+                        self:Lineoptions("solid",coul,1); self:Lineopacity(1)
                         self:Dpolyline3d(F,true)
                     else
                         self:Dpolyline3d(F,true)
@@ -1589,6 +1607,7 @@ function luadraw_graph3d:Dpoly(P,args)
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.edgewidth = args.edgewidth or self.param.linewidth
+    args.reverse = args.reverse or false
     args.opacity = args.opacity or 1
     args.backcull = args.backcull or false
     --args.clip = args.clip or false
@@ -1639,7 +1658,7 @@ function luadraw_graph3d:Dpolynames(P, option, opacity)
                 else u, v = v,-u
                 end
             end
-            ld.insert(facet, {"F"..k, G, {dir={u,v}, color="Crimson"}})
+            ld.insert(facet, {"F"..k, G, {dir={u,v}, color="red"}})
         end
     end
     if (option=="vertex") or (option=="both") then
@@ -1668,6 +1687,7 @@ function luadraw_graph3d:Dfacet(F,args)
     args.opacity = args.opacity or 1
     args.backcull = args.backcull or false
     args.clip = args.clip or false
+    args.reverse = args.reverse or false
     args.color = args.color or "white"
     if args.twoside == nil then args.twoside = true end
     if args.clip then F = ld.clip3d(F, self:Box3d()) end
@@ -1685,10 +1705,21 @@ function luadraw_graph3d:Dfacet(F,args)
     local S = self:Sortfacet(F,args.backcull)
     local coul = args.color
     if (args.mode == 0) then -- arêtes seulement
-        if type(coul) == "table" then coul = ld.rgb(args.color) end
-        self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
-        self:Filloptions("none")
-        self:Dpolyline3d(facetedges(S),true)
+        if args.usepalette ~= nil then
+            local pal, mode = table.unpack(args.usepalette)
+            local getcolor = ld.define_getcolor(S,pal,mode,coul)
+            self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
+            self:Filloptions("none")
+            for _, F in ipairs(S) do
+                coul = ld.rgb(getcolor(F))
+                self:Dpolyline3d(F,true,"color="..coul)
+            end
+        else
+            if type(coul) == "table" then coul = ld.rgb(args.color) end
+            self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
+            self:Filloptions("none")
+            self:Dpolyline3d(ld.facetedges(S),true)
+        end
         self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
         self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); self:Lineopacity(oldlineopacity)
     else --mode = 1,2,3,4,5 
@@ -1711,6 +1742,7 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
     local edgecolor = self.param.linecolor
     local edgewidth = self.param.linewidth
     local backcull = false
+    local reverse = false
     local twoside = true
     local clip = false
     local color = "white"
@@ -1732,10 +1764,13 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
             if args.clip == nil then args.clip = clip else clip = args.clip end
             if args.color == nil then args.color = color else color = args.color end
             if args.twoside == nil then args.twoside = twoside else twoside = args.twoside end
+            if args.reverse == nil then args.reverse = reverse else reverse = args.reverse end
+            if reverse then face = ld.reverse_face_orientation(face) end
             if args.usepalette == nil then args.usepalette = usepalette else usepalette = args.usepalette end
             if isPoint3d(face[1]) then face = {face} end
             if args.clip then face = ld.clip3d(face,self:Box3d()) end
             if not isID3d(self.matrix3d) then face = self:Mtransform3d(face) end -- on applique la matrice de transformation
+            if backcull then face = self:Sortfacet(face,true) end
             if args.usepalette == nil then
                 args.getcolor = function(f)
                     return args.color
@@ -1767,7 +1802,11 @@ function luadraw_graph3d:Dmixfacet(...) --Dmixfacet(F1,args1, F2,args2, ...)
         -- dessin
         if (args.mode == ld.mWireframe) then -- arêtes seulement (mWireframe)
             self:Filloptions("none")
-            self:Dpolyline3d(F,true)
+            if args.usepalette ~= nil then 
+                self:Dpolyline3d(F,true,"color="..ld.rgb(args.getcolor(F)) )
+            else
+                self:Dpolyline3d(F,true)
+            end
         elseif (args.mode == ld.mFlat) or (args.mode == ld.mFlatHidden) then --faces unies
             coul = args.getcolor(F)
             if type(coul) == "table" then coul = ld.rgb(coul) end
@@ -1817,6 +1856,7 @@ function luadraw_graph3d:addFacet(facet,args)
     local contrast = args.contrast or 1
     local twoside = args.twoside
     local hidden = args.hidden
+    local reverse = args.reverse or false
     if hidden == nil then hidden = ld.Hiddenlines end
     local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
     local hiddenscale = args.hiddenscale or ld.Hiddenlinescale
@@ -1829,6 +1869,7 @@ function luadraw_graph3d:addFacet(facet,args)
     local oldmatrix = self.matrix3d
     self.matrix3d = ID3d
     local F = facet
+    if reverse then F = ld.reverse_face_orientation(F) end
     if clip then F = ld.clip3d(F,self:Box3d()) end
     if not isID3d(matrix) then 
         F = mtransform3d(F,matrix)
@@ -1864,7 +1905,8 @@ function luadraw_graph3d:addFacet(facet,args)
     end
     if edge then
         -- calcul des arêtes
-        ld.insert(res, self:addPolyline(ld.facetedges(F),{color=edgecolor, hidden=hidden, hiddenstyle=hiddenstyle, hiddenscale = hiddenscale, width=edgewidth, matrix=ID3d}))
+        ld.insert(res, self:addPolyline(ld.facetedges(F),{color=edgecolor, hidden=hidden, hiddenstyle=hiddenstyle, hiddenscale = hiddenscale, width=edgewidth, matrix=ID3d,
+        double = args.double}))
     end
     table.insert(res,rep) -- rep = {"facet", liste de faces}
     self.matrix3d = oldmatrix
@@ -1918,6 +1960,12 @@ function luadraw_graph3d:addPolyline(Line,args)
     local arrows = args.arrows or 0
     local close = args.close or false
     local clip = args.clip or false
+    local double = args.double -- {border color, border width}
+    if double ~= nil then
+        local draw_color, wd = table.unpack( double )
+        double = "draw="..draw_color..", double="..color..", double distance="..tostring(width/10)
+        width = wd
+    end
     local arrowscale = args.arrowscale or {1,1}
     if type(arrowscale) == "number" then arrowscale = {arrowscale,arrowscale} end
     local hidden = args.hidden or ld.Hiddenlines
@@ -1965,7 +2013,7 @@ function luadraw_graph3d:addPolyline(Line,args)
                 table.insert(seg, {A,B})
             end
         end
-        table.insert(rep,{"seg", seg, style, color, width, opacity})
+        table.insert(rep,{"seg", seg, style, color, width, opacity,double})
         if hidden then 
             table.insert(rep,{"hidden",L,color,width*hiddenscale,hiddenstyle})
         end
@@ -2071,9 +2119,9 @@ function luadraw_graph3d:Dscene3d(...)
         Scene3d:Addfacet(table.unpack(F))
     end    
     for _, S in ipairs(listseg) do -- insertion des segments
-        local lseg, style, color, width, opacity = table.unpack(S)
+        local lseg, style, color, width, opacity, local_tikz = table.unpack(S)
         for _, seg in ipairs(lseg) do -- lseg est la liste de segments
-            Scene3d:Addseg(seg,style,color,width,opacity,self.Normal)
+            Scene3d:Addseg(seg,style,color,width,opacity,self.Normal,local_tikz)
         end
     end
     for _, D in ipairs(listdot) do -- insertion des points
@@ -2091,10 +2139,11 @@ function luadraw_graph3d:Dscene3d(...)
     self:Saveattr()
     self.matrix3d = ID3d
     Scene3d:Display(self)
+    self:Filloptions("none",nil,1)
     for _, H in ipairs(listhidden) do
         local L, color, width, style = table.unpack(H)
         --print(L, color, width, style)
-        self:Lineoptions(style,color,width); self:Filloptions("none",nil,1)
+        self:Lineoptions(style,color,width)
         self:Dpolyline3d(L)
     end
     self:Restoreattr()
@@ -2129,7 +2178,7 @@ function luadraw_graph3d:addPoly(P,args)
     local edge = args.edge
     args.matrix = ID3d
     if args.edge then 
-        ld.insert(rep, self:addPolyline( ld.facetedges(P1),{color=args.edgecolor, clip=args.clip, hidden=hidden, hiddenstyle=hiddenstyle, hiddenscale = hiddenscale, width=args.edgewidth, matrix=ID3d}))
+        ld.insert(rep, self:addPolyline( ld.facetedges(P1),{color=args.edgecolor, clip=args.clip, hidden=hidden, hiddenstyle=hiddenstyle, hiddenscale = hiddenscale, width=args.edgewidth, matrix=ID3d, double = args.double}))
         args.edge = false
     end
     ld.insert(rep, self:addFacet( ld.poly2facet(P1), args ) )
@@ -2680,13 +2729,17 @@ end
 
 function luadraw_graph3d:BeginOnPlane(system2d, options)
 -- system2d = {A,u,v} designates a Cartesian coordinate system on a plane
--- options = {labeldir = nil, clip = nil}
+-- options = {labeldir = nil, view = nil, out= var}
     local A, u, v = table.unpack(system2d)
     options = options or {}
     local labeldir = options.labeldir 
-    local view = options.view -- clip={x1,x2,y1,y2}
+    local view = options.view -- view={x1,x2,y1,y2}
+    local out = options.out
     self:Saveattr()
     local u1, v1 = self:Proj3dV(u), self:Proj3dV(v)
+    if (out ~=  nil) and (type(out) == "table") then
+        ld.insert(out,{0,u1,v1})
+    end
     if labeldir == "auto" then
         self:Labeldir({u1,v1})
     elseif labeldir ~= nil then
@@ -2700,7 +2753,7 @@ function luadraw_graph3d:BeginOnPlane(system2d, options)
     if view ~= nil then
         local x1,x2,y1,y2 = table.unpack(view)
         local p = {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2),"l","cl"}
-        self:Dpath(p,"",true)
+        self:Dpath(p,"",true) -- clipping
         self.param.viewport = view
         self.param.coordsystem = view
     end

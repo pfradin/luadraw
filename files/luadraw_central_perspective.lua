@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -86,6 +86,9 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         end
         
         L = self:Mtransform3d(L) -- we apply the 3D matrix of the graph
+        if self.scalexyz ~= 1 then
+            L = ld.ftransform3d(L, self.scalexyz) -- we apply the scales on x, y and z axis
+        end        
         return ld.ftransform3d(L,f) -- we return the projection on screen
     end 
     
@@ -125,16 +128,20 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         B = A+r*n1; C = A+r*n2
         local U = pt3d.prod(V,self.Normal)
         if pt3d.abs(U)<1e-16 then --plans parallèles
-            local A1 = ld.interDP( {camera,A-camera},{target,self.Normal})
-            local alpha = pt3d.abs(A1-camera)/pt3d.abs(A-camera)--*0.99
+            local A1 = ld.interDP( {A,A-camera},{target,self.Normal})
+            local B1 = ld.interDP( {B,B-camera},{target,self.Normal})
+            local r1 = pt3d.abs(B1-A1)
+            local alpha = pt3d.abs(A1-camera)/pt3d.abs(A-camera)
             --self:Darc(self:Proj3d(B), self:Proj3d(A), self:Proj3d(C),r*alpha,sens,draw_options)
-            return ld.arc3db(B,A,C,r*alpha,sens,n)
+            return ld.arc3db(B,A,C,r1/alpha,sens,n)
         elseif math.abs( pt3d.dot(V,self.Normal) ) < 1e-8 then --plans perpendiculaires
             return {B,C,"l"} -- segment [C,B]
         else 
             local N2 = pt3d.normalize(pt3d.prod(U,V))
             local N1 = pt3d.normalize(U)
             local a1,a2,a3,a4,b,c,O,u,v
+            local mat3d = self.matrix3d
+            self:IDmatrix3d()
             a1,a2,a3,a4,b,c = table.unpack( self:Proj3d({A-r*N2, A+r*N2, A-r*N1, A+r*N1, B, C}) )
             O = (a1+a2)/2;  u = cpx.normalize(a4-a3); v = a1-O
             local mat = {O,cpx.abs(v)*u,v}            
@@ -146,9 +153,10 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
             local y = a4.im 
             local x = a4.re
             local alpha = x/math.sqrt(1-y^2)
-            local L = ld.mtransform(ld.ellipticarcb(b,0,c,alpha,1,sens), mat)
+            local L = ld.mtransform( ld.ellipticarcb(b,0,c,alpha,1,sens), mat)
             local ret = map(function(z) if type(z) == "string" then return z else return self:Screenpos(z) end end, L)
             ret[1] = B; ret[#ret-1] = C
+            self.matrix3d = mat3d
             return ret
         end
     end

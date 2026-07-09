@@ -1,6 +1,6 @@
 --- luadraw_scene3d.lua
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -27,7 +27,7 @@ function Tscene3d:new()
     scene3d.coef = 1 -- éclairage pour facettes, épaisseur pour lignes, hauteur pour wall
     scene3d.dist = 0 -- pour les labels
     scene3d.dir = {} -- pour les labels
-    scene3d.angle = 0 -- pour les labels
+    scene3d.angle = 0 -- pour les labels, ou draw_options pour les lignes
     scene3d.style = "solid" -- pour les lignes
     scene3d.dev = nil -- éléments de la scène situés devant
     scene3d.der = nil -- éléments de la scène situés derrière
@@ -102,7 +102,7 @@ function Tscene3d:Addfacet(facet,plane,color,opacity) -- les sommets ont déjà 
 end
 
 
-function Tscene3d:Addseg(seg,style,color,width,opacity,n) -- les sommets ont déjà été transformés,
+function Tscene3d:Addseg(seg,style,color,width,opacity,n,local_tikz) -- les sommets ont déjà été transformés,
 -- le vecteur n est dirigé vers l'observateur
     local T = self
     if T.data == nil then
@@ -111,6 +111,7 @@ function Tscene3d:Addseg(seg,style,color,width,opacity,n) -- les sommets ont dé
         T.opacity = opacity
         T.coef = width
         T.style = style
+        T.angle = local_tikz
         T.type = "seg"
         T.dev = nil
         T.der = nil
@@ -118,11 +119,11 @@ function Tscene3d:Addseg(seg,style,color,width,opacity,n) -- les sommets ont dé
         local dev, der = ld.splitseg(seg,T.plane)
         if #dev ~= 0 then
             if T.dev == nil then T.dev = Tscene3d:new() end
-            T.dev:Addseg(dev,style,color,width,opacity,n)
+            T.dev:Addseg(dev,style,color,width,opacity,n,local_tikz)
         end
         if #der ~= 0 then
             if T.der == nil then T.der = Tscene3d:new() end
-            T.der:Addseg(der,style,color,width,opacity,n)
+            T.der:Addseg(der,style,color,width,opacity,n,local_tikz)
         end
     else -- on a un segment {A,A+u} déjà inséré, on veut insérer {C,C+v}
         local A, B = table.unpack(T.data)
@@ -130,11 +131,11 @@ function Tscene3d:Addseg(seg,style,color,width,opacity,n) -- les sommets ont dé
         local dev, der = ld.splitseg(seg,{A, pt3d.prod(u,pt3d.prod(n,u))})
         if #dev ~= 0 then
             if T.dev == nil then T.dev = Tscene3d:new() end
-            T.dev:Addseg(dev,style,color,width,opacity,n)
+            T.dev:Addseg(dev,style,color,width,opacity,n,local_tikz)
         end
         if #der ~= 0 then
             if T.der == nil then T.der = Tscene3d:new() end
-            T.der:Addseg(der,style,color,width,opacity,n)
+            T.der:Addseg(der,style,color,width,opacity,n,local_tikz)
         end
     end
 end
@@ -269,7 +270,13 @@ function Tscene3d:Display(g) -- g est un graphe 3d
         if self.dev ~= nil then self.dev:Display(g) end    
     elseif self.type == "seg" then -- segment
         if self.der ~= nil then self.der:Display(g) end
-        g:Lineoptions(self.style,self.color,self.coef); g:Lineopacity(self.opacity); g:Filloptions("none")
+        g:Lineoptions(self.style,self.color,self.coef); 
+        g:Lineopacity(self.opacity); g:Filloptions("none")
+        local local_tikz = self.angle
+        if local_tikz ~= nil then
+            g:Linecap("butt")
+            g:Dpolyline3d(self.data,false,local_tikz)
+        end
         g:Linecap("round"); -- pour que les liaisons soient correctes entre segments successifs
         g:Dpolyline3d(self.data,false)
         if self.dev ~= nil then self.dev:Display(g) end
@@ -283,7 +290,7 @@ function Tscene3d:Display(g) -- g est un graphe 3d
             g:Dballdots3d(self.data,self.color,self.coef)
         end
         if self.dev ~= nil then self.dev:Display(g) end
-    elseif self.type == "label" then -- point
+    elseif self.type == "label" then -- label
         if self.der ~= nil then self.der:Display(g) end
         g:Lineoptions("solid",self.color,4); g:Lineopacity(1); g:Filloptions("full",self.color,1)
         g:Labelsize(self.opacity); g:Labelstyle(self.style)

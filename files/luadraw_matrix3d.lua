@@ -1,6 +1,6 @@
 -- luadraw__matrix3d.lua (chargé par luadraw__graph3d)
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -38,7 +38,16 @@ function ld.mtransform3d(L,M) -- applique la matrice M à L
 -- renvoie l'image de L sans modifier L
     if (L == nil) or (type(L) ~=  "table") then return end
     if (M == nil) or (type(M) ~= "table") or (#M ~= 4) then return end
-    local res = {}
+    local res = {}    
+    if L.vertices ~= nil then --polyhedron
+        res.vertices = ld.mtransform3d(L.vertices,M)
+        res.facets = table.copy(L.facets)
+        if L.normals ~= nil then
+            --res.normals = ld.mLtransform3d(L.normals,M)
+        end
+        return res
+    end
+
     if isPoint3d(L) then res = ld.applymatrix3d(L,M)
     elseif isPoint3d(L[1]) then --liste de point3d
         for _, A in ipairs(L) do

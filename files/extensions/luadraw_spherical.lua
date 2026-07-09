@@ -1,6 +1,6 @@
 -- luadraw_spherical.lua 
--- date 2026/06/13
--- version 3.2
+-- date 2026/07/09
+-- version 3.3
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -27,6 +27,7 @@ local sphere = {["C"]=Origin, ["R"]=3,
     ["edgewidth"] = "4",
     ["hiddenstyle"] = ld.Hiddenlinestyle,
     ["hiddencolor"] = "gray",
+    ['hiddendelayed'] = false,
     ["show"] = true,
     ["horizon"] = nil
     } -- sphere definition
@@ -34,11 +35,17 @@ local sphere = {["C"]=Origin, ["R"]=3,
 local before_sphere = {}
 local after_sphere = {}
 local hidden_part = {}
+local on_back_sphere = {}
+local inside_sphere = {}
+local on_front_sphere = {}
 
 function graph3d:Clear_spherical()
     before_sphere = {}
     after_sphere = {}
     hidden_part = {}
+    on_back_sphere = {}
+    inside_sphere = {}
+    on_front_sphere = {}
     sphere = {["C"]=Origin, ["R"]=3, 
     ["color"]="orange",
     ["opacity"]=1,
@@ -49,7 +56,8 @@ function graph3d:Clear_spherical()
     ["hiddenstyle"] = ld.Hiddenlinestyle,
     ["hiddencolor"] = "gray",
     ["show"] = true,
-    ["horizon"] = nil
+    ["horizon"] = nil,
+    ['hiddendelayed'] = false
     } -- sphere definition
     insidelabelcolor = "gray"
     arrowBstyle = "->"
@@ -72,6 +80,7 @@ function graph3d:Define_sphere( args )
     if args.edgewidth ~= nil then sphere.edgewidth = args.edgewidth end
     if args.show ~= nil then sphere.show = args.show end
     insidelabelcolor = args.insidelabelcolor or "gray"
+    hiddendelayed = args.hiddendelayed or false
     arrowBstyle = args.arrowBstyle or "->"
     arrowAstyle = args.arrowAstyle or "<-"
     arrowABstyle = args.arrowABstyle or "<->"
@@ -253,25 +262,86 @@ function graph3d:Dspherical()
     for _, elt in ipairs(before_sphere) do
         display_elt(elt)
     end
+    self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
+    self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
+    for _, elt in ipairs(on_back_sphere) do
+        local P = elt[1]
+        if type(P[#P]) == "string" then
+            self:Dpath3d(P, elt[2]) -- 3D path and draw_options
+        else
+            self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+        end
+    end
+    for _, elt in ipairs(inside_sphere) do
+        local P = elt[1]
+        if type(P) == "string" then -- a label
+            self:Dlabel3d(P,elt[2],elt[3])
+        elseif pt3d.isPoint3d(P) then -- a dot
+            self:Ddots3d(P,elt[2])
+        elseif type(P[#P]) == "string" then
+            self:Dpath3d(P, elt[2]) -- 3D path and draw_options
+        else
+            self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+        end
+    end
     if sphere.show then
-        self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
+        --self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
         self:Dsphere(sphere.C, sphere.R, {mode=sphere.mode, color=sphere.color, opacity=sphere.opacity,
             edgecolor=sphere.edgecolor, edgewidth=sphere.edgewidth, edgestyle=sphere.edgestyle, hiddenstyle=sphere.hiddenstyle, hiddencolor=sphere.hiddencolor})
     end
+    for _, elt in ipairs(on_front_sphere) do
+        local P = elt[1]
+        if type(P[#P]) == "string" then
+            self:Dpath3d(P, elt[2]) -- 3D path and draw_options
+        else
+            self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+        end
+    end    
     for _, elt in ipairs(after_sphere) do
         display_elt(elt)
     end
     if hiddendelayed then self:Begindeferred() end
-        if sphere.show and ld.Hiddenlines and (sphere.edgestyle ~= "noline") and (sphere.hiddenstyle ~= "noline") then
-            self:Dsphere(sphere.C, sphere.R, {mode=ld.mBorder,edgecolor=sphere.edgecolor, edgewidth=3*sphere.edgewidth/4, edgestyle=sphere.hiddenstyle}) 
-        end
-        for _, elt in ipairs(hidden_part) do
-            display_elt(elt)
-        end    
+    if sphere.show and ld.Hiddenlines and (sphere.edgestyle ~= "noline") and (sphere.hiddenstyle ~= "noline") then
+        self:Dsphere(sphere.C, sphere.R, {mode=ld.mBorder,edgecolor=sphere.edgecolor, edgewidth=3*sphere.edgewidth/4, edgestyle=sphere.hiddenstyle}) 
+    end
+    for _, elt in ipairs(hidden_part) do
+        display_elt(elt)
+    end    
     if hiddendelayed then self:Enddeferred() end
     self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Clear_spherical()
+end
+
+function graph3d:DSaddback(path,draw_options, hidden,hidden_options) --
+-- hidden_options = nil or {color,width,opacity}
+    draw_options = draw_options or ""
+    if hidden == nil then hidden = ld.Hiddenlines end
+    hidden_options = hidden_options or {}
+    table.insert(on_back_sphere, {path, draw_options})
+    if hidden or ld.Hiddenlines then
+        table.insert(hidden_options,1,ld.Hiddenlinestyle)
+        table.insert(hidden_options,1,path)
+        table.insert(hidden_part,hidden_options )
+    end
+end
+
+function graph3d:DSaddinside(path,draw_options,hidden,hidden_options) --
+-- hidden_options = nil or {color,width,opacity}
+    draw_options = draw_options or ""
+    if hidden == nil then hidden = ld.Hiddenlines end
+    hidden_options = hidden_options or {}
+    table.insert(inside_sphere, {path, draw_options})
+    if hidden or ld.Hiddenlines then
+        table.insert(hidden_options,1,ld.Hiddenlinestyle)
+        table.insert(hidden_options,1,path)
+        table.insert(hidden_part,hidden_options )
+    end
+end
+
+function graph3d:DSaddfront(path,draw_options) 
+    draw_options = draw_options or ""
+    table.insert(on_front_sphere, {path, draw_options})
 end
 
 -- ajouter un cercle tracé sur la sphère
@@ -338,10 +408,12 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
         else
             angle = -pt3d.dot(v,N)/(r*pt3d.dot(n1,N)) 
         end
-        if math.abs(angle) > 1+1e-6 then acircle(I,r,v,u,angle)
-        elseif (1<angle) and (angle<1+1e-6) then angle = 1 
-        elseif (angle <-1) and (1-1e-6<angle) then angle = -1 
+        local eps = 1e-6
+        if math.abs(angle) > 1+eps then acircle(I,r,v,u,angle)
         else
+            if (1<angle) and (angle<1+eps) then angle = 1 
+            elseif (angle <-1) and (-1-eps<angle) then angle = -1 
+            end
             local t0 = math.acos(angle)
             if math.abs(t0) < 1e-6 then acircle(I,r,v,u)
             else
@@ -400,7 +472,7 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
     local I, r, n = table.unpack( sphere.horizon )
     
     local add_seg_in = function(U,V,arrow) -- [U,V] is inside the sphere
-        table.insert(before_sphere, {{U,V,"l"},style,color,width,opacity,arrow} )
+        table.insert(inside_sphere, {{U,V,"l"},style,color,width,opacity,arrow} )
     end
     
     local add_seg_out = function(U,V,arrow)
@@ -433,9 +505,9 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
         if #dev ~= 0 then 
             table.insert(dev,"l")
             table.insert(after_sphere, {dev,style,color,width,opacity,arrowdev}) 
-            if hidden and hiddendelayed and (style ~= "noline") then
+            --if hidden and hiddendelayed and (style ~= "noline") then
                 --table.insert(hidden_part, {dev,ld.Hiddenlinestyle,color,width,opacity,arrowdev}) 
-            end
+            --end
         end
     end
 
@@ -573,6 +645,7 @@ function graph3d:DSarc(AB,sens,options)
         end
     else
         local M1, M2
+        local visibleA, visibleB = visibledot(A), visibledot(B)
         if ld.projection_mode == "central" then
             M2, M1 = ld.interCS({C,R,u}, {(C+cam)/2, pt3d.abs(C-cam)/2} )
             if (M2 ~= nil) and (M1 ~= nil) and (pt3d.det(cam-C,u,M1-C) < 0) then 
@@ -583,7 +656,10 @@ function graph3d:DSarc(AB,sens,options)
             local n1 = pt3d.normalize(pt3d.prod(n2,u))
             M1, M2 = C+R*n2, C-R*n2
         end
-        if visibledot(A) and visibledot(B) then -- A et B sont visibles
+        if pt3d.abs(A-M1) < 1e-12 then visibleA= visibleB end
+        if pt3d.abs(B-M1) < 1e-12 then visibleB= visibleA end
+        
+        if visibleA and visibleB then -- A et B sont visibles
             if sens == 1 then
                 table.insert(after_sphere, {{A,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB})
                 if hidden and hiddendelayed and (style ~= "noline") then
@@ -604,7 +680,7 @@ function graph3d:DSarc(AB,sens,options)
                     --self:Endadvanced()
                 end
             end
-        elseif (not visibledot(A)) and (not visibledot(B)) then -- A et B sont cachés
+        elseif (not visibleA) and (not visibleB) then -- A et B sont cachés
             if sens == 1 then
                 if hidden  and (style ~= "noline") then
                     table.insert(hidden_part, {{A,C,B,R,sens,u,"ca"},ld.Hiddenlinestyle,color,width,opacity,-arrowA})
@@ -630,7 +706,7 @@ function graph3d:DSarc(AB,sens,options)
             end
         else
             -- un des points est visible, l'autre non
-            if visibledot(A) then -- A est visible, B non
+            if visibleA then -- A est visible, B non
                 if sens == 1 then
                    table.insert(after_sphere, {{A,C,M2,R,sens,u,"ca"},style,color,width,opacity,-arrowA}) 
                    if hidden and hiddendelayed and (style ~= "noline") then
@@ -657,6 +733,7 @@ function graph3d:DSarc(AB,sens,options)
                     end
                 end
             else -- B est visible, A non
+                print("on est là", pt3d.abs(B-M1))
                 if sens == 1 then
                    table.insert(after_sphere, {{M1,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB}) 
                    if hidden and hiddendelayed and (style ~= "noline") then
@@ -891,7 +968,7 @@ function graph3d:DSlabel(...)
                 options.node_options = oldoptions
             else
                 --self:Beginadvanced()
-                table.insert(before_sphere, {text,anchor,options})
+                table.insert(inside_sphere, {text,anchor,options})
                 --self:Endadvanced()
             end
         else -- anchor est à l'extérieur de la sphère
@@ -936,9 +1013,11 @@ function graph3d:DSdots(dots,options)
             if hidden then
                 table.insert(hidden_part, {A,mark_options..sep..insidelabelcolor})
             else
-                --self:Beginadvanced()
-                table.insert(before_sphere, {A,mark_options})
-                --self:Endadvanced()
+                if (d < R) then
+                    table.insert(inside_sphere, {A,mark_options})
+                else
+                    table.insert(before_sphere, {A,mark_options})
+                end
             end
         else -- A est à l'extérieur de la sphère ou dessus mais visible
             if visibledot(A) then -- A est visible
