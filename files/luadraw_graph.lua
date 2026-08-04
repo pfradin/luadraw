@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -867,9 +867,9 @@ local DinequalitiesWithClip = function(self,constraints, args)
         table.insert(C,1, Z(x1, C[1].im))
         table.insert(C, Z(x2, C[#C].im))
         if sg == ">" then
-            ld.insert(C, {Z(x2,y2),Z(x1,y2),C[1]})
+            table.append(C, {Z(x2,y2),Z(x1,y2),C[1]})
         else
-            ld.insert(C, {Z(x2,y1),Z(x1,y1),C[1]})
+            table.append(C, {Z(x2,y1),Z(x1,y1),C[1]})
         end
         self:Beginclip( ld.polyline2path(C) )
     end
@@ -1657,8 +1657,11 @@ function luadraw_graph:Dpath(L,draw_options,clip)
 end
 
 -- clipping avec un chemin
+local clip_path = {}
 function luadraw_graph:Beginclip(p,inverse) -- p = path
     inverse = inverse or false
+    if (ld.graph3d ~= nil ) and (ld.pt3d.isPoint3d(p[1])) then p = self:Path3d2path2d(p) end    
+    table.insert(clip_path,p)
     self:Writeln("\\begin{scope}")
     if inverse then
         local chem = self:Box2d()
@@ -1667,15 +1670,18 @@ function luadraw_graph:Beginclip(p,inverse) -- p = path
         local G = cpx.isobar(L)
         local A, B = L[1], L[2]
         if cpx.det(A-B,B-G) >= 0 then chem = ld.reverse(chem) end
-        ld.insert(chem,{"l","cl"})
+        table.append(chem,{"l","cl"})
         table.insert(p,2,"m")
         self:Dpath( ld.concat(chem,p),"",true) -- path doit être dans le sens trigonométrique
     else self:Dpath(p,"",true)
     end
 end
 
-function luadraw_graph:Endclip()
+function luadraw_graph:Endclip(showpath, path_options)
+    showpath = showpath or false
     self:Writeln("\\end{scope}")
+    local p = table.remove(clip_path)
+    if showpath then self:Dpath(p,path_options) end
 end
 
 -- arc de cercle

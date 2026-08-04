@@ -1,6 +1,6 @@
 -- luadraw_polyedrons.lua 
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -59,7 +59,7 @@ local pstar = function(L)
         local b1 = ld.interDD({b,c-b},{d,e-d})
         local e1 = ld.interDD({e,a-e},{b,c-b})
         local c1 = ld.interDD({a,e-a},{d,c-d})
-        ld.insert(res, {{a, a1, c1}, {a1, d, d1}, {d1, b, b1}, {b1, e, e1}, {e1, c, c1}, {c1, a1, d1, b1, e1}})
+        table.append(res, {{a, a1, c1}, {a1, d, d1}, {d1, b, b1}, {b1, e, e1}, {e1, c, c1}, {c1, a1, d1, b1, e1}})
     end
     if #res > 0 then return res end
 end

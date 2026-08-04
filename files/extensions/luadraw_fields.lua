@@ -1,6 +1,6 @@
 -- luadraw_fields2d.lua
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -81,7 +81,7 @@ function graph:DplotXY(X,Y,draw_options)
         local noms = {} -- liste des labels à placer
         for k = 1, #X do
             table.insert(L,Z(k,Y[k]))
-            ld.insert(noms,{X[k],k,{pos="E",node_options="rotate=-90"}})
+            table.append(noms,{X[k],k,{pos="E",node_options="rotate=-90"}})
         end
         self:Dlabel(table.unpack(noms))
     end

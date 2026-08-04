@@ -1,6 +1,6 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -159,7 +159,7 @@ function ld.affinebypiece(def,discont)
         else 
             if #crt > 0 then  
                 if discont then table.insert(res,crt)
-                else ld.insert(res,crt)
+                else table.append(res,crt)
                 end
                 crt = {} 
             end
@@ -170,7 +170,7 @@ function ld.affinebypiece(def,discont)
     end
     if #crt > 0 then  
         if discont then table.insert(res,crt)
-        else ld.insert(res,crt)
+        else table.append(res,crt)
         end
     end    
     if #res > 0 then return res end
@@ -192,7 +192,7 @@ function ld.stepfunction(def,discont)
         else 
             if #crt > 0 then  
                 if discont then table.insert(res,crt)
-                else ld.insert(res,crt)
+                else table.append(res,crt)
                 end
                 crt = {} 
             end
@@ -203,7 +203,7 @@ function ld.stepfunction(def,discont)
     end
     if #crt > 0 then  
         if discont then table.insert(res,crt)
-        else ld.insert(res,crt)
+        else table.append(res,crt)
         end
     end    
     if #res > 0 then return res end
@@ -637,7 +637,7 @@ function ld.tcurve(L)
     local res = {b} -- premier point
     for k = 2, #L/2 do
         a, val, var, b, vbl, vbr = b, vbl, vbr, L[2*k-1], Vdir(table.unpack(L[2*k]))
-        ld.insert(res,{a+var/3,b-vbl/3,b,"b"}) -- courbe de Bézier de a à b respectant les contraintes
+        table.append(res,{a+var/3,b-vbl/3,b,"b"}) -- courbe de Bézier de a à b respectant les contraintes
     end
     return res
 end

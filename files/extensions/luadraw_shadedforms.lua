@@ -1,6 +1,6 @@
 -- luadraw_shadedforms.lua 
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -154,7 +154,7 @@ function graph:Dcolorbar(A,pal,options)
     end
     local labels, seg = {}, {}
     for k = 1, #values do
-        ld.insert(labels,{"$"..ld.num(values[k],digit).."$", anchors[k], {pos=labelpos}})
+        table.append(labels,{"$"..ld.num(values[k],digit).."$", anchors[k], {pos=labelpos}})
         table.insert(seg, {anchors[k], anchors[k]+h})
     end
     self:Drectangle(A,A+L,A+h+L); self:Dpolyline(seg); self:Dlabel(table.unpack(labels))

@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -444,7 +444,7 @@ function ld.clip3d(S, poly, exterior)
             u = pt3d.prod(B-A,C-A)
             if u ~= nil then
                 S1, S = ld.cutfacet(S,{A,u})
-                ld.insert(rep,S1)
+                table.append(rep,S1)
             end
         end
         return rep
@@ -734,26 +734,27 @@ function ld.cone(A,V,R,nbfacet,open,aux) -- ou cone(C,R,A,nbfacet,open) ou cone(
     return P    
 end
 
-function ld.frustum(C,R,r,V,A,nb,open) -- ou frustum(C,R,r,V,nb,open), frustum build with facets (tronc de cône droit ou penché)
-    if type(A) == "number" then -- syntaxe C,V,R,nb,open
-        open = nb; nb = A; A = nil
+function ld.frustum(C,R,r,V,A,nb,open) -- ou frustum(C,R,r,A,nb,open), frustum build with facets (tronc de cône droit ou penché)
+    if (A == nil) or (type(A) == "number") then -- syntaxe C,R,r,A,nb,open
+        open = nb; nb = A; A = V
     elseif isPoint3d(A) then V = ld.dproj3d(A,{C,V}) - C -- frustum penché
     end
     nb = nb or 35
     open = open or false
     if R == r then -- cylinder
-        if A == nil then return ld.cylinder(C,V,R,nb,open)
-        else return ld.cylinder(C,V,R,A,nb,open)
-        end
+        --if A == nil then return ld.cylinder(C,V,R,nb,open)
+        --else 
+        return ld.cylinder(C,R,V,A,nb,open)
+        --end
     end
     local k = R/(R-r)
     local H = k*V
     local Co
-    if A == nil then Co = ld.cone(C,R,C+H,nb,open) --cone(C+H,-H,R,nb,open)
-    else 
+    --if A == nil then Co = ld.cone(C,R,C+H,nb,open) --cone(C+H,-H,R,nb,open)
+    --else 
         local S = k*(A-r/R*C)
         Co = ld.cone(C,R,V,S,nb,open)
-    end
+    --end
     local P = {C+V,-V}
     local rep = ld.cutpoly(Co, P, not open)
     return rep
@@ -983,7 +984,7 @@ function ld.curve2cylinder(f,t1,t2,V,args)
     local cyl = {}
     local bords = {}
     table.insert(bords,table.copy(base))
-    ld.insert(base,ld.shift3d(base,V)) -- on ajoute les images par la translation de vecteur V
+    table.append(base,ld.shift3d(base,V)) -- on ajoute les images par la translation de vecteur V
     table.insert(bords,ld.shift3d(bords[1],V))
     cyl.vertices = base
     cyl.facets = {}
@@ -1048,7 +1049,7 @@ function ld.section2tube(section,L,args)
                         end
                     end
                     if (not close) and (addwall == 1) then table.insert(sep,crt_section) end
-                    ld.insert(poly.vertices, crt_section); nb_sections= nb_sections+1
+                    table.append(poly.vertices, crt_section); nb_sections= nb_sections+1
                     if not hollow then 
                         table.insert(poly.facets, ld.range(nbfacet,1,-1))
                     end
@@ -1059,7 +1060,7 @@ function ld.section2tube(section,L,args)
                 if aux_section == nil then 
                     aux_section = ld.shift3d(crt_section,b-a)
                 end
-                ld.insert(poly.vertices, aux_section); nb_sections = nb_sections+1
+                table.append(poly.vertices, aux_section); nb_sections = nb_sections+1
                 crt_section = aux_section -- list actuelle
                 if addwall == 1 then table.insert(sep,aux_section) end
             end
@@ -1071,7 +1072,7 @@ function ld.section2tube(section,L,args)
                 aux_section = ld.shift3d(crt_section,c-b)
             end
             crt_section = aux_section
-            ld.insert(poly.vertices, crt_section); nb_sections= nb_sections+1
+            table.append(poly.vertices, crt_section); nb_sections= nb_sections+1
             if addwall == 1 then table.insert(sep,crt_section) end -- facette séparatrice
         end
     end
@@ -1459,13 +1460,54 @@ function ld.obj_surface(f,u1,u2,v1,v2,grid) -- or obj_surface(f, uvmesh) with uv
     return result
 end
 
+function ld.conv_table3d(data, swapxy)
+-- data est une table de la forme:
+--    x1  x2 ...  xp
+--y1  z11 z12 ... z1p
+--y2  z21 z22 ... z2p
+--..
+--yn  zn1 zn2 ... znp
+-- ou bien de la forme (lorsque l'option swapxy vaut true)
+--   y1  y2 ...  yp
+--x1  z11 z12 ... z1p
+--x2  z21 z22 ... z2p
+--..
+--xn  zn1 zn2 ... znp
+-- la fonction renvoie une table de la forme
+-- x1 y1 z11
+-- x1 y2 z21
+-- etc
+    swapxy = swapxy or false
+    if #data[1] == #data[2]-1 then table.insert(data[1],1,"y/x") end
+    local nbx, nby = #data[1]-1, #data-1
+    local ret, lg = {}
+    for i = 1, nbx do
+        for j = 1, nby do
+            lg = {}
+            local x = data[1][i+1]
+            local y = data[j+1][1]
+            local z = data[j+1][i+1]
+            if swapxy then  table.insert(lg, y); table.insert(lg, x)
+            else table.insert(lg, x); table.insert(lg, y)
+            end
+            table.insert(lg, z)
+            table.insert(ret, lg)
+        end
+    end
+    return ret
+end
+
 function ld.read_table3d(data,options) -- read 3D data, build facets and functions
 -- data is a list of {x y z ...} ( for example: data = ld.read_csv_file(...)
 -- options =  { header=nil, x=1, y=2, z=3, func={}, triangle=false, vertices=false, 
--- edges=false, facets=true, bbox=false, order=nil}
+-- edges=false, facets=true, bbox=false, order=nil, mode="xyz"}
 -- returns a table with fields: facets, vertices, edges, bbox, func
     options = options or {}
     local head = options.header
+    local mode = options.mode or "xyz"
+    if mode == 'y/x' then data = ld.conv_table3d(data)
+    elseif mode == 'x/y' then data = ld.conv_table3d(data,true)
+    end
     local colnamed = {}
     if head ~= nil then
         for k,name in ipairs(head) do

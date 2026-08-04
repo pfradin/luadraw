@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -175,7 +175,6 @@ end
 -- r = rayon
 -- sens = 1/-1 (sens trigo ou inverse)
 -- normal : vecteur normal au plan de l'arc
-    if not isPoint3d(normal) then args = normal; normal = nil end
     local u, v = B-A, C-A
     u, v = pt3d.normalize(u), pt3d.normalize(v)
     local n = normal
@@ -184,11 +183,10 @@ end
     n = pt3d.normalize(n)
     local V = r*u --vecteur de depart
     local W = pt3d.prod(n,V)
-    local alpha = pt3d.angle3d(u,v,1e-10)
-    local fin
-    if sens > 0 then fin = alpha
-    else
-        fin = 2*math.pi-alpha; W = -W
+    local alpha = ld.cpx.arg( ld.cpx.Z(pt3d.dot(v,V), pt3d.dot(v,W)) )--pt3d.angle3d(u,v,1e-10)
+    local fin = alpha
+    if ((sens > 0) and (fin < 0)) then fin = 2*math.pi+fin
+    elseif ((sens < 0) and (fin > 0)) then fin = fin-2*math.pi --; W = -W
     end
     if alpha == 0 then fin = 2*math.pi end
     local L = ld.parametric3d( function(t) return A+math.cos(t)*V+math.sin(t)*W end, 0,fin, math.max(2,math.floor(20*fin/math.pi)) )
@@ -200,10 +198,12 @@ function ld.circle3db(C,R,normal)
 -- calcule un cercle de centre C de rayon R et normal au vecteur normal
 -- renvoie un chemin en courbes de Bézier avec des point3d
     local N, u  = pt3d.normalize(normal)
-    if N.x ~= 0 then u = M(-(N.y+N.z)/N.x,1,1)
-    elseif N.y ~= 0 then u = M(1, -(N.x+N.z)/N.y,1)
-    else u = M(1,1,-(N.y+N.x)/N.z)
-    end
+    --if N.x ~= 0 then u = M(-(N.y+N.z)/N.x,1,1)
+    --elseif N.y ~= 0 then u = M(1, -(N.x+N.z)/N.y,1)
+    --else u = M(1,1,-(N.y+N.x)/N.z)
+    --end
+    u = pt3d.prod(N,pt3d.vecI)
+    if pt3d.abs(u) <1e-12 then u = pt3d.prod(N,pt3d.vecJ) end 
     u = pt3d.normalize(u); v = pt3d.prod(N,u)
     local S = ld.circleb(0,R) -- dans le repère (C,u,v)
     if S ~= nil then
@@ -292,15 +292,15 @@ end
 -- 3d triangles
 
 function ld.sss_triangle3d(ab,bc,ac)  -- returns 3 points A,B,C (table), the arguments are the lengths of the 3 sides.
-    return map(toPoint3d, sss_triangle(ab,bc,ac)) -- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
+    return map(toPoint3d, ld.sss_triangle(ab,bc,ac)) -- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
 end
 
 function ld.sas_triangle3d(ab,gamma,ac)  -- returns 3 points A,B,C (table), the arguments are length, angle (AB,AC) (degrees), length
-    return map(toPoint3d, sas_triangle(ab,gamma,ac)) -- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
+    return map(toPoint3d, ld.sas_triangle(ab,gamma,ac)) -- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
 end
 
 function ld.asa_triangle3d(alpha,ab,beta) -- returns 3 points A,B,C (table), the arguments are a length, angles (AB,AC) and (BA,BC)
-    return map(toPoint3d, asa_triangle(alpha,ab,beta)) --- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
+    return map(toPoint3d, ld.asa_triangle(alpha,ab,beta)) --- returns triangle with A=Origin and B=ab*vecI and C in xy-plane
 end
 
 ---- intersections
@@ -386,7 +386,7 @@ function ld.interCS(C,S)
 end
 
 function ld.interSSS(S1,S2,S3)-- intersection of 3 sphere S1={C1,R1}  S2={C2,R2} and S3= {C3,R3}
-    local I1,r1,n1 = interSS(S1,S2) -- nil or a circle
+    local I1,r1,n1 = ld.interSS(S1,S2) -- nil or a circle
     if I1 == nil then return end
     return ld.interCS({I1,r1,n1},S3)
 end
@@ -461,7 +461,7 @@ function ld.cutpolyline3d(Lg,plane,close)
             last = M
         end
         if close then table.remove(L) end
-        ld.insert(Dev,traiter(dev)); ld.insert(Der, traiter(der))
+        table.append(Dev,traiter(dev)); table.append(Der, traiter(der))
     end
     return Dev, Der, inter
 end
@@ -532,8 +532,8 @@ function ld.bezier3d(a,c1,c2,b,nbdots)
 end
 
 
-function ld.path3d(chemin)
--- renvoie les points constituant le chemin
+function ld.path3d(chemin, nbdots)
+-- renvoie les points constituant le chemin (ligne polygonale)
 -- celui-ci est une table de points, valeurs et d'instructions ex: {-1,2+i,3,"l", 4, "m", -2*i,-3-3*i,"l","cl",...}
 -- "m" pour moveto, "l" pour lineto, "b" pour bézier, "c" pour cercle, "ca" pour arc de cercle, "cl" pour close
     if (chemin == nil) or (type(chemin) ~= "table") or (#chemin < 3) then return end
@@ -571,9 +571,12 @@ function ld.path3d(chemin)
         if first ~= nil then 
             table.insert(aux,1,first); table.remove(crt)
         end
-        local C = ld.bezier3d(table.unpack(aux)) -- renvoie une liste de liste de complexes
-        for _, z in ipairs(C[1]) do
-            table.insert(crt,z)
+        local a,c1,c2,b = table.unpack(aux)
+        local C = ld.bezier3d(a,c1,c2,b,nbdots) -- renvoie une liste de listes de complexes
+        if C ~= nil then
+            for _, z in ipairs(C[1]) do
+                table.insert(crt,z)
+            end
         end
         first = last
         aux = {}
@@ -633,7 +636,7 @@ function ld.polyline2path3d(L,close) -- conversion list of 3d points or list of 
         table.insert(aux,2,"m") -- move
         table.insert(aux,"l")  -- lineto
         if close then table.insert(aux,"cl") end 
-        ld.insert(ret,aux)
+        table.append(ret,aux)
     end
     return ret
 end

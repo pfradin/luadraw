@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -20,10 +20,10 @@ local M, Mc, Ms = pt3d.M, pt3d.Mc, pt3d.Ms
 local map = ld.map
 local notDef = ld.notDef
 
-local old_Dcone = graph3d.Dcone
-local old_Dcylinder = graph3d.Dcylinder
-local old_Dfrustum = graph3d.Dfrustum
-local old_Dsphere = graph3d.Dsphere
+--local old_Dcone = graph3d.Dcone
+--local old_Dcylinder = graph3d.Dcylinder
+--local old_Dfrustum = graph3d.Dfrustum
+--local old_Dsphere = graph3d.Dsphere
 local old_Proj3d = graph3d.Proj3d
 local old_Proj3dV = graph3d.Proj3dV
 local old_Cosine_incidence = graph3d.Cosine_incidence
@@ -126,17 +126,26 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         if n == nil then V = pt3d.normalize(pt3d.prod(n1,n2)) else V = pt3d.normalize(n) end
         if pt3d.abs(V)<1e-12 then V = pt3d.normalize(n) end
         B = A+r*n1; C = A+r*n2
+        local N = pt3d.normalize(ld.camera-A)
         local U = pt3d.prod(V,self.Normal)
-        if pt3d.abs(U)<1e-16 then --plans parallèles
+        if (pt3d.abs(U)<1e-12) then --plans parallèles
             local A1 = ld.interDP( {A,A-camera},{target,self.Normal})
             local B1 = ld.interDP( {B,B-camera},{target,self.Normal})
             local r1 = pt3d.abs(B1-A1)
             local alpha = pt3d.abs(A1-camera)/pt3d.abs(A-camera)
             --self:Darc(self:Proj3d(B), self:Proj3d(A), self:Proj3d(C),r*alpha,sens,draw_options)
             return ld.arc3db(B,A,C,r1/alpha,sens,n)
-        elseif math.abs( pt3d.dot(V,self.Normal) ) < 1e-8 then --plans perpendiculaires
-            return {B,C,"l"} -- segment [C,B]
+        elseif math.abs( pt3d.dot(V,N) ) < 1e-12 then --plans perpendiculaires
+            --print("ok")
+            return ld.polyline2path3d( ld.arc3d(B,A,C,r,sens,n) )
         else 
+            local pred = function(z)
+                if type(z) == "string" then return z
+                else
+                    local P = self:Screenpos(z)
+                    return ld.proj3dO(P, {A,V}, camera-P)
+                end
+            end
             local N2 = pt3d.normalize(pt3d.prod(U,V))
             local N1 = pt3d.normalize(U)
             local a1,a2,a3,a4,b,c,O,u,v
@@ -146,7 +155,7 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
             O = (a1+a2)/2;  u = cpx.normalize(a4-a3); v = a1-O
             local mat = {O,cpx.abs(v)*u,v}            
             if math.abs(cpx.det(mat[2],mat[3])) < 1e-8 then 
-                return {B,C,"l"} -- segment [C,B]
+                return ld.polyline2path3d( ld.arc3d(B,A,C,r,sens,n) )
             end
             local invm = ld.invmatrix(mat)
             a4,b,c = table.unpack( ld.mtransform({a4,b,c}, ld.invmatrix(mat)) ) 
@@ -154,10 +163,8 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
             local x = a4.re
             local alpha = x/math.sqrt(1-y^2)
             local L = ld.mtransform( ld.ellipticarcb(b,0,c,alpha,1,sens), mat)
-            local ret = map(function(z) if type(z) == "string" then return z else return self:Screenpos(z) end end, L)
-            ret[1] = B; ret[#ret-1] = C
             self.matrix3d = mat3d
-            return ret
+            return ld.ftransform(L, pred)
         end
     end
     
@@ -172,310 +179,6 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         U = O+r*pt3d.normalize(U)
         return self:arc3db(U,O,U,r,1,n)
     end
-    
-    function graph3d:Dcone(C,r,V,A,args) 
-    -- ou Dcone(C,r,A,args)
-    -- dessine un cône en fil de fer
-    -- A est le sommet
-    -- le centre de la face circulaire de rayon r orthogonale au vecteur V est C
-    -- args est une table à 5 champs :
-    -- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor= linecolor, color="", opacity=1}
-    -- mode = 0 mWireframe
-    -- mode = 1 mGrid
-    -- color = "" : pas de remplissage, color ~= "" remplissage avec gradient bi linéaire
-        if isPoint3d(r) then -- ancien format : sommet, vecteur, rayon, args (cône droit)
-        args = A; A = C
-        r, V = V, r
-        C = A+V; V = A-C
-        elseif not isPoint3d(A) then -- format C,r,A,args (cône droit)
-            args = A; A = V; V = A-C
-        end
-        args = args or {}
-        local color = args.color
-        color = color or ""
-        color = self:Define_temp_color(color)
-        local edgecolor = args.edgecolor or self.param.linecolor
-        local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
-        local hiddencolor = args.hiddencolor or self.param.linecolor
-        --if not Hiddenlines then hiddenstyle = "noline" end        
-        local mode = args.mode or ld.mWireframe
-        local opacity = args.opacity or 1
-        local edgewidth = args.edgewidth or self.param.linewidth
-        local edgestyle = args.edgestyle or self.param.linestyle
-        
-        args.gradsection = args.gradsection or {25,18,50}
-        args.gradside= args.gradside or {50,10,100}
-        local lsection, msection, rsection = table.unpack( args.gradsection)
-        local lside, mside, rside = table.unpack( args.gradside)
-        local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
-        local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
-                
-        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*ld.rad
-        if angle < 0 then angle = angle+180
-        elseif angle > 180 then angle = angle-180 
-        end
-        local P = ld.cone(C,r,V,A,50,true)
-        local Pv, Ph = self:Classifyfacet(P)
-        local BPv, BPh = ld.border(Pv), ld.border(Ph)
-        
-        local oldfillstyle = self.param.fillstyle
-        local oldfillopacity = self.param.fillopacity
-        local oldfillcolor = self.param.fillcolor
-        local oldlinestyle = self.param.linestyle
-        local oldlinecolor = self.param.linecolor
-        local oldlinewidth = self.param.linewidth
-        self:Lineoptions(edgestyle,edgecolor,edgewidth)
-        if mode == ld.mGrid then self:Linestyle("noline") end
-        -- hidden part
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
-        --visible part
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSide..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        self:Dpolyline3d(BPv, true)
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        if self:Cosine_incidence(-V,C) > 0 then self:Dcircle3d(C,r,V) end
-        -- hidden edges
-        if (mode ~= ld.mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
-            self:Filloptions("none"); self:Linestyle(hiddenstyle)
-            self:Dpolyline3d(BPh, true)
-        end
-        if mode == ld.mGrid then -- edges
-            --self:Linestyle(oldlinestyle)
-            self:Dpoly(ld.cone(C,r,V,A,35,true), {mode=ld.mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
-        end
-        self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
-        self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
-    end
-    
-    function graph3d:Dcylinder(C,r,V,A,args) 
-    -- ou Dcylinder(C,r,A,args)
-    -- dessine un cylindre en fil de fer
-    -- C est le centre d'une face circulaire de rayon r orthogonale au vecteur V
-    -- l'autre face a pour centre A 
-    -- args est une table à 5 champs :
-    -- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor= linecolor, color="", opacity=1}
-    -- mode = 0 mWireframe
-    -- mode = 1 mGrid
-    -- color = "" : pas de remplissage, color ~= "" remplissage avec gradient bi linéaire
-        if isPoint3d(r) then -- ancien format : centre, vecteur, rayon, args (cylindre droit)
-        args = A; 
-        r, V = V, r
-        A = C+V
-        elseif not isPoint3d(A) then -- format C,r,A,args (cylindre droit)
-            args = A; A = V; V = A-C
-        end
-        args = args or {}
-        local color = args.color
-        color = color or ""
-        color = self:Define_temp_color(color)
-        local edgecolor = args.edgecolor or self.param.linecolor
-        local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
-        local hiddencolor = args.hiddencolor or self.param.linecolor
-        --if not Hiddenlines then hiddenstyle = "noline" end
-        local mode = args.mode or ld.mWireframe
-        local opacity = args.opacity or 1
-        local edgewidth = args.edgewidth or self.param.linewidth
-        local edgestyle = args.edgestyle or self.param.linestyle
-        
-        args.gradsection = args.gradsection or {25,18,50}
-        args.gradside= args.gradside or {50,10,100}
-        local lsection, msection, rsection = table.unpack( args.gradsection)
-        local lside, mside, rside = table.unpack( args.gradside)
-        local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
-        local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
-        
-        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(C))*ld.rad
-        if angle < 0 then angle = angle+180
-        elseif angle > 180 then angle = angle-180 
-        end
-        local P = ld.cylinder(C,r,V,A,50,true)
-        local Pv, Ph = self:Classifyfacet(P)
-        local BPv, BPh = ld.border(Pv), ld.border(Ph)
-        local oldfillstyle = self.param.fillstyle
-        local oldfillopacity = self.param.fillopacity
-        local oldfillcolor = self.param.fillcolor
-        local oldlinestyle = self.param.linestyle
-        local oldlinecolor = self.param.linecolor
-        local oldlinewidth = self.param.linewidth
-        self:Lineoptions(edgestyle,edgecolor,edgewidth)
-        if mode == ld.mGrid then self:Linestyle("noline") end
-        -- hidden part
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        --if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
-        --visible part
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSide..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        self:Dpolyline3d(BPv,true)
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        if self:Cosine_incidence(V,A) > 0 then self:Dcircle3d(A,r,V) end
-        if self:Cosine_incidence(-V,C) > 0 then self:Dcircle3d(C,r,V) end
-        -- hidden edges
-        if (mode ~= ld.mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
-            self:Filloptions("none"); self:Linestyle(hiddenstyle)
-            self:Dpolyline3d(BPh, true)
-        end
-        if mode == ld.mGrid then -- edges
-            --self:Linestyle(oldlinestyle)
-            self:Dpoly(ld.cylinder(C,r,V,A,35,false), {mode=ld.mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor, edgewidth=edgewidth, edgestyle=edgestyle})
-        end
-        self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
-        self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
-    end
-     
-    function graph3d:Dfrustum(A,R,r,V,B,args)
-    -- dessine un tronc de cône en fil de fer
-    -- A est le centre de la face de rayon R
-    -- le centre de l'autre face  C=A+V et son rayon est r
-    -- args est une table à 5 champs :
-    -- {mode =0/1, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor=linecolor, color="", opacity=1}
-    -- mode = 0 fil de fer
-    -- mode = 1 grille
-    -- color = "" : pas de remplissage, color ~= "" remplissage avec linéaire
-        if R == r then -- cylinder
-            if not isPoint3d(B) then self:Dcylinder(A,V,R,B) -- B is args in this case
-            else self:Dcylinder(A,R,V,B,args)
-            end
-            return
-        end
-        local C
-        if isPoint3d(B) then -- slanted frustum
-            C = ld.dproj3d(B,{A,V})
-            V = C-A
-        else C = A+V; args = B; B = C
-        end
-        
-        args = args or {}
-        local color = args.color
-        color = color or ""
-        color = self:Define_temp_color(color)
-        local edgecolor = args.edgecolor or self.param.linecolor
-        local hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
-        local hiddencolor = args.hiddencolor or self.param.linecolor
-        --if not Hiddenlines then hiddenstyle = "noline" end        
-        local mode = args.mode or ld.mWireframe
-        local opacity = args.opacity or 1
-        local edgewidth = args.edgewidth or self.param.linewidth
-        local edgestyle = args.edgestyle or self.param.linestyle
-        
-        args.gradsection = args.gradsection or {25,18,50}
-        args.gradside= args.gradside or {50,10,100}
-        local lsection, msection, rsection = table.unpack( args.gradsection)
-        local lside, mside, rside = table.unpack( args.gradside)
-        local gradStyleSide = "left color="..color.."!"..tostring(lside)..",right color = "..color.."!"..tostring(rside)..",middle color="..color.."!"..tostring(mside)
-        local gradStyleSection = "left color="..color.."!"..tostring(lsection)..",right color = "..color.."!"..tostring(rsection)..",middle color="..color.."!"..tostring(msection)
-                
-        local angle = cpx.arg( self:Proj3d(A)-self:Proj3d(B))*ld.rad
-        if angle < 0 then angle = angle+180
-        elseif angle > 180 then angle = angle-180 
-        end
-        local P = ld.frustum(A,R,r,V,B,50,true)
-        local Pv, Ph = self:Classifyfacet(P)
-        local BPv, BPh = ld.border(Pv), ld.border(Ph)
-        local oldfillstyle = self.param.fillstyle
-        local oldfillopacity = self.param.fillopacity
-        local oldfillcolor = self.param.fillcolor
-        local oldlinestyle = self.param.linestyle
-        local oldlinecolor = self.param.linecolor
-        local oldlinewidth = self.param.linewidth
-        self:Lineoptions(edgestyle,edgecolor,edgewidth)
-        if mode == ld.mGrid then self:Linestyle("noline") end
-        -- hidden part
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        if mode ~= ld.mWireframe  then self:Dpolyline3d(BPh, true) end
-        --visible part
-        if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSide..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        self:Dpolyline3d(BPv, true)
-       if color ~= "" then 
-            self:Filloptions("gradient", gradStyleSection..",shading angle="..ld.strReal(angle),args.opacity)
-        end
-        if self:Cosine_incidence(V,B) > 0 then self:Dcircle3d(B,r,V) end
-        if self:Cosine_incidence(-V,A) > 0 then self:Dcircle3d(A,R,V) end
-        -- hidden edges
-        if (mode ~= ld.mGrid) and (hiddenstyle ~= "noline") then -- partie cachée
-            self:Filloptions("none"); self:Linestyle(hiddenstyle)
-            self:Dpolyline3d(BPh, true)
-        end
-        if mode == ld.mGrid then -- edges
-            --self:Linestyle(oldlinestyle)
-            self:Dpoly(ld.frustum(A,R,r,V,B,35,false), {mode=ld.mWireframe,hiddenstyle=hiddenstyle,hiddencolor=hiddencolor,edgecolor=edgecolor,edgestyle=edgestyle,edgewidth=edgewidth})
-        end
-        self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
-        self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
-    end
-    
-    function graph3d:Dsphere(A,r,args)
-    -- dessine une sphère en fil de fer
-    -- A est le sommet, r le rayon
-    -- args est une table à 5 champs :
-    -- {mode=0/1/2, hiddenstyle="dotted", hiddencolor = linecolor, edgecolor=linecolor,color="", opacity=1}
-    -- color = "" : pas de remplissage, color ~= "" remplissage avec ball color
-    -- si mode 1 : edgestyle = linestyle, edgecolor = linecolor, edgewidth = linewidth
-    -- mode = 0 contour avec équateur
-    -- mode = 1 contour avec méridiens et fuseaux
-    -- mode = 2 contour seulement (cercle)
-        args = args or {}
-        args.color = args.color or ""
-        args.edgecolor = args.edgecolor or self.param.linecolor
-        args.hiddencolor = args.hiddencolor or args.edgecolor
-        args.hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
-        args.edgestyle = args.edgestyle or self.param.linestyle
-        args.edgecolor = args.edgecolor or self.param.linecolor
-        args.edgewidth = args.edgewidth or self.param.linewidth    
-        args.mode = args.mode or 0
-        args.opacity = args.opacity or 1
-        
-        local oldfillstyle = self.param.fillstyle
-        local oldfillopacity = self.param.fillopacity
-        local oldfillcolor = self.param.fillcolor
-        local oldlinestyle = self.param.linestyle
-        local oldlineopacity = self.param.lineopacity
-        local oldlinecolor = self.param.linecolor
-        local oldlinewidth = self.param.linewidth
-        --self:Linecolor(args.edgecolor)
-        local V = vecK
-        if args.color ~= "" then
-            self:Filloptions("gradient", "ball color="..args.color, args.opacity)
-        else
-            self:Filloptions("none")
-        end
-        local S = {A,r}
-        local mat = ld.invmatrix3d( self.matrix3d )
-        local cam = ld.mtransform3d(camera,mat)
-        local S1 = { (cam+A)/2, pt3d.abs(A-cam)/2}
-        local I,R,n = ld.interSS(S,S1)
-        self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
-        self:Dcircle3d(I,R,n)
-        if  args.mode == 0 then -- équateur
-            local M1, M2 = ld.interCS({A,r,V},S1)
-            local M3 = ld.rotate3d(M1,90,{A,vecK})
-            local sens
-            if self:Cosine_incidence(M3-A,M3) > 0 then sens = 1 else sens = -1 end
-            self:Filloptions("none") --; self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
-           self:Darc3d(M1,A,M2,r,sens,V)
-            self:Lineoptions(args.hiddenstyle,args.hiddencolor)
-            self:Darc3d(M1,A,M2,r,-sens,V)
-        elseif args.mode == 1 then -- grille
-            self:Dpoly(ld.sphere(A,r),{mode=0,hiddenstyle=args.hiddenstyle,hiddencolor=args.hiddencolor,edgestyle=args.edgestyle,edgecolor=args.edgecolor,edgewidth=args.edgewidth})
-        end
-        self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
-        self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
-        self:Lineopacity(oldlineopacity)
-    end
     ld.camera = camera
     ld.target = target
 
@@ -484,10 +187,10 @@ end
 
 --This function is automatically called at the next perspective change.
 function luadraw.close_central()
-    graph3d.Dcone = old_Dcone
-    graph3d.Dcylinder = old_Dcylinder
-    graph3d.Dfrustum = old_Dfrustum
-    graph3d.Dsphere = old_Dsphere
+    --graph3d.Dcone = old_Dcone
+    --graph3d.Dcylinder = old_Dcylinder
+    --graph3d.Dfrustum = old_Dfrustum
+    --graph3d.Dsphere = old_Dsphere
     graph3d.Proj3d = old_Proj3d
     graph3d.Proj3dV = old_Proj3dV
     graph3d.Cosine_incidence = old_Cosine_incidence

@@ -1,6 +1,6 @@
 -- luadraw_compile_tex.lua
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -240,7 +240,7 @@ local splitLongSeg = function(L) -- to divide segments that are too long
             local nb = math.floor(10*len)
             local aux = ld.linspace(A,B,nb+2) 
             if k > 2 then table.remove(aux,1) end
-            ld.insert(cp, aux )
+            table.append(cp, aux )
         end
         table.insert(ret,cp)
     end
@@ -266,7 +266,7 @@ function ld.compiled_tex2polyline(L,scale)
         local style = table.remove(p,1)
         local cmd = table.remove(p) -- We remove the beginning and the end, leaving only the path
         local C1 = splitLongSeg( ld.path(p) )
-        ld.insert(ret,C1)
+        table.append(ret,C1)
     end
     return ret -- list of list of complex numbers
 end
@@ -376,7 +376,7 @@ local splitLongSeg3d = function(L) -- to divide segments that are too long
             A = B; B = lg[k]
             local len = pt3d.abs(B-A)
             local nb = math.floor(10*len)
-            ld.insert(cp, ld.linspace(A,B,nb+2) )
+            table.append(cp, ld.linspace(A,B,nb+2) )
         end
         table.insert(ret,cp)
     end
@@ -447,7 +447,7 @@ function graph:Compiled_tex2path3d(L,options)
             local lwd = table.remove(p,1)
             local cmd = table.remove(p) -- We remove the beginning and the end, leaving only the path
             local C1 = splitLongSeg3d( ld.path3d( ld.ftransform(p,f) ) )
-            ld.insert(ret,C1)
+            table.append(ret,C1)
         end
         return ret -- list of list of 3d points
     end

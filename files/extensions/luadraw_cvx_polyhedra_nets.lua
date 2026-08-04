@@ -1,6 +1,6 @@
 -- luadraw_polyhdron_net.lua (chargé par luadraw_graph2d.lua)
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -293,7 +293,7 @@ function ld.unfold_polyhedron(P,options)
                     else ab = b..";"..a
                     end
                     if edges_list[ab] == nil then edges_list[ab] = {id1,id2,tree_index[num]}
-                    else ld.insert(edges_list[ab], {id1,id2,tree_index[num]})
+                    else table.append(edges_list[ab], {id1,id2,tree_index[num]})
                     end
                 end
             end

@@ -1,4 +1,4 @@
-% luadraw.sty version 3.3 du 09/07/2026%
+% luadraw.sty version 3.4 du 04/08/2026%
 %% ---------------------------------------%
 %% Copyright (C) 2026 Patrick Fradin%
 %% ---------------------------------------%
@@ -31,7 +31,7 @@
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2026/07/09 version 3.3, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2026/08/04 version 3.4, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%
@@ -187,6 +187,7 @@ end
 \ifluaDraw@DefaultThreeD%
 \begin{luacode*}
 luadraw.graph3d = require 'luadraw_graph3d' -- définition de la classe graph3d
+require 'luadraw_frustum_and_co'
 require 'luadraw_central_perspective' -- chargement de la perspective centrale
 \end{luacode*}
 \fi%

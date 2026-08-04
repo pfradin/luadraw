@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -121,13 +121,13 @@ function ld.solve(f,a,b,n,df) -- version 2.4 of luadraw
     local fin, h, r = x+delta, 1e-6, nil
     if df == nil then
         df = function(x)
-            return (f(x+h)-f(x))/h
+            return (f(x+h)-f(x-h))/(2*h)
         end
     end
     local iter = function(x)
         return x-f(x)/df(x)
     end
-    while x < b do
+    for k = 1, n do
         r = x+delta/2
         for i = 1,5 do
             if r ~= nil then r = ld.evalf(iter,r) end
@@ -138,6 +138,7 @@ function ld.solve(f,a,b,n,df) -- version 2.4 of luadraw
         end
         x = fin; fin = x+delta
     end
+    if (math.abs(f(b)) < 1e-6) then table.insert(S,r) end
     if #S > 0 then return S end
 end
 

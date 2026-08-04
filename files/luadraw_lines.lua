@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -170,7 +170,7 @@ function ld.arcb(b,a,c,r,sens) --renvoie un arc de cercle sous forme de chemin a
     local du, dn = u*0.555, n*0.555
     local chemin = {a+u}
     while angle >= math.pi/2 do
-        ld.insert(chemin,{a+u+dn,a+du+n,a+n,"b"})
+        table.append(chemin,{a+u+dn,a+du+n,a+n,"b"})
         angle = angle - math.pi/2
         v = u; dv = du; u = n; du = dn; n = -v; dn = -dv
     end
@@ -178,7 +178,7 @@ function ld.arcb(b,a,c,r,sens) --renvoie un arc de cercle sous forme de chemin a
     local k = 4*(1-ca)*ca/(3*sa^2)*1.005
     local e = ld.interD({a+u,n},{d,cpx.I*(d-a)})
     if e ~= nil then
-        ld.insert(chemin, {a+u+k*(e-a-u), d+k*(e-d), d,"b"})
+        table.append(chemin, {a+u+k*(e-a-u), d+k*(e-d), d,"b"})
     end
     return chemin
 end
@@ -818,13 +818,13 @@ function ld.clipseg(A,B,xmin,xmax,ymin,ymax)
     end
     if #res >= 2 then 
         local t1, t2 = table.unpack(res)
-        res = {}
+        local a, b
         if t1 > t2 then t1, t2 = t2, t1 end
         if t2 < 0 then return end
         if t1 > 1 then return end
-        if t1 <= 0 then table.insert(res,A) else table.insert(res, A+t1*U) end
-        if t2 >= 1 then table.insert(res,B) else table.insert(res, A+t2*U) end
-        return res 
+        if t1 <= 0 then a =A else a = A+t1*U end
+        if t2 >= 1 then b = B else b = A+t2*U end
+        if cpx.dot(b-a,B-A) < 0 then return {b,a} else return {a,b} end
     end
 end
 
@@ -851,7 +851,11 @@ function ld.clipline(d,xmin,xmax,ymin,ymax)
             if z ~= nil and (t > 0) then table.insert(res,z) end
         end
     end
-    if #res == 2 then return res end
+    if #res == 2 then 
+        local a, b = table.unpack(res)
+        if cpx.dot(b-a,U) < 0 then a, b = b, a end
+        return {a,b}
+    end
 end
 
 function ld.clippolyline(L,xmin,xmax,ymin,ymax,close)
@@ -1591,8 +1595,10 @@ function ld.path(chemin,nbdots)
         end
         local a,c1,c2,b = table.unpack(aux)
         local C = ld.bezier(a,c1,c2,b,nbdots) -- renvoie une liste de listes de complexes
-        for _, z in ipairs(C[1]) do
-            table.insert(crt,z)
+        if C ~= nil then
+            for _, z in ipairs(C[1]) do
+                table.insert(crt,z)
+            end
         end
         first = last
         aux = {}
@@ -1755,14 +1761,14 @@ function ld.convpath(L)
 
     local lineto = function() -- traitement du lineto
         -- on relie les points par une ligne
-        ld.insert(res,aux); table.insert(res,"l")
+        table.append(res,aux); table.insert(res,"l")
         first = last
         aux = {}
     end
     
     local moveto = function() -- traitement du moveto
     -- on démarre une nouvelle composante
-        ld.insert(res,aux)
+        table.append(res,aux)
         table.insert(res,"m")
         first = last
         aux = {}
@@ -1776,7 +1782,7 @@ function ld.convpath(L)
     
     local Bezier = function()
         -- aux contient une ou plusieurs courbes de bézier
-        ld.insert(res,aux)
+        table.append(res,aux)
         if aux[#aux] ~= "b" then table.insert(res,"b") end
         first = last
         aux = {}
@@ -1905,16 +1911,18 @@ function ld.convpath(L)
     return res
 end
 
-function ld.polyline2path(L) -- conversion list of complex numbers or a list of lists of  complex numbers (L) to path
+function ld.polyline2path(L, close) -- conversion list of complex numbers or a list of lists of  complex numbers (L) to path
     if (L==nil) or (type(L) ~= "table") or (#L == 0) then return end
     if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
     local ret = {} 
     local aux
+    close = close or false
     for _, cp in ipairs(L) do
         aux = table.copy(cp)
         table.insert(aux,2,"m") -- move
         table.insert(aux,"l")  -- lineto
-        ld.insert(ret,aux)
+        if close then table.insert(aux,"cl") end 
+        table.append(ret,aux)
     end
     return ret
 end
@@ -2025,7 +2033,7 @@ function ld.cap(C1, C2) -- contour de l'intersection de C1 et C2
             end
         end
         table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
-        ld.insert(rep,aux)
+        table.append(rep,aux)
     end
     table.insert(rep,C2[1])
     return rep
@@ -2068,7 +2076,7 @@ function ld.cup(C1, C2)
             aux = ld.cut(C1,L2)
         end
         table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
-        ld.insert(rep,aux)
+        table.append(rep,aux)
     end
     table.insert(rep,C2[1])
     return rep
@@ -2112,7 +2120,7 @@ function ld.setminus(C1, C2)
             aux = ld.cut(C1,L2)
         end
         table.remove(aux); C1 = ld.cut(C1,L2,true) -- on coupe C1 avant L2
-        ld.insert(rep,aux)
+        table.append(rep,aux)
     end
     table.insert(rep,C2[1])
     return rep
@@ -2228,7 +2236,7 @@ function ld.line2strip(L,wd,closed,ends,mode)
         bord = {a-epR*v,a+epL*v}; dessus= {bord[2],"l"}
         first = bord[1]; 
         if ends == "round" then
-            ld.insert(aux, {bord[2], "m", a + (epL-epR)/2*v, first, wd/2, 1, "ca"} )
+            table.append(aux, {bord[2], "m", a + (epL-epR)/2*v, first, wd/2, 1, "ca"} )
         else
             table.insert(aux,first); table.insert(aux,"m")
         end
@@ -2249,13 +2257,13 @@ function ld.line2strip(L,wd,closed,ends,mode)
         end
         if ends == "butt" then
             aux = ld.concat(aux,{c-epR*v*i, c+epL*v*i}, dessus,"cl")
-            ld.insert(ret, aux)
+            table.append(ret, aux)
         elseif ends == "round" then
             local m = c + (epL-epR)/2*v*i
             aux = ld.concat(aux,{c-epR*v*i, "l", m, c+epL*v*i, wd/2, 1, "ca"}, dessus,"cl")
-            ld.insert(ret, aux)
+            table.append(ret, aux)
         else
-            ld.insert(aux,{c-epR*i*v,"l"}); ld.insert(dessus,{c+epL*i*v,"m"},1)
+            table.append(aux,{c-epR*i*v,"l"}); ld.insert(dessus,{c+epL*i*v,"m"},1)
             ret = ld.concat(ret, aux,dessus)
         end
     end
@@ -2468,7 +2476,7 @@ function ld.voronoi(points,window)
     --corps de la fonction voronoi
     for num,z in ipairs(L) do
         local T = z[1] -- triangle de Delaunay
-        ld.insert(T,table.copy(T))
+        table.append(T,table.copy(T))
         local C = z[2] -- centre du cercle ciconscrit
         for j = 1, 3 do -- parcours par arête
             local A = {T[j],T[j+1]}; Sort(A)

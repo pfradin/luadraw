@@ -1,6 +1,6 @@
 -- luadraw_spherical.lua 
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -37,6 +37,7 @@ local after_sphere = {}
 local hidden_part = {}
 local on_back_sphere = {}
 local inside_sphere = {}
+local add_inside_sphere = {}
 local on_front_sphere = {}
 
 function graph3d:Clear_spherical()
@@ -45,6 +46,7 @@ function graph3d:Clear_spherical()
     hidden_part = {}
     on_back_sphere = {}
     inside_sphere = {}
+    add_inside_sphere = {}
     on_front_sphere = {}
     sphere = {["C"]=Origin, ["R"]=3, 
     ["color"]="orange",
@@ -190,7 +192,7 @@ function ld.projstereo_Sfacet(L, N, h, close) -- stereographic projection of a s
         local apath, move = projstereo_Sarc({A,B}, N, h)
         if apath ~= nil then
             if (k>2) and (not move)  then table.remove(apath,1) end
-            ld.insert(ret, apath)
+            table.append(ret, apath)
         end
     end
     return ret
@@ -254,7 +256,9 @@ function graph3d:Dspherical()
             self:Linecap("round"); -- pour que les liaisons soient correctes entre segments successifs
             if arrows ~= 0 then
                 self:Dpath3d(elt[1],"arrows="..arrowstyle)
-            else self:Dpath3d(elt[1])
+            else 
+                --ld.whatis(elt[1])
+                self:Dpath3d(elt[1])
             end
         end
     end
@@ -273,6 +277,9 @@ function graph3d:Dspherical()
         end
     end
     for _, elt in ipairs(inside_sphere) do
+        display_elt(elt)
+    end
+    for _, elt in ipairs(add_inside_sphere) do
         local P = elt[1]
         if type(P) == "string" then -- a label
             self:Dlabel3d(P,elt[2],elt[3])
@@ -331,7 +338,7 @@ function graph3d:DSaddinside(path,draw_options,hidden,hidden_options) --
     draw_options = draw_options or ""
     if hidden == nil then hidden = ld.Hiddenlines end
     hidden_options = hidden_options or {}
-    table.insert(inside_sphere, {path, draw_options})
+    table.insert(add_inside_sphere, {path, draw_options})
     if hidden or ld.Hiddenlines then
         table.insert(hidden_options,1,ld.Hiddenlinestyle)
         table.insert(hidden_options,1,path)
@@ -419,7 +426,7 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
             else
                 local A, B = I+r*math.cos(t0)*n1+r*math.sin(t0)*n2, I+r*math.cos(t0)*n1-r*math.sin(t0)*n2
                 if out ~= nil then
-                    ld.insert(out,{A,B})
+                    table.append(out,{A,B})
                 end
                 local sens = 1
                 if pt3d.dot(I-C+r*n1,N) < 0 then 
@@ -540,7 +547,7 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
             add_seg_out(J,A,arrowA) -- [A,J] is out S, -- [J,K] is in S
             add_seg_in(J,K,0)
             add_seg_out(K,B,arrowB) -- [K,B] is out S
-            if out ~= nil then ld.insert(out,{J,K}) end
+            if out ~= nil then table.append(out,{J,K}) end
         elseif (t1 <= 0) and (t2 < ell) then 
             add_seg_out(K,B,arrowB) -- [A,K] is in S, [K,B] is out S
             add_seg_in(K,A,arrowA)
@@ -733,7 +740,6 @@ function graph3d:DSarc(AB,sens,options)
                     end
                 end
             else -- B est visible, A non
-                print("on est là", pt3d.abs(B-M1))
                 if sens == 1 then
                    table.insert(after_sphere, {{M1,C,B,R,sens,u,"ca"},style,color,width,opacity,arrowB}) 
                    if hidden and hiddendelayed and (style ~= "noline") then
@@ -901,8 +907,8 @@ function graph3d:DSfacet(facet, options)
             U = V; V = chemV[k]
             if pt3d.abs(U[1]-V[1]) > 1e-8 then
                 if U[2] and V[2] then 
-                    ld.insert(chem,{I,V[1],r,1,"ca"}) 
-                else ld.insert(chem,{Ct,V[1],R,1,"ca"});
+                    table.append(chem,{I,V[1],r,1,"ca"}) 
+                else table.append(chem,{Ct,V[1],R,1,"ca"});
                 end
             end
         end
@@ -918,7 +924,7 @@ function graph3d:DSfacet(facet, options)
         for k = 2, #chemH do
             U = V; V = chemH[k]
             if pt3d.abs(U[1]-V[1]) > 1e-8 then
-                if U[2] and V[2] then ld.insert(chem,{I,V[1],r,1,"ca"}) else ld.insert(chem,{Ct,V[1],R,1,"ca"}) end
+                if U[2] and V[2] then table.append(chem,{I,V[1],r,1,"ca"}) else table.append(chem,{Ct,V[1],R,1,"ca"}) end
             end
         end    
         if hidden  and (style ~= "noline") then
@@ -1043,13 +1049,12 @@ function graph3d:DScurve(L,options)
     local color = options.color or self.param.linecolor
     local width = options.width or self.param.linewidth
     local opacity = options.opacity or self.param.lineopacity
-    local hidden = options.hidden
-    if hidden == nil then hidden = ld.Hiddenlines end
+    local hiddenlines = options.hidden
+    if hiddenlines == nil then hiddenlines = ld.Hiddenlines end
     local out = options.out -- ends of hidden parts
     local C, R = sphere.C, sphere.R
     local N = self.Normal
     local Visible, Hidden = {},{}
-    local visible, hidden, etat, Avisible = {}, {}
     local visible_function = function(A)
         return visibledot(A)
     end
@@ -1064,24 +1069,100 @@ function graph3d:DScurve(L,options)
     for _, visible in ipairs(Visible) do
         if #visible > 1 then
             table.insert(visible,2,"m"); table.insert(visible,"l")
-            ld.insert(rep,visible)
+            table.append(rep,visible)
         end
     end
     table.insert(after_sphere, {rep,style,color,width,opacity})
-    if hidden and hiddendelayed and (style ~= "noline") then
+    if hiddenlines and hiddendelayed and (style ~= "noline") then
         table.insert(hidden_part, {rep,ld.Hiddenlinestyle,color,width,opacity})
     end
     rep = {}
-    for _, hidden in ipairs(Hidden) do
-        if #hidden > 1 then
-            table.insert(hidden,2,"m"); table.insert(hidden,"l")
-            ld.insert(rep,hidden)
+    for _, hide in ipairs(Hidden) do
+        if #hide > 1 then
+            table.insert(hide,2,"m"); table.insert(hide,"l")
+            table.append(rep,hide)
         end
     end
-    if hidden  and (style ~= "noline") then
+    if hiddenlines and (style ~= "noline") then
         table.insert(hidden_part, {rep,ld.Hiddenlinestyle,color,width,opacity})
     else
        table.insert(before_sphere, {rep,style,color,width,opacity})
+    end
+end
+
+-- region spherique
+function graph3d:DSregion(L,options)
+-- L est une liste de points 3d représentant une courbe fermée tracée sur la sphère courante
+    if (L == nil) or (type(L) ~= "table") then return end
+    options = options or {}
+    local style = options.style or self.param.linestyle
+    local color = options.color or self.param.linecolor
+    local width = options.width or self.param.linewidth
+    local opacity = options.opacity or self.param.lineopacity
+    local fillopacity = options.fillopacity or 0.3
+    local fill = options.fill or ""
+    local dir = options.dir or {1,1}
+    if type(dir) == "number" then dir = {dir, dir} end
+    local hiddenlines = options.hidden
+    if hiddenlines == nil then hiddenlines = ld.Hiddenlines end
+    local out = options.out -- ends of hidden parts
+    local C, R = sphere.C, sphere.R
+    local I,r,n = table.unpack(sphere.horizon)    
+    local Visible, Hidden = {},{}
+    local visible_function = function(A)
+        return visibledot(A)
+    end
+    Visible, Hidden =  ld.split_points_by_visibility(L,visible_function)
+    if out ~= nil then
+        for _,F in ipairs(Hidden) do
+            table.insert(out,F[1])
+            if F[#F] ~= F[1] then table.insert(out,F[#F]) end
+        end
+    end
+    local rep, first = {}, true
+    for _, visible in ipairs(Visible) do
+        if #visible > 1 then
+            if not first then 
+                table.append(rep,{I,visible[1],r,dir[1],"ca"})
+                table.remove(visible,1); table.insert(visible,"l")
+                table.append(rep, visible)
+            else
+                table.insert(visible,2,"m"); 
+                table.insert(visible,"l")
+                table.append(rep,visible)
+                first = false; 
+            end
+        end
+    end
+    if rep[#rep-1] ~= rep[1] then
+        table.append(rep,{I,rep[1],r,dir[1],"ca"})
+    end
+    table.insert(after_sphere, {rep,style,color,width,opacity,nil,fill,fillopacity})
+    if hiddenlines and hiddendelayed and (style ~= "noline") then
+        table.insert(hidden_part, {rep,ld.Hiddenlinestyle,color,width,opacity})
+    end
+    rep, first = {}, true
+    for _, hide in ipairs(Hidden) do
+       if #hide > 1 then
+            if not first then 
+                table.append(rep,{I,hide[1],r,dir[2],"ca"})
+                table.remove(hide,1); table.insert(hide,"l")
+                table.append(rep, hide)
+            else
+                table.insert(hide,2,"m"); 
+                table.insert(hide,"l")
+                table.append(rep,hide)
+                first = false; 
+            end
+        end
+    end
+    if rep[#rep-1] ~= rep[1] then
+        table.append(rep,{I,rep[1],r,dir[2],"ca"})
+    end
+    if hiddenlines and (style ~= "noline") then
+        table.insert(hidden_part, {rep,ld.Hiddenlinestyle,color,width,opacity})
+    else
+       table.insert(before_sphere, {rep,style,color,width,opacity,nil,fill,fillopacity})
     end
 end
 

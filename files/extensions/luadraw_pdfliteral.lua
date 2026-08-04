@@ -1,6 +1,6 @@
 -- luadraw_pdfliteral.lua
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -287,8 +287,8 @@ if ld.graph3d ~= nil then
                         return args.color
                     end
                 else
-                    local pal, mode = table.unpack(args.usepalette)
-                    args.getcolor = ld.define_getcolor(face,pal,mode,args.color)
+                    local pal, mode, minmax = table.unpack(args.usepalette)
+                    args.getcolor = ld.define_getcolor(face,pal,mode,args.color,minmax)
                 end            
                 for _, f in ipairs(face) do
                     table.insert(f,args) -- chaque facette est accompagnée de ses arguments

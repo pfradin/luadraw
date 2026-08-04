@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -309,8 +309,11 @@ function ld.insert(t1,t2,pos)
     if complex.isComplex(t2) then inserer(t2) 
     else
         if type(t2) == "table" then
-            for _,x in ipairs(t2) do
-                inserer(x)
+            if pos == nil then table.append(t1,t2)
+            else
+                for _,x in ipairs(t2) do
+                    inserer(x)
+                end
             end
         else inserer(t2) 
         end
@@ -321,7 +324,12 @@ function ld.concat(...)
 -- concatène les tables passées en arguments et renvoie la table résultante
     local res = {}
     for k,x in ipairs{...} do
-        ld.insert(res,x)
+        --ld.insert(res,x)
+        if (type(x)=="number") or (complex.isComplex(x)) or ((ld.graph3d~=nil) and ld.pt3d.isPoint3d(x))
+        then table.insert(res,x)
+        elseif type(x) == "table" then table.append(res,x)
+        else table.insert(res,x)
+        end
     end
     if #res > 0 then return res end
 end

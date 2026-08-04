@@ -1,6 +1,6 @@
 -- luadraw_coils_chains.lua 
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -86,8 +86,8 @@ function graph:Dcoil(list,R,options)
         else
             C = {a+v1, "m", b+v2,"l"}
         end
-        ld.insert(C, {b,b-v2,r,-1,"ca",b-v2+u2,a-v1+u1,a-v1,"b"})
-        if endb%2 == 1 then ld.insert(C,{a,a+v1,r,-1,"ca"}) end
+        table.append(C, {b,b-v2,r,-1,"ca",b-v2+u2,a-v1+u1,a-v1,"b"})
+        if endb%2 == 1 then table.append(C,{a,a+v1,r,-1,"ca"}) end
         if endb == 2 then table.insert(C,"cl") end
         local angle = (cpx.arg(v)*ld.rad )--%180
         if wireframe then
@@ -232,7 +232,7 @@ local coil2 = function(list, R, direction)
             end_angle = cpx.angle(B-A,C-B)
         else end_angle = 0
         end
-        ld.insert(ret, spring(A, sp, B))
+        table.append(ret, spring(A, sp, B))
     end
     if direction == 1 then ret = ld.reverse(ret) end
     return ret
@@ -364,7 +364,7 @@ local chain2 = function(L,h)
         local w = (x2-x1)/12
         local v = h*cpx.I*cpx.normalize(x2-x1)
         c, d = (3*x1+x2)/4, (x1+3*x2)/4
-        ld.insert(lastfront, {c-w+v,c-w+v,c+v,"b"})
+        table.append(lastfront, {c-w+v,c-w+v,c+v,"b"})
         if (k > 1) or closed then 
             table.insert(front, lastfront)
         else
@@ -373,7 +373,7 @@ local chain2 = function(L,h)
         table.insert(front, {c-v,"m",c-v+w,d+v-w,d+v,"b"})
         lastfront = {d-v,"m",d-v+w,d-v+w,x2,"b"}
         
-        ld.insert(lastback, {c-v-w,c-v-w,c-v,"b"})
+        table.append(lastback, {c-v-w,c-v-w,c-v,"b"})
         table.insert(back, lastback)
         table.insert(back, {c+v,"m",c+v+w,d-v-w,d-v,"b"})
         lastback = {d+v,"m",d+v+w,d+v+w,x2,"b"}

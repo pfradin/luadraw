@@ -1,6 +1,6 @@
 -- luadraw_graph2d.lua
--- date 2026/07/09
--- version 3.3
+-- date 2026/08/04
+-- version 3.4
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -252,15 +252,15 @@ function luadraw_graph2d:Dgradline(d, options)
     for k = k1, k2-1 do
         O = O + pas
         if k%(1+nbsubdiv) == 0 
-            then ld.insert(graduations, {O-n1,"m", O+n2,"l"})
-            else ld.insert(graduations, {O-n1/2,"m", O+n2/2,"l"} )
+            then table.append(graduations, {O-n1,"m", O+n2,"l"})
+            else table.append(graduations, {O-n1/2,"m", O+n2/2,"l"} )
         end
     end
     if (arrows == "-") or (self:Abs(O+pas-L[2]) > 0.2) 
     then 
         O = O + pas
-        if k2%(1+nbsubdiv) == 0 then  ld.insert(graduations, {O-n1,"m", O+n2,"l"})
-        else ld.insert(graduations, {O-n1/2,"m", O+n2/2,"l"} )
+        if k2%(1+nbsubdiv) == 0 then  table.append(graduations, {O-n1,"m", O+n2,"l"})
+        else table.append(graduations, {O-n1/2,"m", O+n2/2,"l"} )
         end
     end
     self:Dpath(graduations,"-")
@@ -315,7 +315,7 @@ function luadraw_graph2d:Dgradline(d, options)
          if dec ~= "" then
             fracN, fracD = ld.simplifyFrac(originnum,labelden)
             texte = ld.gradLabel(fracN,fracD,labeltext)
-            ld.insert(labelList, {texte,O+dec,optlab})
+            table.append(labelList, {texte,O+dec,optlab})
             --self:Dlabel(texte,O+dec,optlab)
         end
         -- labels sur graduations à droite
@@ -325,7 +325,7 @@ function luadraw_graph2d:Dgradline(d, options)
         for k = 1, k2_-1 do
             if k >= k1_ then
                 texte = ld.gradLabel(fracN, fracD,labeltext)
-                ld.insert(labelList, {texte,O,optlab})
+                table.append(labelList, {texte,O,optlab})
                 --self:Dlabel(texte,O,optlab)
             end
             O = O+u; fracN, fracD = ld.addFrac(fracN, fracD,unit,labelden)
@@ -333,7 +333,7 @@ function luadraw_graph2d:Dgradline(d, options)
         if (k2_ >= 1) and (arrows == "-") or (self:Abs(A+k2_*u-L[2]) > 0.2) 
         then 
             texte = ld.gradLabel(fracN, fracD,labeltext)
-            ld.insert(labelList, {texte,O,optlab})
+            table.append(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
         end
         -- labels sur graduations à gauche
@@ -341,7 +341,7 @@ function luadraw_graph2d:Dgradline(d, options)
         k1_ = (-k1)//(1+nbsubdiv)
         for k = 1, k1_ do
             texte = ld.gradLabel(fracN, fracD,labeltext)
-            ld.insert(labelList, {texte,O,optlab})
+            table.append(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
             O = O-u; fracN, fracD = ld.addFrac(fracN, fracD,-unit,labelden)
         end
@@ -353,7 +353,7 @@ function luadraw_graph2d:Dgradline(d, options)
             local z, texte = toComplex(mylabels[2*k-1]), mylabels[2*k]
             local x_, sdot = z.re, (z.im ~= 0) -- si la partie imaginaire n'est pas nulle, on affiche un point
             O = dep+labelshift*uDir+x_*u
-            ld.insert(labelList, {texte,O,optlab})
+            table.append(labelList, {texte,O,optlab})
             --self:Dlabel(texte,O,optlab)
             if sdot then table.insert(dots, A+x_*u) end
         end
@@ -738,7 +738,7 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
         local x = xmin
         for k = 1, ld.nearest((xmax-xmin)*xnbsubdiv/xpas) do -- math.floor((xmax-xmin)*xnbsubdiv/xpas) do -- 
             if (x>=A.re) and (x<=B.re) and ((k-1)%xnbsubdiv ~= 0) then 
-                ld.insert(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) 
+                table.append(grille, {Z(x,ydep),"m",Z(x,yfin),"l"}) 
             end
             x = x + subgridpasx
         end
@@ -747,7 +747,7 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
         local y = ymin
         for k = 1, ld.nearest((ymax-ymin)*ynbsubdiv/ypas) do -- math.floor((ymax-ymin)*ynbsubdiv/ypas) do --
             if (y>=A.im) and (y<=B.im) and ((k-1)%ynbsubdiv ~= 0) then  
-                ld.insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) 
+                table.append(grille, {Z(xdep,y),"m",Z(xfin,y),"l"}) 
             end
             y = y + subgridpasy
         end
@@ -762,7 +762,7 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
         x = xmin
         for k = 0, xdiv do 
             if (x>=A.re) and (x<=B.re) then
-                ld.insert(grille,{Z(x,ydep),"m",Z(x,yfin),"l"})
+                table.append(grille,{Z(x,ydep),"m",Z(x,yfin),"l"})
             end
             x = x+xpas 
         end
@@ -771,7 +771,7 @@ function luadraw_graph2d:Dgrid(d,options) -- Dgrid( {coin inf gauche, coin sup d
         y = ymin
         for k = 0, ydiv do
             if (y>=A.im) and (y<=B.im) then
-                ld.insert(grille, {Z(xdep,y),"m",Z(xfin,y),"l"})
+                table.append(grille, {Z(xdep,y),"m",Z(xfin,y),"l"})
             end
             y = y+ypas 
         end

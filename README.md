@@ -1,4 +1,4 @@
-# Package luadraw for LuaLaTeX version 3.3
+# Package luadraw for LuaLaTeX version 3.4
 
 * The *luadraw* package defines the environment of the same name, which lets you create mathematical graphs (2D and 3D) using the Lua language. These graphs are ultimately drawn by TikZ (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language, capable of performing calculations, using TikZ's graphics capabilities.  
 Run `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) required) or
@@ -10,13 +10,36 @@ Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requi
  copier le contenu de *files* dans : texmf/tex/lualatex/luadraw/  
  et copier le contenu de *doc*  : texmf/doc/lualatex/luadraw/
  
+**Version 3.4**
+
+* For the *g:Dfrustum()* method, the old syntax *g:Dfrustum(C,R,r,V,options* has been changed to *g:Dfrustum(C,R,r,A,options*; the difference is that the center of the second circular base is point *A*, whereas in the old syntax it was point *C+V*. Similarly, for the *ld.frustum()* function, the old syntax *ld.frustum(C,R,r,V,nb,open* becomes *ld.frustum(C,R,r,A,nb,open*, with the same difference. This change ensures a consistent syntax for cylinders, cones, and truncated cones (frustum).
+    
+* For the method *g:Beginclip(path, inverse)*, the *path* can be a 2D or 3D path.
+
+* In the *luadraw_spherical* module: addition of the *g:DSregion()* method, which allows painting a region of the sphere bounded by a simple closed spherical curve.
+
+* Optional arguments have been added to the *g:Endclip(draw_path, draw_options)* method: *draw_path* is a boolean (false by default); when set to true, the path used for clipping is drawn after the group is closed, and in this case, the optional argument *draw_options*, which must be a character string (empty by default), is passed to the \draw command.
+
+* Addition of functions specific to 2D or 3D paths: *ld.path()*, *ld.path3d()*, *ld.convpath()*, *ld.polyline2path()*, *ld.polyline2path3d()*, and the methods, *lg:Convpath3d()*, *g:Path3d2path2d()*.
+    
+* Added the methods *g:Cylinder_outline()*, *g:Cone_outline()*, *g:Frustum_outline()*, and *g:Sphere_outline()*, which return a table containing the characteristic elements (outline, visible edges, hidden edges, etc.).
+    
+* Added the methods *g:Cylinder_tangency()*, *g:Cone_tangency()*, *g:Frustum_tangency()*, and *g:Sphere_tangency()*, which calculate and return the list of tangency points for cylinders, cones, truncated cones, and circles drawn on a sphere.
+    
+* For the function *ld.read_table3d()*, added the option *mode* allowing you to choose a type of 3D table (types *"xyz"*, or *"y/x"* or *"x/y"*.
+
+*  The *usepalette()* option (for drawing facets) now accepts a third (optional) argument:
+ *usepalette(palette, mode, minmax*, where *minmax} is a table of two numbers; these two numbers are used as the minimum and maximum values ​​for the *mode* argument. If *minmax* is omitted, these two values ​​are calculated automatically.
+    
+* Bug fixes...
+ 
 **Version 3.3**
 
 * Added the function *ld.read_table3d()* to read and use an array (list of lists) containing the values ​​of one (or more) function(s) of two variables on a tile [x_1;x_2]x [y_1;y_2].
 
 * Added the option *reverse=true/false} to the facet drawing methods (*g:Dfacet()*, *g:Dmixfacet()*, *g:Dpoly()*, *g:addFacet()*, ...). With the value true, the facet orientation is reversed.
     
-* The *luadraw_pdfliteral* module has been added; it allows for direct drawing within the PDF stream—including 2D paths, 2D polylines, sets of 2D points (circular), or 3D facets—without using the \drawcmd command. This significantly reduces compilation time when dealing with large datasets, subject to certain limitations: no opacity changes, and only two fill styles (none or solid).
+* The *luadraw_pdfliteral* module has been added; it allows for direct drawing within the PDF stream—including 2D paths, 2D polylines, sets of 2D points (circular), or 3D facets—without using the \draw command. This significantly reduces compilation time when dealing with large datasets, subject to certain limitations: no opacity changes, and only two fill styles (none or solid).
     
 * Three new methods have been added to the *luadraw_spherical* module: *g:DSaddback()*, *g:DSaddinside()*, and *g:DSaddfront()*, which allow for the addition of graphical elements (paths or polylines) behind, inside, or in front of the sphere.
 
@@ -30,33 +53,4 @@ Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requi
 
 * The syntax of the functions *ld.lineEq()* and *ld.planeEq()* has been extended to take into account a possible inequality.
     
-* Bug fixes...
-
- 
-**Version 3.2**
-
-* Added the methods *g:BeginOnplane()* and *g:EndOnPlane()*, which allow drawing on a plane in space using 2D graphics methods.
-
-* The *luadraw_fields* module now includes vector fields tangent to a surface. The *ld.surfacefield()* function calculates and returns the vector field, while the *g:Dsurfacefield()* method allows drawing the vector field with (or without) the surface.
-
-* The *ld.linspace()* function has a second possible syntax: *ld.linspace(a1, b1, n1, b2, n2, ..., bp, np)*, which returns a list of *n1* evenly distributed numbers from *a1* to *b1*, followed by *n2* evenly distributed numbers from *b1* to *b2* (without repeating *b1*), and so on.
-
-* In the *luadraw_spherical* module, the following functions have been added:
-
-    *ld.interGreatC(C1,C2)* which returns, as a sequence, the two points of intersection of the two great circles *C1* and *C2* belonging to the sphere.
-
-    *ld.interSphericalC(P1, P2)* which returns, as a sequence, the points of intersection (if they exist) between two circles belonging to the sphere (not necessarily great circles).
-
-    *ld.projstereo_Scircle(P, N, h)* which returns, as a path, the stereographic projection of a circle drawn on the sphere.
-
-    *ld.projstereo_Sfacet(L, N, h, close)* which returns, as a path, the stereographic projection of a spherical facet.
-
-* Added three options to the *g:Dboxaxes3d()* method: *xlabels={x1,...,xn}, *ylabels={y1,...,yn}, *zlabels={z1,...,zn}*. These options allow you to apply labels to the axes. By default, these options have the value *nil*, in which case the default labels (one per graduation mark) are displayed.
-
-* In the *luadraw_povray* module, there is a new option in the default settings: *arrowscale={1,1}*, which is a table of two numbers. The first is a scale factor for the radius of the base of the arrows (which are cones), and the second is a scale factor for the height of the arrows.
-
-In the *g:Pov_polyline()* and *g:addPolyline()* methods, the option of the same name can now be either an array of two numbers or a single number (in which case the two numbers are considered equal).
-
-* For 3D, there is a new global variable *ld.Hiddenlinescale* which defaults to *2/3*. This means that the thickness of hidden lines will be equal to the thickness of visible lines, multiplied by this number, when using the *g:Dscene3d()* method.
-
 * Bug fixes...
