@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -108,7 +108,12 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
     -- renvoie les coordonnées spatiales d'un point ayant comme projeté sur l'écran le point d'affixe z,
     -- et se trouvant à une distance d (algébrique) du plan de l'écran
         z = cpx.toComplex(z)
-        return ld.applymatrix3d(M(z.re+Zlookat.re, z.im+Zlookat.im, pt3d.dot(target,N)), invmat)
+        local rep = ld.applymatrix3d(M(z.re+Zlookat.re, z.im+Zlookat.im, pt3d.dot(target,N)), invmat)
+        local m = self.matrix3d
+        if not ld.isID3d(m) then
+            rep = ld.mLtransform3d(rep, ld.invmatrix3d(m) )
+        end
+        return rep 
     end
     
     function graph3d:Cosine_incidence(n,A)
@@ -179,6 +184,35 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
         U = O+r*pt3d.normalize(U)
         return self:arc3db(U,O,U,r,1,n)
     end
+    
+    function graph3d:ellipse3db(center,r1,r2,dir1,normal)
+    -- dir1 and normal must be two orthogonal vectors
+        local A = center
+        local U = pt3d.normalize(dir1)
+        local N = pt3d.normalize(normal)
+        local V = pt3d.normalize( pt3d.prod(N,U) )
+        local mat = {Origin,vecI,r2/r1*vecJ,vecK}
+        local P = {A,U,V,N}
+        local invP = ld.invmatrix3d(P)
+        local Q = ld.composematrix3d(P, ld.composematrix3d(mat,invP))
+        local path = self:circle3db(A,r1,N)
+        return ld.mtransform3d(path,Q)
+    end   
+    
+    function graph3d:ellipticarc3db(B,A,C,r1,r2,sign,dir1,normal)
+    -- dir1 and normal must be two orthogonal vectors
+        normal = normal or pt3d.prod(B-A,C-A)
+        local U = pt3d.normalize(dir1)
+        local N = pt3d.normalize(normal)
+        local V = pt3d.normalize( pt3d.prod(N,U) )
+        local mat = {Origin,vecI,r2/r1*vecJ,vecK}
+        local P = {A,U,V,N}
+        local invP = ld.invmatrix3d(P)
+        local Q = ld.composematrix3d(P, ld.composematrix3d(mat,invP))
+        local path = self:arc3db(B,A,C,r1,sign,N)
+        return ld.mtransform3d(path,Q)
+    end   
+    
     ld.camera = camera
     ld.target = target
 

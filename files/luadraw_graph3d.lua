@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -182,7 +182,8 @@ function luadraw_graph3d:new(args) -- argument de la forme :
     else
         graph3d.scalexyz = 1
     end
-    graph3d.matrix3d =  {M(0,0,0), M(1,0,0), M(0,1,0), M(0,0,1)}
+    graph3d.scalexyz = 1
+    graph3d.matrix3d =  {M(0,0,0), M(xsc,0,0), M(0,ysc,0), M(0,0,zsc)}
     local a, b, mode = table.unpack( calc_viewdir(args.viewdir) )
     graph3d.param["viewdir"] = {a, b}-- viewdir theta et phi en degrés
     a = a*ld.deg; b = b*ld.deg; -- conversion en radians
@@ -262,11 +263,12 @@ function luadraw_graph3d:Det3d()
 end
 
 -- sauvegarde et restauration des paramètres graphiques (fenêtre, styles, matrices)
-function luadraw_graph3d:Saveattr()
+function luadraw_graph3d:Saveattr(scope_options)
+    scope_options = scope_options or ""
     table.insert(self.pile, table.copy(self.matrix3d))
     table.insert(self.pile, table.copy(self.matrix))
     table.insert(self.pile, table.copy(self.param))
-    self:Writeln("\\begin{scope}")
+    self:Writeln("\\begin{scope}["..scope_options.."]")
 end
 
 function luadraw_graph3d:Restoreattr()
@@ -352,35 +354,52 @@ end
 
 function luadraw_graph3d:ScreenX()
 -- renvoie les coordonnées spatiales du premier vecteur de base du plan de l'écran (affixe 1)
+    local rep
     if ld.projection_mode == "ortho" then -- c'est l'image du vecteur vecJ par la rotation d'axe Oz et d'angle theta
-        return M(-self.sinTheta, self.cosTheta,0)
-    elseif ld.projection_mode == "yz" then return vecJ
-    elseif ld.projection_mode == "xz" then return vecI
-    elseif ld.projection_mode == "xy" then return vecI
-    elseif ld.projection_mode == "iso" then return M(-1/math.sqrt(2),1/math.sqrt(2),0)
+        rep = M(-self.sinTheta, self.cosTheta,0)
+    elseif ld.projection_mode == "yz" then rep = vecJ
+    elseif ld.projection_mode == "xz" then rep = vecI
+    elseif ld.projection_mode == "xy" then rep = vecI
+    elseif ld.projection_mode == "iso" then rep = M(-1/math.sqrt(2),1/math.sqrt(2),0)
     elseif ld.projection_mode == "central" then return self:Screenpos(Z(1,0))
     end
+    local m = self.matrix3d
+    if not ld.isID3d(m) then
+        rep = ld.mLtransform3d(rep, ld.invmatrix3d(m) )
+    end
+    return rep
 end
 
 function luadraw_graph3d:ScreenY()
 -- renvoie les coordonnées spatiales du deuxième vecteur de base du plan de l'écran (affixe i)
+    local rep
     if ld.projection_mode == "ortho" then -- c'est le produit vectoriel entre les vecteurs self.Normal et self:ScreenX()
-        return M(-self.cosPhi*self.cosTheta, -self.cosPhi*self.sinTheta, self.sinPhi)
-    elseif ld.projection_mode == "yz" then return vecK
-    elseif ld.projection_mode == "xz" then return vecK
-    elseif ld.projection_mode == "xy" then return vecJ
-    elseif ld.projection_mode == "iso" then return M(0,0,math.sqrt(6)/2)
+        rep = M(-self.cosPhi*self.cosTheta, -self.cosPhi*self.sinTheta, self.sinPhi)
+    elseif ld.projection_mode == "yz" then rep = vecK
+    elseif ld.projection_mode == "xz" then rep = vecK
+    elseif ld.projection_mode == "xy" then rep = vecJ
+    elseif ld.projection_mode == "iso" then rep = M(0,0,math.sqrt(6)/2)
     elseif ld.projection_mode == "central" then return self:Screenpos(Z(0,1))
     end
+    local m = self.matrix3d
+    if not ld.isID3d(m) then
+        rep = ld.mLtransform3d(rep, ld.invmatrix3d(m) )
+    end
+    return rep    
 end
 
 function luadraw_graph3d:Screenpos(z,d)
 -- renvoie les coordonnées spatiales du vecteur ayant comme projeté sur l'écran le point d'affixe z,
 -- et se trouvant à une distance d (algébrique) du plan de l'écran
-    z = toComplex(z)
+    z = cpx.toComplex(z)
     local A = z.re*self:ScreenX() + z.im*self:ScreenY()
     d = d or 500
-    return A + d*self.Normal
+    local m = self.matrix3d
+    if not ld.isID3d(m) then
+        return A + d*ld.mLtransform3d(self.Normal, ld.invmatrix3d(m) )
+    else
+        return A + d*self.Normal
+    end
 end
 
 function luadraw_graph3d:Box3d()
@@ -512,15 +531,14 @@ function luadraw_graph3d:Darc3d(B,A,C,R,sens,normal,draw_options,clip)
         local chem = ld.arc3d(B,A,C,R,sens,normal)
         self:Dpolyline3d(chem,false,draw_options,clip)
     else
-        local chem
+         local chem
         if ld.projection_mode ~= "central" then
             chem = ld.arc3db(B,A,C,R,sens,normal)
         else
             chem = self:arc3db(B,A,C,R,sens,normal)
         end
-        --self:Dpath(self:Proj3d(chem),draw_options)
         self:Dpath3d(chem,draw_options)
-    end
+   end
 end    
 
 
@@ -544,12 +562,42 @@ function luadraw_graph3d:Dcircle3d(C,R,normal,draw_options,clip)
             else
                 chem = self:circle3db(C,R,normal)
             end        
-            --chem = ld.circle3db(C,R,normal)
-            --self:Dpath(self:Proj3d(chem),draw_options)
             self:Dpath3d(chem,draw_options)
         end
     end
 end
+
+function luadraw_graph3d:Dellipse3d(center,r1,r2,dir1,normal,draw_options,clip)
+-- dessine un cercle de centre C de rayon R.
+-- dans le plan défini par C et le vecteur normal
+    clip = clip or false
+    if (r1 == 0) and (r2 == 0) then self:Ddots3d(center)
+    else
+        if clip then
+            local chem = ld.ellipse3d(center,r1,r2,dir1,normal)
+            self:Dpolyline3d(chem,false,draw_options,clip)
+        else
+            local chem = ld.ellipse3db(center,r1,r2,dir1,normal)
+            self:Dpath3d(chem,draw_options)
+        end
+    end
+end
+
+function luadraw_graph3d:Dellipticarc3d(B,A,C,r1,r2,sign,dir1,normal,draw_options,clip)
+-- dessine un arc de cercle de centre A, dans le plan ABC, de AB vers AC.
+-- ce plan est orienté par le vecteur AB^AC ou le vecteur normal s'il est précisé
+    if type(normal) == "string" then clip = draw_options; draw_options = normal; normal = nil end
+    clip = clip or false
+    if clip then
+        local chem = ld.ellipticarc3d(B,A,C,r1,r2,sign,dir1,normal)
+        self:Dpolyline3d(chem,false,draw_options,clip)
+    else
+        local chem = ld.ellipticarc3db(B,A,C,r1,r2,sign,dir1,normal)
+        self:Dpath3d(chem,draw_options)
+    end
+end    
+
+
 
 function luadraw_graph3d:Dangle3d(B,A,C,r,draw_options,clip)
     if type(r) ~= "number" then clip = draw_options; draw_options = r; r = nil end
@@ -666,11 +714,15 @@ end
 function luadraw_graph3d:Define_temp_color(argsColor)
     if type(argsColor) == "table" then 
         argsColor = ld.rgb(argsColor) 
-        argsColor = string.sub(argsColor,2,#argsColor-1) -- on retire les accolades
     end
     if (type(argsColor) == "string") and (string.find(argsColor,"%A")~=nil) -- contient caractère non alpha numérique
     then
-        self:Writeln("\\colorlet{tempColor}{"..argsColor.."}")
+        if (string.sub(argsColor,1,1)=="{") and (string.sub(argsColor,-1,-1)=="}") then 
+            self:Writeln("\\colorlet{tempColor}"..argsColor)
+        --argsColor = string.sub(argsColor,2,#argsColor-1) -- on retire les accolades
+        else
+            self:Writeln("\\colorlet{tempColor}{"..argsColor.."}")
+        end
         return "tempColor"
     else return argsColor
     end
@@ -912,17 +964,23 @@ function luadraw_graph3d:Intersection3d(P,plane)
     if P.vertices ~= nil then P = ld.poly2facet(P) end --conversion polyèdre -> facettes
     local S,n = table.unpack(plane)
     local rep, coupe = {}, {}
+    local eps = 1e-10
     rep.visible = {}; rep.hidden = {}
     for _, F in ipairs(P) do
         local nb, aux = #F, {}
         local A1, B1 = nil, F[1]
         local p1, p2 = nil, pt3d.dot(B1-S,n)
+        if math.abs(p2) < eps then p2 = 0 end
         for k = 2, nb+1 do
             if k == nb+1 then k = 1 end -- on ferme la facette
-            A1 = B1; p1 = p2; pos1 = pos2; B1 = F[k]; p2 = pt3d.dot(B1-S,n)
-            if p1*p2 <= 0 or (pos2 and not pos1)  then -- A1 et B1 sont de part et d'autre du plan
+            A1 = B1; p1 = p2; B1 = F[k]; p2 = pt3d.dot(B1-S,n) --pos1 = pos2;
+            if math.abs(p2) < eps then p2 = 0 end
+            if p1*p2 < 0  then -- or (pos2 and not pos1) A1 et B1 sont de part et d'autre du plan
                 local I = ld.proj3dO(A1,plane,B1-A1)
                 if I ~= nil then table.insert(aux,I); pt3d.insert3d(coupe,I,1e-10) end
+            else
+                if (p1 == 0) then table.insert(aux,A1)  end
+                if (p2 == 0) then table.insert(aux,B1)  end
             end
         end
         if #aux > 0 then
@@ -1009,7 +1067,8 @@ function ld.define_getcolor(F, pal, mode, default_color, minmax) -- used by draw
             local A = pt3d.isobar3d(f)
             if mode == "x" then return ld.palette(pal,(A.x-x1)/(x2-x1),true)
             elseif mode == "y" then return ld.palette(pal,(A.y-y1)/(y2-y1),true)
-            elseif mode == "z" then return ld.palette(pal,(A.z-z1)/(z2-z1),true)
+            elseif mode == "z" then 
+                return ld.palette(pal,(A.z-z1)/(z2-z1),true);
             else return default_color
             end
         end
@@ -1474,8 +1533,9 @@ function luadraw_graph3d:addWall(plans,args) -- cloisons séparatrices (non dess
         if #plan == 2 then 
             A, n = table.unpack(plan)
             if not isID3d(matrix) then 
-                A = mtransform3d(A,matrix)
-                n = mLtransform3d(n,matrix)
+                --A = mtransform3d(A,matrix)
+                --n = mLtransform3d(n,matrix)
+                A, n = table.unpack( ld.planetransform(plan,matrix) )
             end
             -- on calcule une facette dans le plan {A,n}
             facet = self:Plane2facet({A,n})
@@ -1798,8 +1858,9 @@ function luadraw_graph3d:addPlane(plane,args)
     local A, n = table.unpack(plane)
     local  rep = {}
     if not isID3d(matrix) then
-        A = mtransform3d(A,matrix)
-        n = mLtransform3d(n,matrix)
+        --A = mtransform3d(A,matrix)
+        --n = mLtransform3d(n,matrix)
+        A, n = table.unpack( ld.planetransform(plane,matrix) )
     end
     args.matrix = ID3d
     local face
@@ -1952,6 +2013,31 @@ function luadraw_graph3d:Convpath3d(L, nbdots)
         end
         aux = {}
     end
+
+    local Ellipse = function()
+    -- il faut un point, le centre et un vecteur normal, aux={A,C,r1,r2,dir1,normal}
+        if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        local a, c, r1, r2, dir1, n = table.unpack(aux)
+
+        if ld.projection_mode ~= "central" then
+            aux = ld.ellipticarc3db(a, c, a, r1, r2, 1, dir1, n)
+        else
+            aux = self:ellipticarc3db(a, c, a, r1, r2, 1, dir1, n)
+        end
+        if aux ~= nil then
+            if first ~= nil then 
+                if first == a then table.remove(aux,1) -- le premier point est déjà exporté
+                else table.insert(aux,2,"l") -- pour relier au point précédent
+                end
+            end
+            local newfirst = aux[#aux-1]
+            Bezier()
+            first = newfirst -- dernier point de l'arc
+        end
+        aux = {}
+    end    
     
     local Arc = function()
         --aux = {B,A,C,R,sens,normal}
@@ -1971,9 +2057,34 @@ function luadraw_graph3d:Convpath3d(L, nbdots)
         end
         aux = {}
     end
+    
+    local Ellipticarc = function()
+    -- aux={A,C,B,r1,r2,sign,dir1,normal}
+        if first ~= nil then 
+            table.insert(aux,1,first)
+        end
+        local a, c, b, r1, r2, sign, dir1, n = table.unpack(aux)
+
+        if ld.projection_mode ~= "central" then
+            aux = ld.ellipticarc3db(a, c, b, r1, r2, sign, dir1, n)
+        else
+            aux = self:ellipticarc3db(a, c, b, r1, r2, sign, dir1, n)
+        end
+        if aux ~= nil then
+            if first ~= nil then 
+                if first == a then table.remove(aux,1) -- le premier point est déjà exporté
+                else table.insert(aux,2,"l") -- pour relier au point précédent
+                end
+            end
+            local newfirst = aux[#aux-1]
+            Bezier()
+            first = newfirst -- dernier point de l'arc
+        end
+        aux = {}
+    end       
 
 -- corps de la fonction
-    traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc} 
+    traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc, ["e"]=Ellipse, ["ea"]=Ellipticarc} 
     for _, z in ipairs(L) do
         if (type(z) == "number") or isPoint3d(z) then table.insert(aux,z); last = z 
         else
@@ -1987,7 +2098,7 @@ end
 function luadraw_graph3d:Dpath3d(L,draw_options,clip) 
 -- dessine le chemin contenu dans L, L est une table de point3d et d'instructions
 -- ex: Dpath3d( {M(0,-3,0), Origin, vecK,"c", Origin,"m",M(1,1,0),"l",Origin,M(1,1,2),2.5,1,"ca","cl"} )
--- "m" pour moveto, "l" pour lineto, "b" pour bézier, "c" pour cercle, "ca" pour arc de cercle, "s" pour spline naturelle, "cl" pour close
+-- "m" pour moveto, "l" pour lineto, "b" pour bézier, "c" pour cercle, "ca" pour arc de cercle, "s" pour spline naturelle, "cl" pour close, "e" pour ellipse, "ea" pour arc d'ellipse
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
     clip = clip or false
     draw_options = draw_options or ""
@@ -1995,7 +2106,7 @@ function luadraw_graph3d:Dpath3d(L,draw_options,clip)
     if clip then
         self:Dpolyline3d(ld.path3d(L),false,draw_options,clip)
     else
-        local res = self:Convpath3d(L) -- path3d with only moveto, linto, curveto
+        local res = self:Convpath3d(L) -- path3d with only moveto, lineto, curveto
         self:Dpath(self:Proj3d(res),draw_options)
     end
 end
@@ -2062,7 +2173,7 @@ local eps = 1e-10
     args.zaxe = args.zaxe and (pt3d.abs(pt3d.prod(self.Normal,vecK)) > eps)
     local theta, phi =table.unpack(self.param.viewdir) -- angles de vue en degrés
     local Normal = self.Normal
-    if ld.projection_mode == "central" then Normal = pt3d.normalize(ld.camera) end
+    if ld.projection_mode == "central" then Normal = pt3d.normalize(ld.camera-ld.target) end
     theta = theta%360
     phi = phi%360
     if pt3d.angle3d(Normal,pt3d.vecK,eps) > math.pi/2 then 
@@ -2075,7 +2186,7 @@ local eps = 1e-10
     if psi >= 180 then psi = psi-360 end
     local Left, Right, Bottom, Top
     if (0 < psi) and (psi <= 90) then
-        Left =M(xsup,yinf,zinf); Bottom = M(xsup,ysup,zinf)
+        Left = M(xsup,yinf,zinf); Bottom = M(xsup,ysup,zinf)
         Right = M(xinf,ysup,zinf); Top = M(xinf,yinf,zsup)
     elseif (90 < psi) and (psi <= 180) then
         Left = M(xsup,ysup,zinf); Bottom = M(xinf,ysup,zinf)
@@ -2101,7 +2212,7 @@ local eps = 1e-10
         zdir = Bottom-Left; if pt3d.abs(pt3d.prod(zdir,Normal)) < eps then zdir = (Bottom-Right) end
         pris = 3
     end
-     if Right.x ~= Bottom.x then --axe Ox
+    if Right.x ~= Bottom.x then --axe Ox
         if Right.x < Bottom.x then axeOx = Right else axeOx = Bottom end
         xdir = Bottom-Left; if pt3d.abs(pt3d.prod(xdir,Normal)) < eps then xdir = ld.pz(Bottom-Top) end
         pris = pris+1
@@ -2114,15 +2225,19 @@ local eps = 1e-10
         zdir = Bottom-Left; if pt3d.abs(pt3d.prod(zdir,Normal)) < eps then zdir = (Bottom-Right) end
         pris = pris+3
     end
+    Left = args.left or Left; Right = args.right or Right
     if 6-pris == 1 then --axe Ox
         if Left.x == xsup then axeOx = M(xinf,0,0)+ld.pyz(Left) else axeOx = Left end
-        xdir = -pt3d.normalize(Bottom-Left); if pt3d.abs(pt3d.prod(xdir,Normal)) < eps then xdir = ld.pz(Bottom-Top) end
+        xdir = -pt3d.normalize(Bottom-Left); 
+        if pt3d.abs(pt3d.prod(xdir,Normal)) < eps then xdir = ld.pz(Bottom-Top) end
     elseif 6-pris == 2 then --axe Oy
         if Left.y == ysup then axeOy = M(0,yinf,0)+ld.pxz(Left) else axeOy = Left end
-        ydir = -(Bottom-Left); if pt3d.abs(pt3d.prod(ydir,self.Normal)) < eps then ydir = ld.pz(Bottom-Top) end
+        ydir = -(Bottom-Left); 
+        if pt3d.abs(pt3d.prod(ydir,self.Normal)) < eps then ydir = ld.pz(Bottom-Top) end
     elseif 6-pris == 3 then --axe Oz
         if Left.z == zsup then axeOz = M(0,0,zinf)+ld.pxy(Left) else axeOz = Left end
-        zdir = -(Bottom-Left); if pt3d.abs(pt3d.prod(zdir,Normal)) < 1e-8 then zdir = (Bottom-Right) end
+        zdir = -(Bottom-Left); 
+        if pt3d.abs(pt3d.prod(zdir,Normal)) < 1e-8 then zdir = (Bottom-Right) end
     end
     if axeOy.x == xinf then x1 = xsup else x1 = xinf end
     if axeOx.y == yinf then  y1 = ysup else y1 = yinf end
@@ -2290,27 +2405,37 @@ end
 
 function luadraw_graph3d:BeginOnPlane(system2d, options)
 -- system2d = {A,u,v} designates a Cartesian coordinate system on a plane
--- options = {labeldir = nil, view = nil, out= var}
-    local A, u, v = table.unpack(system2d)
+-- options = {labeldir = nil, view = nil, out= var, lowlevel=false}
+    local A, U, V = table.unpack(system2d)
+    local o, u, v = self:Proj3d(A), self:Proj3dV(U), self:Proj3dV(V)
     options = options or {}
     local labeldir = options.labeldir 
     local view = options.view -- view={x1,x2,y1,y2}
     local out = options.out
-    self:Saveattr()
-    local u1, v1 = self:Proj3dV(u), self:Proj3dV(v)
+    local lowlevel = options.lowlevel or false
     if (out ~=  nil) and (type(out) == "table") then
-        table.append(out,{0,u1,v1})
+        table.append(out,{0,u,v})
     end
     if labeldir == "auto" then
-        self:Labeldir({u1,v1})
+        self:Labeldir({u,v})
     elseif labeldir ~= nil then
         self:Labeldir(self:Proj3dV(labeldir))
     end
-    local f = function(x,y)
-        local z = self:Proj3d( A + x*u + y*v )
-        return z.re, z.im
-    end
-    table.insert(self.post_processing, f)
+    
+    local xsc, ysc, xmin, ymin = self.Xscale, self.Yscale, self.Xmin, self.Ymin
+    local T = { -Z(xmin*xsc, ymin*ysc), Z(xsc,0), Z(0,ysc) } -- luadraw -> TikZ
+    local invT = ld.invmatrix(T)
+    local Mat, P = self.matrix, {o,u,v}
+    local invMat = ld.invmatrix(Mat) 
+    local res = ld.composematrix(T, Mat)
+    local res = ld.composematrix(res, P)
+    local res = ld.composematrix(res, invMat)
+    local res = ld.composematrix(res, invT) -- res = T*Mat*P*Mat^{-1}*T^{-1}
+    local a, b, c, d = res[2].re, res[2].im, res[3].re, res[3].im
+    local tx, ty = res[1].re, res[1].im
+    local matrix = "{"..ld.strReal(a)..","..ld.strReal(b)..","..ld.strReal(c)..","..ld.strReal(d)..",("..ld.strReal(tx)..",".. ld.strReal(ty)..")}"
+    self:Saveattr("cm="..matrix)
+    if lowlevel then self:Writeln("\\pgflowlevelsynccm") end --ALL is transformed
     if view ~= nil then
         local x1,x2,y1,y2 = table.unpack(view)
         local p = {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2),"l","cl"}
@@ -2321,7 +2446,6 @@ function luadraw_graph3d:BeginOnPlane(system2d, options)
 end
 
 function luadraw_graph3d:EndOnPlane()
-    table.remove(self.post_processing)
     self:Restoreattr()
 end
 

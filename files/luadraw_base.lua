@@ -1,6 +1,6 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,7 +8,7 @@
 --   https://www.ctan.org/license/lppl
 
 -- définition des paramètres graphiques
-luadraw.version = 3.4
+luadraw.version = 3.5
 require 'luadraw_real'
 local strReal = luadraw.strReal
 

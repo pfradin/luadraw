@@ -1,4 +1,4 @@
-% luadraw.sty version 3.4 du 04/08/2026%
+% luadraw.sty version 3.5 du 05/09/2026%
 %% ---------------------------------------%
 %% Copyright (C) 2026 Patrick Fradin%
 %% ---------------------------------------%
@@ -31,15 +31,15 @@
 \fi%
 %%
 \NeedsTeXFormat{LaTeX2e}% %
-\ProvidesPackage{luadraw}[2026/08/04 version 3.4, provides luadraw environment for drawing with lua]%%
+\ProvidesPackage{luadraw}[2026/09/05 version 3.5, provides luadraw environment for drawing with lua]%%
 %
 \RequirePackage{luacode}%%
 \RequirePackage{verbatim,xkeyval}%%
 %
 \RequirePackage{tikz}%%
-\usetikzlibrary{patterns}%%
+\usetikzlibrary{patterns,patterns.meta}%%
 \usetikzlibrary{plotmarks}%%
-\usetikzlibrary{arrows.meta}%%
+\usetikzlibrary{arrows.meta, bending}%%
 \usetikzlibrary{decorations.markings}%%
 \usetikzlibrary{backgrounds}%%
 

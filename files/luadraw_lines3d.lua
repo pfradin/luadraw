@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -188,7 +188,7 @@ end
     if ((sens > 0) and (fin < 0)) then fin = 2*math.pi+fin
     elseif ((sens < 0) and (fin > 0)) then fin = fin-2*math.pi --; W = -W
     end
-    if alpha == 0 then fin = 2*math.pi end
+    if math.abs(alpha) < 1e-12 then fin = 2*math.pi end 
     local L = ld.parametric3d( function(t) return A+math.cos(t)*V+math.sin(t)*W end, 0,fin, math.max(2,math.floor(20*fin/math.pi)) )
     return L
 end
@@ -230,6 +230,62 @@ function ld.circle3d(A,r,normal)
     return ld.arc3d(A+u,A,A+u,r,1,normal)
 end
 
+function ld.ellipse3db(center,r1,r2,dir1,normal)
+-- dir1 and normal must be two orthogonal vectors
+    local A = center
+    local U = pt3d.normalize(dir1)
+    local N = pt3d.normalize(normal)
+    local V = pt3d.normalize( pt3d.prod(N,U) )
+    local mat = {Origin,vecI,r2/r1*vecJ,vecK}
+    local P = {A,U,V,N}
+    local invP = ld.invmatrix3d(P)
+    local Q = ld.composematrix3d(P, ld.composematrix3d(mat,invP))
+    local path = ld.circle3db(A,r1,N)
+    return ld.mtransform3d(path,Q)
+end
+
+function ld.ellipse3d(center,r1,r2,dir1,normal)
+-- dir1 and normal must be two orthogonal vectors
+    local A = center
+    local U = pt3d.normalize(dir1)
+    local N = pt3d.normalize(normal)
+    local V = pt3d.normalize( pt3d.prod(N,U) )
+    local p = function(t)
+        return A + r1*math.cos(t)*U + r2*math.sin(t)*V 
+    end
+    return ld.parametric3d(p,-math.pi,math.pi,100)
+end
+
+function ld.ellipticarc3db(B,A,C,r1,r2,sign,dir1,normal)
+-- dir1 and normal must be two orthogonal vectors
+    normal = normal or pt3d.prod(B-A,C-A)
+    local U = pt3d.normalize(dir1)
+    local N = pt3d.normalize(normal)
+    local V = pt3d.normalize( pt3d.prod(N,U) )
+    local mat = {Origin,vecI,r2/r1*vecJ,vecK}
+    local P = {A,U,V,N}
+    local invP = ld.invmatrix3d(P)
+    local Q = ld.composematrix3d(P, ld.composematrix3d(mat,invP))
+    local path = ld.arc3db(B,A,C,r1,sign,N)
+    return ld.mtransform3d(path,Q)
+end
+
+function ld.ellipticarc3d(B,A,C,r1,r2,sign,dir1,normal)
+-- dir1 and normal must be two orthogonal vectors
+    normal = normal or pt3d.prod(B-A,C-A)
+    local U = pt3d.normalize(dir1)
+    local N = pt3d.normalize(normal)
+    local V = pt3d.normalize( pt3d.prod(N,U) )
+    local mat = {Origin,vecI,r2/r1*vecJ,vecK}
+    local P = {A,U,V,N}
+    local invP = ld.invmatrix3d(P)
+    local Q = ld.composematrix3d(P, ld.composematrix3d(mat,invP))
+    local path = ld.arc3d(B,A,C,r1,sign,N)
+    return ld.mtransform3d(path,Q)
+end
+
+
+
 -- cercles de l'espace, ou sphères, circonscrits ou inscrits 
 function ld.circumcircle3d(A,B,C)
     local n = pt3d.normalize(pt3d.prod(B-A,C-A))
@@ -265,10 +321,10 @@ function ld.circumsphere(A,B,C,D) -- circumsphere for a tetrahedron, returns cen
 end
 
 function ld.insphere(A,B,C,D) -- insphere for a tetrahedron, returns center, radius
-    local hA = pt3d.abs(A-proj3d(A,{B,pt3d.prod(C-B,D-B)}))
-    local hB = pt3d.abs(B-proj3d(B,{C,pt3d.prod(D-C,A-C)}))
-    local hC = pt3d.abs(C-proj3d(C,{D,pt3d.prod(A-D,B-D)}))
-    local hD = pt3d.abs(D-proj3d(D,{A,pt3d.prod(B-A,C-A)}))
+    local hA = pt3d.abs(A-ld.proj3d(A,{B,pt3d.prod(C-B,D-B)}))
+    local hB = pt3d.abs(B-ld.proj3d(B,{C,pt3d.prod(D-C,A-C)}))
+    local hC = pt3d.abs(C-ld.proj3d(C,{D,pt3d.prod(A-D,B-D)}))
+    local hD = pt3d.abs(D-ld.proj3d(D,{A,pt3d.prod(B-A,C-A)}))
     local S = 1/hA+1/hB+1/hC+1/hD
     local I = (A/hA+B/hB+C/hC+D/hD)/S
     local R = 1/S
@@ -598,6 +654,38 @@ function ld.path3d(chemin, nbdots)
         aux = {}
     end
     
+    local Ellipse = function()
+    -- il faut aux = {a,c,r1,r2,dirs1,normal} (un point, le centre et un vecteur normal)
+        if first ~= nil then 
+            table.insert(aux,1,first); table.remove(crt)
+        end
+        local a, c, r1, r2, dir1, n = table.unpack(aux)
+        local C = ld.ellipticarc3d(a,c,a,r1,r2,1,dir1,n)
+        if C ~= nil then
+            for _, z in ipairs(C[1]) do
+                table.insert(crt,z)
+            end
+            first = crt[#crt]
+        end
+        aux = {}
+    end  
+    
+    local Ellipticarc = function()
+    -- il faut aux = {a,c,b,r1,r2,sign,dirs1,normal} (un point, le centre et un vecteur normal)
+        if first ~= nil then 
+            table.insert(aux,1,first); table.remove(crt)
+        end
+        local a, c, b, r1, r2, sign, dir1, n = table.unpack(aux)
+        local C = ld.ellipticarc3d(a,c,b,r1,r2,1,dir1,n)
+        if C ~= nil then
+            for _, z in ipairs(C[1]) do
+                table.insert(crt,z)
+            end
+            first = crt[#crt]
+        end
+        aux = {}
+    end
+    
     local Arc = function()
         -- il faut aux = {b,a,c,r,sens,v}
         if first ~= nil then 
@@ -613,7 +701,7 @@ function ld.path3d(chemin, nbdots)
         aux = {}
     end
     
-    local traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc} 
+    local traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc, ["e"]=Ellipse, ["ea"]=Ellipticarc} 
     for _, z in ipairs(chemin) do
         if (type(z) == "number") or isPoint3d(z) then table.insert(aux,z); last = z 
         else

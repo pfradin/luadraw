@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -98,10 +98,11 @@ function luadraw_graph:Box2d()
 end
 
 -- sauvegarde et restauration des paramètres graphiques (fenêtre, styles, matrice)
-function luadraw_graph:Saveattr()
+function luadraw_graph:Saveattr(scope_options)
+    scope_options = scope_options or ""
     table.insert(self.pile, table.copy(self.matrix))
     table.insert(self.pile, table.copy(self.param))
-    self:Writeln("\\begin{scope}")
+    self:Writeln("\\begin{scope}["..scope_options.."]")
 end
 
 function luadraw_graph:Restoreattr()
@@ -1505,15 +1506,17 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         if debut then self:Write(commande); debut = false end
         if first == nil then i = 1 else i = 2 end
         for _, z in ipairs(aux) do
-            if i == 1 then self:Write(Mcoord(z)); i = 2
-            else
-                if i == 2 then self:Write(" .. controls "..Mcoord(z)); i = 3
+            if z ~= "m" then
+                if i == 1 then self:Write(Mcoord(z)); i = 2
                 else
-                    if i == 3 then self:Write(" and "..Mcoord(z)); i = 4
-                    else    
-                        if i == 4 then self:Write(" .. "..Mcoord(z)); i = 5 
-                        else
-                            if i == 5 then i = 2 end -- on est sur le caractère "b"
+                    if i == 2 then self:Write(" .. controls "..Mcoord(z)); i = 3
+                    else
+                        if i == 3 then self:Write(" and "..Mcoord(z)); i = 4
+                        else    
+                            if i == 4 then self:Write(" .. "..Mcoord(z)); i = 5 
+                            else
+                                if i == 5 then i = 2 end -- on est sur le caractère "b"
+                            end
                         end
                     end
                 end
@@ -1671,7 +1674,7 @@ function luadraw_graph:Beginclip(p,inverse) -- p = path
         local A, B = L[1], L[2]
         if cpx.det(A-B,B-G) >= 0 then chem = ld.reverse(chem) end
         table.append(chem,{"l","cl"})
-        table.insert(p,2,"m")
+        if p[2] ~= "m" then table.insert(p,2,"m") end
         self:Dpath( ld.concat(chem,p),"",true) -- path doit être dans le sens trigonométrique
     else self:Dpath(p,"",true)
     end
@@ -1780,7 +1783,7 @@ function luadraw_graph:Dimage(file,anchor,options)
     if not ld.isID(mat) then
         local t,u,v = table.unpack( ld.map(toComplex,mat) )
         t = Z(t.re*self.Xscale, t.im*self.Yscale)
-        u = Z(u.re*self.Xscale, u.im*self.Xscale)
+        u = Z(u.re*self.Xscale, u.im*self.Yscale)
         v = Z(v.re*self.Xscale, v.im*self.Yscale)
         mat = ",cm={"..strReal(u.re)..","..strReal(u.im)..","..strReal(v.re)..","..strReal(v.im)..",("..strReal(t.re)..","..strReal(t.im)..")}"
     else mat = ""

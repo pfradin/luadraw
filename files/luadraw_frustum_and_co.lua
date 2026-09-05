@@ -1,6 +1,6 @@
 -- luadraw_frustum_and_co.lua 
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -68,6 +68,8 @@ function ld.graph3d:Cone_outline(B, R, V, H) -- or Cone_outline(B, R, H)
         rep.visible = {B+R*I,B,V,"c"}
         if self:Cosine_incidence(V1,O) < 0 then -- circular base visible
             table.insert(rep.section, {B+R*I,B,V,"c"})
+        else 
+            rep.side = {B+R*I,B,V,"c"}
         end
     end
     return rep
@@ -223,13 +225,21 @@ function ld.graph3d:Frustum_outline(B, R, r, V, H) -- or Frustum_outline(B, R, r
         if self:Cosine_incidence(V1,H1) > 0 then -- second circular base visible
             table.append(rep.visible, {H+r*I, "m", H, V, "c"})
             table.insert(rep.section, {H+r*I, "m", H, V, "c"})
-        else
+            if r < R then
+                rep.side = {B+R*I, "m", B, V, "c", H+r*I, "m", H, V, "c"}
+                table.append(rep.visible, {B+R*I, "m", B, V, "c"})
+            end
+        elseif r < R then
             table.append(rep.hidden, {H+r*I, "m", H, V, "c"})
         end
         if self:Cosine_incidence(V1,O) < 0 then -- first circular base visible
             table.append(rep.visible, {B+R*I, "m", B, V, "c"})
             table.insert(rep.section, {B+R*I, "m", B, V, "c"})
-        else
+            if r > R then
+                rep.side = {H+r*I, "m", H, V, "c", B+R*I, "m", B, V, "c"}
+                table.append(rep.visible, {H+r*I, "m", H, V, "c"})
+            end
+        elseif R < r then
             table.append(rep.hidden, {B+R*I, "m", B, V, "c"})
         end    
     end
@@ -340,6 +350,7 @@ function ld.graph3d:Dcylinder(A,r,V,B,args)
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
     args.gradside= args.gradside or {50,10,100}
+    if args.gradient == nil then args.gradient = true end
     local lsection, msection, rsection = table.unpack( args.gradsection)
     local lside, mside, rside = table.unpack( args.gradside)
     local gradStyleSide = "left color="..args.color.."!"..tostring(lside)..",right color = "..args.color.."!"..tostring(rside)..",middle color="..args.color.."!"..tostring(mside)
@@ -355,12 +366,16 @@ function ld.graph3d:Dcylinder(A,r,V,B,args)
     local cyl = self:Cylinder_outline(A,r,V,B)
     local angle = cyl.angle
     if args.color ~= "" then  --fill side and sections
-        gradStyleSide = gradStyleSide..",shading angle="..ld.strReal(angle)
-        gradStyleSection = gradStyleSection..",shading angle="..ld.strReal(angle)
-        self:Filloptions("gradient", gradStyleSide,args.opacity)
+        if args.gradient then
+            gradStyleSide = gradStyleSide..",shading angle="..ld.strReal(angle)
+            gradStyleSection = gradStyleSection..",shading angle="..ld.strReal(angle)
+            self:Filloptions("gradient", gradStyleSide,args.opacity)
+        else
+            self:Filloptions("full", args.color, args.opacity)
+        end
         self:Linestyle("noline")
         self:Dpath3d(cyl.side)
-        self:Filloptions("gradient", gradStyleSection,args.opacity)
+        if args.gradient then self:Filloptions("gradient", gradStyleSection,args.opacity) end
         for _, p in ipairs(cyl.section) do
             self:Dpath3d(p)
         end
@@ -408,11 +423,13 @@ function ld.graph3d:Dcone(C,r,V,A,args)
     args.edgewidth = args.edgewidth or self.param.linewidth
     args.hiddencolor = args.hiddencolor or args.edgecolor
     args.hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
+    if args.apex == nil then args.apex = true end
     --if not Hiddenlines then args.hiddenstyle = "noline" end
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
     args.gradside= args.gradside or {50,10,100}
+    if args.gradient == nil then args.gradient = true end
     local lsection, msection, rsection = table.unpack( args.gradsection)
     local lside, mside, rside = table.unpack( args.gradside)
     local gradStyleSide = "left color="..args.color.."!"..tostring(lside)..",right color = "..args.color.."!"..tostring(rside)..",middle color="..args.color.."!"..tostring(mside)
@@ -428,12 +445,16 @@ function ld.graph3d:Dcone(C,r,V,A,args)
     local cone = self:Cone_outline(C,r,V,A)
     local angle = cone.angle
     if args.color ~= "" then  --fill side and sections
-        gradStyleSide = gradStyleSide..",shading angle="..ld.strReal(angle)
-        gradStyleSection = gradStyleSection..",shading angle="..ld.strReal(angle)
-        self:Filloptions("gradient", gradStyleSide,args.opacity)
+        if args.gradient then
+            gradStyleSide = gradStyleSide..",shading angle="..ld.strReal(angle)
+            gradStyleSection = gradStyleSection..",shading angle="..ld.strReal(angle)
+            self:Filloptions("gradient", gradStyleSide,args.opacity)
+        else
+            self:Filloptions("full", args.color,args.opacity)
+        end
         self:Linestyle("noline")
         self:Dpath3d(cone.side)
-        self:Filloptions("gradient", gradStyleSection,args.opacity)
+        if args.gradient then self:Filloptions("gradient", gradStyleSection,args.opacity) end
         for _, p in ipairs(cone.section) do
             self:Dpath3d(p)
         end
@@ -442,6 +463,9 @@ function ld.graph3d:Dcone(C,r,V,A,args)
         self:Filloptions("none")
         self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
         self:Dpath3d(cone.visible)
+        if (cone.tangency == nil) and (#cone.side > 0) and (args.apex) then
+            self:Ddots3d(A, "scale=0.5")
+        end
         if (args.hiddenstyle ~= "noline") then -- partie cachée
             self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
             self:Dpath3d(cone.hidden)
@@ -474,6 +498,7 @@ function ld.graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) pour u
     if not pt3d.isPoint3d(B) then -- frustum(A,R,r,B,args)
         args = B
         B = V
+        V = B-A
     end
     args = args or {}
     args.old = args.old or false
@@ -490,6 +515,7 @@ function ld.graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) pour u
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
     args.gradside= args.gradside or {50,10,100}
+    if args.gradient == nil then args.gradient = true end
     local lsection, msection, rsection = table.unpack( args.gradsection)
     local lside, mside, rside = table.unpack( args.gradside)
     local gradStyleSide = "left color="..args.color.."!"..tostring(lside)..",right color = "..args.color.."!"..tostring(rside)..",middle color="..args.color.."!"..tostring(mside)
@@ -505,13 +531,16 @@ function ld.graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) pour u
     local frustum = self:Frustum_outline(A,R,r,V,B)
     local angle = frustum.angle
     if args.color ~= "" then  --fill side and sections
-        print("ok")
-        gradStyleSide = gradStyleSide..",shading angle="..ld.strReal(angle)
-        gradStyleSection = gradStyleSection..",shading angle="..ld.strReal(angle)
-        self:Filloptions("gradient", gradStyleSide,args.opacity)
+        if args.gradient then
+            gradStyleSide = gradStyleSide..",shading angle="..ld.strReal(angle)
+            gradStyleSection = gradStyleSection..",shading angle="..ld.strReal(angle)
+            self:Filloptions("gradient", gradStyleSide,args.opacity)
+        else
+            self:Filloptions("full", args.color,args.opacity)
+        end
         self:Linestyle("noline")
         self:Dpath3d(frustum.side)
-        self:Filloptions("gradient", gradStyleSection,args.opacity)
+        if args.gradient then self:Filloptions("gradient", gradStyleSection,args.opacity) end
         for _, p in ipairs(frustum.section) do
             self:Dpath3d(p)
         end
@@ -588,4 +617,56 @@ function ld.graph3d:Dsphere(A,r,args)
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
     self:Lineopacity(oldlineopacity)
+end
+
+function ld.graph3d:Dcut_sphere(C,R,P, options)
+-- P is a plane, P = {A,n}
+-- draw the sphere {C,R} cut by P (part in then half-plane containing n)
+-- options: the same as for the Dsphere method plus options.visibletrace="" (contour of clip) and hiddentrace
+    options.visibletrace = options.visibletrace or "" -- visible part of intersection
+    options.hiddentrace = options.hiddentrace or ""
+    local T = self:Sphere_tangency(C,R,P)
+    local W, Vtrace, Htrace
+    local O, R1, N = table.unpack( self:Sphere_outline(C,R).data )
+    local c, r, n = ld.interPS(P, {C,R})
+    if #T == 0 then
+        local B = ld.proj3d(C,P)
+        if pt3d.abs(B-C) > R then -- no intersection
+            if pt3d.dot(B-C,P[2]) > 0 then self:Dsphere(C,R,options) end
+            return 
+        elseif pt3d.dot(C-B,P[2]) > 0 then
+            if self:Cosine_incidence(n,c)>0 then
+                W = ld.circle3db(O,R1,N)
+                Htrace = ld.circle3db(c, r, n)
+            else
+                W = ld.concat( ld.circle3db(O,R1,N), ld.circle3db(c, r, n) )
+                Vtrace = ld.circle3db(c, r, n)
+            end
+        else 
+            if self:Cosine_incidence(n,c)>0 then
+                W = ld.circle3db(c, r, n)
+            end
+            Vtrace = ld.circle3db(c, r, n)
+        end
+    else
+        local A, B = table.unpack( T )
+        c, r, n = ld.interPS(P, {C,R})
+        if pt3d.det(A-c, N, P[2]) < 0 then A, B = B, A end
+        local sens = 1
+        if pt3d.det(B-O,P[2],N) < 0 then sens = -1 end
+        W = {A,"m",c,B,r,1,n,"ca",O,A,R1,sens,N,"ca"}
+        Vtrace = {A,"m",c,B,r,1,n,"ca"}
+        Htrace = {A,"m",c,B,r,-1,n,"ca"}
+    end
+    if W ~= nil then
+        self:Beginclip( W )
+            self:Dsphere(C,R,options)
+        self:Endclip()
+    end
+    if options.visibletrace ~= "" then
+        self:Dpath3d(Vtrace, options.visibletrace)
+    end
+    if options.hiddentrace ~= "" then
+        self:Dpath3d(Htrace, options.hiddentrace)
+    end
 end

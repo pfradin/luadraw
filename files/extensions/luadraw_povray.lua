@@ -1,6 +1,6 @@
 -- luadraw_povray.lua
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -591,8 +591,9 @@ end
 
 function graph3d:Pov_facet(F,options)
 -- F: polyhedron or list of facets
--- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, edge=false, edgecolor=default, edgewidth=default, hidden=default, hiddenstyle=default}
+-- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, edge=false, edgecolor=default, edgewidth=default, hidden=default, hiddenstyle=default, csg=false}
     options = define_options(self,options)
+    local csg = options.csg or false
     if F == nil then return end
     if pt3d.isPoint3d(F[1]) then F = {F} end
     local render = options.render
@@ -663,6 +664,10 @@ function graph3d:Pov_facet(F,options)
     end
     write_matrix(options.matrix)
     write_modifiers_rendering(options)
+    if csg then
+        local a, b, c = ld.strReal(math.random()), ld.strReal(math.random()), ld.strReal(math.random())
+        pov_writeln("          inside_vector <"..a..","..b..","..c..">")
+    end
     pov_writeln("  }")
     if edge then
         local L = ld.facetedges(F)
@@ -761,15 +766,17 @@ function graph3d:Pov_polyline(L, options)
     options.width = options.width or self.param.linewidth
     local width = options.width*ld.pt/10/self:Abs(1)*0.667
     local arrows = options.arrows or 0
+    local clip = options.clip or false
     local arrowscale = options.arrowscale or Pov_arrowscale
     if type(arrowscale) == "number" then arrowscale = {arrowscale,arrowscale} end
     local close = options.close or false
     local style = options.style or self.param.linestyle
     if style == "noline" then return end
-    local hidden = options.hidden or ld.Hiddenlines
+    local hidden = options.hidden
+    if hidden == nil then hidden = ld.Hiddenlines end
     local hiddenstyle = options.hiddenstyle or ld.Hiddenlinestyle
     local hiddenscale = options.hiddenscale or ld.Hiddenlinescale
-    
+    if clip then L = ld.clippolyline3d(L,self:Box3d(),false,close) end
     if pt3d.isPoint3d(L[1]) then L = {L} end
     if not ld.isID3d(options.matrix) then L = ld.mtransform3d(L,options.matrix) end
     local listarrows, listdots
@@ -801,7 +808,7 @@ function graph3d:Pov_polyline(L, options)
     if options.clippbox ~= nil then 
         local M1,M2 = table.unpack( options.clippbox )
         local poly = ld.parallelep(M1, (M2.x-M1.x)*vecI,(M2.y-M1.y)*vecJ,(M2.z-M1.z)*vecK)
-        L = clippolyline3d(L, poly, false, close)
+        L = ld.clippolyline3d(L, poly, false, close)
     end
     if options.clipplane ~= nil then 
         L = ld.cutpolyline3d(L,options.clipplane,close)
@@ -865,12 +872,13 @@ function graph3d:Pov_polyline(L, options)
     if hidden then
         local args = {}
         args.hidden = false 
-        args.style = hiddenstyle; 
+        args.style = hiddenstyle 
         args.width = options.width*hiddenscale
         args.arrows = 0
         args.name = options.name..'_hidden'
         args.color = options.color
         args.close = close
+        args.clip = false
         self:Pov_polyline( ld.shift3d(L,500*self.Normal), args)
     end
 end
@@ -956,8 +964,9 @@ function graph3d:Pov_difference(list, options)
 -- options = {clipbox= nil, clipplane=nil, render=1, name=default, matrix=nil, color=White (rgb table), opacity=1, ambient=0.35, diffuse=0.8, phong=0.5, shadow=true, mytexture=nil, hollow=false}
     options = define_options(self,options)
     pov_writeln("\n#declare "..options.name.." = difference{")
-    pov_writeln("    object { "..list[1].." }")
-    pov_writeln("    object { "..list[2].." }")
+    for k = 1, #list do
+        pov_writeln("    object { "..list[k].." }")
+    end
     write_matrix(options.matrix)
     write_modifiers_rendering(options)
     pov_writeln("  }")

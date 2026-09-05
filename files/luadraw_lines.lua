@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -86,8 +86,8 @@ function ld.cut(L,A,before)
             B = C; C = cp[k]
             table.insert(av,B)
             -- on teste si A est dans le segment [B,C]
-            local z = cpx.bar(A-B)*(C-A)
-            if (z.re >= 0) and ld.isNul(z.im) and (cpx.abs2(B-A) <= cpx.abs2(B-C)) then -- c'est bon math.abs(z.im) < 1e-4 then --
+            local z = cpx.bar(B-A)*(C-A)
+            if (z.re <= 0) and ld.isNul(z.im) then --and (cpx.abs2(B-A) <= cpx.abs2(B-C)) then -- c'est bon math.abs(z.im) < 1e-4 then --
                 if not (A == B) then table.insert(av,A) end
                 if not (A == C) then table.insert(ap,A) end
                 for j = k, #cp do 
@@ -337,7 +337,7 @@ function ld.circleb(c,r,d)  -- circleb(center,radius) ou circleb(a,b,c) (3 point
     local u = Z(r,0)
     local n = cpx.I*u
     local du, dn  = u*0.555, n*0.555
-    return {c+u, c+u+dn, c+du+n, c+n, "b", 
+    return {c+u, "m",c+u+dn, c+du+n, c+n, "b", 
             c-du+n, c-u+dn, c-u, "b", 
             c-u-dn, c-du-n, c-n, "b",
             c-n+du, c-dn+u, c+u, "b"}
@@ -707,7 +707,7 @@ end
 
 -- intersection de 2 chemins (path)
 function ld.interP(P1,P2)
-    local L1, L2 = path(P1), path(P2) -- transformation en liste de points
+    local L1, L2 = ld.path(P1), ld.path(P2) -- transformation en liste de points
     return ld.interL(L1,L2)
 end
 
@@ -1519,6 +1519,7 @@ function ld.roundline(L,r,close,bezier)  -- utilisée par path
                 if  cpx.det(u,v) > 0 then sens = -1 else sens = 1 end
                 if bezier then
                    local C = ld.arcb(a1,center,b1,r,sens)
+                   if C[2] == "m" then table.remove(C,2) end
                     if C ~= nil then
                         table.insert(res,C[1])
                         if ok then table.insert(res,"l") else ok = true end -- pas de "l" après le tout premier si close est true

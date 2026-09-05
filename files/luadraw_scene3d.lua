@@ -1,6 +1,6 @@
 --- luadraw_scene3d.lua
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -9,6 +9,7 @@
 
 local ld = luadraw
 local pt3d = ld.pt3d
+local eps = 1e-6
 
 local Tscene3d = {}
 Tscene3d.__index = Tscene3d
@@ -47,7 +48,7 @@ function Tscene3d:Addsep(facet,plane) -- facette séparatrice (non dessinée)
     else
         local A, u = table.unpack(plane)
         local B,v = table.unpack(T.plane)
-        if (math.abs(pt3d.dot(B-A,u)) < 1e-10) and (pt3d.N1(pt3d.prod(u,v)) < 1e-10)
+        if (math.abs(pt3d.dot(B-A,u)) < eps) and (pt3d.N1(pt3d.prod(u,v)) < eps)
         then -- cloisons dans des plans confondus, la dernière arrivée est évincée
                 --if T.dev == nil then T.dev = Tscene3d:new() end
                 --T.dev:Addsep(facet,plane) -- {dev[1],plane[2]}
@@ -82,7 +83,7 @@ function Tscene3d:Addfacet(facet,plane,color,opacity) -- les sommets ont déjà 
     else
         local A, u = table.unpack(plane)
         local B,v = table.unpack(T.plane)
-        if (math.abs(pt3d.dot(B-A,u)) < 1e-10) and (pt3d.N1(pt3d.prod(u,v)) < 1e-10)
+        if (math.abs(pt3d.dot(B-A,u)) < eps) and (pt3d.N1(pt3d.prod(u,v)) < eps)
         then -- facettes dans des plans confondus, la dernière arrivée est placée devant l'autre
                 if T.dev == nil then T.dev = Tscene3d:new() end
                 T.dev:Addfacet(facet,plane,color,opacity) -- {dev[1],plane[2]}
@@ -154,7 +155,7 @@ function Tscene3d:Adddot(dot,style,color,scale,n)
         T.der = nil
     elseif (T.type == "facet") or (T.type == "wall") then
         local coef = pt3d.dot(dot-T.plane[1], T.plane[2])
-        if math.abs(coef) < 1e-8 then coef = 0 end
+        if math.abs(coef) < eps then coef = 0 end
         if coef >= 0 then -- point devant
             if T.dev == nil then T.dev = Tscene3d:new() end
             T.dev:Adddot(dot,style,color,scale,n)
@@ -165,10 +166,10 @@ function Tscene3d:Adddot(dot,style,color,scale,n)
     elseif T.type == "seg" then -- on a un segment {A,A+u} déjà inséré, on veut insérer le point dot
         local A, B = table.unpack(T.data)
         local u = B-A
-        if math.abs(pt3d.det(A-dot,u,n)) < 1e-8 then -- le projeté de dot est sur le projeté de {A,B}
+        if math.abs(pt3d.det(A-dot,u,n)) < eps then -- le projeté de dot est sur le projeté de {A,B}
             local w = pt3d.prod(n,u)
             local beta = pt3d.det(dot-A,u,w) / pt3d.dot(w,w)
-            if math.abs(beta) <= 1e-8 then beta = 0 end
+            if math.abs(beta) <= eps then beta = 0 end
             if beta >= 0 then
                 if T.dev == nil then T.dev = Tscene3d:new() end
                 T.dev:Adddot(dot,style,color,scale,n)
@@ -182,7 +183,7 @@ function Tscene3d:Adddot(dot,style,color,scale,n)
         end
     else -- on a un point déjà inséré
         local beta = pt3d.dot(T.data-dot,n)
-        if math.abs(beta) < 1e-8 then beta = 0 end
+        if math.abs(beta) < eps then beta = 0 end
         if beta <= 0 then
             if T.dev == nil then T.dev = Tscene3d:new() end
             T.dev:Adddot(dot,style,color,scale,n)
@@ -212,7 +213,7 @@ function Tscene3d:Addlabel(text,dot,style,dist,color,size,angle,dir,showdot,n)
         T.der = nil
     elseif (T.type == "facet") or (T.type == "wall") then
         local coef = pt3d.dot(dot-T.plane[1], T.plane[2])
-        if math.abs(coef) < 1e-8 then coef = 0 end
+        if math.abs(coef) < eps then coef = 0 end
         if coef >= 0 then -- point devant
             if T.dev == nil then T.dev = Tscene3d:new() end
             T.dev:Addlabel(text,dot,style,dist,color,size,angle,dir,showdot,n)
@@ -223,7 +224,7 @@ function Tscene3d:Addlabel(text,dot,style,dist,color,size,angle,dir,showdot,n)
     elseif T.type == "seg" then -- on a un segment {A,A+u} déjà inséré, on veut insérer le point dot
         local A, B = table.unpack(T.data)
         local u = B-A
-        if math.abs(pt3d.det(A-dot,u,n)) < 1e-8 then -- le projeté de dot est sur le projeté de {A,B}
+        if math.abs(pt3d.det(A-dot,u,n)) < eps then -- le projeté de dot est sur le projeté de {A,B}
             local w = pt3d.prod(n,u)
             local beta = pt3d.det(dot-A,u,w) / pt3d.dot(w,w)
             if beta >= 0 then
@@ -239,7 +240,7 @@ function Tscene3d:Addlabel(text,dot,style,dist,color,size,angle,dir,showdot,n)
         end
     else -- on a un point déjà inséré ou un label
         local beta = pt3d.dot(T.data-dot,n)
-        if math.abs(beta) < 1e-8 then beta = 0 end
+        if math.abs(beta) < eps then beta = 0 end
         if beta <= 0 then
             if T.dev == nil then T.dev = Tscene3d:new() end
             T.dev:Addlabel(text,dot,style,dist,color,size,angle,dir,showdot,n)

@@ -1,6 +1,6 @@
 -- luadraw__matrix3d.lua (chargé par luadraw__graph3d)
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -121,4 +121,12 @@ end
 
 function ld.isID3d(m) -- teste la matrice unité
     return (m[1] == M(0,0,0)) and (m[2] == M(1,0,0)) and (m[3] == M(0,1,0)) and (m[4] == M(0,0,1))
+end
+
+function ld.planetransform(P, matrix)
+    local A, u, v = ld.orthoframe(P)
+    A = ld.applymatrix3d(A,matrix)
+    u = ld.applyLmatrix3d(u,matrix)
+    v = ld.applyLmatrix3d(v,matrix)
+    return {A, pt3d.prod(u,v)}
 end

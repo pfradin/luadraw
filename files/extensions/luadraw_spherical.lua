@@ -1,6 +1,6 @@
 -- luadraw_spherical.lua 
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -9,6 +9,8 @@
 
 local ld = luadraw
 local pt3d = ld.pt3d
+local cpx = ld.cpx
+local Z = cpx.Z
 local Origin, vecI, vecJ, vecK, M, Ms = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK, pt3d.M, pt3d.Ms
 local graph3d = ld.graph3d
 
@@ -29,6 +31,9 @@ local sphere = {["C"]=Origin, ["R"]=3,
     ["hiddencolor"] = "gray",
     ['hiddendelayed'] = false,
     ["show"] = true,
+    ["back"] = true,
+    ["inside"] = true,
+    ["front"] = true,
     ["horizon"] = nil
     } -- sphere definition
     
@@ -58,6 +63,9 @@ function graph3d:Clear_spherical()
     ["hiddenstyle"] = ld.Hiddenlinestyle,
     ["hiddencolor"] = "gray",
     ["show"] = true,
+    ["back"] = true,
+    ["inside"] = true,
+    ["front"] = true,    
     ["horizon"] = nil,
     ['hiddendelayed'] = false
     } -- sphere definition
@@ -81,6 +89,9 @@ function graph3d:Define_sphere( args )
     if args.hiddencolor ~= nil then sphere.hiddencolor = args.hiddencolor end
     if args.edgewidth ~= nil then sphere.edgewidth = args.edgewidth end
     if args.show ~= nil then sphere.show = args.show end
+    if args.back ~= nil then sphere.back = args.back end
+    if args.inside ~= nil then sphere.inside = args.inside end
+    if args.front ~= nil then sphere.front = args.front end
     insidelabelcolor = args.insidelabelcolor or "gray"
     hiddendelayed = args.hiddendelayed or false
     arrowBstyle = args.arrowBstyle or "->"
@@ -138,7 +149,6 @@ end
 function ld.interGreatC(AB, CD)
 -- AB = {A,B} (two points of sphere)
 -- CD = {C,D} (two points of sphere)
--- options = {style=, color=, width=, opacity=}
     local C, R = sphere.C, sphere.R
     local A1, B1 = table.unpack(AB)
     local A2, B2 = table.unpack(CD)
@@ -219,6 +229,32 @@ function ld.projstereo_Scircle(P, N, h) -- stereographic projection of a spheric
     end
 end
 
+function ld.smidpoint(A, B, x)
+    -- A, B two points on the sphere
+    -- x in [0,1]
+    -- returns the spherical point A+x(B-A)
+    A, B = ld.toSphere(A), ld.toSphere(B)
+    if x <= 0 then return A
+    elseif x >= 1 then return B
+    else
+        return ld.toSphere(A+x*(B-A))
+    end
+end
+
+
+function ld.sbarycenter(...)
+    local rep, S, A, x = Origin, 0
+    for k, a in ipairs{...} do
+        if k%2 == 1 then A = ld.toSphere(a)
+        else
+            x = a
+            rep = rep + x*A
+            S = S + x
+        end
+    end
+    return ld.toSphere(rep/S)
+end
+
 ----------------------- new methods ---------------------------------
 
 function graph3d:Dspherical()
@@ -234,6 +270,8 @@ function graph3d:Dspherical()
     -- elt={path,style,color,width,opacity,arrows} ou
     -- elt={text,anchor,options} (labels)
         if type(elt[1]) == "string" then -- a label
+            self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
+            self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)        
             self:Dlabel3d(elt[1],elt[2],elt[3])
         elseif pt3d.isPoint3d(elt[1]) then -- a dot
             self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
@@ -253,42 +291,44 @@ function graph3d:Dspherical()
                 self:Filloptions("full",elt[7],elt[8])
             else self:Filloptions("none",nil,1)
             end
-            self:Linecap("round"); -- pour que les liaisons soient correctes entre segments successifs
+            --self:Linecap("round"); -- pour que les liaisons soient correctes entre segments successifs
             if arrows ~= 0 then
                 self:Dpath3d(elt[1],"arrows="..arrowstyle)
             else 
-                --ld.whatis(elt[1])
                 self:Dpath3d(elt[1])
             end
         end
     end
-
-    for _, elt in ipairs(before_sphere) do
-        display_elt(elt)
-    end
-    self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
-    self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
-    for _, elt in ipairs(on_back_sphere) do
-        local P = elt[1]
-        if type(P[#P]) == "string" then
-            self:Dpath3d(P, elt[2]) -- 3D path and draw_options
-        else
-            self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+    if sphere.back then
+        for _, elt in ipairs(before_sphere) do
+            display_elt(elt)
+        end
+        self:Lineoptions(oldlinestyle, oldlinecolor, oldlinewidth); self:Lineopacity(oldlineopacity)
+        self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
+        for _, elt in ipairs(on_back_sphere) do
+            local P = elt[1]
+            if type(P[#P]) == "string" then
+                self:Dpath3d(P, elt[2]) -- 3D path and draw_options
+            else
+                self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+            end
         end
     end
-    for _, elt in ipairs(inside_sphere) do
-        display_elt(elt)
-    end
-    for _, elt in ipairs(add_inside_sphere) do
-        local P = elt[1]
-        if type(P) == "string" then -- a label
-            self:Dlabel3d(P,elt[2],elt[3])
-        elseif pt3d.isPoint3d(P) then -- a dot
-            self:Ddots3d(P,elt[2])
-        elseif type(P[#P]) == "string" then
-            self:Dpath3d(P, elt[2]) -- 3D path and draw_options
-        else
-            self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+    if sphere.inside then
+        for _, elt in ipairs(inside_sphere) do
+            display_elt(elt)
+        end
+        for _, elt in ipairs(add_inside_sphere) do
+            local P = elt[1]
+            if type(P) == "string" then -- a label
+                self:Dlabel3d(P,elt[2],elt[3])
+            elseif pt3d.isPoint3d(P) then -- a dot
+                self:Ddots3d(P,elt[2])
+            elseif type(P[#P]) == "string" then
+                self:Dpath3d(P, elt[2]) -- 3D path and draw_options
+            else
+                self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+            end
         end
     end
     if sphere.show then
@@ -296,16 +336,18 @@ function graph3d:Dspherical()
         self:Dsphere(sphere.C, sphere.R, {mode=sphere.mode, color=sphere.color, opacity=sphere.opacity,
             edgecolor=sphere.edgecolor, edgewidth=sphere.edgewidth, edgestyle=sphere.edgestyle, hiddenstyle=sphere.hiddenstyle, hiddencolor=sphere.hiddencolor})
     end
-    for _, elt in ipairs(on_front_sphere) do
-        local P = elt[1]
-        if type(P[#P]) == "string" then
-            self:Dpath3d(P, elt[2]) -- 3D path and draw_options
-        else
-            self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+    if sphere.front then
+        for _, elt in ipairs(on_front_sphere) do
+            local P = elt[1]
+            if type(P[#P]) == "string" then
+                self:Dpath3d(P, elt[2]) -- 3D path and draw_options
+            else
+                self:Dpolyline3d(P, elt[2]) -- 3D polyline and draw_options
+            end
         end
-    end    
-    for _, elt in ipairs(after_sphere) do
-        display_elt(elt)
+        for _, elt in ipairs(after_sphere) do
+            display_elt(elt)
+        end
     end
     if hiddendelayed then self:Begindeferred() end
     if sphere.show and ld.Hiddenlines and (sphere.edgestyle ~= "noline") and (sphere.hiddenstyle ~= "noline") then
@@ -351,6 +393,35 @@ function graph3d:DSaddfront(path,draw_options)
     table.insert(on_front_sphere, {path, draw_options})
 end
 
+
+local addLabel = function(self, L, label, options)
+    -- L = 3D polyline
+    local anchor = options.anchor
+    local anchor2d = options.anchor2d or Z(0.5,0.5)
+    local anchor1d = options.anchor1d -- number in [0;1] or nil
+    if anchor == nil then
+        if (L == nil) or (type(L) ~= "table") then return end
+        if (type(L[1]) == "table") and (not pt3d.isPoint3d(L[1])) then L = L[1] end -- first component of  L
+        if anchor1d ~= nil then
+            if anchor1d == 0 then anchor = L[1]
+            elseif anchor1d == 1 then anchor = L[#L]
+            else
+                local f = ld.curvilinear_param3d(L)
+                anchor = f(anchor1d)
+            end
+        else
+            local x1,x2,y1,y2,z1,z2 = ld.getbounds( self:Proj3d(L) )
+            anchor = self:Screenpos( Z(x1,y1)+ Z(anchor2d.re*(x2-x1), anchor2d.im*(y2-y1)) )
+        end
+    end
+    local pos = options.pos or "center"
+    local dir = options.dir
+    if pt3d.isPoint3d(dir) then dir = {dir} end
+    local dist = options.dist or 0
+    local node_options = options.node_options or ""
+    self:DSlabel(label,anchor,{pos=pos,dir=dir,dist=dist,node_options=node_options})
+end
+
 -- ajouter un cercle tracé sur la sphère
 function graph3d:DScircle(P,options) -- P={A,u} (plane)
 -- options = {style=, color=, width=, opacity=, out=}
@@ -368,7 +439,7 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
     
     local acircle = function(I,r,v,u) -- when we have to draw a circle
         local w = pt3d.prod(u,vecI)
-        if pt3d.N1(w) < 1e-12 then w =pt3d.prod(u,vecJ) end
+        if pt3d.N1(w) < 1e-12 then w = pt3d.prod(u,vecJ) end
         local J = I+r*pt3d.normalize(w) -- a point of the circle
         if  visibledot(I) then --(pt3d.dot(v,N) > 0) then -- visible
             table.insert(after_sphere, {{J,I,u,"c"},style,color,width,opacity})
@@ -446,16 +517,23 @@ function graph3d:DScircle(P,options) -- P={A,u} (plane)
             end
         end
     end
+    if options.label ~= nil then
+        local L
+        if options.anchor == nil then L = ld.circle3d(I,r,u) end
+        addLabel( self, L, options.label, options)
+    end
 end
 
-function graph3d:DSbigcircle(AB,options) -- AB = {A,B} (two points of sphere)
+function graph3d:DSgreatcircle(AB,options) -- AB = {A,B} (two points of sphere)
 -- options = {style=, color=, width=, opacity=}
     local C, R = sphere.C, sphere.R
     local A, B = table.unpack(AB)
     A = ld.toSphere(A); B = ld.toSphere(B)
     local P = {A, pt3d.prod(A-C, B-C)}
     self:DScircle(P,options)
-end    
+end
+
+graph3d.DSbigcircle = graph3d.DSgreatcircle
 
 -- ajouter un segment dans la scène
 function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
@@ -554,6 +632,9 @@ function graph3d:DSseg(seg,options) -- seg={A,B} (segment)
             if out ~= nil then table.insert(out,K) end
         end
     end
+    if options.label ~= nil then
+        addLabel(self, seg, options.label, options)
+    end
 end
 
 
@@ -575,6 +656,8 @@ function graph3d:DSpolyline(L,options) -- L = 3d polyline
     options.opacity = options.opacity or self.param.lineopacity    
     local hidden = options.hidden
     if hidden == nil then hidden = ld.Hiddenlines end
+    local label = options.label
+    options.label = nil
     options.arrows = options.arrows or 0 --0/1/2
     local arrows = options.arrows
     local close = options.close or false
@@ -607,6 +690,9 @@ function graph3d:DSpolyline(L,options) -- L = 3d polyline
         end
     end
     ld.Hiddenlinestyle = oldstyle
+    if label ~= nil then
+        addLabel( self, L, label, options)
+    end
 end
 
 -- ajouter un arc de grand cercle sur la sphère
@@ -635,7 +721,7 @@ function graph3d:DSarc(AB,sens,options)
     if not ld.isID3d(mat) then 
         mat = ld.invmatrix3d(mat); N = ld.mLtransform3d(N,mat); cam = ld.mtransform3d(ld.camera,mat) 
     end
-    local A, B = ld.toSphere(A), ld.toSphere(B) -- to have points on sphere
+    A, B = ld.toSphere(A), ld.toSphere(B) -- to have points on sphere
     local u = pt3d.prod(A-C,B-C)
     if pt3d.N1(u) < 1e-12 then  -- points alignés avec le centre !
         if normal ~= nil then 
@@ -767,6 +853,11 @@ function graph3d:DSarc(AB,sens,options)
                 end
             end
         end
+    end
+    if options.label ~= nil then
+        local L
+        if options.anchor == nil then L = ld.arc3d(A,C,B,R,sens) end
+        addLabel( self, L, options.label, options)    
     end
 end
 
@@ -935,18 +1026,84 @@ function graph3d:DSfacet(facet, options)
             --self:Endadvanced()
         end
     end
+    if options.label ~= nil then
+        local L = {}
+        if options.anchor == nil then
+            local B, A = facet[1]
+            local n = #facet
+            for k = 2, n do
+                A = B; B = facet[k]
+                table.append(L, ld.arc3d(A,Ct,B,R,1)[1])
+            end
+        end
+        addLabel( self, L, options.label, options)
+    end
 end
-
 
 -- angle sphérique
 function graph3d:DSangle(B,A,C,r,sens,options)
     A = ld.toSphere(A); B = ld.toSphere(B); C = ld.toSphere(C); 
-    local C, R = sphere.C, sphere.R
-    local alpha = r/R*ld.rad
-    local C1 = ld.rotate3d(A, alpha, {Ct,pt3d.prod(A-Ct,C-Ct)})
-    local B1 = ld.rotate3d(A, alpha, {Ct,pt3d.prod(A-Ct,B-Ct)})
-    self:DSarc({B1,C1},sens,options)
+    local Ct, R = sphere.C, sphere.R
+    local C1 = ld.toSphere( A+r*pt3d.normalize(C-A) )
+    local B1 = ld.toSphere( A+r*pt3d.normalize(B-A) )
+    local n = pt3d.prod(B1-A,C1-A)   
+    options = options or{}
+    local label = options.label or "" -- label text
+    options.label = nil
+    local node_options = options.node_options or "" -- node options for the label
+    local pos = options.pos or "auto" -- position of the label relative to the anchor point
+    local dist = options.dist or r -- distance between the label and the center A
+    local rotate3D = options.rotate3d or "none" -- or "auto" or "ortho", rotation of the label in (BAC) plane
+    local rotate = options.rotate or "none" -- or "auto" or "ortho", rotation of the label on the screen plane
+    local angle = options.angle or 0 -- angle to turn the anchor point around the center A (initially, the anchor point is located on the arc and the bisector line)    
+    options.fill = options.fill or ""
+    options.fillopacity = options.fillopacity or 0.5
+    if options.fill ~= "" then
+        self:DSregion( ld.path3d({A,Ct,B1,R,1,"ca",A,C1,r,1,"ca",Ct,A,R,1,"ca"}), 
+        {style="noline", fill=options.fill, fillopacity=options.fillopacity}) -- sector
+    end
+    self:DScurve( ld.arc3d(B1,A,C1,r,sens), options) -- arc
+    if label ~= "" then
+        local b, c = B1, C1
+        local u = pt3d.normalize((c+b)/2-A)
+        u = sens*u    
+        local v = ld.rotate3d(u,90,{pt3d.Origin,n})
+        local w = ld.rotate3d(u,-90,{pt3d.Origin,n})
+        local anchor = A+dist*u
+        if angle ~= 0 then anchor = ld.rotate3d(anchor,angle,{A,n}) end
+        local U, V = self:Proj3dV(anchor-A), self:Proj3dV(w)
+        local angle2D = 0
+        if rotate3D == "ortho" then 
+            if self:Cosine_incidence(n,anchor) < 0 then w = -w; V = -V end
+            if V.re < 0 then dir = {-w, -u}; V = -V else dir = {w,u} end
+        elseif rotate3D == "auto" then
+            if self:Cosine_incidence(n,anchor) < 0 then v = -v end
+            if self:Proj3dV(u).re < 0 then dir = {-u,-v}; u = -u else  dir = {u,v} end
+        elseif rotate == "ortho" then
+            angle2D = self:Arg(V)*ld.rad
+            if angle2D < -90 then angle2D = angle2D+180
+            elseif angle2D > 90 then angle2D = angle2D-180
+            end
+        elseif rotate == "auto" then
+            angle2D = self:Arg(U)*ld.rad
+            if angle2D < -90 then angle2D = angle2D+180
+            elseif angle2D > 90 then angle2D = angle2D-180
+            end
+        end
+        if pos == "auto" then 
+            if rotate3D == "ortho" then 
+                pos = self:Poslab(U, self:Arg(V)*ld.rad) 
+            elseif rotate3D == "auto" then
+                pos = self:Poslab(U, self:Arg(self:Proj3dV(u))*ld.rad) 
+            else pos = self:Poslab(U,angle2D)
+            end 
+        end
+        if angle2D ~= 0 then node_options = node_options..",rotate="..angle2D end
+        self:DSlabel(label, ld.toSphere(anchor), --Ct+(R+0.001)*pt3d.normalize(anchor-Ct), 
+            {pos=pos, node_options=node_options, dir=dir})
+    end
 end
+
 
 -- labels
 function graph3d:DSlabel(...)
@@ -964,7 +1121,7 @@ function graph3d:DSlabel(...)
         local u = anchor-C
         local options = {}
         options.pos = pos; options.dir = dir; options.dist = dist; options.node_options = node_options
-        if pt3d.abs(u) < R then --anchor est dans la sphère
+        if pt3d.abs(u) <= 0.99*R then --anchor est dans la sphère
             if ld.Hiddenlines then
                 local oldoptions = options.node_options
                 local sep = ""
@@ -980,7 +1137,14 @@ function graph3d:DSlabel(...)
         else -- anchor est à l'extérieur de la sphère
             if visibledot(anchor) then -- anchor est visible
                 table.insert(after_sphere, {text,anchor,options})
-            else
+            elseif ld.Hiddenlines then
+                local oldoptions = options.node_options
+                local sep = ""
+                if oldoptions ~= "" then sep = "," end
+                options.node_options = oldoptions..sep..insidelabelcolor
+                table.insert(hidden_part, {text,anchor,table.copy(options)})
+                options.node_options = oldoptions
+            else 
                 --self:Beginadvanced()
                 table.insert(before_sphere, {text,anchor,options})
                 --self:Endadvanced()
@@ -1088,6 +1252,9 @@ function graph3d:DScurve(L,options)
     else
        table.insert(before_sphere, {rep,style,color,width,opacity})
     end
+    if options.label ~= nil then
+        addLabel( self, L, options.label, options)
+    end    
 end
 
 -- region spherique
@@ -1164,6 +1331,9 @@ function graph3d:DSregion(L,options)
     else
        table.insert(before_sphere, {rep,style,color,width,opacity,nil,fill,fillopacity})
     end
+    if options.label ~= nil then
+        addLabel( self, L, options.label, options)
+    end     
 end
 
 -- plan
@@ -1183,7 +1353,7 @@ function graph3d:DSplane(P,args) -- draw a plane around the sphere
     if angle ~= 0 then F = ld.rotate3d(F,angle,{A,n}) end
     args.close = true
     self:DSpolyline(F,args)
-    if trace then self:DScircle(P,args) end
+    if trace then args.label=nil; self:DScircle(P,args) end
 end
 
 
@@ -1201,12 +1371,54 @@ function graph3d:DSinvstereo_polyline(L,options)
 -- cette ligne est dessinée sur la sphère par stéréographie inversée (chaque segment devient un arc de cercle sur la sphère)
     if (L == nil) or (type(L) ~= "table") then return end
     options = options or {}
-    local close = options.close or false   
+    local close = options.close or false 
+    local label = options.label
+    options.label = nil
+    local rep = {} 
     if pt3d.isPoint3d(L[1]) then L = {L} end
+    local C, R = sphere.C, sphere.R
+    local N = C+R*vecK
     for _,cp in ipairs(L) do
         local f,len = ld.curvilinear_param3d(cp,close)
         local n = math.max(math.floor(5*len),25)
         local L1 = ld.parametric3d(f,0,1,n,false,1)[1]
-        self:DSinvstereo_curve(L1,options)
+        L1 = self:DScurve(ld.inv_projstereo(L1,{C,R},N), options)    
+        self:DScurve(L1, options)    
+        if label ~= nil then table.append(rep,L1) end
+    end
+    if label ~= nil then
+        addLabel(self, rep, label, options)
+    end
+end
+
+function graph3d:DSaxes(O,args)
+-- ajouter les axes à la scène
+-- O est le point 3d de concours
+-- args comme pour DSpolyline() plus un champ legend=true/false et labels={"$x$", "$y$", "$z$"} }
+    args = args or {}
+    local legend = args.legend
+    if legend == nil then legend = true end
+    local labels = args.labels or {"$x$", "$y$", "$z$"}
+    local xyzdist = args.xyzdist or 0
+    local distx = args.xdist or xyzdist
+    local disty = args.ydist or xyzdist
+    local distz = args.zdist or xyzdist
+    local x0,y0,z0 = O.x, O.y, O.z
+    local x1,x2,y1,y2,z1,z2 = table.unpack(self.param.viewport3d)
+    local dx, dy, dz = (x2-x1)/40, (y2-y1)/40, (z2-z1)/40
+    if args.xyzlimits ~= nil then 
+        x1,x2 = table.unpack( args.xyzlimits)
+        y1,y2 = x1,x2; z1,z2 = x1,x2
+    end
+    if args.xlimits ~= nil then x1, x2 = table.unpack( args.xlimits) end
+    if args.ylimits ~= nil then y1, y2 = table.unpack( args.ylimits) end
+    if args.zlimits ~= nil then z1, z2 = table.unpack( args.zlimits) end
+    args.name = nil
+    self:DSpolyline( {{M(x1,y0,z0),M(x2,y0,z0)}, {M(x0,y1,z0),M(x0,y2,z0)},{M(x0,y0,z1),M(x0,y0,z2)}}, args )
+    if legend then
+        args.dist = 0; args.pos = "center"
+        self:DSlabel(labels[1], M(x2+dx+distx,y0,z0), args)
+        self:DSlabel(labels[2], M(x0,y2+dy+disty,z0), args)
+        self:DSlabel(labels[3], M(x0,y0,z2+dz+distz), args)
     end
 end

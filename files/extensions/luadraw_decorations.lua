@@ -1,6 +1,6 @@
 -- luadraw_decorated.lua
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -36,7 +36,7 @@ local addLabel = function(self, L, label, options, change_matrix)
         else
             anchor = cpx.toComplex(anchor)
         end
-        if change_matrix then anchor = self:Mtransform(anchor) end
+        if change_matrix then anchor = ld.applymatrix(anchor,self.matrix) end
     end
     local pos = options.pos or "center"
     local dir = options.dir
@@ -133,15 +133,17 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
         if debut then self:Write(commande); debut = false end
         if first == nil then i = 1 else i = 2 end
         for _, z in ipairs(aux) do
-            if i == 1 then self:Write(Mcoord(z)); i = 2
-            else
-                if i == 2 then self:Write(" .. controls "..Mcoord(z)); i = 3
+            if z ~= "m" then
+                if i == 1 then self:Write(Mcoord(z)); i = 2
                 else
-                    if i == 3 then self:Write(" and "..Mcoord(z)); i = 4
-                    else    
-                        if i == 4 then self:Write(" .. "..Mcoord(z)); i = 5 
-                        else
-                            if i == 5 then i = 2 end -- on est sur le caractère "b"
+                    if i == 2 then self:Write(" .. controls "..Mcoord(z)); i = 3
+                    else
+                        if i == 3 then self:Write(" and "..Mcoord(z)); i = 4
+                        else    
+                            if i == 4 then self:Write(" .. "..Mcoord(z)); i = 5 
+                            else
+                                if i == 5 then i = 2 end -- on est sur le caractère "b"
+                            end
                         end
                     end
                 end

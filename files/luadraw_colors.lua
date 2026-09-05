@@ -1,6 +1,6 @@
 -- luadraw_colors.lua (chargé par luadraw_graph)
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -233,6 +233,7 @@ function ld.palette(colors,pos,tbl)
 -- pos est un nombre entre 0 et 1 (0=première couleur, 1=dernière couleur)
 -- la fonction renvoie la couleur correspondant à la position pos dans la liste colors
 -- si tbl vaut true, on renvoie une table, sinon une chaîne
+    if pos < 0 then pos = 0 elseif pos > 1 then pos = 1 end
     local N = #colors
     tbl = tbl or false
     if pos == 0 then if tbl then return colors[1] else return ld.rgb(colors[1]) end

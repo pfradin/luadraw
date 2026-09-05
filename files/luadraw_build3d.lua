@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/08/04
--- version 3.4
+-- date 2026/09/05
+-- version 3.5
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -211,10 +211,11 @@ function ld.splitseg(F,plane)
 -- la fonction renvoie la partie devant (segment), la partie derrière (segment),
     local S,n = table.unpack(plane)
     local dev, der = {}, {}
+    local eps = 1e-6
     local A, B = table.unpack(F)
     local p1, p2, I = pt3d.dot(A-S,n), pt3d.dot(B-S,n)
-    if math.abs(p2)<1e-8 then p2 = 0 end
-    if math.abs(p1)<1e-8 then -- A sur la facette
+    if math.abs(p2)<eps then p2 = 0 end
+    if math.abs(p1)<eps then -- A sur la facette
         if (p2 == 0) then -- B sur la facette
             dev = F
         elseif p2 > 0 then -- B du bon coté
@@ -736,7 +737,7 @@ end
 
 function ld.frustum(C,R,r,V,A,nb,open) -- ou frustum(C,R,r,A,nb,open), frustum build with facets (tronc de cône droit ou penché)
     if (A == nil) or (type(A) == "number") then -- syntaxe C,R,r,A,nb,open
-        open = nb; nb = A; A = V
+        open = nb; nb = A; A = V; V = A-C
     elseif isPoint3d(A) then V = ld.dproj3d(A,{C,V}) - C -- frustum penché
     end
     nb = nb or 35
