@@ -12,7 +12,7 @@ Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requi
  
 **Version 3.5**
 
-* In the *luadraw_spherical} module:
+* In the *luadraw_spherical* module:
    * The *g:Define_sphere()* method has three additional options: *back=true/false*, *inside=true/false*, and *front=true/false*. These allow for toggling the display of elements located behind, inside, and in front of the sphere. 
     
    * Added the *g:DSaxes()* method, which draws the three axes. 
