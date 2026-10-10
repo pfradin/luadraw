@@ -1,4 +1,4 @@
-# Package luadraw for LuaLaTeX version 3.5
+# Package luadraw for LuaLaTeX version 3.6
 
 * The *luadraw* package defines the environment of the same name, which lets you create mathematical graphs (2D and 3D) using the Lua language. These graphs are ultimately drawn by TikZ (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language, capable of performing calculations, using TikZ's graphics capabilities.  
 Run `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) required) or
