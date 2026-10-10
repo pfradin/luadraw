@@ -1,6 +1,6 @@
 -- luadraw__matrix.lua (chargé par luadraw__calc, qui charge avant luadraw_complex.lua)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -112,6 +112,15 @@ function ld.invmatrix(M)
             return { -c.re*A - c.im*B, A, B } -- matrice inverse
         end
     end
+end
+
+function ld.getmatrix(from, to)
+    -- from = {a,b,c}, to = {a1,b1,c1}
+    -- returns the matrix transforming a, b, c into a1, b1, c1
+    local a,b,c = table.unpack( from )
+    local a1,b1,c1 = table.unpack( to )
+    local m = ld.invmatrix({a,b-a,c-a})
+    return ld.composematrix({a1,b1-a1,c1-a1}, m)
 end
 
 function ld.isID(m)  -- teste la matrice unité

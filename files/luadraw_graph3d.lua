@@ -1,6 +1,6 @@
 -- luadraw_graph3d.lua
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -328,8 +328,8 @@ end
 function luadraw_graph3d:Setviewdir(theta,phi) -- direction de l'observateur avec theta et phi en degrés
     if (theta == nil) then return end
     local viewdir, mode
-    if type(theta) == "number" then viewdir = {"ortho", theta, phi} 
-    else viewdir = theta
+    if type(theta) == "number" then viewdir = {ld.projection_mode, theta, phi} 
+    else viewdir = theta -- table
     end
     theta, phi, mode = table.unpack( calc_viewdir(viewdir) )
     if (ld.projection_mode == "central") and (mode ~= "central") then ld.close_central() end
@@ -1080,6 +1080,8 @@ function luadraw_graph3d:Adjust_color(F,color,contrast,twoside, tbl_format) -- u
 -- F = facet, contrast in [0,1], twoside=true/false
 -- adjust color based on facet normal vector (scalar product between the normal vector of the facet and the vector directed towards the observer.)
 -- returns a color (string), normal vector and coef
+    contrast = contrast or 1
+    if twoside == nil then twoside = true end
     tbl_format = tbl_format or false
     tbl_format = tbl_format and (type(color) == "table") -- rgb table format
     local A, B, C, k, n, m, coef, ok, newcolor, N, r, g, b, neg, c, G, V
@@ -2402,50 +2404,74 @@ local eps = 1e-10
 end
 
 ----------- draw on a plane with 2D methods ---------------------------
+local use_post_processing = false
 
 function luadraw_graph3d:BeginOnPlane(system2d, options)
 -- system2d = {A,u,v} designates a Cartesian coordinate system on a plane
--- options = {labeldir = nil, view = nil, out= var, lowlevel=false}
+-- options = {labeldir = nil, view = nil, out= var, lowlevel=false, border=false, border_options=""}
     local A, U, V = table.unpack(system2d)
     local o, u, v = self:Proj3d(A), self:Proj3dV(U), self:Proj3dV(V)
     options = options or {}
     local labeldir = options.labeldir 
     local view = options.view -- view={x1,x2,y1,y2}
+    local border = options.border or false
+    local border_options = options.border_options or ""
     local out = options.out
+    local tikzmatrix = options.tikzmatrix
+    if tikzmatrix == nil then tikzmatrix = true end
     local lowlevel = options.lowlevel or false
+    if lowlevel then tikzmatrix = true end
     if (out ~=  nil) and (type(out) == "table") then
         table.append(out,{0,u,v})
+    end
+    if tikzmatrix then
+        local xsc, ysc, xmin, ymin = self.Xscale, self.Yscale, self.Xmin, self.Ymin
+        local T = { -Z(xmin*xsc, ymin*ysc), Z(xsc,0), Z(0,ysc) } -- luadraw -> TikZ
+        local invT = ld.invmatrix(T)
+        local Mat, P = self.matrix, {o,u,v}
+        local invMat = ld.invmatrix(Mat) 
+        local res = ld.composematrix(T, Mat)
+        local res = ld.composematrix(res, P)
+        local res = ld.composematrix(res, invMat)
+        local res = ld.composematrix(res, invT) -- res = T*Mat*P*Mat^{-1}*T^{-1}
+        local a, b, c, d = res[2].re, res[2].im, res[3].re, res[3].im
+        local tx, ty = res[1].re, res[1].im
+        local matrix = "{"..ld.strReal(a)..","..ld.strReal(b)..","..ld.strReal(c)..","..ld.strReal(d)..",("..ld.strReal(tx)..",".. ld.strReal(ty)..")}"
+        self:Saveattr("cm="..matrix)
+        if lowlevel then self:Writeln("\\pgflowlevelsynccm") end --ALL is transformed
+    else
+        local f = function(x,y)
+            local z = self:Proj3d( A + x*U + y*V )
+            return z.re, z.im
+        end
+        table.insert(self.post_processing, f)
+        use_post_processing = true
+        self:Saveattr()
     end
     if labeldir == "auto" then
         self:Labeldir({u,v})
     elseif labeldir ~= nil then
         self:Labeldir(self:Proj3dV(labeldir))
     end
-    
-    local xsc, ysc, xmin, ymin = self.Xscale, self.Yscale, self.Xmin, self.Ymin
-    local T = { -Z(xmin*xsc, ymin*ysc), Z(xsc,0), Z(0,ysc) } -- luadraw -> TikZ
-    local invT = ld.invmatrix(T)
-    local Mat, P = self.matrix, {o,u,v}
-    local invMat = ld.invmatrix(Mat) 
-    local res = ld.composematrix(T, Mat)
-    local res = ld.composematrix(res, P)
-    local res = ld.composematrix(res, invMat)
-    local res = ld.composematrix(res, invT) -- res = T*Mat*P*Mat^{-1}*T^{-1}
-    local a, b, c, d = res[2].re, res[2].im, res[3].re, res[3].im
-    local tx, ty = res[1].re, res[1].im
-    local matrix = "{"..ld.strReal(a)..","..ld.strReal(b)..","..ld.strReal(c)..","..ld.strReal(d)..",("..ld.strReal(tx)..",".. ld.strReal(ty)..")}"
-    self:Saveattr("cm="..matrix)
-    if lowlevel then self:Writeln("\\pgflowlevelsynccm") end --ALL is transformed
     if view ~= nil then
         local x1,x2,y1,y2 = table.unpack(view)
         local p = {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2),"l","cl"}
-        self:Dpath(p,"",true) -- clipping
         self.param.viewport = view
         self.param.coordsystem = view
+        if border then self:Dpath(p, border_options) end
+        self:Dpath(p,"",true) -- clipping
+    elseif border then
+        local x1,x2,y1,y2 = table.unpack(self.param.viewport)
+        local p = {Z(x1,y1),Z(x2,y1),Z(x2,y2),Z(x1,y2),"l","cl"}
+        self:Dpath(p, border_options)
     end
 end
 
 function luadraw_graph3d:EndOnPlane()
+    if use_post_processing then 
+        table.remove(self.post_processing)
+        use_post_processing = false
+    end
     self:Restoreattr()
 end
 

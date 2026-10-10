@@ -1,6 +1,6 @@
 -- luadraw_frustum_and_co.lua 
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -374,11 +374,13 @@ function ld.graph3d:Dcylinder(A,r,V,B,args)
             self:Filloptions("full", args.color, args.opacity)
         end
         self:Linestyle("noline")
+        if args.gradient and (args.opacity < 1) then self:Saveattr("transparency group") end
         self:Dpath3d(cyl.side)
         if args.gradient then self:Filloptions("gradient", gradStyleSection,args.opacity) end
         for _, p in ipairs(cyl.section) do
             self:Dpath3d(p)
         end
+        if args.gradient and (args.opacity < 1) then self:Restoreattr() end
     end
     if args.mode ~= ld.mGrid then -- edges
         self:Filloptions("none")
@@ -453,11 +455,13 @@ function ld.graph3d:Dcone(C,r,V,A,args)
             self:Filloptions("full", args.color,args.opacity)
         end
         self:Linestyle("noline")
+        if args.gradient and (args.opacity < 1) then self:Saveattr("transparency group") end
         self:Dpath3d(cone.side)
         if args.gradient then self:Filloptions("gradient", gradStyleSection,args.opacity) end
         for _, p in ipairs(cone.section) do
             self:Dpath3d(p)
         end
+        if args.gradient and (args.opacity < 1) then self:Restoreattr() end
     end
     if args.mode ~= ld.mGrid then -- edges
         self:Filloptions("none")
@@ -539,11 +543,13 @@ function ld.graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) pour u
             self:Filloptions("full", args.color,args.opacity)
         end
         self:Linestyle("noline")
+        if args.gradient and (args.opacity < 1) then self:Saveattr("transparency group") end
         self:Dpath3d(frustum.side)
         if args.gradient then self:Filloptions("gradient", gradStyleSection,args.opacity) end
         for _, p in ipairs(frustum.section) do
             self:Dpath3d(p)
         end
+        if args.gradient and (args.opacity < 1) then self:Restoreattr() end
     end
     if args.mode ~= ld.mGrid then -- edges
         self:Filloptions("none")
@@ -600,7 +606,9 @@ function ld.graph3d:Dsphere(A,r,args)
     --self:Dcircle(self:Proj3d(A),r)
     local L = self:Sphere_outline(A,r)
     self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
-    self:Dpath3d(L.visible)
+    if args.opacity < 1 then self:Saveattr("transparency group") end
+        self:Dpath3d(L.visible)
+    if args.opacity < 1 then self:Restoreattr() end
     if  args.mode == 0 then -- équateur
         local M1, M2 = table.unpack( self:Sphere_tangency(A,r,{A,V}) )
         local M3 = ld.rotate3d(M1,90,{A,V})
@@ -661,6 +669,7 @@ function ld.graph3d:Dcut_sphere(C,R,P, options)
     if W ~= nil then
         self:Beginclip( W )
             self:Dsphere(C,R,options)
+        --self:Endclip(true,options.visibletrace)
         self:Endclip()
     end
     if options.visibletrace ~= "" then

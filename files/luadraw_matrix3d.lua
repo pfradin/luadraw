@@ -1,6 +1,6 @@
 -- luadraw__matrix3d.lua (chargé par luadraw__graph3d)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -117,6 +117,15 @@ function ld.invmatrix3d(M1)
         local c1 = pt3d:new(u.z,v.z,w.z)/d
         return {-t.x*a1-t.y*b1-t.z*c1, a1, b1, c1}
     end
+end
+
+function ld.getmatrix3d(from, to)
+    -- from = {a,b,c,d}, to = {a1,b1,c1,d1}
+    -- returns the matrix transforming a, b, c into a1, b1, c1
+    local a,b,c,d = table.unpack( from )
+    local a1,b1,c1,d1 = table.unpack( to )
+    local m = ld.invmatrix3d({a,b-a,c-a,d-a})
+    return ld.composematrix3d({a1,b1-a1,c1-a1,d1-a1}, m)
 end
 
 function ld.isID3d(m) -- teste la matrice unité

@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -723,7 +723,7 @@ function luadraw_graph:DplotXY(X,Y,draw_options,clip)
         for k,x in ipairs(X) do
             z = Z(x,Y[k])
             if z ~= nil then table.insert(L, z) end
-        end
+    end
     self:Dpolyline({L},false,draw_options,clip)
 end
 
@@ -1222,7 +1222,7 @@ function luadraw_graph:Dtangent(p,t0,long,draw_options)
 -- dessin de la tangente à la courbe paramétrée par t->p(t) (à valeurs complexes)
 -- au point de paramètre t0. 
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) ~= "number" then draw_options = long; long = nil end
+    if type(long) == "string" then draw_options = long; long = nil end
     local S = ld.tangent(p,t0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
@@ -1233,7 +1233,7 @@ function luadraw_graph:DtangentC(f,x0,long,draw_options)
 -- dessin de la tangente à la courbe cartésienne d'équation y=f(x)
 -- au point d'abscisse x0
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) ~= "number" then draw_options = long; long = nil end
+    if type(long) == "string" then draw_options = long; long = nil end
     local S = ld.tangentC(f,x0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
@@ -1244,7 +1244,7 @@ function luadraw_graph:DtangentI(f,x0,y0,long,draw_options)
 -- dessin de la tangente à la courbe implicite d'équation f(x,y)=0
 -- au point (x0,y0) supposé sur la courbe
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) ~= "number" then draw_options = long; long = nil end
+    if type(long) == "string" then draw_options = long; long = nil end
     local S = ld.tangentI(f,x0,y0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
@@ -1267,11 +1267,64 @@ function luadraw_graph:Dtangent_from(A,p,t1,t2,dp,draw_options,out,scale)
     end
 end
 
+
+function luadraw_graph:Dcommon_tangent(p1, p2, options)
+-- dessin des tangentes communes aux courbes paramétrées par p1:t ->p1(t), et p2:t ->p2(t)
+-- options = {t1={u1,u2}, t2={v1,v2}, grid={50,50}, draw_options="", scale=1, out=nil}
+-- t1 : bornes de l'intervalle de recherche pour p1
+-- t2 :bornes de l'intervalle de recherche pour p2
+-- grid = {nb1, nb2}: maillage avec nb1 pour p1 et nb2 pour p2
+-- draw_options : pour le dessin des droites
+-- scale : pour modifier la longueur des droites
+-- out doit être une table, elle permet de récupérer les points de contacts par paire {A1,A2}, chaque paire définie une tangente commune.
+    options = options or {}
+    local t1 = options.t1 or {-5,5} -- p1 parameter limits 
+    local t2 = options.t2 or {-5,5} -- p2 parameter limits 
+    local grid = options.grid or {50,50}
+    local draw = options.draw_options or ""
+    local scale  = options.scale or 1
+    local I = ld.common_tangent(p1,t1[1],t1[2], p2,t2[1],t2[2], grid)
+    if I ~= nil then
+        local out = {}
+        for _, z in ipairs(I) do
+            local a, b = p1(z.re), p2(z.im)
+            self:Dline(a, b, draw, scale)
+            table.insert(out, {a,b})
+        end
+        if options.out ~= nil then table.append(options.out, out) end
+    end
+end
+
+function luadraw_graph:Dparallel_tangent(p, t0, options)
+-- dessin des tangentes communes aux courbes paramétrées par p1:t ->p1(t), et p2:t ->p2(t)
+-- options = {t={t1,t2}, draw_options="", scale=1, out=nil}
+-- t : bornes de l'intervalle de recherche
+-- draw_options : pour le dessin des droites
+-- long : pour imposer une longueur aux segments tracés
+-- dp = derivative of p
+-- out doit être une table, elle permet de récupérer les valeurs de t solutions
+    options = options or {}
+    local t = options.t or {-5,5} -- p1 parameter limits 
+    local draw = options.draw_options or ""
+    local long  = options.len
+    local I = ld.parallel_tangent(p,t0,t[1], t[2], options.dp)
+    if I ~= nil then
+        for _, t in ipairs(I) do
+            if long == nil then
+                self:Dtangent(p, t, draw)
+            else
+                self:Dtangent(p, t, long, draw)
+            end
+        end
+        if options.out ~= nil then table.append(options.out, I) end
+    end
+end
+
 function luadraw_graph:Dnormal(p,t0,long,draw_options)
 -- dessin de la normale à la courbe paramétrée par t->p(t) (à valeurs complexes)
 -- au point de paramètre t0. 
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) ~= "number" then draw_options = long; long = nil end
+    if type(long) == "string" then draw_options = long; long = nil end
     local S = ld.normal(p,t0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
@@ -1282,7 +1335,7 @@ function luadraw_graph:DnormalC(f,x0,long,draw_options)
 -- dessin de la normale à la courbe cartésienne d'équation y=f(x)
 -- au point d'abscisse x0
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) ~= "number" then draw_options = long; long = nil end
+    if type(long) == "string" then draw_options = long; long = nil end
     local S = ld.normalC(f,x0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
@@ -1293,7 +1346,7 @@ function luadraw_graph:DnormalI(f,x0,y0,long,draw_options)
 -- dessin de la normale à la courbe implicite d'équation f(x,y)=0
 -- au point (x0,y0) supposé sur la courbe
 -- si le paramètre long est égal à nil, on trace toute la droite, sinon, un segment de longueur long
-    if type(long) ~= "number" then draw_options = long; long = nil end
+    if type(long) == "string" then draw_options = long; long = nil end
     local S = ld.normalI(f,x0,y0,long)
     if long == nil then self:Dline(S,draw_options)
     else self:Dseg(S,1,draw_options)
@@ -1778,13 +1831,13 @@ function luadraw_graph:Dimage(file,anchor,options)
         if mat == nil then mat = ld.ID end
     else
         mat = {Z(0,0), self.matrix[2], self.matrix[3]}
-        if options.matrix ~=nil then mat = ld.composematrix(mat, options.matrix) end
+        if options.matrix ~= nil then mat = ld.composematrix(mat, options.matrix) end
     end
     if not ld.isID(mat) then
         local t,u,v = table.unpack( ld.map(toComplex,mat) )
-        t = Z(t.re*self.Xscale, t.im*self.Yscale)
-        u = Z(u.re*self.Xscale, u.im*self.Yscale)
-        v = Z(v.re*self.Xscale, v.im*self.Yscale)
+        --t = Z(t.re*self.Xscale, t.im*self.Yscale)
+        --u = Z(u.re*self.Xscale, u.im*self.Yscale)
+        --v = Z(v.re*self.Xscale, v.im*self.Yscale)
         mat = ",cm={"..strReal(u.re)..","..strReal(u.im)..","..strReal(v.re)..","..strReal(v.im)..",("..strReal(t.re)..","..strReal(t.im)..")}"
     else mat = ""
     end
@@ -1802,9 +1855,12 @@ function luadraw_graph:Dmapimage(file, parallelo, options)
     local border = options.border_options or nil -- draw_options to draw the border
     local graphics_options = options.graphics_options or ""
     if graphics_options ~= "" then graphics_options = ","..graphics_options end
-    local a, u, v = table.unpack( parallelo )
+    local a, u, v = table.unpack( ld.map(toComplex, parallelo))
+    local a1 = Z(a.re*self.Xscale, a.im*self.Yscale)
+    local u1 = Z(u.re*self.Xscale, u.im*self.Yscale)
+    local v1 = Z(v.re*self.Xscale, v.im*self.Yscale)
     if clip then self:Beginclip( {a, a+u,a+u+v,a+v,"l","cl"} ) end
-        self:Dimage(file, Z(0,0),{pos="NE", name=name, matrix={a,u,v}, 
+        self:Dimage(file, Z(0,0),{pos="NE", name=name, matrix={a1,u1,v1}, 
             graphics_options="width=1cm,height=1cm"..graphics_options, 
             node_options=options.node_options})
     if clip then self:Endclip() end

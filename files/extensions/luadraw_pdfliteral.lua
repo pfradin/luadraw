@@ -1,6 +1,6 @@
 -- luadraw_pdfliteral.lua
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -91,14 +91,13 @@ function ld.graph:Dliteralpath(...)
     end
     
     local n = select("#", ...)  -- Nombre total d'arguments
-    for i = 1, n-1, 2 do   -- Pas de 3 (1,4,7...)
+    for i = 1, n-1, 2 do   -- Pas de 2 (1,3,5...)
         local path, args = select(i, ...)  -- Récupère les 2 args
         if path ~= nil then apath(path,args) end
     end
     self:Writeln("\\luadrawLiteral{"..table.concat(literalstr,"\n").."}")
     self.param.linewidth = nil; self.param.linecolor = nil; self.param.fillcolor = nil
     self:Linewidth(oldlinewidth); self:Linecolor(oldlinecolor); self:Filloptions(nil,oldfillcolor)
-
 end
 
 function ld.graph:Dliteralpolyline(...)

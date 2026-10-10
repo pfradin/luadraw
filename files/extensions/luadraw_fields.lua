@@ -1,6 +1,6 @@
 -- luadraw_fields2d.lua
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -69,7 +69,7 @@ function graph:Dgradientfield(f,args)
 end
 
 
-function graph:DplotXY(X,Y,draw_options)
+function graph:DplotXY(X,Y,draw_options,clip)
 -- X est une liste de réels ou de chaînes
 -- Y est une liste de réels de même longueur que X 
     local L = {} -- liste des points à dessiner
@@ -85,7 +85,7 @@ function graph:DplotXY(X,Y,draw_options)
         end
         self:Dlabel(table.unpack(noms))
     end
-    self:Dpolyline(L,draw_options)
+    self:Dpolyline(L,draw_options,clip)
 end
 
 -------------------------- 3D fields on a surface ---------------------

@@ -1,6 +1,6 @@
 -- luadraw_shadedforms.lua 
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -169,13 +169,14 @@ function graph:Dshadedrectangle(x1,x2,y1,y2,pal,options)
     options = options or {}
     local grid = options.grid or {15,15}
     local f = options.values or function(x,y) return cpx.abs(Z(x,y)) end
+    local bilinear = options.bilinear
+    if bilinear == nil then bilinear = true end
     local out = options.out
     local bar = options.bar or "none" -- "none" or "left" or "right" or "top" or "bottom"
     local bardist = options.bardist or 1
     local baroptions = options.baroptions or {}
     local deltaX, deltaY = (x2-x1)/grid[1], (y2-y1)/grid[2]
     local values, key = {}
-    local vectors, v = {}
     local Min, Max = math.huge, -math.huge
     for i = 0, grid[1] do
         local x = x1+deltaX*i
@@ -193,33 +194,48 @@ function graph:Dshadedrectangle(x1,x2,y1,y2,pal,options)
     if out~= nil then table.insert(out,Min); table.insert(out,Max) end
     baroptions.minmax = {Min, Max}
     baroptions.values = baroptions.values or #pal
-    local left_colors, right_colors, color = {}, {}
-    for j = 0, grid[2] do 
-        key = "0/"..j
-        color = ld.palette(pal,(values[key]-Min)/(Max-Min))
-        table.insert(right_colors, color)
-    end
-    -- paint
-    local eps =  1e-2 -- to widen the squares a little
-    for i = 0, grid[1]-1 do
-        local x = x1+deltaX*i
-        left_colors = right_colors
-        right_colors = {}
+    if bilinear then
+        local left_colors, right_colors, color = {}, {}
         for j = 0, grid[2] do 
-            key = (i+1).."/"..j
+            key = "0/"..j
             color = ld.palette(pal,(values[key]-Min)/(Max-Min))
             table.insert(right_colors, color)
         end
-        for j = 0, grid[2]-1 do
-            local y = y1+deltaY*j
-            local color0 = left_colors[j+1]
-            local color1 = right_colors[j+1]
-            local color2 = right_colors[j+2]
-            local color3 = left_colors[j+2]
-            local options = "upper left="..color3..",upper right="..color2..",lower left="..color0..",lower right="..color1
-            self:Dpolyline({Z(x-eps,y-eps),Z(x+deltaX+eps,y-eps), Z(x+deltaX+eps,y+deltaY+eps), Z(x-eps,y+deltaY+eps)}, "draw=none,"..options)
+        -- paint
+        local eps =  1e-2 -- to widen the squares a little
+        for i = 0, grid[1]-1 do
+            local x = x1+deltaX*i
+            left_colors = right_colors
+            right_colors = {}
+            for j = 0, grid[2] do 
+                key = (i+1).."/"..j
+                color = ld.palette(pal,(values[key]-Min)/(Max-Min))
+                table.insert(right_colors, color)
+            end
+            for j = 0, grid[2]-1 do
+                local y = y1+deltaY*j
+                local color0 = left_colors[j+1]
+                local color1 = right_colors[j+1]
+                local color2 = right_colors[j+2]
+                local color3 = left_colors[j+2]
+                local options = "upper left="..color3..",upper right="..color2..",lower left="..color0..",lower right="..color1
+                self:Dpolyline({Z(x-eps,y-eps),Z(x+deltaX+eps,y-eps), Z(x+deltaX+eps,y+deltaY+eps), Z(x-eps,y+deltaY+eps)}, "draw=none,"..options)
+            end
         end
-    end
+    else -- no bilinear
+        local eps =  1e-2 -- to widen the squares a little
+        local x = x1-deltaX
+        for i = 0, grid[1]-1 do
+            x = x+deltaX
+            local y = y1-deltaY
+            for j = 0, grid[2]-1 do 
+                y = y+deltaY
+                key = i.."/"..j
+                color = ld.palette(pal,(values[key]-Min)/(Max-Min))
+                self:Dpolyline({Z(x-eps,y-eps),Z(x+deltaX+eps,y-eps), Z(x+deltaX+eps,y+deltaY+eps), Z(x-eps,y+deltaY+eps)}, "draw=none, fill="..color)
+            end
+        end
+    end -- of bilinear
     if bar == "right" then 
         baroptions.length = baroptions.length or 0.75*(y2-y1)
         baroptions.dir = cpx.I

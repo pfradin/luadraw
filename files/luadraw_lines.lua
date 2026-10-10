@@ -1,6 +1,6 @@
 -- luadraw_lines.lua (chargé par luadraw__calc)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -77,6 +77,7 @@ function ld.cut(L,A,before)
     if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end -- liste de réels/complexes
     before = before or false -- coupure après A
     local coupee, avant, apres = false, {}, {}
+    local eps = 1e-8
     
     local cutcp = function(cp) -- coupure composante connexe
         if #cp < 2 then return false end
@@ -87,7 +88,7 @@ function ld.cut(L,A,before)
             table.insert(av,B)
             -- on teste si A est dans le segment [B,C]
             local z = cpx.bar(B-A)*(C-A)
-            if (z.re <= 0) and ld.isNul(z.im) then --and (cpx.abs2(B-A) <= cpx.abs2(B-C)) then -- c'est bon math.abs(z.im) < 1e-4 then --
+            if (math.abs(z.im) < 2*eps) and (z.re < eps) then
                 if not (A == B) then table.insert(av,A) end
                 if not (A == C) then table.insert(ap,A) end
                 for j = k, #cp do 
@@ -174,11 +175,14 @@ function ld.arcb(b,a,c,r,sens) --renvoie un arc de cercle sous forme de chemin a
         angle = angle - math.pi/2
         v = u; dv = du; u = n; du = dn; n = -v; dn = -dv
     end
-    local d, ca, sa = a+r*(c-a)/cpx.abs(c-a), math.cos(angle/2), math.sin(angle/2)
-    local k = 4*(1-ca)*ca/(3*sa^2)*1.005
-    local e = ld.interD({a+u,n},{d,cpx.I*(d-a)})
-    if e ~= nil then
-        table.append(chemin, {a+u+k*(e-a-u), d+k*(e-d), d,"b"})
+    if math.abs(angle*ld.rad) < 1e-12 then angle = 0 end
+    if angle > 0 then
+        local d, ca, sa = a+r*(c-a)/cpx.abs(c-a), math.cos(angle/2), math.sin(angle/2)
+        local k = 4*(1-ca)*ca/(3*sa^2)*1.005
+        local e = ld.interD({a+u,n},{d,cpx.I*(d-a)})
+        if e ~= nil then
+            table.append(chemin, {a+u+k*(e-a-u), d+k*(e-d), d,"b"})
+        end
     end
     return chemin
 end
@@ -478,21 +482,54 @@ function ld.polyreg(centre,sommet,nbcotes) -- ou polyreg(sommet1,sommet2,nbcotes
     return res
 end 
 
+function ld.pq_gonreg(C, S, type) 
+    -- C = center
+    -- S = vertice
+    -- type = {p,q}
+    -- returns a regular pq-gone
+    local p, q = table.unpack(type) 
+    if 2*q < p then
+        local m = ld.gcd(p,q)
+        local p1, q1 = p/m, q/m
+        local rep = {}
+        for j = 0, m-1 do
+            local S1 = ld.rotate(S, j*360/p, C)
+            local aux = {}
+            for k = 0, p1-1 do table.insert(aux, ld.rotate(S1, k*q1*360/p1, C)) end
+            table.insert(rep, aux)
+        end
+        return rep
+    end
+end
+
 -- tangentes
+local function calc_seg(A,v,long)
+    if long == nil then return {A,v}
+    elseif type(long)== "number" then
+        local u = long*v/2
+        return {A-u,A+u}
+    elseif type(long) == "table" then
+        local lg1, lg2 = table.unpack( long )
+        if lg1 == 0 then return {A,A+lg2*v}
+        elseif lg2 == 0 then return {A, A-lg1*v}
+        else
+            return {A-lg1*v, A+lg2*v}
+        end
+    end
+end
 function ld.tangent(p,t0,long)
 -- tangente à la courbe paramétrée par t -> p(t) (à valeurs complexes)
 -- au point de paramètre t0
+-- long = nil or number or {number1,number2}
 -- si long vaut nil on renvoie une droite, sinon un segment
     if (p == nil) or (t0 == nil) then return end
     local A = p(t0)
     if (A == nil) then return end
-    local v = (p(t0+1E-6)-p(t0))*1E6 -- vecteur tangent
+    local h = 1e-6
+    local v = (p(t0+h)-p(t0-h))/(2*h) -- vecteur tangent
     if (v == nil) or cpx.isNul(v) then return end
-    if long == nil then return {A,v} -- on renvoie une droite
-    else 
-        local u = long*v/cpx.abs(v)/2
-        return {A-u,A+u} -- on renvoie un segment
-    end
+    v = cpx.normalize(v)
+    return calc_seg(A,v,long)
 end
 
 function ld.tangentC(f,x0,long)
@@ -505,11 +542,8 @@ function ld.tangentC(f,x0,long)
     if (A == nil) then return end
     local v = Z(1, (f(x0+1E-6)-y0)*1E6) -- vecteur tangent
     if (v == nil) or cpx.isNul(v) then return end
-    if long == nil then return {A,v} -- on renvoie une droite
-    else 
-        local u = long*v/cpx.abs(v)/2
-        return {A-u,A+u} -- on renvoie un segment
-    end
+    v = cpx.normalize(v)
+    return calc_seg(A,v,long)
 end
 
 function ld.tangentI(f,x0,y0,long)
@@ -522,11 +556,8 @@ function ld.tangentI(f,x0,y0,long)
     local a,b = (f(x0+h,y0)-f(x0-h,y0))/(2*h), (f(x0,y0+h)-f(x0,y0-h))/(2*h)
     local v = Z(-b,a)
     if (v == nil) or cpx.isNul(v) then return end
-    if long == nil then return {A,v} -- on renvoie une droite
-    else 
-        local u = long*v/cpx.abs(v)/2
-        return {A-u,A+u} -- on renvoie un segment
-    end
+    v = cpx.normalize(v)
+    return calc_seg(A,v,long)
 end
 
 function ld.tangent_from(from,p,t1,t2,dp)
@@ -534,7 +565,7 @@ function ld.tangent_from(from,p,t1,t2,dp)
 -- p: t -> p(t) parameterization of the curve (p(t) is a complex number)
 -- t1, t2 : interval boundaries
 -- dp (optionnal) derivative function of the function p
--- returns a list of points (points on the curve whose tangent passes through from point)
+-- returns a list of points (points on the curve whose tangent passes through point)
     local h = 1e-6
     if dp == nil then
         dp = function(t) -- approximate derivative function
@@ -556,6 +587,49 @@ function ld.tangent_from(from,p,t1,t2,dp)
     end
 end
 
+function ld.common_tangent(p1,u1,u2,p2,v1,v2,grid)
+-- p1 parametrization on [u1;u2] 
+-- p2 parametrization on [v1;v2] 
+-- grid = {nb1, nb2}
+-- returns a list {{t1,t2}, ...} so that the lines (p1(t1),p2(t2)) are common tangents.
+    local h = math.min(1e-6, (u2-u1)/10, (v2-v1)/10)
+    local det = ld.cpx.det
+    local function diff(f,t1,t2,t) 
+        if t+h>t2 then return (f(t2)-f(t-h))/(t2-t+h) end
+        if t-h<t1 then return (f(t+h)-f(t1))/(t+h-t1) end
+        return (f(t+h)-f(t-h))/(2*h)
+    end
+    local function F(x,y) return det(diff(p2,v1,v2,y), diff(p1,u1,u2,x)) end
+    local function G(x,y) return det(p2(y)-p1(x), diff(p1,u1,u2,x)) end
+    local L1 = ld.implicit(F,u1,u2,v1,v2, grid)
+    local L2 = ld.implicit(G,u1,u2,v1,v2, grid)
+    return ld.interL(L1,L2)
+end
+
+function ld.parallel_tangent(p,t0,t1,t2,dp)
+-- p parametrization on [t1;t2] 
+-- dp = derivative of (optional)
+-- t0 a real number or a complexe (non-zero vector)
+-- returns a list {t0, ...} such that the tangents at these points are parallel
+    if dp == nil then
+        dp = function(t)
+            local h = 1e-6
+            if t+h > t2 then return (p(t)-p(t-h))/h
+            elseif t-h < t1 then return (p(t+h)-p(t))/h
+            else return (p(t+h)-p(t-h))/(2*h)
+            end
+        end
+    end
+    local V = t0
+    if type(t0) == "number" then V = dp(t0) end
+    local S = ld.solve(function(t) return cpx.det(V,dp(t)) end, t1,t2) 
+    if S == nil then 
+        return ld.solve(function(t) return cpx.det(V,dp(t)) end, t1,t2, nil, "bisection")
+    else return S
+    end
+end
+
+
 -- normales
 
 function ld.normal(p,t0,long)
@@ -568,11 +642,8 @@ function ld.normal(p,t0,long)
     local v = (p(t0+1E-6)-p(t0))*1e6 -- vecteur tangent
     if (v == nil) or cpx.isNul(v) then return end
     v = cpx.I*v
-    if long == nil then return {A,v} -- on renvoie une droite
-    else 
-        local u = long*v/cpx.abs(v)/2
-        return {A-u,A+u} -- on renvoie un segment
-    end
+    v = cpx.normalize(v)
+    return calc_seg(A,v,long)
 end
 
 function ld.normalC(f,x0,long)
@@ -586,11 +657,8 @@ function ld.normalC(f,x0,long)
     local v = Z(1, (f(x0+1E-6)-y0)*1E6) -- vecteur tangent
     if (v == nil) or cpx.isNul(v) then return end
     v = cpx.I*v
-    if long == nil then return {A,v} -- on renvoie une droite
-    else 
-        local u = long*v/cpx.abs(v)/2
-        return {A-u,A+u} -- on renvoie un segment
-    end
+    v = cpx.normalize(v)
+    return calc_seg(A,v,long)
 end
 
 function ld.normalI(f,x0,y0,long)
@@ -604,11 +672,8 @@ function ld.normalI(f,x0,y0,long)
     local v = Z(-b,a)
     if (v == nil) or cpx.isNul(v) then return end
     v = cpx.I*v
-    if long == nil then return {A,v} -- on renvoie une droite
-    else 
-        local u = long*v/cpx.abs(v)/2
-        return {A-u,A+u} -- on renvoie un segment
-    end
+    v = cpx.normalize(v)
+    return calc_seg(A,v,long)
 end
 
     
@@ -1753,7 +1818,6 @@ end
 function ld.convpath(L) 
 -- converts the path L into another path using only the lineto and bezier instructions
     if (L == nil) or (type(L) ~= "table") or (#L < 3) then return end
-    local debut = true
     local res = {} -- résultat
     local crt = {} -- composante courante
     local aux = {} -- lecture en cours
@@ -1927,6 +1991,132 @@ function ld.polyline2path(L, close) -- conversion list of complex numbers or a l
     end
     return ret
 end
+
+
+function ld.splitpath(P,I) -- cut the path P at I
+-- P is a path
+-- I a point on the path P
+--returns the part before I, and the part after I (sequence)
+
+    local function cutbezier(B,I)
+    -- B = {a,c1,c2,b,"b"}
+    -- I a point on the Bézier curve B
+    --returns the part before I, and the part after I (sequence)
+        local a,c1,c2,b = table.unpack(B)
+        local u, v, w = b-3*c2+3*c1-a, 3*a-6*c1+3*c2, 3*c1-3*a
+        local eval = function(t)
+                return a+t*(w+t*(v+t*u))
+            end
+        local nbdots = 100
+        local L = ld.map(eval, ld.linspace(0,1,nbdots))
+        local tstep = 1/(nbdots-1)
+        local ok, k, z, eps, t0, last, J = false, 2, L[1], 1e-4, 0
+        while (k <= nbdots) and (not ok) do
+            last = z; z = L[k]; k = k+1
+            local W = cpx.bar(z-I)*(last-I) -- dot and det
+            if (math.abs(W.im) < 2*eps) and (W.re < eps) then -- I is between last and z
+                local alpha = (I-last)/(z-last)
+                t0 = t0 + alpha.re*tstep 
+                ok = true;  J = eval(t0)
+            else  t0 = t0 + tstep
+            end
+        end
+        if ok then
+            local V = w+t0*(2*v+3*t0*u) -- p'(t0)
+            return {a, a+t0*(c1-a), J-t0*V/3, J, "b"}, {J,J+(1-t0)*V/3, b-(1-t0)*(b-c2), b, "b"}
+        else
+            return {a,c1,c2,b,"b"}, {}
+        end
+    end
+    
+    if P == nil then return end 
+    P = ld.convpath(P)
+    local deb = P[1]
+    local before, after, aux, found, addmove = {}, {}, {}, false, false
+    local last, first = nil, nil -- dernier lu et premier à venir
+    
+    local moveto = function() -- traitement du moveto
+    -- on démarre une nouvelle composante
+        deb = last
+        first = last
+        aux = {first}; addmove = true
+    end    
+    
+    local lineto = function()
+        -- aux contient une ligne polygonale
+        if not found then
+            local bf, af = ld.cut(aux,I)
+            if #af > 0 then -- aux has been cut
+                found = true
+                if addmove then 
+                    table.insert(bf,2,"m"); table.insert(af,2,"m");
+                else
+                    if #before > 0 then table.remove(bf,1) end
+                    if #after > 0 then table.remove(af,1) end
+                end
+                table.insert(bf,"l"); table.insert(af,"l"); 
+                table.append(before, bf); table.append(after, af)
+            else -- not found
+                if addmove then table.insert(bf,2,"m") end
+                table.insert(bf,"l"); 
+                if #after > 0 then table.remove(bf,1) end
+                table.append(before, bf)
+            end
+        else -- already found
+            if addmove then table.insert(aux,2,"m") end
+            table.insert(aux,"l"); 
+            if #after > 0 then table.remove(aux,1) end
+            table.append(after, aux)
+        end
+        first = last
+        aux = {first}
+        addmove = false
+    end
+    
+    local Bezier = function()
+        -- aux contient une courbe de Bézier
+        if not found then
+            local bf, af = cutbezier(aux,I)
+            if #af > 0 then -- aux has been cut
+                found = true
+                if addmove then 
+                    table.insert(bf,2,"m"); table.insert(af,2,"m");
+                else
+                    if #before > 0 then table.remove(bf,1) end
+                    if #after > 0 then table.remove(af,1) end
+                end
+                table.append(before, bf); table.append(after, af)
+            else -- not found
+                if addmove then table.insert(bf,2,"m") end
+                if #after > 0 then table.remove(bf,1) end
+                table.append(before, bf)
+            end
+        else -- already found
+            if addmove then table.insert(aux,2,"m") end
+            table.insert(aux,"b"); 
+            if #after > 0 then table.remove(aux,1) end
+            table.append(after, aux)
+        end
+        first = last
+        aux = {first}
+        addmove = false
+    end
+    
+    local close = function() -- traitement du closepath
+        aux= {last, deb}
+        lineto()
+    end
+        
+    local traiter = { ["l"]=lineto, ["b"]=Bezier, ["m"]=moveto, ["cl"]=close } 
+    for _, z in ipairs(P) do
+        if (type(z) == "number") or cpx.isComplex(z) then table.insert(aux,z); last = z 
+        else
+            if type(z) == "string" then traiter[z]() end
+        end
+    end
+    return before, after 
+end
+
 
 
 -- ensembles (diagrammes de Venn), intersection, réunion, différence

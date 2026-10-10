@@ -1,6 +1,6 @@
 -- luadraw_transformations.lua (chargé par luadraw_calc.lua)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -234,13 +234,13 @@ function ld.inv(L, rayon, centre)
     centre = centre or 0
     centre = toComplex(centre)
     if (rayon == nil) or (type(rayon) ~= "number") or (rayon <= 0) then return end
-        
+    local r2 = rayon^2
     local inv1 = function(A)
         A = toComplex(A)
         if (A == nil) then return end
         if A == centre then return
         else
-            return centre + rayon*rayon / cpx.bar(A-centre)
+            return centre + r2 / cpx.bar(A-centre)
         end
     end    
     return ld.ftransform(L,inv1)

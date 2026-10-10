@@ -1,6 +1,6 @@
 -- luadraw_spherical.lua 
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -112,8 +112,10 @@ end
 
 ---------------- new functions -------------------------------------
 
-function ld.sM(x,y,z) -- or sM(theta,phi) (theta, phi degrees), define a spherical dot in (C,vecI,vecJ,vecK)
-    local C, R = sphere.C, sphere.R
+function ld.sM(x,y,z,sph) -- or sM(theta,phi,sph) (theta, phi degrees), define a spherical dot in (C,vecI,vecJ,vecK)
+    if type(z) == "table" then sph = z; z = nil end
+    sph = sph or {sphere.C, sphere.R}
+    local C, R = table.unpack( sph )     
     if z ~= nil then --cartesian coordinates
         return C + R*pt3d.normalize(M(x,y,z))
     else -- spherical coordinates
@@ -121,8 +123,9 @@ function ld.sM(x,y,z) -- or sM(theta,phi) (theta, phi degrees), define a spheric
     end
 end
 
-function ld.toSphere(A)
-    local C, R = sphere.C, sphere.R
+function ld.toSphere(A, sph)
+    sph = sph or {sphere.C, sphere.R}
+    local C, R = table.unpack( sph ) 
     local u = A-C
     if pt3d.N1(u)< 1e-12 then return end
     return C+R*pt3d.normalize(u)
@@ -134,22 +137,32 @@ local visibledot = function(A)
     return pt3d.dot(A-I,n) >= 0
 end
 
-function ld.interSphericalC(P1, P2)
-    local C, R = sphere.C, sphere.R
+function ld.interSphericalC(P1, P2, sph)
+    local C, R
+    if sph == nil then
+        C, R = sphere.C, sphere.R
+    else
+        C, R = table.unpack(sph)
+    end
     local D = ld.interPP(P1,P2)
     if D ~= nil then
         local I1, I2 = ld.interDS(D, {C,R})
-        if (I1 ~= nil) and (I2 ~= nil) and (not visibledot(I1)) then
+        if (sph == nil) and (I1 ~= nil) and (I2 ~= nil) and (not visibledot(I1)) then
             I1, I2 = I2, I1
         end
         return I1, I2
     end
 end
 
-function ld.interGreatC(AB, CD)
+function ld.interGreatC(AB, CD, sph)
 -- AB = {A,B} (two points of sphere)
 -- CD = {C,D} (two points of sphere)
-    local C, R = sphere.C, sphere.R
+    local C, R
+    if sph == nil then
+        C, R = sphere.C, sphere.R
+    else
+        C, R = table.unpack(sph)
+    end
     local A1, B1 = table.unpack(AB)
     local A2, B2 = table.unpack(CD)
     return ld.interSphericalC( ld.plane(A1,B1,C), ld.plane(A2,B2,C) )
@@ -229,30 +242,30 @@ function ld.projstereo_Scircle(P, N, h) -- stereographic projection of a spheric
     end
 end
 
-function ld.smidpoint(A, B, x)
+function ld.smidpoint(A, B, x, sph)
     -- A, B two points on the sphere
     -- x in [0,1]
     -- returns the spherical point A+x(B-A)
-    A, B = ld.toSphere(A), ld.toSphere(B)
+    A, B = ld.toSphere(A, sph), ld.toSphere(B, sph)
     if x <= 0 then return A
     elseif x >= 1 then return B
     else
-        return ld.toSphere(A+x*(B-A))
+        return ld.toSphere(A+x*(B-A), sph)
     end
 end
 
 
-function ld.sbarycenter(...)
+function ld.sbarycenter(dotlist, sph)
     local rep, S, A, x = Origin, 0
-    for k, a in ipairs{...} do
-        if k%2 == 1 then A = ld.toSphere(a)
+    for k, a in ipairs(dotlist) do
+        if k%2 == 1 then A = ld.toSphere(a, sph)
         else
             x = a
             rep = rep + x*A
             S = S + x
         end
     end
-    return ld.toSphere(rep/S)
+    return ld.toSphere(rep/S, sph)
 end
 
 ----------------------- new methods ---------------------------------
@@ -925,19 +938,12 @@ end
 
 
 -- facette sphérique (dessinée sur la sphère)
-function graph3d:DSfacet(facet, options)
-    facet = ld.map(ld.toSphere, facet)
-    options = options or {}
-    local style = options.style or self.param.linestyle
-    local color = options.color or self.param.linecolor
-    local width = options.width or self.param.linewidth
-    local opacity = options.opacity or self.param.lineopacity    
-    local hidden = options.hidden
-    if hidden == nil then hidden = ld.Hiddenlines end
-    local fillopacity = options.fillopacity or 0.3
-    local fill = options.fill or ""
-    local Ct, R = sphere.C, sphere.R
-    local I,r,n = table.unpack(sphere.horizon)
+function graph3d:Split_facet(facet, sph)
+    sph = sph or {sphere.C, sphere.R}
+    --facet = ld.map(function(A) return ld.toSphere(A,sph) end, facet)
+    local front, back = {}, {}
+    local Ct, R = table.unpack(sph)
+    local I,r,n = table.unpack(self:Sphere_outline(Ct,R).data)
     local P = {I, n}
     local N = self.Normal
     local cam = ld.camera
@@ -1003,10 +1009,7 @@ function graph3d:DSfacet(facet, options)
                 end
             end
         end
-        table.insert(after_sphere, {chem,style,color,width,opacity,0,fill,fillopacity})
-        if hidden and hiddendelayed and (style ~= "noline") then
-            table.insert(hidden_part, {chem,ld.Hiddenlinestyle,color,width,opacity})
-        end
+        table.append(front, chem)
     end
     if #chemH > 0 then
         if chemH[1][1] ~= chemH[#chemH][1] then table.insert(chemH, chemH[1]) end
@@ -1018,13 +1021,39 @@ function graph3d:DSfacet(facet, options)
                 if U[2] and V[2] then table.append(chem,{I,V[1],r,1,"ca"}) else table.append(chem,{Ct,V[1],R,1,"ca"}) end
             end
         end    
-        if hidden  and (style ~= "noline") then
-            table.insert(hidden_part, {chem,ld.Hiddenlinestyle,color,width,opacity})
-        else
-            --self:Beginadvanced()
-            table.insert(before_sphere, {chem,style,color,width,opacity,0,fill,fillopacity})
-            --self:Endadvanced()
+        table.append(back, chem)
+    end
+    return front, back
+end
+
+function graph3d:DSfacet(facet, options)
+    facet = ld.map(ld.toSphere, facet)
+    options = options or {}
+    local style = options.style or self.param.linestyle
+    local color = options.color or self.param.linecolor
+    local width = options.width or self.param.linewidth
+    local opacity = options.opacity or self.param.lineopacity    
+    local hidden = options.hidden
+    local back = options.back
+    local front = options.front
+    if hidden == nil then hidden = ld.Hiddenlines end
+    local fillopacity = options.fillopacity or 0.3
+    local fill = options.fill or ""
+    local frt, bck = self:Split_facet(facet)
+    if #frt > 0 then
+        table.insert(after_sphere, {frt,style,color,width,opacity,0,fill,fillopacity})
+        if hidden and hiddendelayed and (style ~= "noline") then
+            table.insert(hidden_part, {frt,ld.Hiddenlinestyle,color,width,opacity})
         end
+        if front ~= nil then table.append(front,frt) end
+    end
+    if #bck > 0 then
+        if hidden  and (style ~= "noline") then
+            table.insert(hidden_part, {bck,ld.Hiddenlinestyle,color,width,opacity})
+        else
+            table.insert(before_sphere, {bck,style,color,width,opacity,0,fill,fillopacity})
+        end
+        if back ~= nil then table.append(back,bck) end
     end
     if options.label ~= nil then
         local L = {}
@@ -1039,6 +1068,7 @@ function graph3d:DSfacet(facet, options)
         addLabel( self, L, options.label, options)
     end
 end
+
 
 -- angle sphérique
 function graph3d:DSangle(B,A,C,r,sens,options)
@@ -1056,6 +1086,7 @@ function graph3d:DSangle(B,A,C,r,sens,options)
     local rotate3D = options.rotate3d or "none" -- or "auto" or "ortho", rotation of the label in (BAC) plane
     local rotate = options.rotate or "none" -- or "auto" or "ortho", rotation of the label on the screen plane
     local angle = options.angle or 0 -- angle to turn the anchor point around the center A (initially, the anchor point is located on the arc and the bisector line)    
+    local showanchor = options.showanchor or false
     options.fill = options.fill or ""
     options.fillopacity = options.fillopacity or 0.5
     if options.fill ~= "" then
@@ -1099,8 +1130,15 @@ function graph3d:DSangle(B,A,C,r,sens,options)
             end 
         end
         if angle2D ~= 0 then node_options = node_options..",rotate="..angle2D end
-        self:DSlabel(label, ld.toSphere(anchor), --Ct+(R+0.001)*pt3d.normalize(anchor-Ct), 
-            {pos=pos, node_options=node_options, dir=dir})
+        anchor = ld.toSphere(anchor)
+        if showanchor then
+            self:DSarc({A,anchor},1,{style="dashed", width=1}); 
+            self:DSdots(anchor, {mark_options="scale=0.5"}) 
+            self:DSlabel(label, anchor, {pos=pos, node_options=node_options..",draw", dir=dir})
+        else
+            self:DSlabel(label, anchor, --Ct+(R+0.001)*pt3d.normalize(anchor-Ct), 
+                {pos=pos, node_options=node_options, dir=dir})
+        end
     end
 end
 
@@ -1258,33 +1296,22 @@ function graph3d:DScurve(L,options)
 end
 
 -- region spherique
-function graph3d:DSregion(L,options)
+function graph3d:Split_region(L,sph,dir)
 -- L est une liste de points 3d représentant une courbe fermée tracée sur la sphère courante
     if (L == nil) or (type(L) ~= "table") then return end
-    options = options or {}
-    local style = options.style or self.param.linestyle
-    local color = options.color or self.param.linecolor
-    local width = options.width or self.param.linewidth
-    local opacity = options.opacity or self.param.lineopacity
-    local fillopacity = options.fillopacity or 0.3
-    local fill = options.fill or ""
-    local dir = options.dir or {1,1}
-    if type(dir) == "number" then dir = {dir, dir} end
-    local hiddenlines = options.hidden
-    if hiddenlines == nil then hiddenlines = ld.Hiddenlines end
-    local out = options.out -- ends of hidden parts
-    local C, R = sphere.C, sphere.R
-    local I,r,n = table.unpack(sphere.horizon)    
-    local Visible, Hidden = {},{}
+    sph = sph or {sphere.C, sphere.R}
+    dir = dir or {1,1}
+    local C, R = table.unpack(sph)
+    local I,r,n = table.unpack(self:Sphere_outline(C,R).data)
+    local frt, bck = {}, {} 
+    local Visible, Hidden, out = {},{},{}
     local visible_function = function(A)
-        return visibledot(A)
+        return pt3d.dot(A-I,n) > 0--visibledot(A)
     end
     Visible, Hidden =  ld.split_points_by_visibility(L,visible_function)
-    if out ~= nil then
-        for _,F in ipairs(Hidden) do
-            table.insert(out,F[1])
-            if F[#F] ~= F[1] then table.insert(out,F[#F]) end
-        end
+    for _,F in ipairs(Hidden) do
+        table.insert(out,F[1])
+        if F[#F] ~= F[1] then table.insert(out,F[#F]) end
     end
     local rep, first = {}, true
     for _, visible in ipairs(Visible) do
@@ -1304,10 +1331,7 @@ function graph3d:DSregion(L,options)
     if rep[#rep-1] ~= rep[1] then
         table.append(rep,{I,rep[1],r,dir[1],"ca"})
     end
-    table.insert(after_sphere, {rep,style,color,width,opacity,nil,fill,fillopacity})
-    if hiddenlines and hiddendelayed and (style ~= "noline") then
-        table.insert(hidden_part, {rep,ld.Hiddenlinestyle,color,width,opacity})
-    end
+    frt = rep
     rep, first = {}, true
     for _, hide in ipairs(Hidden) do
        if #hide > 1 then
@@ -1326,15 +1350,47 @@ function graph3d:DSregion(L,options)
     if rep[#rep-1] ~= rep[1] then
         table.append(rep,{I,rep[1],r,dir[2],"ca"})
     end
-    if hiddenlines and (style ~= "noline") then
-        table.insert(hidden_part, {rep,ld.Hiddenlinestyle,color,width,opacity})
-    else
-       table.insert(before_sphere, {rep,style,color,width,opacity,nil,fill,fillopacity})
+    bck = rep
+    return frt, bck, out
+end
+
+function graph3d:DSregion(L,options)
+-- L est une liste de points 3d représentant une courbe fermée tracée sur la sphère courante
+    if (L == nil) or (type(L) ~= "table") then return end
+    options = options or {}
+    local style = options.style or self.param.linestyle
+    local color = options.color or self.param.linecolor
+    local width = options.width or self.param.linewidth
+    local opacity = options.opacity or self.param.lineopacity
+    local fillopacity = options.fillopacity or 0.3
+    local fill = options.fill or ""
+    local back = options.back
+    local front = options.front
+    local dir = options.dir or {1,1}
+    if type(dir) == "number" then dir = {dir, dir} end
+    local hiddenlines = options.hidden
+    if hiddenlines == nil then hiddenlines = ld.Hiddenlines end
+    local out = options.out -- ends of hidden parts
+    local C, R = sphere.C, sphere.R
+    local I,r,n = table.unpack(sphere.horizon)    
+    local frt, bck, Out = self:Split_region(L,nil,dir)
+    if out ~= nil then table.append(out, Out) end
+    table.insert(after_sphere, {frt,style,color,width,opacity,nil,fill,fillopacity})
+    if hiddenlines and hiddendelayed and (style ~= "noline") then
+        table.insert(hidden_part, {frt,ld.Hiddenlinestyle,color,width,opacity})
     end
+    if front ~= nil then table.append(front, frt) end
+    if hiddenlines and (style ~= "noline") then
+        table.insert(hidden_part, {bck,ld.Hiddenlinestyle,color,width,opacity})
+    else
+       table.insert(before_sphere, {bck,style,color,width,opacity,nil,fill,fillopacity})
+    end
+    if back ~= nil then table.append(back, bck) end
     if options.label ~= nil then
         addLabel( self, L, options.label, options)
     end     
 end
+
 
 -- plan
 function graph3d:DSplane(P,args) -- draw a plane around the sphere

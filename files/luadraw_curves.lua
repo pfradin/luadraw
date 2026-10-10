@@ -1,6 +1,6 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -645,7 +645,7 @@ end
 function ld.curvilinear_param(L,close) -- curvilinear parametrization
 -- L is a list of complex numbers
 -- close=true/false, true if L must be closed
--- returns a function ld.f:t -> f(t) with t in [0;1] and f(t) is a point on L, f(0) is the first point, f(1) the last point.
+-- returns a function f:t -> f(t) with t in [0;1] and f(t) is a point on L, f(0) is the first point, f(1) the last point.
     if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
     if (type(L[1]) == "table") and (not isComplex(L[1]))  then L = L[1] end -- liste de listes de complexes, on prend la première composante
     close = close or false
@@ -661,8 +661,8 @@ function ld.curvilinear_param(L,close) -- curvilinear parametrization
     local l = function(t) -- returns L(t) using linear interpolation with t in [0,1]
         local k = 1
         local n = math.min(#L1,#L2)
-        if t == 0 then return L2[1] end -- first point of L
-        if t == 1 then return L2[#L2] end -- last point
+        if t <= 0 then return L2[1] end -- first point of L
+        if t >= 1 then return L2[#L2] end -- last point
         t = t*total_len
         while (k<=n) and (L1[k] < t) do k = k+1 end
         if k <=n then
@@ -671,6 +671,75 @@ function ld.curvilinear_param(L,close) -- curvilinear parametrization
         end
     end
     return l,total_len
+end
+
+function ld.param_path(P) -- parametrization of a path P
+-- P is a path
+-- returns a function f:t -> f(t) with t in [0;1] and f(t) is a point on P, f(0) is the first point, f(1) the last point.   
+    P = ld.convpath(P)
+    local deb = P[1]
+    local Bcurve, n, aux = {}, 0, {}
+    local last, first = nil, nil -- dernier lu et premier à venir
+    
+    local getbezier = function(a,c1,c2,b)
+        local u, v, w = 3*(c1-c2)+b-a, 3*(a-2*c1+c2), 3*(c1-a)
+        return function(t)
+                return a+t*(w+t*(v+t*u))
+                end
+    end
+    
+    local lineto = function()
+        -- aux contient une ligne polygonale
+        local f = ld.curvilinear_param(aux) 
+        table.insert(Bcurve, f)
+        n = n+1
+        first = last
+        aux = {first}
+    end
+    
+    local Bezier = function()
+        -- aux contient une courbe de Bézier
+        table.insert(Bcurve, getbezier( table.unpack(aux) ))
+        n = n+1
+        first = last
+        aux = {first}
+    end
+    
+    local close = function() -- traitement du closepath
+        local f = ld.curvilinear_param({last, deb}) 
+        table.insert(Bcurve, f)
+        n = n+1
+        first = deb
+        aux = {first}
+    end
+    
+    local moveto = function() -- traitement du moveto
+    -- on démarre une nouvelle composante
+        deb = last
+        first = last
+        aux = {first}
+    end
+        
+    local traiter = { ["l"]=lineto, ["b"]=Bezier, ["m"]=moveto, ["cl"]=close } 
+    for _, z in ipairs(P) do
+        if (type(z) == "number") or cpx.isComplex(z) then table.insert(aux,z); last = z 
+        else
+            if type(z) == "string" then traiter[z]() end
+        end
+    end
+    local p = function(t)
+        local u, k = n*t
+        if t >= 1 then k = n; t = 1
+        elseif t <= 0 then k = 1; t = 0
+        else k = 1+math.floor(u)
+        end
+        return Bcurve[k](u-k+1)
+        end
+    return p
+end
+
+function ld.parabola(A,B,C) -- parabolic arc -> bezier curve
+    return {A, (-3*A+4*B-C)/3+A, -(A-4*B+3*C)/3+C, C, "b"}
 end
 
 ------------------------- csv -------------------------------------------

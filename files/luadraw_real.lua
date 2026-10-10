@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -114,14 +114,44 @@ function ld.lcm(a,b)
     return math.abs(a*b) // ld.gcd(a,b)
 end
 
+local function solveBisec(f,a,b,n) -- version 3.6 of luadraw
+    n = n or 25
+    if a > b then a, b = b, a end
+    local delta, S, v, u, mid = (b-a)/n, {}, a
+    local fv, fu, fm = ld.evalf(f,a)
+    if fv == nil then return end
+    for k = 1, n do
+        u = v; v = v+delta; fu = fv; fv = ld.evalf(f,v)
+        local x, y, fx = u, v, fu
+        if fv == nil then return end
+        if math.abs(fu) < 1e-6 then table.insert(S,u)
+        else
+            if fu*fv <= 0 then
+                while math.abs(x-y) > 1e-12 do
+                    mid = (x+y)/2
+                    fm = ld.evalf(f,mid)
+                    if fm == nil then return end
+                    if fm*fx <= 0 then y = mid else x = mid; fx = fm end
+                end
+                table.insert(S,(x+y)/2) -- we consider that is a solution
+            end
+        end
+    end
+    if #S > 0 then return S end
+end
+
 function ld.solve(f,a,b,n,df) -- version 2.4 of luadraw
+    if df == "bisection" then return solveBisec(f,a,b,n) end
     n = n or 25
     if a > b then a, b = b, a end
     local x, delta, S = a, (b-a)/n, {}
     local fin, h, r = x+delta, 1e-6, nil
     if df == nil then
         df = function(x)
-            return (f(x+h)-f(x-h))/(2*h)
+            if x+h > b then return (f(x)-f(x-h))/h
+            elseif x-h < a then return (f(x+h)-f(x))/h
+            else return (f(x+h)-f(x-h))/(2*h)
+            end
         end
     end
     local iter = function(x)
@@ -129,12 +159,15 @@ function ld.solve(f,a,b,n,df) -- version 2.4 of luadraw
     end
     for k = 1, n do
         r = x+delta/2
-        for i = 1,5 do
-            if r ~= nil then r = ld.evalf(iter,r) end
-            if (r==nil) then break end
-        end
-        if (r ~= nil) and (r >= x) and (r < fin) and (math.abs(f(r)) < 1e-6) then
-            table.insert(S,r) -- we consider that r is a solution
+        if math.abs(f(r)) < 1e-6 then table.insert(S,r)
+        else
+            for i = 1,5 do
+                if r ~= nil then r = ld.evalf(iter,r) end
+                if (r==nil) then break end
+            end
+            if (r ~= nil) and (r >= x) and (r < fin) and (math.abs(f(r)) < 1e-6) then
+                table.insert(S,r) -- we consider that r is a solution
+            end
         end
         x = fin; fin = x+delta
     end

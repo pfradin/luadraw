@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/09/05
--- version 3.5
+-- date 2026/10/10
+-- version 3.6
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -1014,6 +1014,7 @@ function ld.section2tube(section,L,args)
     args = args or {}
     local nbfacet = #section
     local close = args.close or false
+    local opensection = args.opensection or false
     local hollow = args.hollow or false
     local obj = args.obj or false
     if close then hollow = true end
@@ -1021,6 +1022,8 @@ function ld.section2tube(section,L,args)
     local poly, sep = {}, {}
     poly.vertices = {}
     poly.facets = {}
+    local Nb = nbfacet
+    if opensection then Nb = Nb-1 end
     -- orientation de la section
     local a, b, c = L[1], L[2]
     local v = pt3d.prod(section[2]-section[1],section[3]-section[1])
@@ -1079,12 +1082,12 @@ function ld.section2tube(section,L,args)
     end
     -- construction des facettes
     for s = 1, nb_sections-1 do
-        for k = 1, nbfacet do
+        for k = 1, Nb do
             table.insert(poly.facets,  {num(s,k), num(s,k+1), num(s+1,k+1), num(s+1,k)})
         end
     end
     if close then
-        for k = 1, nbfacet do
+        for k = 1, Nb do
             table.insert(poly.facets, {num(nb_sections,k), num(nb_sections,k+1), num(1,k+1), num(1,k)})
         end
     end
@@ -1114,6 +1117,9 @@ function ld.line2tube(L,r,args)
     args = args or {}
     local nbfacet = args.nbfacet or 3
     local close = args.close or false
+    local angle = args.angle or {0, 360}
+    local angle1, angle2 = table.unpack( angle )
+    if math.abs(angle2-angle1) == 360 then angle2 = angle2 - 360/nbfacet end
     local hollow = args.hollow or false
     if close then hollow = true end
     local obj = args.obj or false
@@ -1124,7 +1130,8 @@ function ld.line2tube(L,r,args)
         local u = pt3d.prod(b-c,vecI)
         if pt3d.isNul(u) then u = pt3d.prod(b-c,vecJ) end
         u = r*pt3d.normalize(u)
-        local b1, v, theta = b+u, c-b, 2*math.pi/nbfacet*ld.rad
+        local b1, v, theta = b+u, c-b, (angle2-angle1)/(nbfacet-1)
+        b1 = ld.rotate3d(b1,angle1,{b,v})
         local list = {b1}
         for k = 1, nbfacet-1 do
             table.insert(list, ld.rotate3d(b1,k*theta,{b,v}))
@@ -1133,7 +1140,7 @@ function ld.line2tube(L,r,args)
     end
     
     if #L > 1 then
-        return ld.section2tube( cp2section(L), L, {hollow = hollow, close = close, addwall = addwall, obj = obj})
+        return ld.section2tube( cp2section(L), L, {hollow = hollow, close = close, addwall = addwall, obj = obj, opensection = args.opensection})
     end
 end
 
