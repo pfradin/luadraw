@@ -1,6 +1,6 @@
 -- luadraw__matrix.lua (chargé par luadraw__calc, qui charge avant luadraw_complex.lua)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -15,6 +15,8 @@ local cpx = luadraw.cpx -- déjà chargé
 local Z = cpx.Z
 local isComplex = cpx.isComplex
 local toComplex = cpx.toComplex
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function ld.applymatrix(z,M) -- applique M au complexe z
     if type(z) == "number" then z = Z(z,0) end
@@ -42,44 +44,55 @@ function ld.mtransform(L,M) -- applique la matrice M à L
     if (M == nil) or (type(M) ~= "table") or (#M ~= 3) then return end
     local res = {}
     if (type(L[1]) == "number") or isComplex(L[1]) then
+        local i = 0
         for _, z in ipairs(L) do
-            table.insert(res, ld.applymatrix(z,M) )
+            i = i+1
+            res[i] = ld.applymatrix(z,M)
+            --tblInsert(res, ld.applymatrix(z,M) )
         end
     else  -- L est une liste de listes
-        local aux 
+        local aux, i 
         for _,cp in ipairs(L) do
-            aux = {}
+            aux = {}; i = 0
             for _,z in ipairs(cp) do
-                table.insert(aux, ld.applymatrix(z,M) )
+                i = i+1
+                aux[i] = ld.applymatrix(z,M)
+                --tblInsert(aux, ld.applymatrix(z,M) )
             end
-            table.insert(res,aux)
+            tblInsert(res,aux)
         end
     end
     return res
 end
 
-function ld.mLtransform(L,M) -- applique la partie linéaire de la matrice M à L 
+function ld.mLtransform(L,M) -- applique la matrice M à L 
 -- L doit être une séquence de complexes, on calcule et renvoie
 -- renvoie l'image de L sans modifier L
     if (L == nil) or (type(L) ~=  "table") then return end
-    if (M == nil) or (type(M) ~= "table") or (#M ~= 3) then return end    
+    if (M == nil) or (type(M) ~= "table") or (#M ~= 3) then return end
     local res = {}
     if (type(L[1]) == "number") or isComplex(L[1]) then
+        local i = 0
         for _, z in ipairs(L) do
-            table.insert(res, ld.applyLmatrix(z,M) )
+            i = i+1
+            res[i] = ld.applyLmatrix(z,M)
+            --tblInsert(res, ld.applymatrix(z,M) )
         end
     else  -- L est une liste de listes
-        local aux
+        local aux, i 
         for _,cp in ipairs(L) do
-            aux = {}
+            aux = {}; i = 0
             for _,z in ipairs(cp) do
-                table.insert(aux, ld.applyLmatrix(z,M) )
+                i = i+1
+                aux[i] = ld.applyLmatrix(z,M)
+                --tblInsert(aux, ld.applymatrix(z,M) )
             end
-            table.insert(res,aux)
+            tblInsert(res,aux)
         end
     end
     return res
 end
+
 
 function ld.composematrix(M1,M2)  -- fait le produit matriciel M1*M2
 -- M1 et M2 sont deux tables de 3 complexes {f(0), Lf(1), Lf(i)}

@@ -1,6 +1,6 @@
 -- luadraw_compile_tex.lua
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -15,6 +15,8 @@ local ld = luadraw
 local cpx, pt3d = ld.cpx, ld.pt3d
 local Z = cpx.Z
 local graph = ld.graph
+local tblInsert = table.insert
+local tblAppend = table.append
 
 local preamble = "\\documentclass[12pt]{article}\n"
 local usepackage = "\\usepackage{amsmath,amssymb}\n\\usepackage{fourier}\n"
@@ -73,11 +75,11 @@ local tostrip = function(L, wd)
     table.remove(L,1); table.remove(L,1)
     if a == L[#L] then
         a = (a+b)/2 
-        table.insert(L,a)
+        tblInsert(L,a)
     end
     v = i*cpx.normalize(b-a)
     bord = {a-ep*v, a+ep*v}; dessus = {bord[2]}
-    table.insert(ret,bord[1])
+    tblInsert(ret,bord[1])
     c = b; b = a; v = v/i
     for _,z in ipairs(L) do
         a = b; b = c; c = z; u = -v; v = cpx.normalize(c-b)
@@ -92,7 +94,7 @@ local tostrip = function(L, wd)
             end
         end
         --if bord ~= nil then
-            table.insert(ret,bord[1]); table.insert(dessus,1,bord[2])
+            tblInsert(ret,bord[1]); tblInsert(dessus,1,bord[2])
         --end
     end
     ld.epsion = oldEpsilon
@@ -166,15 +168,15 @@ function ld.read_compiled_tex(file, conv_stroke)
                 if u ~= nil then -- u is a number
                     if nb == 1 then x = u; nb = 2  
                     else 
-                        y = u; table.insert(cp, Z(x,y)); nb = 1
+                        y = u; tblInsert(cp, Z(x,y)); nb = 1
                         if x < x1 then x1 = x end; if x > x2 then x2 = x end
                         if y < y1 then y1 = y end; if y > y2 then y2 = y end
                     end
                 else -- w is a string
                     inst = instruction[w]
-                    if inst ~= nil then table.insert(cp,inst) end
+                    if inst ~= nil then tblInsert(cp,inst) end
                     finish = (w =='eofill') or (w =='stroke') or (w =='fill') or (w =='clip')
-                    if finish then table.insert(cp,w) end
+                    if finish then tblInsert(cp,w) end
                 end
             end
             if not finish then
@@ -182,11 +184,11 @@ function ld.read_compiled_tex(file, conv_stroke)
                 finish = (#lines == 0)
             end
         end
-        table.insert(ret,cp)
+        tblInsert(ret,cp)
     end
 
     for line in io.lines(file) do
-        table.insert(lines,1,line)
+        tblInsert(lines,1,line)
     end
     while find_path() do
         read_path()
@@ -209,20 +211,20 @@ function ld.read_compiled_tex(file, conv_stroke)
             if (#cp == 2) and cpx.equal(cp[1],cp[2]) then --circle
                 cp = circleb(cp[1],ep/2)
             else
-                table.insert(cp,instr)
+                tblInsert(cp,instr)
                 cp = ld.path(cp)[1]
                 cp = tostrip(cp,ep)
                 if cp ~= nil then
-                    table.insert(cp,"l"); table.insert(cp,"cl")
+                    tblInsert(cp,"l"); tblInsert(cp,"cl")
                 end
             end
             if cp ~= nil then
-                table.insert(cp,2,char)
-                table.insert(cp,1,style)--table.insert(cp,1,lwd)
-                table.insert(cp,"fill")
+                tblInsert(cp,2,char)
+                tblInsert(cp,1,style)--tblInsert(cp,1,lwd)
+                tblInsert(cp,"fill")
             end
         end
-        table.insert(rep.path,cp)
+        tblInsert(rep.path,cp)
     end
     rep.bb =  table.pack(ld.getbounds(ld.mtransform({ Z(x1,y1),Z(x2,y2)},mat) ))
     return rep
@@ -240,9 +242,9 @@ local splitLongSeg = function(L) -- to divide segments that are too long
             local nb = math.floor(10*len)
             local aux = ld.linspace(A,B,nb+2) 
             if k > 2 then table.remove(aux,1) end
-            table.append(cp, aux )
+            tblAppend(cp, aux )
         end
-        table.insert(ret,cp)
+        tblInsert(ret,cp)
     end
     return ret
 end
@@ -266,7 +268,7 @@ function ld.compiled_tex2polyline(L,scale)
         local style = table.remove(p,1)
         local cmd = table.remove(p) -- We remove the beginning and the end, leaving only the path
         local C1 = splitLongSeg( ld.path(p) )
-        table.append(ret,C1)
+        tblAppend(ret,C1)
     end
     return ret -- list of list of complex numbers
 end
@@ -376,9 +378,9 @@ local splitLongSeg3d = function(L) -- to divide segments that are too long
             A = B; B = lg[k]
             local len = pt3d.abs(B-A)
             local nb = math.floor(10*len)
-            table.append(cp, ld.linspace(A,B,nb+2) )
+            tblAppend(cp, ld.linspace(A,B,nb+2) )
         end
-        table.insert(ret,cp)
+        tblInsert(ret,cp)
     end
     return ret
 end
@@ -447,7 +449,7 @@ function graph:Compiled_tex2path3d(L,options)
             local lwd = table.remove(p,1)
             local cmd = table.remove(p) -- We remove the beginning and the end, leaving only the path
             local C1 = splitLongSeg3d( ld.path3d( ld.ftransform(p,f) ) )
-            table.append(ret,C1)
+            tblAppend(ret,C1)
         end
         return ret -- list of list of 3d points
     end

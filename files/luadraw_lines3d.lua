@@ -1,6 +1,6 @@
 -- luadraw_lines3d.lua (chargé par luadraw__graph3d)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -17,6 +17,8 @@ local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
 local M, Mc, Ms = pt3d.M, pt3d.Mc, pt3d.Ms
 local map = ld.map
 local notDef = ld.notDef
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function ld.getbounds3d(L)
 -- renvoie les limites xmin,xmax,ymin,ymax,zmin,zmax de la ligne polygonale 3d L
@@ -47,16 +49,16 @@ function ld.merge3d(L,epsilon)
     for _, cp in ipairs(L) do
         aux = {}
         for _,A in ipairs(cp) do
-            table.insert(aux, pt3d.insert3d(S,A,epsilon))
+            tblInsert(aux, pt3d.insert3d(S,A,epsilon))
         end
-        table.insert(num, aux)
+        tblInsert(num, aux)
     end
     for _,cp in ipairs(ld.merge(num)) do
         aux = {}
         for _, k in ipairs(cp) do
-            table.insert(aux,S[k])
+            tblInsert(aux,S[k])
         end
-        table.insert(rep, aux)
+        tblInsert(rep, aux)
     end
     return rep
 end
@@ -80,7 +82,7 @@ function ld.parametric3d(p,t1,t2,nbdots,discont,nbdiv)
 
     local closeCp = function ()
             if count > 1 then
-                table.insert(curve, cp)
+                tblInsert(curve, cp)
             end
             lastJump = true
             count = 0
@@ -89,7 +91,7 @@ function ld.parametric3d(p,t1,t2,nbdots,discont,nbdiv)
     
     local addCp = function (z)
             lastJump = false
-            table.insert(cp, z)
+            tblInsert(cp, z)
             count = count + 1
         end
         
@@ -142,7 +144,7 @@ function ld.parametric3d(p,t1,t2,nbdots,discont,nbdiv)
         prec = A
         t = t + pas
     end
-    if (not lastJump) and (count > 1) then table.insert(curve, cp) end -- dernière composante
+    if (not lastJump) and (count > 1) then tblInsert(curve, cp) end -- dernière composante
     if #curve > 0 then return curve end
 end
 
@@ -159,11 +161,12 @@ function ld.arc3db(B,A,C,R,sens,normal)
     local v = pt3d.prod(N,u)
     local a, b = pt3d.dot(AC,u), pt3d.dot(AC,v)
     local S = ld.arcb(1,0,Z(a,b),R,sens) -- Z(a,b) est l'affixe de AC dans le repère (A,u,v)
+    if S == nil then return end
     local chem = {}
     for _, P in ipairs(S) do
-        if type(P) == "string" then table.insert(chem,P)
+        if type(P) == "string" then tblInsert(chem,P)
         else
-            table.insert(chem, A+P.re*u+P.im*v)
+            tblInsert(chem, A+P.re*u+P.im*v)
         end
     end
     return chem -- renvoie un chemin en courbes de Bézier 3d
@@ -209,9 +212,9 @@ function ld.circle3db(C,R,normal)
     if S ~= nil then
         local chem = {}
         for _, P in ipairs(S) do
-            if type(P) == "string" then table.insert(chem,P)
+            if type(P) == "string" then tblInsert(chem,P)
             else
-                table.insert(chem, C+P.re*u+P.im*v)
+                tblInsert(chem, C+P.re*u+P.im*v)
             end
         end
         return chem -- renvoie un chemin en courbes de Bézier
@@ -466,14 +469,14 @@ function ld.cutpolyline3d(Lg,plane,close)
         local count = 0 -- nb d'éléments dans cp
         for _,A in ipairs(l) do
             if A ~= "jump" then 
-                table.insert(cp,A)
+                tblInsert(cp,A)
                 count = count + 1
             elseif count > 1 then 
-                table.insert(res,cp); count = 0; cp = {}
+                tblInsert(res,cp); count = 0; cp = {}
             else count = 0; cp = {}
             end
         end
-        if count > 1 then table.insert(res,cp) end
+        if count > 1 then tblInsert(res,cp) end
         return ld.merge3d(res)
     end
     
@@ -486,38 +489,38 @@ function ld.cutpolyline3d(Lg,plane,close)
     for _,L in ipairs(Lg) do
         dev, der, inter = {}, {}, {}
         last = nil
-        if close then table.insert(L,L[1]) end
+        if close then tblInsert(L,L[1]) end
         for k,M in ipairs(L) do -- parcours par point
             AM = M-A; pscal = pt3d.dot(AM,n)
             if math.abs(pscal) < 1e-8 then pscal = 0 end -- M est dans le plan
-            if pscal == 0 then table.insert(dev,M); table.insert(der,M); table.insert(inter,M); lastPos = "on"
+            if pscal == 0 then tblInsert(dev,M); tblInsert(der,M); tblInsert(inter,M); lastPos = "on"
             elseif pscal > 0 then -- M est du bon côté
                 if lastPos == "out" then
                     v = last - M
                     res = ld.proj3dO(last,{A,n},v)
                     if res ~= nil then 
-                        table.insert(dev,res); table.insert(der,res); table.insert(der,"jump"); table.insert(inter,res) 
+                        tblInsert(dev,res); tblInsert(der,res); tblInsert(der,"jump"); tblInsert(inter,res) 
                     end
-                elseif lastPos == "on" then table.insert(der,"jump")
+                elseif lastPos == "on" then tblInsert(der,"jump")
                 end
                 lastPos = "in"
-                table.insert(dev,M)
+                tblInsert(dev,M)
             else -- M est du mauvais côté
                 if lastPos == "in" then
                     v = last - M
                     res = ld.proj3dO(last,{A,n},v)
                     if res ~= nil then 
-                        table.insert(dev,res); table.insert(dev,"jump");table.insert(der,res); table.insert(inter,res) 
+                        tblInsert(dev,res); tblInsert(dev,"jump");tblInsert(der,res); tblInsert(inter,res) 
                     end
-                elseif lastPos == "on" then table.insert(dev,"jump")
+                elseif lastPos == "on" then tblInsert(dev,"jump")
                 end
                 lastPos = "out"
-                table.insert(der,M)
+                tblInsert(der,M)
             end
             last = M
         end
         if close then table.remove(L) end
-        table.append(Dev,traiter(dev)); table.append(Der, traiter(der))
+        tblAppend(Dev,traiter(dev)); tblAppend(Der, traiter(der))
     end
     return Dev, Der, inter
 end
@@ -601,7 +604,7 @@ function ld.path3d(chemin, nbdots)
     local lineto = function() -- traitement du lineto
     -- on met les points dans la composante courante et on vide aux
             for _,z in ipairs(aux) do
-                table.insert(crt,z)
+                tblInsert(crt,z)
             end
             first = last
             aux = {}
@@ -609,7 +612,7 @@ function ld.path3d(chemin, nbdots)
     
     local moveto = function() -- traitement du moveto
     -- on démarre une nouvelle composante
-            if #crt > 0 then table.insert(res,crt); crt = {} end -- on démarre une nouvelle composante avec le move
+            if #crt > 0 then tblInsert(res,crt); crt = {} end -- on démarre une nouvelle composante avec le move
             first = nil
             aux = {last}
     end
@@ -617,7 +620,7 @@ function ld.path3d(chemin, nbdots)
     local close = function() -- traitement du closepath
         -- en principe il y a eu une instruction avant autre que move, aux doit être vide et pas crt
         if (#crt == 0) then return end
-        table.insert(crt,crt[1]) -- on ferme la composante courante en ajoutant le premier point
+        tblInsert(crt,crt[1]) -- on ferme la composante courante en ajoutant le premier point
         first = crt[1]
         aux = {}
     end
@@ -625,13 +628,13 @@ function ld.path3d(chemin, nbdots)
     local Bezier = function()
         -- aux contient une courbe de bézier
         if first ~= nil then 
-            table.insert(aux,1,first); table.remove(crt)
+            tblInsert(aux,1,first); table.remove(crt)
         end
         local a,c1,c2,b = table.unpack(aux)
         local C = ld.bezier3d(a,c1,c2,b,nbdots) -- renvoie une liste de listes de complexes
         if C ~= nil then
             for _, z in ipairs(C[1]) do
-                table.insert(crt,z)
+                tblInsert(crt,z)
             end
         end
         first = last
@@ -641,13 +644,13 @@ function ld.path3d(chemin, nbdots)
     local Circle = function()
     -- il faut aux = {a,c,v} (un point, le centre et un vecteur normal)
         if first ~= nil then 
-            table.insert(aux,1,first); table.remove(crt)
+            tblInsert(aux,1,first); table.remove(crt)
         end
         local a, c, v = table.unpack(aux)
         local C = ld.circle3d(c,pt3d.abs(c-a),v)
         if C ~= nil then
             for _, z in ipairs(C[1]) do
-                table.insert(crt,z)
+                tblInsert(crt,z)
             end
             first = crt[#crt]
         end
@@ -657,13 +660,13 @@ function ld.path3d(chemin, nbdots)
     local Ellipse = function()
     -- il faut aux = {a,c,r1,r2,dirs1,normal} (un point, le centre et un vecteur normal)
         if first ~= nil then 
-            table.insert(aux,1,first); table.remove(crt)
+            tblInsert(aux,1,first); table.remove(crt)
         end
         local a, c, r1, r2, dir1, n = table.unpack(aux)
         local C = ld.ellipticarc3d(a,c,a,r1,r2,1,dir1,n)
         if C ~= nil then
             for _, z in ipairs(C[1]) do
-                table.insert(crt,z)
+                tblInsert(crt,z)
             end
             first = crt[#crt]
         end
@@ -673,13 +676,13 @@ function ld.path3d(chemin, nbdots)
     local Ellipticarc = function()
     -- il faut aux = {a,c,b,r1,r2,sign,dirs1,normal} (un point, le centre et un vecteur normal)
         if first ~= nil then 
-            table.insert(aux,1,first); table.remove(crt)
+            tblInsert(aux,1,first); table.remove(crt)
         end
         local a, c, b, r1, r2, sign, dir1, n = table.unpack(aux)
         local C = ld.ellipticarc3d(a,c,b,r1,r2,1,dir1,n)
         if C ~= nil then
             for _, z in ipairs(C[1]) do
-                table.insert(crt,z)
+                tblInsert(crt,z)
             end
             first = crt[#crt]
         end
@@ -689,12 +692,12 @@ function ld.path3d(chemin, nbdots)
     local Arc = function()
         -- il faut aux = {b,a,c,r,sens,v}
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         local C = ld.arc3d(table.unpack(aux))
         if C ~= nil then
             for _, z in ipairs(C[1]) do
-                table.insert(crt,z)
+                tblInsert(crt,z)
             end
             first = crt[#crt]
         end
@@ -703,12 +706,12 @@ function ld.path3d(chemin, nbdots)
     
     local traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc, ["e"]=Ellipse, ["ea"]=Ellipticarc} 
     for _, z in ipairs(chemin) do
-        if (type(z) == "number") or isPoint3d(z) then table.insert(aux,z); last = z 
+        if (type(z) == "number") or isPoint3d(z) then tblInsert(aux,z); last = z 
         else
             if type(z) == "string" then traiter[z]() end
         end
     end
-    if #crt > 0 then table.insert(res, crt) end    
+    if #crt > 0 then tblInsert(res, crt) end    
     if #res > 0 then return  res end
 end
 
@@ -721,10 +724,10 @@ function ld.polyline2path3d(L,close) -- conversion list of 3d points or list of 
     local aux
     for _, cp in ipairs(L) do
         aux = table.copy(cp)
-        table.insert(aux,2,"m") -- move
-        table.insert(aux,"l")  -- lineto
-        if close then table.insert(aux,"cl") end 
-        table.append(ret,aux)
+        tblInsert(aux,2,"m") -- move
+        tblInsert(aux,"l")  -- lineto
+        if close then tblInsert(aux,"cl") end 
+        tblAppend(ret,aux)
     end
     return ret
 end
@@ -744,27 +747,27 @@ function ld.split_points_by_visibility(L,visible_function)
         state = 0
         for _, A in ipairs(cp) do
             if visible_function(A) then -- A is visible
-                table.insert(visible,A)
+                tblInsert(visible,A)
                 if state == 2 then-- previous dot was not visible
                     I = (A+hidden[#hidden])/2
-                    table.insert(visible,1,I)
-                    table.insert(hidden,I)
-                    table.insert(Hidden, hidden); hidden = {}
+                    tblInsert(visible,1,I)
+                    tblInsert(hidden,I)
+                    tblInsert(Hidden, hidden); hidden = {}
                 end
                 state = 1
             else -- A not visible
-                table.insert(hidden,A)
+                tblInsert(hidden,A)
                 if state == 1 then -- previous dot was visible
                     I = (A+visible[#visible])/2
-                    table.insert(hidden,1,I)
-                    table.insert(visible,I)
-                    table.insert(Visible, visible); visible = {}
+                    tblInsert(hidden,1,I)
+                    tblInsert(visible,I)
+                    tblInsert(Visible, visible); visible = {}
                 end
                 state = 2
             end
         end
-        if #visible > 0 then table.insert(Visible, visible) end
-        if #hidden > 0 then  table.insert(Hidden, hidden) end
+        if #visible > 0 then tblInsert(Visible, visible) end
+        if #hidden > 0 then  tblInsert(Hidden, hidden) end
     end
     Visible = ld.merge3d(Visible); Hidden = ld.merge3d(Hidden)
     return Visible, Hidden
@@ -792,7 +795,7 @@ local update_edges = function(edges,A1,A2,n)
         ok = ( (pt3d.abs(A-A1)<1e-10) and (pt3d.abs(B-A2)<1e-10) ) or ( (pt3d.abs(B-A1)<1e-10) and (pt3d.abs(A-A2)<1e-10) )
         if ok then table.remove(edges,k) else k = k+1 end
     end
-    if not ok then table.insert(edges,{A1,A2,n}) end
+    if not ok then tblInsert(edges,{A1,A2,n}) end
 end
 
 function ld.cvx_hull3d(L)
@@ -838,18 +841,18 @@ function ld.cvx_hull3d(L)
     local facette = {}
     for  _, A in ipairs(L) do
         local B = P2-A
-        if math.abs(pt3d.dot(B,n1)) < epsilon then table.insert(facette,A) end
+        if math.abs(pt3d.dot(B,n1)) < epsilon then tblInsert(facette,A) end
     end
     facette = ld.cvx_hull3dcoplanar(facette,n1)
     local rep = {}  --contiendra l'enveloppe convexe
-    table.insert(rep, facette) --insertion première facette de l'enveloppe
+    tblInsert(rep, facette) --insertion première facette de l'enveloppe
     -- on initialise la liste des <bords> avec la première facette: { {A1,A2, vecteur normal},...]
     local B = facette[1]
     local nb = #facette
     local bords = {}
     for k = 1, nb do
         local A = B; B = facette[k%nb+1]
-        table.insert(bords,{A,B,n1})
+        tblInsert(bords,{A,B,n1})
     end
     while #bords ~= 0 do
         local Z = bords[1] -- premier bord
@@ -870,10 +873,10 @@ function ld.cvx_hull3d(L)
         facette = {}
         for  _, A in ipairs(L) do
             local B = P2-A
-            if math.abs(pt3d.dot(B,n2)) < epsilon then table.insert(facette,A) end
+            if math.abs(pt3d.dot(B,n2)) < epsilon then tblInsert(facette,A) end
         end
         facette = ld.cvx_hull3dcoplanar(facette,n2)
-        table.insert(rep, facette) -- on ajoute cette facette à l'enveloppe
+        tblInsert(rep, facette) -- on ajoute cette facette à l'enveloppe
         -- mise à jour de la liste des bords
         B = facette[1]
         nb = #facette
@@ -898,7 +901,7 @@ function ld.curvilinear_param3d(L,close) -- curvilinear parametrization 3d
     for k = 2, p do
         a = b; b = L[(k-1)%n+1]
         s = s + pt3d.abs(b-a) -- curve length from beginning to b
-        table.insert(L2,b); table.insert(L1,s)
+        tblInsert(L2,b); tblInsert(L1,s)
     end
     local total_len = s
     local l = function(t) -- returns L(t) using linear interpolation with t in [0,1]

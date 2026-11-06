@@ -1,6 +1,6 @@
 --- luadraw_point3d.lua
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -13,6 +13,9 @@ local isComplex = cpx.isComplex
 local notDef = ld.notDef
 local concat = ld.concat
 local map = ld.map
+local tblInsert = table.insert
+local tblAppend = table.append
+local Pi, Sin, Cos, Abs, Sqrt = math.pi, math.sin, math.cos, math.abs, math.sqrt
 
 local point3d = {}
 point3d.__index = point3d
@@ -93,10 +96,10 @@ end
 --  norme au carré
 function point3d.abs(u)
     if (u == nil) then return end
-    local x, y, z = math.abs(u.x), math.abs(u.y), math.abs(u.z)
+    local x, y, z = Abs(u.x), Abs(u.y), Abs(u.z)
     if x < y then x, y = y, x end
     if x < z then x, z = z, x end
-    if x == 0 then return 0 else return x*math.sqrt(1 + (y/x)^2 + (z/x)^2) end
+    if x == 0 then return 0 else return x*Sqrt(1 + (y/x)^2 + (z/x)^2) end
 end
 
 -- arrondir
@@ -108,7 +111,7 @@ end
 -- norme 1
 function point3d.N1(u)
     if u == nil then return
-    else return math.abs(u.x) + math.abs(u.y) + math.abs(u.z)
+    else return Abs(u.x) + Abs(u.y) + Abs(u.z)
     end
 end
 
@@ -129,7 +132,7 @@ function point3d.angle(V1,V2,epsilon) --ecart angulaire
     local alpha = point3d.dot(V1,V2)
     if alpha >= 1-epsilon then 
         return 0 
-    elseif alpha <= -1+epsilon then return math.pi 
+    elseif alpha <= -1+epsilon then return Pi 
     else return math.acos(alpha)
     end
 end
@@ -183,13 +186,13 @@ end
 -- création simplifiée en sphérique
 function point3d.Ms(r,theta,phi) -- theta et phi en radians
     if (r == nil) or (theta == nil) or (phi == nil) or notDef(r) or notDef(theta) or notDef(phi) then return end
-    return point3d:new(r*math.cos(theta)*math.sin(phi), r*math.sin(theta)*math.sin(phi), r*math.cos(phi))
+    return point3d:new(r*Cos(theta)*Sin(phi), r*Sin(theta)*Sin(phi), r*Cos(phi))
 end
 
 -- création simplifiée en cylindrique
 function point3d.Mc(r,theta,z)
     if (r == nil) or (theta == nil) or (z == nil) or notDef(r) or notDef(theta) then return end
-    return point3d:new(r*math.cos(theta), r*math.sin(theta), z)
+    return point3d:new(r*Cos(theta), r*Sin(theta), z)
 end
 
 function point3d.angle3d(V1,V2,epsilon)
@@ -213,11 +216,11 @@ function point3d.insert3d(L,A,eps)
 -- les comparaisons se font à eps(ilon) près (qui vaut 0 par défaut)
     eps = eps or 0
     local n = #L
-    if n == 0 then table.insert(L,A); return 1 end
+    if n == 0 then L[n+1] = A; return 1 end --tblInsert(L,A)
     for k,B in ipairs(L) do
-        if point3d.N1(B-A) <= eps then return k end
+        if  Abs(B.x-A.x)+Abs(B.y-A.y)+Abs(B.z-A.z) <= eps then return k end -- point3d.N1(B-A)
     end
-    table.insert(L,A)
+    tblInsert(L,A)
     return n+1
 end
 

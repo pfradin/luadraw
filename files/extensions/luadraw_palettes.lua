@@ -1,6 +1,6 @@
 -- luadraw_palettes.lua 
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- This file is a contribution of Christophe Bal: 
 -----------------------------------------------------------------
 -- File created from the ''@prism'' project, version 1.3.0,      --
@@ -20,6 +20,8 @@
 -- DEFS OF EACH PALETTE --
 --------------------------
 local pal = {}
+local tblInsert = table.insert
+local tblAppend = table.append
 
 pal.Accent = {
     {0.498039, 0.788235, 0.498039},
@@ -3434,7 +3436,7 @@ function pal.getPal(palette, options)
 
         for _ , index in ipairs(options.extract) do
             if result[index] ~= nil then
-                table.insert(extracted, result[index])
+                tblInsert(extracted, result[index])
             end
         end
 
@@ -3461,7 +3463,7 @@ function pal.getPal(palette, options)
         local reversed = {}
 
         for i = #result, 1, -1 do
-            table.insert(reversed, result[i])
+            tblInsert(reversed, result[i])
         end
 
         result = reversed

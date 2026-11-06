@@ -1,6 +1,6 @@
 -- luadraw_linprog.lua 
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -13,6 +13,8 @@ local ld = luadraw
 local cpx = ld.cpx
 local Z = cpx.Z
 local graph = ld.graph
+local tblInsert = table.insert
+local tblAppend = table.append
 require 'luadraw_decorations'
 
 local function str2function(expr,var)
@@ -72,7 +74,7 @@ function ld.linprogSolve(constraints,x1,x2,y1,y2,objectives)
         aux.expr = obj
         aux.min = Min; aux.mindot = dotMin; aux.minline = ld.lineEq(a,b,-Min,">")
         aux.max = Max; aux.maxdot = dotMax; aux.maxline = ld.lineEq(a,b,-Max,">")
-        table.insert(rep, aux)
+        tblInsert(rep, aux)
     end
     return box, rep
 end
@@ -133,7 +135,7 @@ function graph:DlinprogHalfPlanes(...)
     for k, arg in ipairs{...} do
         if k%2 == 1 then
             if k == n then 
-                table.append(arg,poly[1]) -- polygon solution in the last arg
+                tblAppend(arg,poly[1]) -- polygon solution in the last arg
             else constraint = arg
             end
         else 
@@ -189,7 +191,7 @@ function graph:DlinprogRegion(constraints, options, objectives, objectives_optio
             self:Dline(D,opt) end
     end
     if dots then self:Ddots(region, mark_options) end
-    if out ~= nil then table.append(out,{region,sol}) end
+    if out ~= nil then tblAppend(out,{region,sol}) end
     if objectives ~= nil then
         for _, obj in ipairs(sol) do
             self:DlinprogObjectiveLine(obj,objectives_options)
@@ -308,7 +310,7 @@ if ld.graph3d ~= nil then
             aux.expr = obj
             aux.min = Min; aux.mindot = dotMin; aux.minplane = ld.planeEq(a,b,c,-Min,">")
             aux.max = Max; aux.maxdot = dotMax; aux.maxplane = ld.planeEq(a,b,c,-Max,">")
-            table.insert(rep, aux)
+            tblInsert(rep, aux)
         end
         return box, rep
     end    

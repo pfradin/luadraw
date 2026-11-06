@@ -1,6 +1,6 @@
 -- luadraw_central_perspective.lua 
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -109,10 +109,10 @@ function luadraw.central_perspective(theta,phi,d,look) -- or central_perspective
     -- et se trouvant à une distance d (algébrique) du plan de l'écran
         z = cpx.toComplex(z)
         local rep = ld.applymatrix3d(M(z.re+Zlookat.re, z.im+Zlookat.im, pt3d.dot(target,N)), invmat)
-        local m = self.matrix3d
-        if not ld.isID3d(m) then
-            rep = ld.mLtransform3d(rep, ld.invmatrix3d(m) )
-        end
+        --local m = self.matrix3d
+        --if not ld.isID3d(m) then
+            --rep = ld.mLtransform3d(rep, ld.invmatrix3d(m) )
+        --end
         return rep 
     end
     

@@ -1,6 +1,6 @@
 -- luadraw_colors.lua (chargé par luadraw_graph)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -12,7 +12,8 @@
 
 local ld = luadraw
 local strReal = ld.strReal
-
+local tblInsert = table.insert
+local tblAppend = table.append
 
 ld.Black = {0,0,0}
 ld.Blue = {0,0,1}
@@ -223,7 +224,7 @@ function ld.mixpalette(pal, percent, color)
     local mix = {}
     for _,c in ipairs(pal) do
         local str, tbl =  ld.mixcolor(c,percent,color,100-percent) -- str = string format, tbl = table format
-        table.insert(mix, tbl)
+        tblInsert(mix, tbl)
     end
     return mix
 end
@@ -258,7 +259,7 @@ function ld.getpalette(colors,nb,tbl)
     tbl = tbl or false
     local res = {}
     for k = 0, nb-1 do
-        table.insert(res, ld.palette(colors,k/(nb-1),tbl))
+        tblInsert(res, ld.palette(colors,k/(nb-1),tbl))
     end
     return res
 end

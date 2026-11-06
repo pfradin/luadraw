@@ -1,6 +1,6 @@
 -- luadraw_transformations.lua (chargé par luadraw_calc.lua)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -13,6 +13,8 @@ local Z = cpx.Z
 local toComplex = cpx.toComplex
 local isComplex = cpx.isComplex
 local notDef = ld.notDef
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function ld.ftransform(L,f)
 -- image de L par la fonction f (l'image du complexe cpx.Jump est lui-même)
@@ -25,19 +27,20 @@ function ld.ftransform(L,f)
     local res, u = {}
     if (type(L) ~= "table") or (#L == 0) then return end
     if (type(L[1]) == "number") or isComplex(L[1]) then -- liste de réels/complexes
+        local i = 0
         for _,z in ipairs(L) do
             if z == cpx.Jump then u = cpx.Jump else u = f(z) end
-            if u ~= nil then table.insert(res,u) end
+            if u ~= nil then i = i+1; res[i] = u end --tblInsert(res,u) end
         end
         if #res > 0 then return res end
     else -- L est une liste de listes
         for _, cp in ipairs(L) do
-            local aux = {}
+            local aux, i = {}, 0
             for _, z in ipairs(cp) do
                 if z == cpx.Jump then u = cpx.Jump else u = f(z) end
-                if u ~= nil then table.insert(aux,u) end
+                if u ~= nil then i = i+1; aux[i] = u end --tblInsert(aux,u) end
             end
-            if #aux > 0 then table.insert(res, aux) end
+            if #aux > 0 then tblInsert(res, aux) end
         end
         if #res > 0 then return res end
     end

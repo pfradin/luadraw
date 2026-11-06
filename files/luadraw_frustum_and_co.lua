@@ -1,6 +1,6 @@
 -- luadraw_frustum_and_co.lua 
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -11,6 +11,8 @@
 
 local ld = luadraw
 local pt3d = ld.pt3d
+local tblInsert = table.insert
+local tblAppend = table.append
 
 --------------------------- outlines -----------------------------------
 
@@ -37,6 +39,8 @@ function ld.graph3d:Cone_outline(B, R, V, H) -- or Cone_outline(B, R, H)
     rep.hidden = {}
     rep.side = {}
     rep.section = {}
+    rep.hiddenside = {}
+    rep.hiddensection = {}
     rep.angle = angle
     local f = function(t)
         local  A = O + R*(cos(t)*I+sin(t)*J)
@@ -57,19 +61,23 @@ function ld.graph3d:Cone_outline(B, R, V, H) -- or Cone_outline(B, R, H)
         if self:Cosine_incidence(M3-O,O) < 0 then sens = -1 end
         if self:Cosine_incidence(V1,O) < 0 then -- circular base visible
             rep.visible = {M1, "m", H, M2, "l", B, -V, "c" }
-            table.insert(rep.section, {M1,B,V,"c"})
+            tblInsert(rep.section, {M1,B,V,"c"})
         else
             rep.visible = {M1, "m", B, M2, R, sens, V, "ca", H, "l", "cl" }
             rep.hidden = {M1, "m", B, M2, R, -sens, V, "ca"}
+            tblInsert(rep.hiddensection, {M1,B,V,"c"})
         end
         rep.side = {M1, "m", H, M2,"l", B, M1, R, -sens, V, "ca"}
+        rep.hiddenside = {M1, "m", H, M2,"l", B, M1, R, sens, V, "ca"}
     else
         O, I, J = ld.orthoframe({B, V})
         rep.visible = {B+R*I,B,V,"c"}
         if self:Cosine_incidence(V1,O) < 0 then -- circular base visible
-            table.insert(rep.section, {B+R*I,B,V,"c"})
+            rep.hiddenside = {B+R*I,B,V,"c"}
+            tblInsert(rep.section, {B+R*I,B,V,"c"})
         else 
             rep.side = {B+R*I,B,V,"c"}
+            tblInsert(rep.hiddensection, {B+R*I,B,V,"c"})
         end
     end
     return rep
@@ -104,7 +112,9 @@ function ld.graph3d:Cylinder_outline(B, R, V, H) -- or Cylinder_outline(B, R, H)
     rep.visible = {}
     rep.hidden = {}
     rep.side = {}
-    rep.section = {}
+    rep.section = {}    
+    rep.hiddenside = {}
+    rep.hiddensection = {}
     rep.angle = angle
     local T = ld.solve(f,-pi,pi)
     if (T ~= nil) and (#T >= 2) then
@@ -119,34 +129,39 @@ function ld.graph3d:Cylinder_outline(B, R, V, H) -- or Cylinder_outline(B, R, H)
         if self:Cosine_incidence(M3-O,O) < 0 then sens = -1 end
         rep.visible = {M1, "m", M1+U, "l"}
         if self:Cosine_incidence(V1,H1) > 0 then -- second circular base visible
-            table.append(rep.visible, {H, V, "c", M2+U, "m"})
-            table.insert(rep.section, {M1+U,H,V,"c"})
+            tblAppend(rep.visible, {H, V, "c", M2+U, "m"})
+            tblInsert(rep.section, {M1+U,H,V,"c"})
         else
-            table.append(rep.visible, {H, M2+U, R, sens, V, "ca"})
-            table.append(rep.hidden, {M1+U, "m", H, M2+U, R, -sens, V, "ca"})
+            tblAppend(rep.visible, {H, M2+U, R, sens, V, "ca"})
+            tblAppend(rep.hidden, {M1+U, "m", H, M2+U, R, -sens, V, "ca"})
+            tblInsert(rep.hiddensection, {M1+U,H,V,"c"})
         end
-        table.append(rep.visible, {M2, "l"})
+        tblAppend(rep.visible, {M2, "l"})
         if self:Cosine_incidence(V1,O) < 0 then -- first circular base visible        
-            table.append(rep.visible, {B, V, "c"})
-            table.insert(rep.section, {M1,B,V,"c"})
+            tblAppend(rep.visible, {B, V, "c"})
+            tblInsert(rep.section, {M1,B,V,"c"})
         else -- first circular base not visible
-            table.append(rep.visible, {B, M1, R, -sens, V, "ca"} )
-            table.append(rep.hidden, {M2, "m", B, M1, R, sens, V, "ca"} )
+            tblAppend(rep.visible, {B, M1, R, -sens, V, "ca"} )
+            tblAppend(rep.hidden, {M2, "m", B, M1, R, sens, V, "ca"} )
+            tblInsert(rep.hiddensection, {M1,B,V,"c"})
         end
         rep.side = {M1,"m",M1+U,"l",H,M2+U,R,sens,V,"ca",M2,"l",B,M1,R,-sens,V,"ca"}
+        rep.hiddenside = {M1,"m",M1+U,"l",H,M2+U,R,-sens,V,"ca",M2,"l",B,M1,R,sens,V,"ca"}
     else
         O, I, J = ld.orthoframe({B, V})
         if self:Cosine_incidence(V1,H1) > 0 then -- second circular base visible
-            table.append(rep.visible, {H+R*I, "m", H, V, "c"})
-            table.insert(rep.section, {H+R*I, "m", H, V, "c"})
+            tblAppend(rep.visible, {H+R*I, "m", H, V, "c"})
+            tblInsert(rep.section, {H+R*I, "m", H, V, "c"})
         else
-            table.append(rep.hidden, {H+R*I, "m", H, V, "c"})
+            tblAppend(rep.hidden, {H+R*I, "m", H, V, "c"})
+            tblInsert(rep.hiddensection, {H+R*I, "m", H, V, "c"})
         end
         if self:Cosine_incidence(V1,O) < 0 then -- first circular base visible
-            table.append(rep.visible, {B+R*I, "m", B, V, "c"})
-            table.insert(rep.section, {B+R*I, "m", B, V, "c"})
+            tblAppend(rep.visible, {B+R*I, "m", B, V, "c"})
+            tblInsert(rep.section, {B+R*I, "m", B, V, "c"})
         else
-            table.append(rep.hidden, {B+R*I, "m", B, V, "c"})
+            tblAppend(rep.hidden, {B+R*I, "m", B, V, "c"})
+            tblInsert(rep.hiddensection, {B+R*I, "m", B, V, "c"})
         end
     end
     return rep
@@ -184,6 +199,8 @@ function ld.graph3d:Frustum_outline(B, R, r, V, H) -- or Frustum_outline(B, R, r
     rep.hidden = {}
     rep.side = {}
     rep.section = {}
+    rep.hiddenside = {}
+    rep.hiddensection = {}
     rep.angle = angle
     local f = function(t)
         local  A = O + R*(cos(t)*I+sin(t)*J)
@@ -205,42 +222,47 @@ function ld.graph3d:Frustum_outline(B, R, r, V, H) -- or Frustum_outline(B, R, r
         if self:Cosine_incidence(M3-O,O) < 0 then sens = -1 end
         rep.visible = {M1, "m", M4, "l"}
         if self:Cosine_incidence(V1,H1) > 0 then -- second circular base visible
-            table.append(rep.visible, {H, V, "c", M5, "m"})
-            table.insert(rep.section, {M4,H,V,"c"})
+            tblAppend(rep.visible, {H, V, "c", M5, "m"})
+            tblInsert(rep.section, {M4,H,V,"c"})
         else
-            table.append(rep.visible, {H, M5, r, sens, V, "ca"})
-            table.append(rep.hidden, {M4, "m", H, M5, r, -sens, V, "ca"})
+            tblAppend(rep.visible, {H, M5, r, sens, V, "ca"})
+            tblAppend(rep.hidden, {M4, "m", H, M5, r, -sens, V, "ca"})
+            tblInsert(rep.hiddensection, {M4,H,V,"c"})
         end
-        table.append(rep.visible, {M2, "l"})
+        tblAppend(rep.visible, {M2, "l"})
         if self:Cosine_incidence(V1,O) < 0 then -- first circular base visible        
-            table.append(rep.visible, {B, V, "c"})
-            table.insert(rep.section, {M1,B,V,"c"})
+            tblAppend(rep.visible, {B, V, "c"})
+            tblInsert(rep.section, {M1,B,V,"c"})
         else -- first circular base not visible
-            table.append(rep.visible, {B, M1, R, -sens, V, "ca"} )
-            table.append(rep.hidden, {M2, "m", B, M1, R, sens, V, "ca"} )
+            tblAppend(rep.visible, {B, M1, R, -sens, V, "ca"} )
+            tblAppend(rep.hidden, {M2, "m", B, M1, R, sens, V, "ca"} )
+            tblInsert(rep.hiddensection, {M1,B,V,"c"})
         end
         rep.side = {M1,"m",M4,"l",H,M5,r,sens,V,"ca",M2,"l",B,M1,R,-sens,V,"ca"}
+        rep.hiddenside = {M1,"m",M4,"l",H,M5,r,-sens,V,"ca",M2,"l",B,M1,R,sens,V,"ca"}
     else
         O, I, J = ld.orthoframe({B, V})
         if self:Cosine_incidence(V1,H1) > 0 then -- second circular base visible
-            table.append(rep.visible, {H+r*I, "m", H, V, "c"})
-            table.insert(rep.section, {H+r*I, "m", H, V, "c"})
+            tblAppend(rep.visible, {H+r*I, "m", H, V, "c"})
+            tblInsert(rep.section, {H+r*I, "m", H, V, "c"})
             if r < R then
                 rep.side = {B+R*I, "m", B, V, "c", H+r*I, "m", H, V, "c"}
-                table.append(rep.visible, {B+R*I, "m", B, V, "c"})
+                tblAppend(rep.visible, {B+R*I, "m", B, V, "c"})
             end
-        elseif r < R then
-            table.append(rep.hidden, {H+r*I, "m", H, V, "c"})
+        else
+            tblInsert(rep.hiddensection, {H+r*I, "m", H, V, "c"})
+            if r < R then tblAppend(rep.hidden, {H+r*I, "m", H, V, "c"}) end
         end
         if self:Cosine_incidence(V1,O) < 0 then -- first circular base visible
-            table.append(rep.visible, {B+R*I, "m", B, V, "c"})
-            table.insert(rep.section, {B+R*I, "m", B, V, "c"})
+            tblAppend(rep.visible, {B+R*I, "m", B, V, "c"})
+            tblInsert(rep.section, {B+R*I, "m", B, V, "c"})
             if r > R then
                 rep.side = {H+r*I, "m", H, V, "c", B+R*I, "m", B, V, "c"}
-                table.append(rep.visible, {H+r*I, "m", H, V, "c"})
+                tblAppend(rep.visible, {H+r*I, "m", H, V, "c"})
             end
-        elseif R < r then
-            table.append(rep.hidden, {B+R*I, "m", B, V, "c"})
+        else
+            tblInsert(rep.hiddensection, {B+R*I, "m", B, V, "c"})
+            if R < r then tblAppend(rep.hidden, {B+R*I, "m", B, V, "c"}) end
         end    
     end
     return rep
@@ -344,8 +366,10 @@ function ld.graph3d:Dcylinder(A,r,V,B,args)
     args.edgestyle = args.edgestyle or self.param.linestyle
     args.edgewidth = args.edgewidth or self.param.linewidth
     args.hiddencolor = args.hiddencolor or args.edgecolor
-    args.hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
-    --if not Hiddenlines then args.hiddenstyle = "noline" end
+    local hiddenstyle = ld.Hiddenlinestyle
+    if not ld.Hiddenlines then hiddenstyle = "noline" end
+    hiddenstyle = args.hiddenstyle or hiddenstyle
+
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
@@ -386,12 +410,12 @@ function ld.graph3d:Dcylinder(A,r,V,B,args)
         self:Filloptions("none")
         self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
         self:Dpath3d(cyl.visible)
-        if (args.hiddenstyle ~= "noline") then -- partie cachée
-            self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
+        if (hiddenstyle ~= "noline") then -- partie cachée
+            self:Lineoptions(hiddenstyle,args.hiddencolor,args.edgewidth)
             self:Dpath3d(cyl.hidden)
         end
     else
-        self:Dpoly(ld.cylinder(A,r,V,B,35,false), {mode=0,hiddenstyle=args.hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor, reverse=(self:Det3d()<0), edgestyle=args.edgestyle, edgewidth=args.edgewidth})
+        self:Dpoly(ld.cylinder(A,r,V,B,35,false), {mode=0,hiddenstyle=hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor, reverse=(self:Det3d()<0), edgestyle=args.edgestyle, edgewidth=args.edgewidth})
     end
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth) 
@@ -424,9 +448,10 @@ function ld.graph3d:Dcone(C,r,V,A,args)
     args.edgestyle = args.edgestyle or self.param.linestyle
     args.edgewidth = args.edgewidth or self.param.linewidth
     args.hiddencolor = args.hiddencolor or args.edgecolor
-    args.hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
+    local hiddenstyle = ld.Hiddenlinestyle
+    if not ld.Hiddenlines then hiddenstyle = "noline" end
+    hiddenstyle = args.hiddenstyle or hiddenstyle
     if args.apex == nil then args.apex = true end
-    --if not Hiddenlines then args.hiddenstyle = "noline" end
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
@@ -470,12 +495,12 @@ function ld.graph3d:Dcone(C,r,V,A,args)
         if (cone.tangency == nil) and (#cone.side > 0) and (args.apex) then
             self:Ddots3d(A, "scale=0.5")
         end
-        if (args.hiddenstyle ~= "noline") then -- partie cachée
-            self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
+        if (hiddenstyle ~= "noline") then -- partie cachée
+            self:Lineoptions(hiddenstyle,args.hiddencolor,args.edgewidth)
             self:Dpath3d(cone.hidden)
         end
     else
-        self:Dpoly(ld.cone(C,r,V,A,35,false), {mode=0,hiddenstyle=args.hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor, reverse=(self:Det3d()<0), edgestyle=args.edgestyle, edgewidth=args.edgewidth})
+        self:Dpoly(ld.cone(C,r,V,A,35,false), {mode=0,hiddenstyle=hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor, reverse=(self:Det3d()<0), edgestyle=args.edgestyle, edgewidth=args.edgewidth})
     end
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth) 
@@ -513,8 +538,9 @@ function ld.graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) pour u
     args.edgestyle = args.edgestyle or self.param.linestyle
     args.edgewidth = args.edgewidth or self.param.linewidth
     args.hiddencolor = args.hiddencolor or args.edgecolor
-    args.hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
-    --if not Hiddenlines then args.hiddenstyle = "noline" end
+    local hiddenstyle = ld.Hiddenlinestyle
+    if not ld.Hiddenlines then hiddenstyle = "noline" end
+    hiddenstyle = args.hiddenstyle or hiddenstyle
     args.mode = args.mode or 0
     args.opacity = args.opacity or 1
     args.gradsection = args.gradsection or {25,18,50}
@@ -555,12 +581,12 @@ function ld.graph3d:Dfrustum(A,R,r,V,B,args) -- ou Dfrustum(A,R,r,V,args) pour u
         self:Filloptions("none")
         self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
         self:Dpath3d(frustum.visible)
-        if (args.hiddenstyle ~= "noline") then -- partie cachée
-            self:Lineoptions(args.hiddenstyle,args.hiddencolor,args.edgewidth)
+        if (hiddenstyle ~= "noline") then -- partie cachée
+            self:Lineoptions(hiddenstyle,args.hiddencolor,args.edgewidth)
             self:Dpath3d(frustum.hidden)
         end
     else
-        self:Dpoly(ld.frustum(A,R,r,V,B,35,false), {mode=0,hiddenstyle=args.hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor, reverse=(self:Det3d()<0), edgestyle=args.edgestyle, edgewidth=args.edgewidth})
+        self:Dpoly(ld.frustum(A,R,r,V,B,35,false), {mode=0,hiddenstyle=hiddenstyle, edgecolor=args.edgecolor,hiddencolor=args.hiddencolor, reverse=(self:Det3d()<0), edgestyle=args.edgestyle, edgewidth=args.edgewidth})
     end
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth) 
@@ -582,8 +608,10 @@ function ld.graph3d:Dsphere(A,r,args)
     args.color = args.color or ""
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.hiddencolor = args.hiddencolor or args.edgecolor
-    args.hiddenstyle = args.hiddenstyle or ld.Hiddenlinestyle
-    --if not Hiddenlines then args.hiddenstyle = "noline" end
+    local hiddenstyle = ld.Hiddenlinestyle
+    if not ld.Hiddenlines then hiddenstyle = "noline" end
+    hiddenstyle = args.hiddenstyle or hiddenstyle
+    
     args.edgestyle = args.edgestyle or self.param.linestyle
     args.edgecolor = args.edgecolor or self.param.linecolor
     args.edgewidth = args.edgewidth or self.param.linewidth    
@@ -617,10 +645,10 @@ function ld.graph3d:Dsphere(A,r,args)
         if self:Cosine_incidence(M4-I,M4) > 0 then sens = 1 else sens = -1 end
         self:Filloptions("none") --; self:Lineoptions(args.edgestyle,args.edgecolor,args.edgewidth)
         self:Darc3d(M1,A,M2,r,sens,V)
-        self:Lineoptions(args.hiddenstyle,args.hiddencolor)
+        self:Lineoptions(hiddenstyle,args.hiddencolor)
         self:Darc3d(M1,A,M2,r,-sens,V)
     elseif args.mode == 1 then -- grille
-        self:Dpoly(ld.sphere(A,r),{mode=0,hiddenstyle=args.hiddenstyle,hiddencolor=args.hiddencolor,edgestyle=args.edgestyle,edgecolor=args.edgecolor,edgewidth=args.edgewidth,reverse=(self:Det3d()<0)})
+        self:Dpoly(ld.sphere(A,r),{mode=0,hiddenstyle=hiddenstyle,hiddencolor=args.hiddencolor,edgestyle=args.edgestyle,edgecolor=args.edgecolor,edgewidth=args.edgewidth,reverse=(self:Det3d()<0)})
     end
     self:Filloptions(oldfillstyle,oldfillcolor,oldfillopacity)
     self:Lineoptions(oldlinestyle,oldlinecolor,oldlinewidth); 
@@ -630,9 +658,16 @@ end
 function ld.graph3d:Dcut_sphere(C,R,P, options)
 -- P is a plane, P = {A,n}
 -- draw the sphere {C,R} cut by P (part in then half-plane containing n)
--- options: the same as for the Dsphere method plus options.visibletrace="" (contour of clip) and hiddentrace
+-- options: the same as for the Dsphere method plus :
+    -- visibletrace="" (contour of clip) and hiddentrace
+    -- outline = false
+    -- section = false
+    options = options or {}
     options.visibletrace = options.visibletrace or "" -- visible part of intersection
     options.hiddentrace = options.hiddentrace or ""
+    options.outline = options.outline or false
+    options.section = options.section or false
+    options.section_options = options.section_options or ""
     local T = self:Sphere_tangency(C,R,P)
     local W, Vtrace, Htrace
     local O, R1, N = table.unpack( self:Sphere_outline(C,R).data )
@@ -669,8 +704,10 @@ function ld.graph3d:Dcut_sphere(C,R,P, options)
     if W ~= nil then
         self:Beginclip( W )
             self:Dsphere(C,R,options)
-        --self:Endclip(true,options.visibletrace)
-        self:Endclip()
+        self:Endclip(options.outline,options.visibletrace)
+        if options.section and (self:Cosine_incidence(-P[2],c) > 0) then -- visible section
+            self:Dcircle3d(c,r,n, options.section_options)
+        end
     end
     if options.visibletrace ~= "" then
         self:Dpath3d(Vtrace, options.visibletrace)

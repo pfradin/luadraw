@@ -1,6 +1,6 @@
 -- luadraw_base.lua (chargé par luadraw_calc.lua)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,9 +8,11 @@
 --   https://www.ctan.org/license/lppl
 
 -- définition des paramètres graphiques
-luadraw.version = 3.6
+luadraw.version = 3.7
 require 'luadraw_real'
 local strReal = luadraw.strReal
+local tblInsert = table.insert
+local tblAppend = table.append
 
 local luadraw_base = {}
 setmetatable(luadraw_base, {__index = luadraw_base}) -- obligatoire pour l'héritage
@@ -91,7 +93,7 @@ function luadraw_base:clean(L)
     local lastJump = true
     local closeCp = function ()
             if count > 1 then
-                table.insert(res, cp)
+                tblInsert(res, cp)
             end
             lastJump = true
         end
@@ -102,8 +104,10 @@ function luadraw_base:clean(L)
                 count = 0
                 lastJump = false
             end
-            table.insert(cp, z)
             count = count + 1
+            cp[i] = z
+            --tblInsert(cp, z)
+            
         end
     for _, z in ipairs(L) do
         z = toComplex(z)
@@ -117,7 +121,7 @@ function luadraw_base:clean(L)
             end
         end
     end
-    if (not lastJump) and (count > 0) then table.insert(res, cp) end -- dernière composante
+    if (not lastJump) and (count > 0) then tblInsert(res, cp) end -- dernière composante
     return res
 end    
 

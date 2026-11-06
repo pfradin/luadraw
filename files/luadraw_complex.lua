@@ -1,6 +1,6 @@
 --- luadraw_complex.lua
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -9,6 +9,9 @@
 
 require 'luadraw_real'
 local ld = luadraw
+local tblInsert = table.insert
+local tblAppend = table.append
+local Pi, Sin, Cos, Abs, Sqrt = math.pi, math.sin, math.cos, math.abs, math.sqrt
 
 local complex = {}
 complex.__index = complex
@@ -102,16 +105,16 @@ end
 ---------------- fonctions mathématiques pour nombres complexes 
 --  module
 function complex.abs(u)
-    if type(u) == "number" then return math.abs(u) end
+    if type(u) == "number" then return Abs(u) end
     u = complex.toComplex(u)
     if (u == nil) then return end
-    local x, y = math.abs(u.re), math.abs(u.im)
+    local x, y = Abs(u.re), Abs(u.im)
     if x < y then x, y = y, x end
-    if x == 0 then return 0 else return x*math.sqrt(1 + (y/x)^2) end
+    if x == 0 then return 0 else return x*Sqrt(1 + (y/x)^2) end
 end
 
 function complex.abs2(u) -- module au carré
-    if type(u) == "number" then return math.abs(u) end
+    if type(u) == "number" then return Abs(u) end
     u = complex.toComplex(u)
     if (u == nil) then return end
     return u.re^2 + u.im^2
@@ -124,12 +127,12 @@ function complex.arg(u)
     local x, y = u.re, u.im
     if (x == 0) and (y == 0) then return 0 end -- argument indéfini, 0 par convention
     if (x == 0) then
-        if (y > 0) then return math.pi/2 else return -math.pi/2 end
+        if (y > 0) then return Pi/2 else return -Pi/2 end
     else
         if (x > 0)  then return math.atan(y / x) 
         else
-            if (y >= 0) then return math.pi + math.atan(y / x)
-            else return -math.pi + math.atan(y / x)
+            if (y >= 0) then return Pi + math.atan(y / x)
+            else return -Pi + math.atan(y / x)
             end
         end
     end
@@ -154,7 +157,7 @@ function complex.exp(u)
     u = complex.toComplex(u)
     if (u == nil) then return end    
     local r = math.exp(u.re)
-    return complex:new( r*math.cos(u.im), r*math.sin(u.im) )
+    return complex:new( r*Cos(u.im), r*Sin(u.im) )
 end
 
 function complex.cosh(u)
@@ -217,8 +220,8 @@ end
 -- norme 1
 function complex.N1(u)
     u = complex.toComplex(u)
-    if type(u) == "number" then return math.abs(u)
-    else return math.abs(u.re) + math.abs(u.im)
+    if type(u) == "number" then return Abs(u)
+    else return Abs(u.re) + Abs(u.im)
     end
 end
 
@@ -260,7 +263,7 @@ function complex:tostring()
     if (x == 0) and (y == 0) then return "0" end
     if x == 1e+308 then return "jump" end
     if x > 0 then str = str..x 
-    elseif x < 0 then str = "-"..math.abs(x) 
+    elseif x < 0 then str = "-"..Abs(x) 
     end
     if y > 0 then 
         if y == 1 then
@@ -270,7 +273,7 @@ function complex:tostring()
         end
     elseif y < 0 then
         if y == -1 then str = str.."-i" 
-        else str = str.."-"..math.abs(y).."*i"
+        else str = str.."-"..Abs(y).."*i"
         end
     end
     return str
@@ -293,15 +296,15 @@ end
 -- création simplifiée en polaire
 function complex.Zp(r,theta)
     if (r == nil) or (theta == nil) or ld.notDef(r) or ld.notDef(theta) then return end
-    return complex:new(r*math.cos(theta), r*math.sin(theta))
+    return complex:new(r*Cos(theta), r*Sin(theta))
 end
 
 function ld.insert(t1,t2,pos)
 -- insère les éléments de t2 dans la table t1 (qui est donc modifiée)
 -- si pos vaut nil l'insertion se fait à la fin de t1
     local inserer = function(x)
-        if pos == nil then table.insert(t1,x) 
-        else table.insert(t1,pos,x); pos = pos + 1 
+        if pos == nil then tblInsert(t1,x) 
+        else tblInsert(t1,pos,x); pos = pos + 1 
         end
     end
     if (type(t1) ~= "table") then return end
@@ -309,7 +312,7 @@ function ld.insert(t1,t2,pos)
     if complex.isComplex(t2) then inserer(t2) 
     else
         if type(t2) == "table" then
-            if pos == nil then table.append(t1,t2)
+            if pos == nil then tblAppend(t1,t2)
             else
                 for _,x in ipairs(t2) do
                     inserer(x)
@@ -322,13 +325,13 @@ end
 
 function ld.concat(...)
 -- concatène les tables passées en arguments et renvoie la table résultante
-    local res = {}
+    local res, i = {}, 0
     for k,x in ipairs{...} do
         --ld.insert(res,x)
         if (type(x)=="number") or (complex.isComplex(x)) or ((ld.graph3d~=nil) and ld.pt3d.isPoint3d(x))
-        then table.insert(res,x)
-        elseif type(x) == "table" then table.append(res,x)
-        else table.insert(res,x)
+        then i = i+1; res[i] = x --tblInsert(res,x)
+        elseif type(x) == "table" then i = i+#x; tblAppend(res,x)
+        else i = i+1; res[i] = x --tblInsert(res,x)
         end
     end
     if #res > 0 then return res end
@@ -336,10 +339,10 @@ end
 
 function ld.map(f,list)
     local res = {}
-    for _, x in ipairs(list) do
+    for i, x in ipairs(list) do
         local y = f(x)
         if y == nil then y = complex:new(1e+308,0) end -- on insère jump si résultat nil
-        table.insert(res,y)
+        res[i] = y --tblInsert(res,y)
     end
     return res
 end   

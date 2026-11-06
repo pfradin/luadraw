@@ -1,6 +1,6 @@
 -- luadraw_graph.lua (chargé par luadraw_graph2d.lua)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -16,6 +16,9 @@ local Z = cpx.Z
 local toComplex = cpx.toComplex
 local isComplex = cpx.isComplex
 local strReal = ld.strReal
+local tblInsert = table.insert
+local tblAppend = table.append
+local idx_export = 1
 
 local luadraw_graph = {}
 setmetatable(luadraw_graph, {__index = luadraw_calc}) -- obligatoire pour l'héritage
@@ -33,8 +36,11 @@ function luadraw_graph:new(args) -- argument de la forme :
     graph.deferredexport = {""} -- export en fin de graphique
     graph.deferred = false
     graph.export = graph.currentexport
+    graph.idx_advanced = 1
+    graph.idx_current = 1
+    graph.idx_deferred = 1
     graph.pictureoptions = args.pictureoptions or ""
-    
+    idx_export = 1
     -- styles par défaut
     graph.currentparam = {
             ["viewport"] = {graph.Xmin, graph.Xmax, graph.Ymin, graph.Ymax},  -- définit la vue courante
@@ -100,8 +106,8 @@ end
 -- sauvegarde et restauration des paramètres graphiques (fenêtre, styles, matrice)
 function luadraw_graph:Saveattr(scope_options)
     scope_options = scope_options or ""
-    table.insert(self.pile, table.copy(self.matrix))
-    table.insert(self.pile, table.copy(self.param))
+    tblInsert(self.pile, table.copy(self.matrix))
+    tblInsert(self.pile, table.copy(self.param))
     self:Writeln("\\begin{scope}["..scope_options.."]")
 end
 
@@ -133,10 +139,15 @@ function luadraw_graph:Cleargraph()
     self.deferredexport = {""} -- export en fin de graphique
     self.deferred = false
     self.export = self.currentexport
+    self.idx_advanced = 1
+    self.idx_current = 1
+    self.idx_deferred = 1
+    idx_export = 1
+    self:Defaultattr()
 end
 
 function luadraw_graph:Savematrix()
-    table.insert(self.pilematrix, table.copy(self.matrix))
+    tblInsert(self.pilematrix, table.copy(self.matrix))
 end
 
 function luadraw_graph:Restorematrix()
@@ -199,15 +210,18 @@ end
 function luadraw_graph:Write(str)
 -- écrit la chaîne str sans retour à la ligne
     if str ~= "" then
-        local n = #self.export
-        self.export[n] = self.export[n]..str
-    end
+        --local n = #self.export
+        --self.export[n] = self.export[n]..str
+        self.export[idx_export] = self.export[idx_export]..str
+    end 
 end
 
 function luadraw_graph:Writeln(str)
 --  écrit la chaîne str avec retour à la ligne
     self:Write(str)
-    table.insert(self.export,"") -- on démarre une nouvelle ligne   
+    --tblInsert(self.export,"") -- on démarre une nouvelle ligne   
+    idx_export = idx_export + 1
+    self.export[idx_export] = ""
 end
 
 function luadraw_graph:Begindeferred()
@@ -215,12 +229,16 @@ function luadraw_graph:Begindeferred()
     self.deferred = true
     self.export = self.deferredexport
     self.param = self.deferredparam
+    self.idx_current = idx_export
+    idx_export = self.idx_deferred
 end
 
 function luadraw_graph:Enddeferred()
 -- pour arrêter de repousser les instructions en fin de graphique
     self.export = self.currentexport
     self.param = self.currentparam
+    self.idx_deferred = idx_export
+    idx_export = self.idx_current
 end
 
 function luadraw_graph:Beginadvanced()
@@ -228,12 +246,16 @@ function luadraw_graph:Beginadvanced()
     self.advanced = true
     self.export = self.advancedexport
     self.param = self.advancedparam
+    self.idx_current = idx_export
+    idx_export = self.idx_advanced
 end
 
 function luadraw_graph:Endadvanced()
 -- pour arrêter d'avancer les instructions en début de graphique
     self.export = self.currentexport
     self.param = self.currentparam
+    self.idx_advanced = idx_export
+    idx_export = self.idx_current
 end
 
 
@@ -285,9 +307,9 @@ end
 
 function luadraw_graph:beginDraw() -- début du dessin
     local str = {"\\begin{tikzpicture}["..self.tikzpictureoptions.."]"}
-     table.insert(str,"\\begin{scope}")
+     tblInsert(str,"\\begin{scope}")
     if self.bbox then
-        table.insert(str,"\\clip ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:Graphwidth()+self.Rmargin)..","..tostring(self:Graphheight()+self.Tmargin)..");")
+        tblInsert(str,"\\clip ("..tostring(-self.Lmargin)..",".. tostring(-self.Bmargin)..") rectangle ("..tostring(self:Graphwidth()+self.Rmargin)..","..tostring(self:Graphheight()+self.Tmargin)..");")
     end
     return str
 end
@@ -566,7 +588,7 @@ end
 function luadraw_graph:Dpolyline(L,close,draw_options,clip) -- close vaut true ou false
 -- dessine une ligne polygonale avec les attributs courants
 -- L est une liste de complexes ou une liste de listes de complexes
--- clip = {x1,x2,y1,y2} rectangle de clipping, ou nil  pour la fenêtre par défaut
+-- clip = {x1,x2,y1,y2} rectangle de clipping, ou nil pour la fenêtre par défaut, ou false pour pas de clip
     local clippee
     if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
     if type(close) == "string" then clip = draw_options; draw_options = close; close = false end
@@ -577,14 +599,14 @@ function luadraw_graph:Dpolyline(L,close,draw_options,clip) -- close vaut true o
     if (type(L[1]) == "number") or isComplex(L[1]) then L = {L} end
     local X1,X2,Y1,Y2
     if clip == nil then X1,X2,Y1,Y2 = table.unpack(self.param.viewport)
-    else X1,X2,Y1,Y2 = table.unpack(clip)
+    elseif clip ~= false then  X1,X2,Y1,Y2 = table.unpack(clip)
     end
     for _, cp in ipairs(L) do
         clippe = false
         local len = #cp
         cp = {cp}
         if len > 1 then
-            if clip ~= nil then
+            if (clip ~= nil) and (clip ~= false) then
                 cp, clippee = ld.clippolyline(cp,X1,X2,Y1,Y2,close)
             end
             if not ld.isID(self.matrix) then
@@ -598,16 +620,43 @@ function luadraw_graph:Dpolyline(L,close,draw_options,clip) -- close vaut true o
             for _, cpp in ipairs(cp) do
                 len = #cpp
                 if len > 1 then
-                    local z = cpp[1]
-                    self:Write(commande..self:Coord(z))
+                    self:Write(commande..self:Coord(cpp[1]))
                     for k = 2, len do
-                        z = cpp[k]
-                        self:Write(" -- "..self:Coord(z))
+                        self:Write(" -- "..self:Coord(cpp[k]))
                     end
                     if close then self:Writeln("--cycle;") 
                     else self:Writeln(";")
                     end
                 end
+            end
+        end
+    end
+end
+
+function luadraw_graph:Dpolyline2(L,close,draw_options) 
+-- Same as Dpolyline(), except that L accepts not only complex numbers but also TikZ nodes provided as strings—for example, "(A.south)". A list of this type cannot be clipped by luadraw (since the nodes are only determined during the compilation of the TikZ code, which occurs after g:Show() is called).
+    if (L == nil) or (type(L) ~= "table") or (#L == 0) then return end
+    if type(close) == "string" then draw_options = close; close = false end
+    close = close or false
+    draw_options = draw_options or ""
+    local commande = self:drawcmd(draw_options)
+    if commande == nil then return end
+    local function Coord(z)
+        if type(z) == "string" then return z else return self:Coord(z) end
+    end
+    if (type(L[1]) == "number") or cpx.isComplex(L[1]) or (type(L[1])== "string") then L = {L} end
+    for _, cp in ipairs(L) do
+        local len = #cp
+        if len > 1 then
+             if not ld.isID(self.matrix) then
+                cp = self:Mtransform({cp})[1]
+            end
+            self:Write(commande..Coord(cp[1]))
+            for k = 2, len do
+                self:Write(" -- "..Coord(cp[k]))
+            end
+            if close then self:Writeln("--cycle;") 
+            else self:Writeln(";")
             end
         end
     end
@@ -722,7 +771,7 @@ function luadraw_graph:DplotXY(X,Y,draw_options,clip)
     local L, z = {}
         for k,x in ipairs(X) do
             z = Z(x,Y[k])
-            if z ~= nil then table.insert(L, z) end
+            if z ~= nil then tblInsert(L, z) end
     end
     self:Dpolyline({L},false,draw_options,clip)
 end
@@ -865,12 +914,12 @@ local DinequalitiesWithClip = function(self,constraints, args)
         f, sg = constraints[i], constraints[i+1]  -- 2 args
         C = ld.clippolyline(ld.cartesian(f, x1, x2), self:Xinf(), 
                 self:Xsup(),self:Yinf(), self:Ysup())[1]
-        table.insert(C,1, Z(x1, C[1].im))
-        table.insert(C, Z(x2, C[#C].im))
+        tblInsert(C,1, Z(x1, C[1].im))
+        tblInsert(C, Z(x2, C[#C].im))
         if sg == ">" then
-            table.append(C, {Z(x2,y2),Z(x1,y2),C[1]})
+            tblAppend(C, {Z(x2,y2),Z(x1,y2),C[1]})
         else
-            table.append(C, {Z(x2,y1),Z(x1,y1),C[1]})
+            tblAppend(C, {Z(x2,y1),Z(x1,y1),C[1]})
         end
         self:Beginclip( ld.polyline2path(C) )
     end
@@ -912,7 +961,7 @@ function luadraw_graph:Dimplicit_inequalities(constraints, args)
         C = ld.implicit_inequality(f, sg, self:Xinf(), self:Xsup(),self:Yinf(), self:Ysup(), grid)
         self:Beginclip( C )
     end
-    self:Dpolyline(P, true, draw_options)
+    if C ~= nil then self:Dpolyline(P, true, draw_options) end
     for i = 1, n-1, 2 do   -- step = 2
         self:Endclip()
     end
@@ -966,7 +1015,7 @@ function luadraw_graph:Dmarkseg(a,b,n,long,espace,angle,draw_options)
     local pas = espace*v 
     local res = {}
     for k = 1, n do 
-        table.insert(res, {c-u, c+u})
+        res[k] = {c-u, c+u}
         c = c + pas
     end
     self:Dpolyline(res,false,draw_options)
@@ -987,7 +1036,7 @@ function luadraw_graph:Dmarkarc(b,a,c,r,n,long,espace,draw_options)
     for k = 0, n-1 do 
         local p = cpx.exp(cpx.I*(dep+k*espace))
         local v = p/cpx.abs(p)
-        table.insert(res, { a+r*p+long*v, a+r*p-long*v})
+        res[k+1] = { a+r*p+long*v, a+r*p-long*v}
     end
     self:Dpolyline(res,false,draw_options)
 end
@@ -1092,10 +1141,10 @@ function luadraw_graph:Dtcurve(L,options)
         local line, dots, ctrl, k = {}, {L[1]}, {}, 0
         for _,z in ipairs(S) do
             k = k+1
-            if k%4 == 0 then table.insert(dots,z) 
-            elseif k%4 ~= 1 then table.insert(ctrl,z)
+            if k%4 == 0 then tblInsert(dots,z) 
+            elseif k%4 ~= 1 then tblInsert(ctrl,z)
             end
-            if z ~= "b" then table.insert(line,z) end
+            if z ~= "b" then tblInsert(line,z) end
         end
         self:Dpolyline(line,"solid,black,line width=0.4pt")
         self:Ddots(ctrl,"color=black,scale=0.75,fill=white,mark=*")
@@ -1262,7 +1311,7 @@ function luadraw_graph:Dtangent_from(A,p,t1,t2,dp,draw_options,out,scale)
     out = out or {}
     local S = ld.tangent_from(A,p,t1,t2,dp)
     for _,B in ipairs(S) do
-        table.insert(out,B)
+        tblInsert(out,B)
         self:Dline(A,B,draw_options,scale)
     end
 end
@@ -1289,9 +1338,9 @@ function luadraw_graph:Dcommon_tangent(p1, p2, options)
         for _, z in ipairs(I) do
             local a, b = p1(z.re), p2(z.im)
             self:Dline(a, b, draw, scale)
-            table.insert(out, {a,b})
+            tblInsert(out, {a,b})
         end
-        if options.out ~= nil then table.append(options.out, out) end
+        if options.out ~= nil then tblAppend(options.out, out) end
     end
 end
 
@@ -1316,7 +1365,7 @@ function luadraw_graph:Dparallel_tangent(p, t0, options)
                 self:Dtangent(p, t, long, draw)
             end
         end
-        if options.out ~= nil then table.append(options.out, I) end
+        if options.out ~= nil then tblAppend(options.out, I) end
     end
 end
 
@@ -1581,7 +1630,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
     
     local Spline = function ()
             if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         aux = ld.spline(aux) -- spline naturelle
         if aux ~= nil then
@@ -1594,7 +1643,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
     local Circle = function()
     -- il faut un point et le centre
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         local a, c, r = aux[1], nil, nil
         if #aux == 2 then -- on a un point et le centre
@@ -1619,7 +1668,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         local n = #aux
         if (n < 3) or (n > 5) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         aux = ld.arcb(table.unpack(aux))
         if aux ~= nil then
@@ -1635,7 +1684,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         local n = #aux
         if (n < 4) or (n > 7) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         aux = ld.ellipticarcb(table.unpack(aux))
         if aux ~= nil then
@@ -1651,7 +1700,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         local n = #aux
         if (n < 3) or (n > 5) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         local p, c, rx, ry, inclin = table.unpack(aux)
         aux = ld.ellipticarcb(p,c,p,rx,ry,1,inclin)
@@ -1667,7 +1716,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
         local n = #aux
         if (n < 2) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         local r = table.remove(aux)
         if (type(r) ~= "number") or (r <= 0) then aux = {}; return end
@@ -1679,7 +1728,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
             end 
             aux = {}
             for _,z in ipairs(C) do
-                if (type(z) == "number") or isComplex(z) then table.insert(aux,z); last = z 
+                if (type(z) == "number") or isComplex(z) then tblInsert(aux,z); last = z 
                 else
                     if type(z) == "string" then traiter[z]() end
                 end            
@@ -1703,7 +1752,7 @@ function luadraw_graph:Dpath(L,draw_options,clip)
     end
     traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc, ["ea"]=Earc, ["e"]=Ellipse, ["la"]=Rline, ["cla"]=cRline } 
     for _, z in ipairs(L) do
-        if (type(z) == "number") or isComplex(z) then table.insert(aux,z); last = z 
+        if (type(z) == "number") or isComplex(z) then tblInsert(aux,z); last = z 
         else
             if type(z) == "string" then traiter[z]() end
         end
@@ -1716,9 +1765,10 @@ end
 local clip_path = {}
 function luadraw_graph:Beginclip(p,inverse) -- p = path
     inverse = inverse or false
-    if (ld.graph3d ~= nil ) and (ld.pt3d.isPoint3d(p[1])) then p = self:Path3d2path2d(p) end    
-    table.insert(clip_path,p)
     self:Writeln("\\begin{scope}")
+    if p == nil then return end
+    if (ld.graph3d ~= nil ) and (ld.pt3d.isPoint3d(p[1])) then p = self:Path3d2path2d(p) end    
+    tblInsert(clip_path,p)    
     if inverse then
         local chem = self:Box2d()
         --local chem = reverse(self:Box2d())
@@ -1726,8 +1776,8 @@ function luadraw_graph:Beginclip(p,inverse) -- p = path
         local G = cpx.isobar(L)
         local A, B = L[1], L[2]
         if cpx.det(A-B,B-G) >= 0 then chem = ld.reverse(chem) end
-        table.append(chem,{"l","cl"})
-        if p[2] ~= "m" then table.insert(p,2,"m") end
+        tblAppend(chem,{"l","cl"})
+        if p[2] ~= "m" then tblInsert(p,2,"m") end
         self:Dpath( ld.concat(chem,p),"",true) -- path doit être dans le sens trigonométrique
     else self:Dpath(p,"",true)
     end
@@ -1842,7 +1892,7 @@ function luadraw_graph:Dimage(file,anchor,options)
     else mat = ""
     end
     if pos ~= nil then pos = ","..pos else pos = "" end
-    local cmd = "\\node[line width=0.3pt,inner sep=-0.15pt"..mat..pos..node_options.."] "..name.."at ".. self:Coord(anchor).."{\\includegraphics["..graphics_options.."]{"..file.."}};"
+    local cmd = "\\node[line width=0.3pt,inner sep=-0.15pt"..mat..pos..node_options.."] "..name.."at ".. self:Coord(anchor).." {\\includegraphics["..graphics_options.."]{"..file.."}};"
     self:Writeln(cmd)
 end
 

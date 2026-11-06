@@ -1,6 +1,6 @@
 -- luadraw_build3d.lua (chargé par luadraw__graph3d)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -18,7 +18,10 @@ local isPoint3d = pt3d.isPoint3d
 local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
 local M, Mc, Ms = pt3d.M, pt3d.Mc, pt3d.Ms
 local map = ld.map
-
+local tblInsert = table.insert
+local tblAppend = table.append
+local Pi, Sin, Cos, Abs, Sqrt = math.pi, math.sin, math.cos, math.abs, math.sqrt
+local Insert3d = pt3d.insert3d
 
 function ld.plane(A,B,C)
 -- renvoie leplan passant par A, B et C
@@ -75,16 +78,16 @@ function ld.classify3d(L, n)
     u1 = pt3d.normalize(u1-G)
     local v = pt3d.normalize(n)
     local u2 = pt3d.prod(v,u1)
-    local rep = {}
+    local rep, i = {}, 0
     for k,A in ipairs(L) do
         local pos = A-G
         local zarg = cpx.arg( Z(pt3d.dot(pos,u1), pt3d.dot(pos,u2)) )
-        if zarg ~= nil then table.insert(rep, {zarg, k} ) end
+        if zarg ~= nil then i = i+1; rep[i] = {zarg, k} end --tblInsert(rep, {zarg, k} ) end
     end
     table.sort(rep, function(e1,e2) return e1[1] < e2[1] end)
     local res = {}
-    for _,cp in ipairs(rep) do
-        table.insert(res, L[cp[2]])
+    for i, cp in ipairs(rep) do
+        res[i] = L[cp[2]] --tblInsert(res, L[cp[2]])
     end
     return res
 end
@@ -98,18 +101,18 @@ function ld.getfacet(P,L)
     if L == nil then L = ld.range(1,n) end
     local rep = {}
     if (type(L) == "number") and (L <= n) then 
-        for _,k in ipairs(P.facets[L]) do
-            table.insert(rep, P.vertices[k])
+        for i, k in ipairs(P.facets[L]) do
+            rep[i] =  P.vertices[k] -- tblInsert(rep, P.vertices[k])
         end
         return rep
     end
     for _,i in ipairs(L) do
         if i <= n then
             cp = {}
-            for _,k in ipairs(P.facets[i]) do
-                table.insert(cp, P.vertices[k])
+            for i, k in ipairs(P.facets[i]) do
+                cp[i] = P.vertices[k] --tblInsert(cp, P.vertices[k])
             end
-            table.insert(rep, cp)
+            tblInsert(rep, cp)
         end
     end
     if #rep > 0 then return rep end
@@ -126,8 +129,8 @@ function ld.facet2plane(L)
     if isPoint3d(L[1]) then rep = afacet(L) 
     else
         rep = {}
-        for _,f in ipairs(L) do
-            table.insert(rep, afacet(f))
+        for i, f in ipairs(L) do
+            rep[i] = afacet(f) --tblInsert(rep, afacet(f))
         end
     end
     return rep
@@ -155,19 +158,87 @@ function ld.plane2rectangle(P,V,L1,L2) -- or plane2rectangle(P,L1,L2)
         return ld.shift3d( ld.rotateaxe3d( F, M(1,0,0), u), A)
     end
 end
-    
+
+local function facet2graph(P)
+    local grph = {}
+    local getpos = function(elt, L)
+    -- returns the position of elt in the list L
+        for k,x in ipairs(L) do
+            if x == elt then return k end
+        end
+    end
+    local common_edge = function(F1,F2)
+    -- F1, F2 are two faces with vertex numbers; return true if they are adjacent.
+        local b, a = F2[1]
+        local pos2, pos1 = getpos(b,F1)
+        local n = #F2
+        for k = 2, n+1 do
+            a = b; b = F2[1+(k-1)%n]
+            pos1 = pos2; pos2 = getpos(b,F1)
+            if (pos1 ~= nil) and (pos2 ~= nil) then 
+                return true
+            end
+        end
+        return false
+    end
+    local nb = #P.facets
+    for k = 1, nb do grph[k] = {} end
+    for k, F1 in ipairs(P.facets) do
+        for i = k+1, nb do
+            local F2 = P.facets[i]
+            if common_edge(F1,F2) then 
+                tblInsert(grph[k],i); tblInsert(grph[i],k)
+            end
+        end
+    end
+    return grph
+end
+
+local function vertex2graph(P)
+-- P is a polyhedron  
+    local nb = #P.vertices
+    local grph = {}
+    for k = 1, nb do grph[k] = {} end
+    local rep = {}
+    local a, b, ab, n
+    for _,facet in ipairs(P.facets) do -- traverse of the polyhedron face by face
+        b = facet[1]; n = #facet
+        for k = 2, n+1 do
+            a = b; b = facet[1+(k-1)%n]
+            if a > b then 
+                ab = a..";"..b -- key
+            else ab = b..";"..a
+            end
+            rep[ab] = {a,b}
+        end
+    end
+    for _, edge in pairs(rep) do
+        local i, j = table.unpack(edge)
+        tblInsert(grph[i],j); tblInsert(grph[j],i)
+    end
+    return grph
+end
+
+function ld.poly2graph(P, mode)
+-- polyhedron to graph conversion, mode="facet" (default) or "vertex"
+    mode = mode or "facet"
+    if mode == "facet" then return facet2graph(P)
+    elseif mode == "vertex" then return vertex2graph(P)
+    end
+end
+
 function ld.poly2facet(P) -- conversion polyèdre -> liste facettes 3d
 -- cette commande prend en entrée un polyèdre P = { vertices={sommets}, facets = {facettes avec n° de sommets} }
 -- La fonction renvoie une liste de facettes avec coordonnées 3d
 -- les facettes sont orientées par l'ordre d'apparition des sommets.
     local rep = {}
     local F
-    for _,facet in ipairs(P.facets) do
+    for j,facet in ipairs(P.facets) do
         F = {}
-        for _,k in ipairs(facet) do
-            table.insert(F, P.vertices[k])
+        for i, k in ipairs(facet) do
+            F[i] = P.vertices[k] --tblInsert(F, P.vertices[k])
         end
-        table.insert(rep,F)
+        rep[j] = F
     end
     return rep
 end
@@ -175,15 +246,17 @@ end
 function ld.facet2poly(facetlist,eps)
 -- facetlist est une liste de facettes avec coordonnées 3d
 -- la fonction renvoie un polyèdre P = { vertices={sommets}, facets = {facettes avec n° de sommets} }
-    local poly = {}
+    local poly, j = {}, 0
     eps = eps or 1e-8
     poly.vertices = {}; poly.facets = {}
     for _, facet in ipairs(facetlist) do
         local aux = {}
-        for _, A in ipairs(facet) do
-            table.insert(aux, pt3d.insert3d(poly.vertices,A,eps))
+        for i, A in ipairs(facet) do
+            aux[i] =  Insert3d(poly.vertices,A,eps) 
+            --tblInsert(aux, Insert3d(poly.vertices,A,eps))
         end
-        table.insert(poly.facets,aux)
+        j = j+1; poly.facets[j] = aux 
+        --tblInsert(poly.facets,aux)
     end
     return poly
 end
@@ -195,8 +268,8 @@ function ld.reverse_face_orientation(F)
     if isPoint3d(F[1]) then -- une facette
         return ld.reverse(F)
     elseif (F.vertices == nil) then -- liste de facettes
-        for _,f in ipairs(F) do 
-            table.insert(rep, ld.reverse(f))
+        for i,f in ipairs(F) do 
+            rep[i] = ld.reverse(f) --tblInsert(rep, ld.reverse(f))
         end
         return rep
     else -- polyèdre
@@ -214,19 +287,15 @@ function ld.splitseg(F,plane)
     local eps = 1e-6
     local A, B = table.unpack(F)
     local p1, p2, I = pt3d.dot(A-S,n), pt3d.dot(B-S,n)
-    if math.abs(p2)<eps then p2 = 0 end
-    if math.abs(p1)<eps then -- A sur la facette
-        if (p2 == 0) then -- B sur la facette
-            dev = F
-        elseif p2 > 0 then -- B du bon coté
+    if Abs(p2)<eps then p2 = 0 end
+    if Abs(p1)<eps then -- A sur la facette
+        if (p2 >= 0) then -- B sur la facette ou du bon côté
             dev = F
         else -- B du mauvais côté
             der = F
         end
     elseif p1 > 0 then -- A du bon côté
-        if (p2 == 0) then --  B sur la facette
-            dev = F
-        elseif p2 > 0 then -- B du bon coté
+        if (p2 >= 0) then --  B sur la facette ou du bon côté
             dev = F
         else -- B du mauvais côté
             I = ld.proj3dO(A,plane,B-A)
@@ -251,22 +320,23 @@ function ld.splitfacet(F,plane)
 -- cette fonction coupe la facette F (points 3d) avec le plan plane = {S,n}
 -- la fonction renvoie la partie devant (facette), la partie derrière (facette)
     local S,n = table.unpack(plane)
-    local nb, dev, der = #F, {}, {}
+    local nb, dev, der, i, j = #F, {}, {}, 0, 0
     local A1, B1 = nil, F[1]
     local p1, p2, I = nil, pt3d.dot(B1-S,n)
-    if math.abs(p2) < 1e-8 then p2 = 0 end
+    if Abs(p2) < 1e-8 then p2 = 0 end
     for k = 2, nb+1 do
         if k == nb+1 then k = 1 end -- on ferme la facette
         A1 = B1; p1 = p2; B1 = F[k]; p2 = pt3d.dot(B1-S,n)
-        if math.abs(p2) < 1e-8 then p2 = 0 end
+        if Abs(p2) < 1e-8 then p2 = 0 end
         if (p1*p2 < 0) or (p2 == 0) then
             if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
             if I ~= nil then 
-                table.insert(dev,I) ; table.insert(der,I)
+                i = i+1; dev[i] = I --tblInsert(dev,I) ; 
+                j = j+1; der[j] = I --tblInsert(der,I)
             end
         end
-        if (p2 > 0) and (p1 ~= nil) then table.insert(dev,B1) end
-        if (p2 < 0) and (p1 ~= nil) then table.insert(der,B1) end
+        if (p2 > 0) and (p1 ~= nil) then i = i+1; dev[i] = B1 end --tblInsert(dev,B1) end
+        if (p2 < 0) and (p1 ~= nil) then j = j+1; der[j] = B1 end --tblInsert(der,B1) end
     end
     --local sec = classify3d(coupe,-n)
     if #der < 3 then der = {} end
@@ -283,15 +353,15 @@ function ld.clipplane(plane,P)
         local nb = #F
         local A1, B1 = nil, P.vertices[F[1]]
         local p1, p2, I = nil, pt3d.dot(B1-S,n)
-        if math.abs(p2)<1e-8 then p2 = 0 end
+        if Abs(p2)<1e-8 then p2 = 0 end
         for k = 2, nb+1 do
             if k == nb+1 then k = 1 end -- on ferme la facette
             A1 = B1; p1 = p2; B1 = P.vertices[F[k]]; p2 = pt3d.dot(B1-S,n)
-            if math.abs(p2) < 1e-8 then p2 = 0 end
+            if Abs(p2) < 1e-8 then p2 = 0 end
             if (p1*p2 < 0) or (p2 == 0) then
                 if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
                 if I ~= nil then 
-                    pt3d.insert3d(coupe,I,1e-10)
+                    Insert3d(coupe,I,1e-10)
                 end
             end
         end
@@ -309,31 +379,32 @@ function ld.cutpoly(P,plane,close)
     close = close or false
     local res, res2, coupe = {}, {}, {} -- res = sortie, res2 = autre partie du polyèdre coupé
     for _,F in ipairs(P.facets) do
-        local nb, aux, aux2 = #F, {}, {}
+        local nb, aux, aux2, i, j = #F, {}, {}, 0, 0
         local A1, B1 = nil, P.vertices[F[1]]
         local p1, p2, I = nil, pt3d.dot(B1-S,n)
-        if math.abs(p2)<1e-8 then p2 = 0 end
+        if Abs(p2)<1e-8 then p2 = 0 end
         for k = 2, nb+1 do
             if k == nb+1 then k = 1 end -- on ferme la facette
             A1 = B1; p1 = p2; B1 = P.vertices[F[k]]; p2 = pt3d.dot(B1-S,n)
-            if math.abs(p2) < 1e-8 then p2 = 0 end
+            if Abs(p2) < 1e-8 then p2 = 0 end
             if (p1*p2 < 0) or (p2 == 0) then
                 if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
                 if I ~= nil then 
-                    table.insert(aux,I) ; table.insert(aux2,I)
-                    pt3d.insert3d(coupe,I,1e-10)
+                    i = i+1; aux[i] = I --tblInsert(aux,I)
+                    j = j+1; aux2[j] = I --tblInsert(aux2,I)
+                    Insert3d(coupe,I,1e-10)
                 end
             end
-            if (p2 > 0) and (p1 ~= nil) then table.insert(aux,B1) end
-            if (p2 < 0) and (p1 ~= nil) then table.insert(aux2,B1) end
+            if (p2 > 0) and (p1 ~= nil) then i = i+1; aux[i] = B1 end --tblInsert(aux,B1) end
+            if (p2 < 0) and (p1 ~= nil) then j = j+1; aux2[j] = B1 end --tblInsert(aux2,B1) end
         end
-        if #aux>2 then table.insert(res,aux) end
-        if #aux2>2 then table.insert(res2,aux2) end
+        if #aux>2 then tblInsert(res,aux) end
+        if #aux2>2 then tblInsert(res2,aux2) end
     end
     local sec = ld.classify3d(coupe,-n)
     if (#coupe > 2) and close then
-        table.insert(res,sec)
-        table.insert(res2,ld.reverse(sec))
+        tblInsert(res,sec)
+        tblInsert(res2,ld.reverse(sec))
     end
     return ld.facet2poly(res), ld.facet2poly(res2), sec -- on renvoie des polyèdres et la section (facette orientée par -n) 
 end
@@ -352,34 +423,89 @@ function ld.cutfacet(L,plane,close)
     close = close or false
     local res, res2, coupe = {}, {}, {} -- res = sortie, res2 = autre partie du polyèdre coupé
     for _,F in ipairs(L) do
-        local nb, aux, aux2 = #F, {}, {}
+        local nb, aux, aux2, i, j = #F, {}, {}, 0, 0
         local A1, B1 = nil, F[1]
         local p1, p2, I = nil, pt3d.dot(B1-S,n)
-        if math.abs(p2)<1e-8 then p2 = 0 end
+        if Abs(p2)<1e-8 then p2 = 0 end
         for k = 2, nb+1 do
             if k == nb+1 then k = 1 end -- on ferme la facette
             A1 = B1; p1 = p2; B1 = F[k]; p2 = pt3d.dot(B1-S,n)
-            if math.abs(p2) < 1e-8 then p2 = 0 end
+            if Abs(p2) < 1e-8 then p2 = 0 end
             if (p1*p2 < 0) or (p2 == 0) then
                 if p2 == 0 then I = B1 else I = ld.proj3dO(A1,plane,B1-A1) end
                 if I ~= nil then 
-                    table.insert(aux,I) ; table.insert(aux2,I)
-                    pt3d.insert3d(coupe,I,1e-10)
+                    i = i+1; aux[i] = I --tblInsert(aux,I)
+                    j = j+1; aux2[j] = I --tblInsert(aux2,I)
+                    Insert3d(coupe,I,1e-10)
                 end
             end
-            if (p2 > 0) and (p1 ~= nil) then table.insert(aux,B1) end
-            if (p2 < 0) and (p1 ~= nil) then table.insert(aux2,B1) end
+            if (p2 > 0) and (p1 ~= nil) then i = i+1; aux[i] = B1 end --tblInsert(aux,B1) end
+            if (p2 < 0) and (p1 ~= nil) then j = j+1; aux2[j] = B1 end --tblInsert(aux2,B1) end            
         end
-        if #aux>2 then table.insert(res,aux) end
-        if #aux2>2 then table.insert(res2,aux2) end
+        if #aux>2 then tblInsert(res,aux) end
+        if #aux2>2 then tblInsert(res2,aux2) end
     end
     local sec = ld.classify3d(coupe,-n)
     if (#coupe > 2) and close then
-        table.insert(res,sec)
-        table.insert(res2,ld.reverse(sec))
+        tblInsert(res,sec)
+        tblInsert(res2,ld.reverse(sec))
     end
     return res, res2, sec -- on renvoie des listes de facettes et la section (facette orientée par -n) 
 end
+
+function ld.cutfacet2(L,f,sg)
+-- L is a facet or a list of facets or a polyhedron
+-- f = (x,y,z) -> f(x,y,z) in R
+-- sg = ">" or "<"
+-- return two lists of facets : the part satisfying f>0 (if sg=">"), and the other part
+    if isPoint3d(L[1]) then L = {L} end
+    if L.vertices ~= nil then -- polyhedron
+        L = ld.poly2facet(L)
+    end
+    local function test(A)
+        local r = f(A.x,A.y,A.z)
+        if sg== ">" then return r
+        else return -r
+        end
+    end
+    local function solve(A,fa,B,fb)
+        local a, b, c,fc = A, B
+        k = 0
+        while (pt3d.abs(b-a)>1e-4) or (k<=100) do
+            c = (a+b)/2; fc = test(c)
+            if fa*fc < 0 then b = c
+            else a = c; fa = fc
+            end
+            k = k + 1 
+        end
+        return c
+    end
+    local res, res2, coupe = {}, {}, {} -- res = good part, res2 = other part
+    for _,F in ipairs(L) do
+        local nb, aux, aux2, i, j = #F, {}, {}, 0, 0
+        local A1, B1 = nil, F[1]
+        local p1, p2, I = nil, test(B1)
+        if Abs(p2)<1e-8 then p2 = 0 end
+        for k = 2, nb+1 do
+            if k == nb+1 then k = 1 end -- close the facet
+            A1 = B1; p1 = p2; B1 = F[k]; p2 = test(B1)
+            if Abs(p2) < 1e-8 then p2 = 0 end
+            if (p1*p2 < 0) or (p2 == 0) then
+                if p2 == 0 then I = B1 else I = solve(A1,p1,B1,p2) end
+                if I ~= nil then 
+                    i = i+1; aux[i] = I --tblInsert(aux,I)
+                    j = j+1; aux2[j] = I --tblInsert(aux2,I)
+                end
+            end
+            if (p2 > 0) and (p1 ~= nil) then i = i+1; aux[i] = B1 end --tblInsert(aux,B1) end
+            if (p2 < 0) and (p1 ~= nil) then j = j+1; aux2[j] = B1 end --tblInsert(aux2,B1) end            
+        end
+        if #aux>2 then tblInsert(res,aux) end
+        if #aux2>2 then tblInsert(res2,aux2) end
+    end
+    return res, res2 --  two list of facets
+end
+
 
 local clipfacetfacet = function(S, poly, exterior)
 -- clippe la liste de facettes S avec le polyèdre convexe poly (sous forme d'une liste de facettes)
@@ -406,7 +532,7 @@ local clipfacetfacet = function(S, poly, exterior)
             u = pt3d.prod(B-A,C-A)
             if u ~= nil then
                 S1, S = ld.cutfacet(S,{A,u})
-                insert(rep,S1)
+                tblAppend(rep,S1)
             end
         end
         return rep
@@ -445,7 +571,7 @@ function ld.clip3d(S, poly, exterior)
             u = pt3d.prod(B-A,C-A)
             if u ~= nil then
                 S1, S = ld.cutfacet(S,{A,u})
-                table.append(rep,S1)
+                tblAppend(rep,S1)
             end
         end
         return rep
@@ -456,7 +582,7 @@ function ld.facetedges(F)
 -- F est une liste de facettes avec point3d ou bien un polyedre
 -- la fonction renvoie la liste des arêtes (ligne polygonale 3d)
     if (F == nil) or (type(F) ~= "table") then return end
-    if pt3d.isPoint3d(F[1]) then F = {F} end
+    if isPoint3d(F[1]) then F = {F} end
     local P = F
     if P.vertices == nil then P = ld.facet2poly(F) end
     local rep = {}
@@ -473,9 +599,9 @@ function ld.facetedges(F)
             rep[ab] = {a,b}
         end
     end
-    local aux = {}
-    for _,aret in pairs(rep) do
-        table.insert(aux,{P.vertices[aret[1]], P.vertices[aret[2]]})
+    local aux, i = {}, 0
+    for _, aret in pairs(rep) do
+        i = i+1; aux[i] = {P.vertices[aret[1]], P.vertices[aret[2]]} --tblInsert(aux,{P.vertices[aret[1]], P.vertices[aret[2]]})
     end
     return aux  -- liste de segments 3d
 end
@@ -490,7 +616,7 @@ function ld.facetvertices(F)
     eps = eps or 1e-8
     for _, facet in ipairs(F) do
         for _, A in ipairs(facet) do
-            pt3d.insert3d(S,A,eps) -- insertion sans répétition
+            Insert3d(S,A,eps) -- insertion sans répétition
         end
     end
     return S
@@ -521,21 +647,21 @@ function ld.border(P)
         end
         inserer(b,facet[1])
     end
-    local aux = {}
+    local aux, i = {}, 0
     for _,aret in pairs(rep) do
         a, b = table.unpack(aret[1]) -- n° des sommets formant l'arête
         if aret[2] == 1 then -- arête du bord
-            table.insert(aux,{a,b})
+            i = i+1; aux[i] = {a,b} --tblInsert(aux,{a,b})
         end
     end
     aux = ld.merge(aux)
     rep = {}
     for _,F in ipairs(aux) do
         local cp = {}
-        for _, k in ipairs(F) do
-            table.insert(cp, P.vertices[k]) -- conversion en point 3d
+        for i, k in ipairs(F) do
+            cp[i] = P.vertices[k] --tblInsert(cp, P.vertices[k]) -- conversion en point 3d
         end
-        table.insert(rep,cp)
+        tblInsert(rep,cp)
     end
     return rep  -- ligne polygonale 3d
 end
@@ -565,23 +691,23 @@ function ld.prism(base, vector, open)
     local P = {}
     P.vertices = table.copy(base)
     for k = 1, n do
-        table.insert(P.vertices,base[k]+vector)
+        P.vertices[n+k] = base[k]+vector --tblInsert(P.vertices,base[k]+vector)
     end
     P.facets = {}
     local aux
     if not open then
         aux = {}
-        for k = n, 1, -1 do table.insert(aux,k) end
-        table.insert(P.facets, aux)
+        for k = 1, n do  aux[k] = n-k+1; end --tblInsert(aux,k) end
+        tblInsert(P.facets, aux)
         aux = {}
-        for k = 1, n do table.insert(aux, n+k) end
-        table.insert(P.facets, aux)
+        for k = 1, n do aux[k] = n+k end --tblInsert(aux, n+k) end
+        tblInsert(P.facets, aux)
     end
-    aux = {}
+    local i = #P.facets
     for k = 1, n-1 do 
-        table.insert(P.facets,{k,k+1,k+n+1,k+n})
+        P.facets[i+k] = {k,k+1,k+n+1,k+n} --tblInsert(P.facets,{k,k+1,k+n+1,k+n})
     end
-    table.insert(P.facets,{n,1,n+1,2*n})
+    P.facets[i+n] = {n,1,n+1,2*n} --tblInsert(P.facets,{n,1,n+1,2*n})
     return P
 end
 
@@ -593,17 +719,17 @@ function ld.pyramid(base,vertex,open)
     open = open or false
     local P = {}
     local aux
-    P.vertices = table.copy(base); table.insert(P.vertices, vertex)
-    P.facets = {}
+    P.vertices = table.copy(base); tblInsert(P.vertices, vertex)
+    P.facets, i = {}, 0
     if not open then
         aux = {}
-        for k = n, 1, -1 do table.insert(aux,k) end
-        table.insert(P.facets,aux)
+        for k = 1, n do aux[k] = n+1-k end --tblInsert(aux,k) end
+        i = i+1; P.facets[i] = aux --tblInsert(P.facets,aux)
     end 
     for k = 1, n-1 do 
-        table.insert(P.facets,{k,k+1,n+1})
+        i = i+1; P.facets[i] = {k,k+1,n+1} --tblInsert(P.facets,{k,k+1,n+1})
     end
-    table.insert(P.facets,{n,1,n+1})
+    i = i+1; P.facets[i] = {n,1,n+1} --tblInsert(P.facets,{n,1,n+1})
     return P
 end
 
@@ -628,7 +754,7 @@ function ld.regular_pyramid(n,side,height,open,center,axe)
     center = center or Origin
     axe = axe or vecK
     axe = pt3d.normalize(axe)
-    local X = side/(2*math.sin(math.pi/n))
+    local X = side/(2*Sin(Pi/n))
     local base = ld.polyreg(0,X,n) -- regular n-sided 2d polygon 
     local A, u, v = center, vecI, vecJ
     if axe ~= vecK then 
@@ -665,27 +791,38 @@ function ld.cylinder(A,V,R,nbfacet,open,aux) -- ou cylinder(C,R,A,nbfacet,open) 
     local vect = pt3d.normalize(V)
     nbfacet = nbfacet or 35
     open = open or false
-    local P = {}
-    P. vertices= {}; P.facets = {}
-    local u, pas = 0, 2*math.pi/nbfacet
+    local P, i, j = {}, 0, 0
+    P. vertices = {}; P.facets = {}
+    local u, pas = 0, 2*Pi/nbfacet
     local v1 = pt3d.prod(vecK,vect)
     if pt3d.isNul(v1) then v1 = R*vecI else v1 = R*pt3d.normalize(v1) end
     local v2 = pt3d.prod(vect,v1)
     for k1 = 1, nbfacet do
-        table.insert(P.vertices,A+math.cos(u)*v1+math.sin(u)*v2); u = u+pas
+        i = i+1; P.vertices[i] = A+Cos(u)*v1+Sin(u)*v2
+        --tblInsert(P.vertices,A+Cos(u)*v1+Sin(u)*v2); 
+        u = u+pas
     end
     u = 0
     for k1 = 1, nbfacet do
-        table.insert(P.vertices, B+math.cos(u)*v1+math.sin(u)*v2); u = u+pas
+        i = i+1; P.vertices[i] = B+Cos(u)*v1+Sin(u)*v2
+        --tblInsert(P.vertices, B+Cos(u)*v1+Sin(u)*v2); 
+        u = u+pas
     end
     if not open then
         local aux = {}
-        for k2 = nbfacet, 1, -1 do table.insert(aux, k2) end; table.insert(P.facets,aux)
+        for k2 = 1, nbfacet do aux[k2] = nbfacet-k2+1 end --tblInsert(aux, k2) end; 
+        j = j+1; P.facets[j] = aux--tblInsert(P.facets,aux)
         aux = {}
-        for k2 = nbfacet+1, 2*nbfacet do table.insert(aux, k2) end; table.insert(P.facets,aux)
+        --for k2 = nbfacet+1, 2*nbfacet do tblInsert(aux, k2) end;
+        for k2 = 1, nbfacet do aux[k2] = k2+nbfacet end 
+        j = j+1; P.facets[j] = aux--tblInsert(P.facets,aux)
     end
-    for k2 = 1, nbfacet-1 do table.insert(P.facets, {k2,k2+1,k2+1+nbfacet,k2+nbfacet}) end
-    table.insert(P.facets, {nbfacet,1,1+nbfacet,2*nbfacet})
+    for k2 = 1, nbfacet-1 do 
+        j = j+1; P.facets[j] = {k2,k2+1,k2+1+nbfacet,k2+nbfacet}
+        --tblInsert(P.facets, {k2,k2+1,k2+1+nbfacet,k2+nbfacet}) 
+    end
+    j = j+1; P.facets[j] = {nbfacet,1,1+nbfacet,2*nbfacet}
+    --tblInsert(P.facets, {nbfacet,1,1+nbfacet,2*nbfacet})
     return P
 end
 
@@ -717,21 +854,26 @@ function ld.cone(A,V,R,nbfacet,open,aux) -- ou cone(C,R,A,nbfacet,open) ou cone(
     nbfacet = nbfacet or 35
     nbfacet = nbfacet+1
     open = open or false
-    local P = {}
+    local P, i, j = {}, 1, 0
     P.vertices= {A}; P.facets = {}
-    local u, pas = 0, 2*math.pi/(nbfacet-1)
+    local u, pas = 0, 2*Pi/(nbfacet-1)
     local v1 = pt3d.prod(vecK,vect)
     if pt3d.isNul(v1) then v1 = R*vecI else v1 = R*pt3d.normalize(v1) end
     local v2 = pt3d.prod(vect,v1)
     for k1 = 1, nbfacet-1 do
-        table.insert(P.vertices,B+math.cos(u)*v1+math.sin(u)*v2); u = u+pas
+        i = i+1; P.vertices[i] = B+Cos(u)*v1+Sin(u)*v2
+        --tblInsert(P.vertices,B+Cos(u)*v1+Sin(u)*v2); 
+        u = u+pas
     end
     if not open then
         local aux = {}
-        for k2 = 2, nbfacet do table.insert(aux, k2) end; table.insert(P.facets,aux)
+        for k2 = 2, nbfacet do aux[k2-1] = k2 end --tblInsert(aux, k2) end; 
+        j = j+1; P.facets[j] = aux--tblInsert(P.facets,aux)
     end
-    for k2 = 2, nbfacet-1 do table.insert(P.facets, {k2+1,k2,1}) end
-    table.insert(P.facets, {2,nbfacet,1})
+    for k2 = 2, nbfacet-1 do 
+        j = j+1; P.facets[j] = {k2+1,k2,1} --tblInsert(P.facets, {k2+1,k2,1}) 
+    end
+    j = j+1; P.facets[j] = {2,nbfacet,1} --tblInsert(P.facets, {2,nbfacet,1})
     return P    
 end
 
@@ -767,35 +909,38 @@ function ld.sphere(A,R,nbu,nbv)
     nbu = nbu or 36
     nbv = nbv or 20
     nbu = nbu+1; nbv = nbv+1
-    local pasU, pasV = 2*math.pi/(nbu-1), math.pi/(nbv-1)
-    local rep = {}
+    local pasU, pasV = 2*Pi/(nbu-1), Pi/(nbv-1)
+    local rep, i, j = {}, 1, 0
     rep.vertices, rep.facets = {A+R*vecK}, {}
     -- calcul des sommets
     local u, v, a, b
     v = pasV
     for k1 = 1, nbv-2 do
-        u = 0; a = R*math.cos(v); b = R*math.sin(v)
+        u = 0; a = R*Cos(v); b = R*Sin(v)
         for k2 = 1, nbu do
-            table.insert(rep.vertices, A+M(b*math.cos(u),b*math.sin(u),a))
+            i = i+1; rep.vertices[i] = A+M(b*Cos(u),b*Sin(u),a)
+            --tblInsert(rep.vertices, A+M(b*Cos(u),b*Sin(u),a))
             u = u + pasU
         end
         v = v + pasV
     end
-    table.insert(rep.vertices,A-R*vecK)
+    i = i+1; rep.vertices[i] = A-R*vecK --tblInsert(rep.vertices,A-R*vecK)
     -- calcul des faces
     local dep, last
     for k2 = 2, nbu do 
-        table.insert(rep.facets,{k2,k2+1,1})
+        j = j+1; rep.facets[j] = {k2,k2+1,1} --tblInsert(rep.facets,{k2,k2+1,1})
     end
     for k2 = 2, nbv-2 do
         dep = 2+nbu*(k2-1)
         for k1 = dep, dep+nbu-2 do
-            table.insert(rep.facets,{k1,k1+1,k1+1-nbu,k1-nbu})
+            j = j+1; rep.facets[j] = {k1,k1+1,k1+1-nbu,k1-nbu}
+            --tblInsert(rep.facets,{k1,k1+1,k1+1-nbu,k1-nbu})
         end
     end
     dep = 2+nbu*(nbv-3); last = nbu*(nbv-2)+2
     for k2 = dep, dep+nbu-2 do 
-        table.insert(rep.facets, {k2,last,k2+1})
+        j = j+1; rep.facets[j] = {k2,last,k2+1}
+        --tblInsert(rep.facets, {k2,last,k2+1})
     end
     return rep
 end    
@@ -806,12 +951,12 @@ local eval_uvmesh = function(F, uvmesh)
 -- F =(u,v) -> F(u,v) in R^3
 -- uvmesh = {{u1,u2,...u,N}, {v1,v2,...,vM}}
     local S = {}
-    for _,u in ipairs(uvmesh[1]) do
+    for i, u in ipairs(uvmesh[1]) do
         local aux = {}
-        for _,v in ipairs(uvmesh[2]) do
-            table.insert(aux,F(u,v))
+        for j, v in ipairs(uvmesh[2]) do
+            aux[j] = F(u,v) --tblInsert(aux,F(u,v))
         end
-        table.insert(S,aux)
+        S[i] = aux --tblInsert(S,aux)
     end
     return S
 end
@@ -820,12 +965,15 @@ function ld.surface(f,u1,u2,v1,v2,grid) -- or surface(f, uvmesh) with uvmesh = {
 -- renvoie les facettes (point 3d) représentant la surface paramétrée par (u,v) -> f(u,v) dans R^3
 -- u1 et u2 sont les bornes pour u, et v1, v2 pour v
 -- grid={nbu,nbv} donne le nombre de points suivant u et suivant v
+    local Jump = cpx.Jump
     local F = function(u,v)
-        local R = ld.evalf(f,u,v) -- protected evaluation
-        if (R == nil) then return cpx.Jump
-        else return R
-        end
+        return ld.evalf(f,u,v) or Jump
+        --local R = ld.evalf(f,u,v)  -- protected evaluation
+        --if (R == nil) then return Jump
+        --else return R
+        --end
     end
+ 
     local different = function(A,B)
         return pt3d.N1(B-A)>1e-10
     end
@@ -839,20 +987,22 @@ function ld.surface(f,u1,u2,v1,v2,grid) -- or surface(f, uvmesh) with uvmesh = {
         uvmesh = {ld.linspace(u1,u2,nbu), ld.linspace(v1,v2,nbv)}
     end
     local S = eval_uvmesh(F, uvmesh)
-    local rep = {}
-    local A, last
+    local rep, i1 = {}, 0
+    local A, last, first
     for i = 1, nbu-1 do
         for j = 1, nbv-1 do
-            aux = {}
+            local aux, i2 = {}, 0
             A = S[i][j]; first = A; last = A
-            if A ~= cpx.Jump then table.insert(aux,A) end
+            if A ~= Jump then i2 = i2+1; aux[i2] = A end --tblInsert(aux,A) end
             A = S[i+1][j]
-            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then table.insert(aux,A); last = A end
+            if (A ~= Jump) and ((last == Jump) or different(A,last)) then 
+                i2 = i2+1; aux[i2] = A; last = A end --tblInsert(aux,A)
             A = S[i+1][j+1]
-            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then table.insert(aux,A); last = A end
+            if (A ~= Jump) and ((last == Jump) or different(A,last)) then 
+                i2 = i2+1; aux[i2] = A; last = A end --tblInsert(aux,A)
             A = S[i][j+1]
-            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) and ((first == cpx.Jump) or different(A,first)) then table.insert(aux,A) end
-            if #aux > 2 then table.insert(rep,aux) end
+            if (A ~= Jump) and ((last == Jump) or different(A,last)) and ((first == Jump) or different(A,first)) then i2 = i2+1; aux[i2] = A end --tblInsert(aux,A) end
+            if #aux > 2 then i1 = i1+1; rep[i1] = aux end --tblInsert(rep,aux) end
         end
     end
     return rep
@@ -873,12 +1023,12 @@ function ld.cartesian3d(f,x1,x2,y1,y2,grid,addWall)
         u1,u2,v1,v2,w1,w2 = ld.getbounds3d(rep)
         cube = ld.parallelep(M(u1,v1,w1),(u2-u1)*vecI,(v2-v1)*vecJ,(w2-w1)*vecK)
     end
-    local wall = {}
+    local wall, i = {}, 0
     if string.find(addWall,"x") ~= nil then
         local x, xpas = x1, (x2-x1)/(grid[1]-1)
         for k = 1, grid[1] do
             local clp = ld.clipplane({x*vecI,vecI},cube)
-            if clp ~= nil then table.insert(wall, clp) end 
+            if clp ~= nil then i = i+1; wall[i] = clp end --tblInsert(wall, clp) end 
             x = x+xpas
         end
     end
@@ -886,7 +1036,7 @@ function ld.cartesian3d(f,x1,x2,y1,y2,grid,addWall)
         local y, ypas = y1, (y2-y1)/(grid[2]-1)
         for k = 1, grid[2] do
             local clp = ld.clipplane({y*vecJ,vecJ},cube)
-            if clp ~= nil then table.insert(wall, clp) end
+            if clp ~= nil then i = i+1; wall[i] = clp end --tblInsert(wall, clp) end
             y = y+ypas
         end
     end
@@ -904,7 +1054,7 @@ function ld.cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
         return Mc(r(v,u),u,z(v,u))
     end
     local rep = ld.surface(F,v1,v2,u1,u2,ld.reverse(grid))
-    local wall = {}
+    local wall, i = {}, 0
     if addWall ~= 0 then
         local x1,x2,y1,y2,z1,z2 = ld.getbounds3d(rep)
         local cube = ld.parallelep(M(x1,y1,z1),(x2-x1)*vecI,(y2-y1)*vecJ,(z2-z1)*vecK)
@@ -912,16 +1062,16 @@ function ld.cylindrical_surface(r,z,u1,u2,v1,v2,grid,addWall)
             local u, upas = u1, (u2-u1)/(grid[1]-1)
             for k = 1, grid[1] do
                 local clp = ld.clipplane({z(u,v1)*vecK,vecK},cube)
-                if clp ~= nil then table.insert(wall, clp) end
+                if clp ~= nil then i = i+1; wall[i] = clp end --tblInsert(wall, clp) end
                 u = u+upas
             end
         end        
         if string.find(addWall,"v") ~= nil then
             local v, vpas = v1, (v2-v1)/(grid[2]-1)
             --for k = 1, grid[2] do
-            while v < math.min(v2,v1+math.pi) do
-                local clp = ld.clipplane({Origin,-math.sin(v)*vecI+math.cos(v)*vecJ},cube)
-                if clp ~= nil then table.insert(wall, clp) end
+            while v < math.min(v2,v1+Pi) do
+                local clp = ld.clipplane({Origin,-Sin(v)*vecI+Cos(v)*vecJ},cube)
+                if clp ~= nil then i = i+1; wall[i] = clp end --tblInsert(wall, clp) end
                 v = v+vpas
             end
 
@@ -946,21 +1096,23 @@ function ld.curve2cone(f,t1,t2,S,args)
     local nb = #base -- nombre de points
     local cone = {}
     local bords = {}
-    table.insert(bords,table.copy(base))
+    tblInsert(bords,table.copy(base))
     if ratio ~= 0 then -- il y a une autre partie
         ld.insert(base,ld.concat({S}, ld.scale3d(base,ratio,S))) -- on ajoute le sommet S et les images par l'homothétie de centre S
-        table.insert(bords, ld.scale3d(bords[1],ratio,S))
+        tblInsert(bords, ld.scale3d(bords[1],ratio,S))
     else
-        table.insert(base,S)
+        tblInsert(base,S)
     end
     cone.vertices = base
     cone.facets = {}
     for k = 1, nb-1 do 
-        table.insert(cone.facets, {k,k+1,nb+1})
+        cone.facets[k] = {k,k+1,nb+1}
+        --tblInsert(cone.facets, {k,k+1,nb+1})
     end
     if ratio ~= 0 then
         for k = nb+2, 2*nb do 
-            table.insert(cone.facets,{k+1,k,nb+1})
+            cone.facets[k-2] = {k+1,k,nb+1}
+            --tblInsert(cone.facets,{k+1,k,nb+1})
         end
     end
     if obj then
@@ -984,13 +1136,14 @@ function ld.curve2cylinder(f,t1,t2,V,args)
     local nb = #base -- nombre de points
     local cyl = {}
     local bords = {}
-    table.insert(bords,table.copy(base))
-    table.append(base,ld.shift3d(base,V)) -- on ajoute les images par la translation de vecteur V
-    table.insert(bords,ld.shift3d(bords[1],V))
+    tblInsert(bords,table.copy(base))
+    tblAppend(base,ld.shift3d(base,V)) -- on ajoute les images par la translation de vecteur V
+    tblInsert(bords,ld.shift3d(bords[1],V))
     cyl.vertices = base
     cyl.facets = {}
     for k = 1, nb-1 do 
-        table.insert(cyl.facets, {k,k+1,k+nb+1,k+nb})
+        cyl.facets[k] = {k,k+1,k+nb+1,k+nb}
+        --tblInsert(cyl.facets, {k,k+1,k+nb+1,k+nb})
     end
     if obj then
         return ld.facet2obj(cyl), bords
@@ -1019,7 +1172,7 @@ function ld.section2tube(section,L,args)
     local obj = args.obj or false
     if close then hollow = true end
     local addwall = args.addwall or 0
-    local poly, sep = {}, {}
+    local poly, sep, i1,i2,i3 = {}, {},0,0,0
     poly.vertices = {}
     poly.facets = {}
     local Nb = nbfacet
@@ -1038,7 +1191,7 @@ function ld.section2tube(section,L,args)
     if #cp > 1 then
         local last, crt_section, aux_section, P
         if pt3d.abs(cp[1]-cp[#cp])<1e-8 then table.remove(cp); close = true end
-        if close then last = cp[#cp]; table.insert(cp,cp[1]) end
+        if close then last = cp[#cp]; tblInsert(cp,cp[1]) end
         a = nil; b = nil; c = nil
         for _,m in ipairs(cp) do
             a = b; b = c; c = m
@@ -1052,10 +1205,12 @@ function ld.section2tube(section,L,args)
                             crt_section = aux_section
                         end
                     end
-                    if (not close) and (addwall == 1) then table.insert(sep,crt_section) end
-                    table.append(poly.vertices, crt_section); nb_sections= nb_sections+1
+                    if (not close) and (addwall == 1) then 
+                        i3 = i3+1; sep[i3] = crt_section --tblInsert(sep,crt_section) 
+                    end
+                    tblAppend(poly.vertices, crt_section); nb_sections= nb_sections+1
                     if not hollow then 
-                        table.insert(poly.facets, ld.range(nbfacet,1,-1))
+                        i2 = i2+1; poly.facets[i2] = ld.range(nbfacet,1,-1) --tblInsert(poly.facets, ld.range(nbfacet,1,-1))
                     end
                 end
             else -- on a trois points consécutifs
@@ -1064,9 +1219,11 @@ function ld.section2tube(section,L,args)
                 if aux_section == nil then 
                     aux_section = ld.shift3d(crt_section,b-a)
                 end
-                table.append(poly.vertices, aux_section); nb_sections = nb_sections+1
+                tblAppend(poly.vertices, aux_section); nb_sections = nb_sections+1
                 crt_section = aux_section -- list actuelle
-                if addwall == 1 then table.insert(sep,aux_section) end
+                if addwall == 1 then 
+                    i3 = i3+1; sep[i3] = aux_section-- tblInsert(sep,aux_section) 
+                end
             end
         end
         if not close then --dernière section
@@ -1076,23 +1233,28 @@ function ld.section2tube(section,L,args)
                 aux_section = ld.shift3d(crt_section,c-b)
             end
             crt_section = aux_section
-            table.append(poly.vertices, crt_section); nb_sections= nb_sections+1
-            if addwall == 1 then table.insert(sep,crt_section) end -- facette séparatrice
+            tblAppend(poly.vertices, crt_section); nb_sections= nb_sections+1
+            if addwall == 1 then 
+                i3 = i3+1; sep[i3] = crt_section --tblInsert(sep,crt_section) 
+            end -- facette séparatrice
         end
     end
     -- construction des facettes
     for s = 1, nb_sections-1 do
         for k = 1, Nb do
-            table.insert(poly.facets,  {num(s,k), num(s,k+1), num(s+1,k+1), num(s+1,k)})
+            i2 = i2+1; poly.facets[i2] = {num(s,k), num(s,k+1), num(s+1,k+1), num(s+1,k)}
+            --tblInsert(poly.facets,  {num(s,k), num(s,k+1), num(s+1,k+1), num(s+1,k)})
         end
     end
     if close then
         for k = 1, Nb do
-            table.insert(poly.facets, {num(nb_sections,k), num(nb_sections,k+1), num(1,k+1), num(1,k)})
+            i2 = i2+1; poly.facets[i2] = {num(nb_sections,k), num(nb_sections,k+1), num(1,k+1), num(1,k)}
+            --tblInsert(poly.facets, {num(nb_sections,k), num(nb_sections,k+1), num(1,k+1), num(1,k)})
         end
     end
     if not hollow then
-       table.insert(poly.facets,  map(function(k) return num(nb_sections,k) end, ld.range(1,nbfacet)))
+        i2 = i2+1; poly.facets[i2] =  map(function(k) return num(nb_sections,k) end, ld.range(1,nbfacet))
+       --tblInsert(poly.facets,  map(function(k) return num(nb_sections,k) end, ld.range(1,nbfacet)))
     end
     if #sep == 0 then sep = nil end
     if obj then
@@ -1119,7 +1281,7 @@ function ld.line2tube(L,r,args)
     local close = args.close or false
     local angle = args.angle or {0, 360}
     local angle1, angle2 = table.unpack( angle )
-    if math.abs(angle2-angle1) == 360 then angle2 = angle2 - 360/nbfacet end
+    if Abs(angle2-angle1) == 360 then angle2 = angle2 - 360/nbfacet end
     local hollow = args.hollow or false
     if close then hollow = true end
     local obj = args.obj or false
@@ -1134,7 +1296,8 @@ function ld.line2tube(L,r,args)
         b1 = ld.rotate3d(b1,angle1,{b,v})
         local list = {b1}
         for k = 1, nbfacet-1 do
-            table.insert(list, ld.rotate3d(b1,k*theta,{b,v}))
+            list[k+1] = ld.rotate3d(b1,k*theta,{b,v})
+            --tblInsert(list, ld.rotate3d(b1,k*theta,{b,v}))
         end
         return list
     end
@@ -1168,7 +1331,8 @@ function ld.rotcurve(p,t1,t2,axe,angle1,angle2,args)
         local t, nb, V = t1, grid[1], axe[2]
         local pas = (t2-t1)/(nb-1)
         for k = 1, nb do
-            table.insert(sep, {p(t),V})
+            sep[k] = {p(t),V}
+            --tblInsert(sep, {p(t),V})
             t = t+pas
         end
     elseif addwall == 2 then
@@ -1177,7 +1341,8 @@ function ld.rotcurve(p,t1,t2,axe,angle1,angle2,args)
         local t, dt = angle1, (angle2-angle1)/(nb-1)
         local B1 = ld.rotate3d(B,t,axe)
         for k = 1, nb do
-            table.insert(sep, {A,A+axe[2],B1}) -- facette séparatrice
+            sep[k] = {A,A+axe[2],B1}
+            --tblInsert(sep, {A,A+axe[2],B1}) -- facette séparatrice
             B1 = ld.rotate3d(B,t,axe)
             t = t+dt
         end
@@ -1208,7 +1373,7 @@ function ld.rotline(L,axe,angle1,angle2,args)
     local obj = args.obj or false
     local addwall = args.addwall or 0
     local L1 = table.copy(L)
-    if close then table.insert(L1,L[1]) end
+    if close then tblInsert(L1,L[1]) end
 
     local f = function(u,v)
         return ld.rotate3d(L1[u],v,axe)
@@ -1219,7 +1384,8 @@ function ld.rotline(L,axe,angle1,angle2,args)
         sep = {}
         local V = axe[2]
         for k = 1, n do
-            table.insert(sep, {L1[k],V})
+            sep[k] = {L1[k],V}
+            --tblInsert(sep, {L1[k],V})
         end
     elseif addwall == 2 then
         sep = {}
@@ -1227,7 +1393,8 @@ function ld.rotline(L,axe,angle1,angle2,args)
         local t, dt = angle1, (angle2-angle1)/(nb-1)
         local B1 = ld.rotate3d(B,t,axe)
         for k = 1, nb do
-            table.insert(sep, {A,A+axe[2],B1}) -- facette séparatrice
+            sep[k] = {A,A+axe[2],B1}
+            --tblInsert(sep, {A,A+axe[2],B1}) -- facette séparatrice
             B1 = ld.rotate3d(B,t,axe)
             t = t+dt
         end
@@ -1260,8 +1427,8 @@ function ld.read_obj_file(file, triangulate) -- Contribution de Christophe BAL 2
     end
 
     local polyhedron = {}
-    local vertices   = {}
-    local facets     = {}
+    local vertices, i1 = {}, 0
+    local facets, i2     = {}, 0
     local normals    = {}
     local xmin, xmax = math.huge, -math.huge
     local ymin, ymax = math.huge, -math.huge
@@ -1292,34 +1459,38 @@ function ld.read_obj_file(file, triangulate) -- Contribution de Christophe BAL 2
                   ymin, ymax = update_extreme_vals(y, ymin, ymax)
                   zmin, zmax = update_extreme_vals(z, zmin, zmax)
                 -- Un nouveau sommet.
-                  table.insert(vertices, M(x, y, z))
+                  i1 = i1+1; vertices[i1] = M(x, y, z)
+                  --tblInsert(vertices, M(x, y, z))
                 end
             -- Cas d'une face.
             elseif line:match("^f%s") then
-                local face = {}
+                local face, j = {}, 0
                 for idx in line:gmatch("(%d+)[^ ]*") do
-                  table.insert(face, tonumber(idx))
+                  j = j+1; face[j] = tonumber(idx)
+                  --tblInsert(face, tonumber(idx))
                 end
                 if #face > 0 then
-                  table.insert(facets, face)
+                  i2 = i2+1; facets[i2] = face
+                  --tblInsert(facets, face)
                 end
             end
         end
     end
     polyhedron.vertices = vertices
     if triangulate then -- triangulate facets and calculate normals
-        local Tfacets = {}
+        local Tfacets, j = {}, 0
         for _, f in ipairs(facets) do --
-            if #f == 3 then table.insert(Tfacets,f)
+            if #f == 3 then j = j+1; Tfacets[j] = f --tblInsert(Tfacets,f)
             else
                 local a, c, b = f[1], f[2]
                 for k = 3, #f do
                     b = c; c = f[k]
-                    table.insert(Tfacets,{a,b,c})
+                    j = j+1; Tfacets[j] = {a,b,c}
+                    --tblInsert(Tfacets,{a,b,c})
                 end
             end
         end
-        for k = 1, #vertices do table.insert(normals,Origin) end
+        for k = 1, #vertices do normals[k] = Origin end --tblInsert(normals,Origin) end
         for _,f in ipairs(Tfacets) do
             local a, b, c = table.unpack(f)
             local A,B,C = vertices[a], vertices[b], vertices[c]
@@ -1330,9 +1501,9 @@ function ld.read_obj_file(file, triangulate) -- Contribution de Christophe BAL 2
             normals[k] = pt3d.normalize( normals[k] )
         end
         polyhedron.normals = normals
-        polyhedron.facets   = Tfacets
+        polyhedron.facets = Tfacets
     else
-        polyhedron.facets   = facets
+        polyhedron.facets = facets
     end
     return polyhedron, {xmin, xmax, ymin, ymax, zmin, zmax}  -- polyhedron first
 end
@@ -1343,24 +1514,27 @@ function ld.facet2obj(F)
     if F.vertices == nil then F = ld.facet2poly(F) end
     local res = {}
     res.vertices = table.copy(F.vertices)
-    local Tfacets = {}
+    local Tfacets, i1 = {}, 0
     local normals = {}
     for _, f in ipairs(F.facets) do --
-        if #f == 3 then table.insert(Tfacets,f)
+        if #f == 3 then i1 = i1; Tfacets[i1] = f --tblInsert(Tfacets,f)
         else
             local a, c, b = f[1], f[2]
             for k = 3, #f do
                 b = c; c = f[k]
-                table.insert(Tfacets,{a,b,c})
+                i1 = i1+1; Tfacets[i1] = {a,b,c}
+                --tblInsert(Tfacets,{a,b,c})
             end
         end
     end
-    for k = 1, #F.vertices do table.insert(normals,Origin) end
+    for k = 1, #F.vertices do normals[k] = Origin end --tblInsert(normals,Origin) end
     for _,f in ipairs(Tfacets) do
         local a, b, c = table.unpack(f)
         local A,B,C = F.vertices[a], F.vertices[b], F.vertices[c]
         local N = pt3d.normalize( pt3d.prod(B-A,C-A) )
-        normals[a] = normals[a] + N; normals[b] = normals[b] + N; normals[c] = normals[c] + N
+        if N ~= nil then
+            normals[a] = normals[a] + N; normals[b] = normals[b] + N; normals[c] = normals[c] + N
+        end
     end
     for k = 1, #normals do
         normals[k] = pt3d.normalize( normals[k] )
@@ -1378,11 +1552,13 @@ function ld.obj_surface(f,u1,u2,v1,v2,grid) -- or obj_surface(f, uvmesh) with uv
 -- renvoie une table à 3champs {vertices = {sommets (3D}, normals = {vecteurs (3D)}, facets = { {1,2,3},...} }
 -- les facettes sont triangulaires.
     --grid = grid or {25,25}
+    local Jump = cpx.Jump
     local F = function(u,v)
-        local R = ld.evalf(f,u,v) -- protected evaluation
-        if (R == nil) then return cpx.Jump
-        else return R
-        end
+        return ld.evalf(f,u,v) or Jump
+        --local R = ld.evalf(f,u,v)  -- protected evaluation
+        --if (R == nil) then return Jump
+        --else return R
+        --end
     end
 
     local different = function(A,B)
@@ -1390,11 +1566,13 @@ function ld.obj_surface(f,u1,u2,v1,v2,grid) -- or obj_surface(f, uvmesh) with uv
     end
     
     local S, vertices, normals, posvertices = {}, {}, {}, {}
+    local i1 = 0 -- number of vertices
     local posvertex = function(i,j)
         local rep
         if posvertices[i][j] == 0 then
-            table.insert(vertices, S[i][j]); rep = #vertices
-            table.insert(normals, Origin)
+            i1 = i1+1; vertices[i1] = S[i][j] --tblInsert(vertices, S[i][j])
+            rep = i1
+            normals[i1] = Origin --tblInsert(normals, Origin)
             posvertices[i][j] = rep
         else rep = posvertices[i][j]
         end
@@ -1409,60 +1587,84 @@ function ld.obj_surface(f,u1,u2,v1,v2,grid) -- or obj_surface(f, uvmesh) with uv
         nbu, nbv = table.unpack(grid)
         uvmesh = {ld.linspace(u1,u2,nbu), ld.linspace(v1,v2,nbv)}
     end
-    for _,u in ipairs(uvmesh[1]) do
+    for i, u in ipairs(uvmesh[1]) do
         local aux, auxN = {}, {}
-        for _,v in ipairs(uvmesh[2]) do
-            table.insert(aux,F(u,v))
-            table.insert(auxN, 0)
+        for k, v in ipairs(uvmesh[2]) do
+            aux[k] = F(u,v)
+            --tblInsert(aux,F(u,v))
+            auxN[k] = 0
+            --tblInsert(auxN, 0)
         end
-        table.insert(S,aux); table.insert(posvertices,auxN)
+        S[i] = aux; posvertices[i] = auxN
+        --tblInsert(S,aux); tblInsert(posvertices,auxN)
     end
-    local rep = {}
-    local A, last
+    local rep, idx = {}, 0
+    local A, last, first
     for i = 1, nbu-1 do
         for j = 1, nbv-1 do
-            aux = {}
+            local aux, k = {}, 0 -- k = #aux
             A = S[i][j]; first = A; last = A
-            if A ~= cpx.Jump then table.insert(aux,A); table.insert(aux,posvertex(i,j)) end
+            if A ~= Jump then 
+                k = k+1; aux[k] = A; k = k+1; aux[k] = posvertex(i,j)
+                --tblInsert(aux,A); tblInsert(aux,posvertex(i,j)) 
+            end
             A = S[i+1][j]; 
-            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then 
-                table.insert(aux,A); table.insert(aux,posvertex(i+1,j)); last = A 
+            if (A ~= Jump) and ((last == Jump) or different(A,last)) then 
+                k = k+1; aux[k] = A; k = k+1; aux[k] = posvertex(i+1,j)
+                --tblInsert(aux,A); tblInsert(aux,posvertex(i+1,j)); 
+                last = A 
             end
             A = S[i+1][j+1]
-            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then 
-                table.insert(aux,A); table.insert(aux,posvertex(i+1,j+1)); last = A 
+            if (A ~= Jump) and ((last == Jump) or different(A,last)) then 
+                k = k+1; aux[k] = A; k = k+1; aux[k] = posvertex(i+1,j+1)
+                --tblInsert(aux,A); tblInsert(aux,posvertex(i+1,j+1))
+                last = A 
             end
             A = S[i][j+1]
-            if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) and ((first == cpx.Jump) or different(A,first)) then table.insert(aux,A) table.insert(aux,posvertex(i,j+1)) end
-            local n = #aux
-            if n > 5 then -- ajout + triangulation
-                if n == 6 then table.insert(rep,aux) -- triangle 
+            if (A ~= Jump) and ((last == Jump) or different(A,last)) and ((first == Jump) or different(A,first)) then 
+                k = k+1; aux[k] = A; k = k+1; aux[k] = posvertex(i,j+1)
+                --tblInsert(aux,A) tblInsert(aux,posvertex(i,j+1)) 
+            end
+            --local n = #aux
+            if k > 5 then -- ajout + triangulation
+                if k == 6 then idx = idx+1; rep[idx] = aux --tblInsert(rep,aux) -- triangle 
                 else --quad {a,b,c,d}
-                    table.insert(rep,{aux[1],aux[2],aux[3],aux[4],aux[5],aux[6]}) -- triangle {a,b,c}
-                    table.insert(rep,{aux[1],aux[2],aux[5],aux[6],aux[7],aux[8]}) -- triangle {a,c,d}
+                    idx = idx+1; rep[idx] = {aux[1],aux[2],aux[3],aux[4],aux[5],aux[6]}
+                    --tblInsert(rep,{aux[1],aux[2],aux[3],aux[4],aux[5],aux[6]}) -- triangle {a,b,c}
+                    idx = idx+1; rep[idx] = {aux[1],aux[2],aux[5],aux[6],aux[7],aux[8]}
+                    --tblInsert(rep,{aux[1],aux[2],aux[5],aux[6],aux[7],aux[8]}) -- triangle {a,c,d}
                 end
             end
         end
     end
+    local remove = {}
     -- calculs des normales
-    for _,f in ipairs(rep) do
+    for i,f in ipairs(rep) do
         local N = pt3d.normalize( pt3d.prod(f[3]-f[1], f[5]-f[1]) )
-        for k = 2,6,2 do
-            local pos = f[k]
-            normals[pos] = normals[pos]  + N
+        if N ~= nil then
+            for k = 2,6,2 do
+                local pos = f[k]
+                normals[pos] = normals[pos]  + N
+            end
+        else tblInsert(remove,i) -- to remove facet i
         end
+    end
+    for k,i in ipairs(remove) do
+        table.remove(rep,i-k+1)
     end
     -- normalisation
     local result, facet = {}
     result.vertices = vertices; result.facets = {}
-    for _,f in ipairs(rep) do
-        facet = {}
+    for i,f in ipairs(rep) do
+        local facet = {}
         for k = 2,6,2 do
             local pos = f[k]
             normals[pos] = pt3d.normalize( normals[pos] )
-            table.insert(facet, pos)
+            facet[k//2] = pos
+            --tblInsert(facet, pos)
         end
-        table.insert(result.facets, facet)
+        result.facets[i] = facet
+        --tblInsert(result.facets, facet)
     end
     result.normals = normals
     return result
@@ -1486,20 +1688,24 @@ function ld.conv_table3d(data, swapxy)
 -- x1 y2 z21
 -- etc
     swapxy = swapxy or false
-    if #data[1] == #data[2]-1 then table.insert(data[1],1,"y/x") end
+    if #data[1] == #data[2]-1 then tblInsert(data[1],1,"y/x") end
     local nbx, nby = #data[1]-1, #data-1
-    local ret, lg = {}
+    local ret, lg, i1, i2 = {}, 0, 0
     for i = 1, nbx do
         for j = 1, nby do
             lg = {}
             local x = data[1][i+1]
             local y = data[j+1][1]
             local z = data[j+1][i+1]
-            if swapxy then  table.insert(lg, y); table.insert(lg, x)
-            else table.insert(lg, x); table.insert(lg, y)
+            if swapxy then  
+                i2 = i2+1; lg[i2] = y; i2 = i2+1; lg[i2] = x 
+                --tblInsert(lg, y); tblInsert(lg, x)
+            else 
+                i2 =i2+1; lg[i2] = x; i2 =i2+1; lg[i2] = y
+                --tblInsert(lg, x); tblInsert(lg, y)
             end
-            table.insert(lg, z)
-            table.insert(ret, lg)
+            i2 = i2+1; lg[i2] = z; i1 = i1+1; ret[i1] = lg 
+            --tblInsert(lg, z); tblInsert(ret, lg)
         end
     end
     return ret
@@ -1550,16 +1756,16 @@ function ld.read_table3d(data,options) -- read 3D data, build facets and functio
     for index = 1, nb do
         xval = data[index][x]
          if xval ~= oldx then
-            if #lg > 0 then table.insert(vertices, lg); lg = {} end
+            if #lg > 0 then tblInsert(vertices, lg); lg = {} end
             oldx = xval
         end
         if inverse then
-            table.insert(lg, M(data[index][y], xval, data[index][z]) )
+            tblInsert(lg, M(data[index][y], xval, data[index][z]) )
         else
-            table.insert(lg, M(xval, data[index][y], data[index][z]) )
+            tblInsert(lg, M(xval, data[index][y], data[index][z]) )
         end
     end
-    table.insert(vertices, lg) -- last line
+    tblInsert(vertices, lg) -- last line
     if bbox then
         bbox3d = {ld.getbounds3d(vertices)}
     end
@@ -1582,9 +1788,10 @@ function ld.read_table3d(data,options) -- read 3D data, build facets and functio
             local V1, V2 = V11+tv*(V12-V11), V21+tv*(V22-V21)
             return V1+tu*(V2-V1)
         end
-        table.insert(functions, f)
+        tblInsert(functions, f)
     end 
     if facet or edge then
+        local idx1, idx2 = 0, 0
         for k = 1, nbx-1 do --construction of facets with or without triangulation, with or without edges
             for j = 1, nby-1 do
                 local a, b, c, d
@@ -1596,14 +1803,20 @@ function ld.read_table3d(data,options) -- read 3D data, build facets and functio
                 if facet then
                     if triangle then
                         if (pt3d.abs(d-b) < pt3d.abs(c-a)) then
-                            table.insert(facets,{a,b,d}); table.insert(facets,{b,c,d}) 
+                            idx1 = idx1+1; facets[idx1] = {a,b,d} 
+                            idx1 = idx1+1; facets[idx1] = {b,c,d} 
+                            --tblInsert(facets,{a,b,d}); tblInsert(facets,{b,c,d}) 
                         else
-                            table.insert(facets,{a,b,c}); table.insert(facets,{a,c,d}) 
+                            idx1 = idx1+1; facets[idx1] = {a,b,c} 
+                            idx1 = idx1+1; facets[idx1] = {a,c,d} 
+                            --tblInsert(facets,{a,b,c}); tblInsert(facets,{a,c,d}) 
                         end
-                    else table.insert(facets, {a,b,c,d})
+                    else 
+                        idx1 = idx1+1; facets[idx1] = {a,b,c,d} 
+                        --tblInsert(facets, {a,b,c,d})
                     end
                 end
-                if edge then table.insert(edges, {a,b,c,d}) end
+                if edge then idx2 = idx2+1; edges[idx2] = {a,b,c,d} end --tblInsert(edges, {a,b,c,d}) end
             end
         end
     end

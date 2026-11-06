@@ -1,6 +1,6 @@
 -- luadraw_transformations3d.lua (chargé par luadraw_graph3d.lua)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -12,6 +12,8 @@ local pt3d = ld.pt3d
 local isPoint3d = pt3d.isPoint3d
 local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
 local M, Mc, Ms = pt3d.M, pt3d.Mc, pt3d.Ms
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function ld.ftransform3d(L,f)
 -- image de L par la fonction f 
@@ -25,22 +27,22 @@ function ld.ftransform3d(L,f)
         return res
     end
     if isPoint3d(L) then return f(L) end
-    local res, u = {}
+    local res, i, u = {}, 0
     if (type(L) ~= "table") or (#L == 0) then return end
     if isPoint3d(L[1]) then -- liste de point3d
         for _,A in ipairs(L) do
             u = f(A)
-            if u ~= nil then table.insert(res,u) end
+            if u ~= nil then i = i+1; res[i] = u end --tblInsert(res,u) end
         end
         if #res > 0 then return res end
     else -- L est une liste de listes
         for _, cp in ipairs(L) do
-            local aux = {}
+            local aux, j = {}, 0
             for _, A in ipairs(cp) do
                 u = f(A)
-                if u ~= nil then table.insert(aux,u) end
+                if u ~= nil then j = j+1; aux[j] = u end --tblInsert(aux,u) end
             end
-            if #aux > 0 then table.insert(res, aux) end
+            if #aux > 0 then i = i+1; res[i] = aux end --tblInsert(res, aux) end
         end
         if #res > 0 then return res end
     end

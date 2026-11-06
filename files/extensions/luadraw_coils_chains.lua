@@ -1,6 +1,6 @@
 -- luadraw_coils_chains.lua 
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -13,6 +13,8 @@ local ld = luadraw
 local graph = ld.graph
 local cpx = ld.cpx
 local Z = cpx.Z
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function graph:Dcoil(list,R,options)
 -- list = {start, nb1, end1, nb2, end2, ...} or list = {polygonale line, nb turns}
@@ -48,7 +50,7 @@ function graph:Dcoil(list,R,options)
         local f, Len = ld.curvilinear_param(list)
         local L1 = {list[1]}
         for k = 1, n do
-            table.insert(L1,1); table.insert(L1,f(k/n))
+            tblInsert(L1,1); tblInsert(L1,f(k/n))
         end
         list = L1
     end
@@ -86,9 +88,9 @@ function graph:Dcoil(list,R,options)
         else
             C = {a+v1, "m", b+v2,"l"}
         end
-        table.append(C, {b,b-v2,r,-1,"ca",b-v2+u2,a-v1+u1,a-v1,"b"})
-        if endb%2 == 1 then table.append(C,{a,a+v1,r,-1,"ca"}) end
-        if endb == 2 then table.insert(C,"cl") end
+        tblAppend(C, {b,b-v2,r,-1,"ca",b-v2+u2,a-v1+u1,a-v1,"b"})
+        if endb%2 == 1 then tblAppend(C,{a,a+v1,r,-1,"ca"}) end
+        if endb == 2 then tblInsert(C,"cl") end
         local angle = (cpx.arg(v)*ld.rad )--%180
         if wireframe then
             local col = color
@@ -125,21 +127,21 @@ function graph:Dcoil(list,R,options)
         local v = -sens*R*cpx.I*t
         if #Ends > 0 then
             local S = table.remove(Ends)
-            table.insert(Lf,{A1+v,S[2]})
+            tblInsert(Lf,{A1+v,S[2]})
         else 
-            table.insert(Ends,{A,A1+v})
+            tblInsert(Ends,{A,A1+v})
         end
         if first then 
              first = false
-            if holes then table.insert(Holes, A) end
+            if holes then tblInsert(Holes, A) end
         end
         for k = 1, n do
-            table.insert(Lb, {a+v, a-v+u}); a = a+2*u
-            if k <= n-1 then table.insert(Lf, {a+v, a-v-u}); end
+            tblInsert(Lb, {a+v, a-v+u}); a = a+2*u
+            if k <= n-1 then tblInsert(Lf, {a+v, a-v-u}); end
         end
-        table.insert(Ends,{B,B1-v})
+        tblInsert(Ends,{B,B1-v})
         if i == nb-1 then
-            if holes then table.insert(Holes, B) end
+            if holes then tblInsert(Holes, B) end
         end
     end
     -- drawing
@@ -148,7 +150,7 @@ function graph:Dcoil(list,R,options)
     end
     if close then
         local S1, S2 = table.remove(Ends,1), table.remove(Ends)
-        table.insert(Lf, {S1[2],S2[2]})
+        tblInsert(Lf, {S1[2],S2[2]})
     end
     for k, S in ipairs(Ends) do
         if k == 1 then Dsegaux(S, d, 3, false, true)
@@ -203,7 +205,7 @@ local coil2 = function(list, R, direction)
         local rep = {sp}
         for i = 2, nb do
             sp = ld.mtransform(sp, tr_mat)
-            table.insert(rep, sp)
+            tblInsert(rep, sp)
         end
         rep = ld.mtransform(rep,Len_mat)
         return ld.mtransform(rep,rot_mat)
@@ -218,7 +220,7 @@ local coil2 = function(list, R, direction)
         local f, Len = ld.curvilinear_param(list)
         local L1 = {list[1]}
         for k = 1, n do
-            table.insert(L1,1); table.insert(L1,f(k/n))
+            tblInsert(L1,1); tblInsert(L1,f(k/n))
         end
         list = L1
     end
@@ -232,7 +234,7 @@ local coil2 = function(list, R, direction)
             end_angle = cpx.angle(B-A,C-B)
         else end_angle = 0
         end
-        table.append(ret, spring(A, sp, B))
+        tblAppend(ret, spring(A, sp, B))
     end
     if direction == 1 then ret = ld.reverse(ret) end
     return ret
@@ -295,9 +297,9 @@ local chain = function(list, rx, ry, ep)
     for k = 1, n do
         x1 = x2; x2 = f(k/n)
         if k%2 == 1 then -- mailleA
-            table.insert(back,mailleA(x1,x2))
+            tblInsert(back,mailleA(x1,x2))
         else
-            table.insert(front,mailleB(x1,x2))
+            tblInsert(front,mailleB(x1,x2))
         end
     end
     return back, front
@@ -364,18 +366,18 @@ local chain2 = function(L,h)
         local w = (x2-x1)/12
         local v = h*cpx.I*cpx.normalize(x2-x1)
         c, d = (3*x1+x2)/4, (x1+3*x2)/4
-        table.append(lastfront, {c-w+v,c-w+v,c+v,"b"})
+        tblAppend(lastfront, {c-w+v,c-w+v,c+v,"b"})
         if (k > 1) or closed then 
-            table.insert(front, lastfront)
+            tblInsert(front, lastfront)
         else
-            table.insert(back, lastfront)
+            tblInsert(back, lastfront)
         end
-        table.insert(front, {c-v,"m",c-v+w,d+v-w,d+v,"b"})
+        tblInsert(front, {c-v,"m",c-v+w,d+v-w,d+v,"b"})
         lastfront = {d-v,"m",d-v+w,d-v+w,x2,"b"}
         
-        table.append(lastback, {c-v-w,c-v-w,c-v,"b"})
-        table.insert(back, lastback)
-        table.insert(back, {c+v,"m",c+v+w,d-v-w,d-v,"b"})
+        tblAppend(lastback, {c-v-w,c-v-w,c-v,"b"})
+        tblInsert(back, lastback)
+        tblInsert(back, {c+v,"m",c+v+w,d-v-w,d-v,"b"})
         lastback = {d+v,"m",d+v+w,d+v+w,x2,"b"}
     end
     if closed then
@@ -384,8 +386,8 @@ local chain2 = function(L,h)
         table.remove(front[1],1)
         front[1] = ld.concat(lastfront, front[1])
     else
-        table.insert(back, lastback)
-        table.insert(back, lastfront)
+        tblInsert(back, lastback)
+        tblInsert(back, lastfront)
     end
     return back,front
 end

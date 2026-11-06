@@ -1,6 +1,6 @@
 -- luadraw_decorated.lua
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -16,6 +16,8 @@ local graph = ld.graph
 local graph3d = ld.graph3d
 local cpx = ld.cpx
 local Z = cpx.Z
+local tblInsert = table.insert
+local tblAppend = table.append
 
 local addLabel = function(self, L, label, options, change_matrix)
     if (L == nil) or (type(L) ~= "table") then return end
@@ -155,7 +157,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
     
     local Spline = function ()
             if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         aux = ld.spline(aux) -- spline naturelle
         if aux ~= nil then
@@ -168,7 +170,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
     local Circle = function()
     -- il faut un point et le centre
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         local a, c, r = aux[1], nil, nil
         if #aux == 2 then -- on a un point et le centre
@@ -193,7 +195,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
         local n = #aux
         if (n < 3) or (n > 5) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         aux = ld.arcb(table.unpack(aux))
         if aux ~= nil then
@@ -209,7 +211,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
         local n = #aux
         if (n < 4) or (n > 7) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         aux = ld.ellipticarcb(table.unpack(aux))
         if aux ~= nil then
@@ -225,7 +227,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
         local n = #aux
         if (n < 3) or (n > 5) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         local p, c, rx, ry, inclin = table.unpack(aux)
         aux = ld.ellipticarcb(p,c,p,rx,ry,1,inclin)
@@ -241,7 +243,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
         local n = #aux
         if (n < 2) then aux = {}; return end
         if first ~= nil then 
-            table.insert(aux,1,first)
+            tblInsert(aux,1,first)
         end
         local r = table.remove(aux)
         if (type(r) ~= "number") or (r <= 0) then aux = {}; return end
@@ -253,7 +255,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
             end 
             aux = {}
             for _,z in ipairs(C) do
-                if (type(z) == "number") or cpx.isComplex(z) then table.insert(aux,z); last = z 
+                if (type(z) == "number") or cpx.isComplex(z) then tblInsert(aux,z); last = z 
                 else
                     if type(z) == "string" then traiter[z]() end
                 end            
@@ -277,7 +279,7 @@ function graph:Dpath(L,draw_options,clip) -- or g:Dpath(L,options,clip))
     end
     traiter = { ["s"]=Spline, ["l"]=lineto, ["m"]=moveto, ["cl"]=close, ["b"]=Bezier, ["c"]=Circle, ["ca"]=Arc, ["ea"]=Earc, ["e"]=Ellipse, ["la"]=Rline, ["cla"]=cRline } 
     for _, z in ipairs(L) do
-        if (type(z) == "number") or cpx.isComplex(z) then table.insert(aux,z); last = z 
+        if (type(z) == "number") or cpx.isComplex(z) then tblInsert(aux,z); last = z 
         else
             if type(z) == "string" then traiter[z]() end
         end
@@ -485,7 +487,7 @@ function graph3d:Darc3d(B,A,C,r,sens,normal,draw_options,clip) -- or Darc3d(B,A,
         oldDarc3d(self,B,A,C,r,sens,normal,draw_options,clip)
         return
     end
-    options = normal or {}
+    local options = normal or {}
     local u, v = B-A, C-A
     local n = pt3d.prod(B-A,C-A)
     if pt3d.N1(n) < 1e-8 then -- n is null
@@ -515,7 +517,7 @@ function graph3d:Darc3d(B,A,C,r,sens,normal,draw_options,clip) -- or Darc3d(B,A,
     if sector_options ~= "" then
         self:Dpath3d(ld.concat(S,{A,"l","cl"}),"draw=none,"..sector_options)
     end
-    if bezier and (not clip)then self:Dpath3d(S,arc_options)
+    if bezier and (not clip) then self:Dpath3d(S,arc_options)
     else self:Dpolyline3d(ld.path3d(S),false,arc_options,clip)
     end
     if label ~= "" then
@@ -575,5 +577,38 @@ function graph3d:Darc3d(B,A,C,r,sens,normal,draw_options,clip) -- or Darc3d(B,A,
     end
 end
 graph3d.Ddecoratedarc3d = graph3d.Darc3d
+
+local oldDangle3d = graph3d.Dangle3d
+function graph3d:Dangle3d(B,A,C,r,draw_options,clip) -- or Dmarkseg3d(B,A,C,options)
+    if (r == nil) or (type(r) ~= "table") then 
+        oldDangle3d(self,B,A,C,r,draw_options,clip)
+        return
+    end
+    local options = r or {}
+    r = options.radius or 0.25
+    local U1, V1 = B-A, C-A
+    U1, V1 = r*pt3d.normalize(U1), r*pt3d.normalize(V1)
+    local sector_options = options.sector_options or "" -- fill or not the angular sector
+    local arc_options = options.arc_options or "" -- draw_options for the arc
+    local label = options.label or "" -- label text
+    local node_options = options.node_options or "" -- node options for the label
+    local pos = options.pos or "auto" -- position of the label relative to the anchor point
+    local dist = options.dist or r -- distance between the label and the center A
+    local rotate3D = options.rotate3d or "none" -- or "auto" or "ortho", rotation of the label in (BAC) plane
+    local rotate = options.rotate or "none" -- or "auto" or "ortho", rotation of the label on the screen plane
+    local angle = options.angle or 0 -- angle to turn the anchor point around the center A (initially, the anchor point is located on the arc and the bisector line)
+    local clip = options.clip or false
+    local S = {A+U1,A+U1+V1,A+V1,"l"}
+    local dir = {}
+    if sector_options ~= "" then
+        self:Dpath3d(ld.concat(S,{A,"l","cl"}),"draw=none,"..sector_options)
+    end
+     if (not clip) then self:Dpath3d(S,arc_options)
+    else self:Dpolyline3d({A+U1,A+U1+V1,A+V1},false,arc_options,clip)
+    end
+    if label ~= "" then
+        addLabel(self, self:Proj3d({A+U1,A+U1+V1,A+V1}), label, options)
+    end
+end
 
 end

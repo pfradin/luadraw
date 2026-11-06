@@ -1,6 +1,6 @@
 -- luadraw_curves.lua (chargé par luadraw__calc)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -13,6 +13,8 @@ local Z = cpx.Z
 local Zp = cpx.Zp
 local toComplex = cpx.toComplex
 local isComplex = cpx.isComplex
+local tblInsert = table.insert
+local tblAppend = table.append
 
 ld.bezier_nbdots = 12 -- Minimum number of points calculated when converting a Bézier curve into a polygonal line.
 
@@ -33,7 +35,7 @@ function ld.parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
 
     local closeCp = function()
             if count > 1 then
-                table.insert(curve, cp)
+                tblInsert(curve, cp)
             end
             lastJump = true
             count = 0
@@ -42,8 +44,8 @@ function ld.parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
     
     local addCp = function(z)
             lastJump = false
-            table.insert(cp, z)
-            count = count + 1
+            --tblInsert(cp, z)
+            count = count + 1; cp[count] = z
         end
     local middle
     middle = function(t1,t2,f1,f2,n,d12) -- nouvelle fonction récursive middle, expérimentale
@@ -94,7 +96,7 @@ function ld.parametric(p,t1,t2,nbdots,discont,nbdiv) --new version, experimantal
         prec = z
         t = t + pas
     end
-    if (not lastJump) and (count > 1) then table.insert(curve, cp) end -- dernière composante
+    if (not lastJump) and (count > 1) then tblInsert(curve, cp) end -- dernière composante
     if #curve > 0 then return curve end
 end
 
@@ -130,10 +132,11 @@ function ld.periodic(f,period,x1,x2,nbdots,discont,nbdiv)
     for k = k1, k2 do
         for _,cp in ipairs(C) do
             local aux = {}
-            for _,z in ipairs(cp) do
-                table.insert(aux, z+k*T)
+            for i,z in ipairs(cp) do
+                aux[i] = z+k*T
+                --tblInsert(aux, z+k*T)
             end
-            table.insert(rep, aux)
+            tblInsert(rep, aux)
         end
     end
     rep = ld.cutpolyline(rep,{x1,-cpx.I}); rep = ld.cutpolyline(rep,{x2,cpx.I})
@@ -155,22 +158,22 @@ function ld.affinebypiece(def,discont)
         local a, b = table.unpack(val[k])
         local y1, y2 = a*x1+b, a*x2+b
         if last == y1 then -- continuité en x1 
-            table.insert(crt, Z(x2,y2))
+            tblInsert(crt, Z(x2,y2))
         else 
             if #crt > 0 then  
-                if discont then table.insert(res,crt)
-                else table.append(res,crt)
+                if discont then tblInsert(res,crt)
+                else tblAppend(res,crt)
                 end
                 crt = {} 
             end
-            table.insert(crt, Z(x1,y1))
-            table.insert(crt, Z(x2,y2))
+            tblInsert(crt, Z(x1,y1))
+            tblInsert(crt, Z(x2,y2))
         end
         last = y2
     end
     if #crt > 0 then  
-        if discont then table.insert(res,crt)
-        else table.append(res,crt)
+        if discont then tblInsert(res,crt)
+        else tblAppend(res,crt)
         end
     end    
     if #res > 0 then return res end
@@ -188,22 +191,22 @@ function ld.stepfunction(def,discont)
     for k = 1, n do
         local a, b, c = sub[k], sub[k+1], val[k] 
         if last == c then -- continuité en x1 
-            table.insert(crt, Z(b,c))
+            tblInsert(crt, Z(b,c))
         else 
             if #crt > 0 then  
-                if discont then table.insert(res,crt)
-                else table.append(res,crt)
+                if discont then tblInsert(res,crt)
+                else tblAppend(res,crt)
                 end
                 crt = {} 
             end
-            table.insert(crt, Z(a,c))
-            table.insert(crt, Z(b,c))
+            tblInsert(crt, Z(a,c))
+            tblInsert(crt, Z(b,c))
         end
         last = c
     end
     if #crt > 0 then  
-        if discont then table.insert(res,crt)
-        else table.append(res,crt)
+        if discont then tblInsert(res,crt)
+        else tblAppend(res,crt)
         end
     end    
     if #res > 0 then return res end
@@ -235,33 +238,33 @@ function ld.implicit(f,x1,x2,y1,y2,grid)
     local xpas, ypas = (x2-x1)/P, (y2-y1)/N
     local Grid = {} -- grille de points { Z(xi,yj), f(xi,yj) }
     local y = y1    
-    for _ = 1, N+1 do
+    for i = 1, N+1 do
         local ligne = {}
         local x = x1
-        for _ = 1, P+1 do
-            table.insert(ligne, {Z(x,y), f(x,y)} )
+        for j = 1, P+1 do
+            ligne[j] = {Z(x,y), f(x,y)} --tblInsert(ligne, {Z(x,y), f(x,y)} )
             x = x+xpas
         end
-        table.insert(Grid, ligne)
+        Grid[i] = ligne --tblInsert(Grid, ligne)
         y = y+ypas
     end
     local AretesV = {}
     for I = 1, N do
         local cp = {}
         for J = 1, P+1 do
-            table.insert(cp, dicho( Grid[I][J], Grid[I+1][J]) )  -- arête verticale
+            cp[J] = dicho( Grid[I][J], Grid[I+1][J]) --tblInsert(cp, dicho( Grid[I][J], Grid[I+1][J]) )  -- arête verticale
         end
-        table.insert(AretesV, cp)
+        AretesV[I] = cp --tblInsert(AretesV, cp)
     end
     local AretesH = {}
     for I = 1, N+1 do
         local cp = {}
         for J = 1, P do
-            table.insert(cp, dicho( Grid[I][J], Grid[I][J+1]) )  -- arête horizontale
+            cp[J] = dicho( Grid[I][J], Grid[I][J+1]) --tblInsert(cp, dicho( Grid[I][J], Grid[I][J+1]) )  -- arête horizontale
         end
-        table.insert(AretesH, cp)        
+        AretesH[I] = cp --tblInsert(AretesH, cp)        
     end
-    local rep = {}
+    local rep, idx = {}, 0
     for I = 1,N do
         for J = 1, P do
             local m1 = AretesV[I][J] -- point sur arête verticale gauche de la maille
@@ -272,26 +275,26 @@ function ld.implicit(f,x1,x2,y1,y2,grid)
             local m6 = true --(Grid[I][J][2]*Grid[I+1][J+1][2] <= 0)
             if m1 ~= "none" then
                 if (m2 ~= "none") and m6 then
-                    table.insert( rep, {m1,m2} )
+                    idx = idx+1; rep[idx] = {m1,m2} --tblInsert( rep, {m1,m2} )
                 else if (m3 ~= "none") and ((m5) or (m6)) then
-                        table.insert( rep, {m1,m3} )
+                        idx = idx+1; rep[idx] = {m1,m3} --tblInsert( rep, {m1,m3} )
                     else if (m4 ~= "none") and m5 then
-                            table.insert( rep, {m1,m4} )
+                            idx = idx+1; rep[idx] = {m1,m4} --tblInsert( rep, {m1,m4} )
                          end
                     end
                 end
             end
             if m2 ~= "none" then
                 if (m3 ~= "none") and m5 then
-                    table.insert( rep, {m3,m2} )
+                    idx = idx+1; rep[idx] = {m3,m2} --tblInsert( rep, {m3,m2} )
                 else    if (m4 ~= "none") and ((m5) or (m6)) then
-                            table.insert( rep, {m4,m2} )
+                            idx = idx+1; rep[idx] = {m4,m2} --tblInsert( rep, {m4,m2} )
                         end
                 end
             end
             if (m3 ~= "none") then
                 if (m4 ~= "none") and m6 then
-                   table.insert( rep, {m3,m4} )
+                   idx = idx+1; rep[idx] = {m3,m4} --tblInsert( rep, {m3,m4} )
                 end
             end
         end
@@ -322,22 +325,22 @@ function ld.odeRK4(f,t0,Y0,tmin,tmax,nbdots)
     local add = function(Y1,Y2) -- addition dans R^n
             if calcError then return end
             if (Y1 == nil) or (Y2 == nil) then calcError = true; return end
-            local rep = {}
+            local rep, i = {}, 0
             for k,y in ipairs(Y1) do
                 local r = y+Y2[k]
                 if ld.notDef(r) then calcError = true; return end
-                table.insert(rep,r)
+                i = i+1; rep[i] = r --tblInsert(rep,r)
             end
             return rep
         end
     local mul = function(k,Y) -- produit par un scalaire
-            local rep = {}
+            local rep, i = {}, 0
             if calcError then return end
             if (Y == nil) then calcError = true; return end
             for _,y in ipairs(Y) do
                 local r = k*y
                 if ld.notDef(r) then calcError = true; return end
-                table.insert(rep,r)
+                i = i+1; rep[i] = r --tblInsert(rep,r)
             end
             return rep
         end
@@ -345,7 +348,7 @@ function ld.odeRK4(f,t0,Y0,tmin,tmax,nbdots)
     local t, Y, n, stop = t0, Y0, #Y0, (t0 >= tmax)
     local rep = { {t0} }
     for k = 1, n do
-        table.insert(rep,{Y0[k]})
+        rep[k+1] = {Y0[k]} --tblInsert(rep,{Y0[k]})
     end
     while not stop do
         local k1 = ode_f(t, Y)
@@ -356,9 +359,9 @@ function ld.odeRK4(f,t0,Y0,tmin,tmax,nbdots)
         local k4 = ode_f(t, add(Y, mul(h,k3)) ) 
         Y = add(Y, mul(h/6, add(k1, add( mul(2,k2), add( mul(2,k3),k4) ) ) ) )
         if not calcError then 
-            table.insert( rep[1], t)
+            tblInsert( rep[1], t)
             for k = 1, n do
-                table.insert(rep[k+1],Y[k])
+                tblInsert(rep[k+1],Y[k])
             end
         end
         if (t < tmax) and (t+h > tmax) then h = tmax-t end
@@ -375,9 +378,9 @@ function ld.odeRK4(f,t0,Y0,tmin,tmax,nbdots)
         local k4 = ode_f(t, add(Y, mul(h,k3)) ) 
         Y = add(Y, mul(h/6, add(k1, add( mul(2,k2), add( mul(2,k3),k4) ) ) ) ) 
         if not calcError then 
-            table.insert(rep[1],1,t)
+            tblInsert(rep[1],1,t)
             for k = 1, n do
-                table.insert(rep[k+1],1,Y[k])
+                tblInsert(rep[k+1],1,Y[k])
             end
         end
         if (t>tmin) and (t+h < tmin) then h = tmin-t end
@@ -409,22 +412,22 @@ function ld.odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
     local add = function(Y1,Y2) -- addition dans R^n
             if calcError then return end
             if (Y1 == nil) or (Y2 == nil) then calcError = true; return end
-            local rep = {}
+            local rep, i = {}, 0
             for k,y in ipairs(Y1) do
                 local r = y+Y2[k]
                 if ld.notDef(r) then calcError = true; return end
-                table.insert(rep,r)
+                i = i+1; rep[i] = r --tblInsert(rep,r)
             end
             return rep
         end
     local mul = function(k,Y) -- produit par un scalaire
-            local rep = {}
+            local rep, i = {}, 0
             if calcError then return end
             if (Y == nil) then calcError = true; return end
             for _,y in ipairs(Y) do
                 local r = k*y
                 if ld.notDef(r) then calcError = true; return end
-                table.insert(rep,r)
+                i = i+1; rep[i] = r--tblInsert(rep,r)
             end
             return rep
         end
@@ -436,7 +439,7 @@ function ld.odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
     local h, eps, N = hMax, 5e-7, 0
     local rep = { {t0} }
     for k = 1, n do
-        table.insert(rep,{Y0[k]})
+        rep[k+1] = {Y0[k]} --tblInsert(rep,{Y0[k]})
     end
     local nextY = function()
         local k1 = mul(h, ode_f(t, Y))
@@ -453,9 +456,9 @@ function ld.odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
         nextY()
         t = t+h; N = N+1
         if not calcError then 
-            table.insert( rep[1], t)
+            tblInsert( rep[1], t)
             for k = 1, n do
-                table.insert(rep[k+1],Y[k])
+                tblInsert(rep[k+1],Y[k])
             end
             local d = 0
             for _,x in ipairs(err) do
@@ -482,9 +485,9 @@ function ld.odeRkf45(f,t0,Y0,tmin,tmax,nbdots)
         nextY()
         t = t+h; N = N+1
         if not calcError then 
-            table.insert( rep[1],1, t)
+            tblInsert( rep[1],1, t)
             for k = 1, n do
-                table.insert(rep[k+1],1,Y[k])
+                tblInsert(rep[k+1],1,Y[k])
             end
             local d = 0
             for _,x in ipairs(err) do
@@ -541,10 +544,12 @@ function ld.spline(liste,v1,v2)
     n = 2*n-2
     local a, b, c, d = {},{},{},{}
     for k = 1, n-1 do
-       table.insert(a,0); table.insert(c,0)
+        a[k] = 0; c[k] = 0
+       --tblInsert(a,0); tblInsert(c,0)
     end
     for k = 1, n do
-        table.insert(b,0); table.insert(d,0)
+        b[k] = 0; b[k] = 0
+        --tblInsert(b,0); tblInsert(d,0)
     end
     b[1] = 1
     if v1 == nil then b[n] = 0 else b[n] = 1 end
@@ -598,19 +603,19 @@ function ld.spline(liste,v1,v2)
     for k =(n-1), 1, -1 do
         d[k] = (d[k]-c[k]*d[k+1])/b[k]
     end
-    for k = n, 1, -1 do table.insert(sortie,d[k]) end
+    for k = n, 1, -1 do tblInsert(sortie,d[k]) end
     local A1, A2, a1, a2, C1 = nil, liste[1]
     local res, first = {}, true
     for j = 2, #liste do
         A1 = A2;  A2 = liste[j]; a1 = sortie[2*j-3]; a2 = sortie[2*j-2]
         u = A2-A1-a2-a1
         C1 = u/3+A1
-        table.insert(res,A1)
-        if not first then table.insert(res,"b") else first = false end
-        table.insert(res,C1)
-        table.insert(res,a2/3+2*C1-A1)
+        tblInsert(res,A1)
+        if not first then tblInsert(res,"b") else first = false end
+        tblInsert(res,C1)
+        tblInsert(res,a2/3+2*C1-A1)
     end
-    table.insert(res,A2); table.insert(res,"b")
+    tblInsert(res,A2); tblInsert(res,"b")
     return res
 end
 
@@ -637,7 +642,7 @@ function ld.tcurve(L)
     local res = {b} -- premier point
     for k = 2, #L/2 do
         a, val, var, b, vbl, vbr = b, vbl, vbr, L[2*k-1], Vdir(table.unpack(L[2*k]))
-        table.append(res,{a+var/3,b-vbl/3,b,"b"}) -- courbe de Bézier de a à b respectant les contraintes
+        tblAppend(res,{a+var/3,b-vbl/3,b,"b"}) -- courbe de Bézier de a à b respectant les contraintes
     end
     return res
 end
@@ -655,7 +660,7 @@ function ld.curvilinear_param(L,close) -- curvilinear parametrization
     for k = 2, p do
         a = b; b = toComplex(L[(k-1)%n+1])
         s = s + cpx.abs(b-a) -- curve length from beginning to b
-        table.insert(L2,b); table.insert(L1,s)
+        L2[k] = b; L1[k] = s --tblInsert(L2,b); tblInsert(L1,s)
     end
     local total_len = s
     local l = function(t) -- returns L(t) using linear interpolation with t in [0,1]
@@ -691,7 +696,7 @@ function ld.param_path(P) -- parametrization of a path P
     local lineto = function()
         -- aux contient une ligne polygonale
         local f = ld.curvilinear_param(aux) 
-        table.insert(Bcurve, f)
+        tblInsert(Bcurve, f)
         n = n+1
         first = last
         aux = {first}
@@ -699,7 +704,7 @@ function ld.param_path(P) -- parametrization of a path P
     
     local Bezier = function()
         -- aux contient une courbe de Bézier
-        table.insert(Bcurve, getbezier( table.unpack(aux) ))
+        tblInsert(Bcurve, getbezier( table.unpack(aux) ))
         n = n+1
         first = last
         aux = {first}
@@ -707,7 +712,7 @@ function ld.param_path(P) -- parametrization of a path P
     
     local close = function() -- traitement du closepath
         local f = ld.curvilinear_param({last, deb}) 
-        table.insert(Bcurve, f)
+        tblInsert(Bcurve, f)
         n = n+1
         first = deb
         aux = {first}
@@ -722,7 +727,7 @@ function ld.param_path(P) -- parametrization of a path P
         
     local traiter = { ["l"]=lineto, ["b"]=Bezier, ["m"]=moveto, ["cl"]=close } 
     for _, z in ipairs(P) do
-        if (type(z) == "number") or cpx.isComplex(z) then table.insert(aux,z); last = z 
+        if (type(z) == "number") or cpx.isComplex(z) then tblInsert(aux,z); last = z 
         else
             if type(z) == "string" then traiter[z]() end
         end
@@ -768,7 +773,7 @@ function ld.read_csv_file(file, options)
         return s:match("^%s*(.-)%s*$")
     end
 
-    local data = {}
+    local data, i = {}, 0
     local head_line
     if header then head_line = {} end
     local lg = 1
@@ -776,17 +781,17 @@ function ld.read_csv_file(file, options)
         if line ~= "" and not line:match("^"..comment) then
             if (lg == 1) and header then
                 for part in string.gmatch(line, "([^"..sep.."]+)") do
-                    table.insert(head_line, trim(part))
+                    tblInsert(head_line, trim(part))
                 end
             else
-                local result = {}
+                local result, j = {}, 0
                 for part in string.gmatch(line, "([^"..sep.."]+)") do
                     if num then
                         local x = tonumber(part)
-                        if x ~= nil then table.insert(result, x)
-                        else table.insert(result, trim(part))
+                        if x ~= nil then j = j+1; result[j] = x --tblInsert(result, x)
+                        else j = j+1; result[j] = trim(part)-- tblInsert(result, trim(part))
                         end
-                    else table.insert(result, trim(part))
+                    else j = j+1; result[j] = trim(part) --tblInsert(result, trim(part))
                     end
                 end
                 if dic then
@@ -794,9 +799,11 @@ function ld.read_csv_file(file, options)
                     for k, key in ipairs(head_line) do
                         res[key] = result[k]
                     end
-                    table.insert(data, res)
+                    i = i+1; data[i] = res
+                    --tblInsert(data, res)
                 else
-                    table.insert(data, result)
+                    i = i+1; data[i] = result
+                    --tblInsert(data, result)
                 end
             end
             lg = lg + 1

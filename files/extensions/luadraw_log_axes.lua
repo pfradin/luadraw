@@ -1,6 +1,6 @@
 -- luadraw_log_axes.lua 
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -11,6 +11,8 @@ local ld = luadraw
 local graph = ld.graph
 local cpx = ld.cpx
 local Z = cpx.Z
+local tblInsert = table.insert
+local tblAppend = table.append
 
 -- draw logarithmic axes
 local logtype = "logy" -- or "logx" or "logxy"
@@ -142,7 +144,7 @@ function graph:Dlogaxe(type,options)
             local u = umin+pas
             decadeloglabel = {u}
             while u < umax+Ueps do 
-                table.insert(decadeloglabel,u)
+                tblInsert(decadeloglabel,u)
                 u = u+pas
             end
         end
@@ -151,7 +153,7 @@ function graph:Dlogaxe(type,options)
     if decadeloglabel == nil then 
         decadeloglabel = {}
         for _, v in ipairs(defaultloglabels) do
-            table.insert(decadeloglabel, umin*v)
+            tblInsert(decadeloglabel, umin*v)
         end
     end
     local ulabels = {0, ld.gradLabel(umin*10^(-exponent),1,"")}
@@ -163,9 +165,9 @@ function graph:Dlogaxe(type,options)
             local y = k+log(v)-powermin
             local y0 = v*10^(k-exponent)
             if y0 < maxval+Ueps then
-                table.insert(ulabels, y)
-                table.insert(ulabels, ld.gradLabel(y0,1,""))
-                table.insert(ticks, {O+y*dir-n1, O+y*dir+n2})
+                tblInsert(ulabels, y)
+                tblInsert(ulabels, ld.gradLabel(y0,1,""))
+                tblInsert(ticks, {O+y*dir-n1, O+y*dir+n2})
             end
         end
     end
@@ -174,9 +176,9 @@ function graph:Dlogaxe(type,options)
             local y = log(v)-powermin
             local y0 = v*10^(-exponent)
             if y0 < maxval+Ueps then
-                table.insert(ulabels, y)
-                table.insert(ulabels, ld.gradLabel(y0,1,""))
-                table.insert(ticks, {O+y*dir-n1, O+y*dir+n2})
+                tblInsert(ulabels, y)
+                tblInsert(ulabels, ld.gradLabel(y0,1,""))
+                tblInsert(ticks, {O+y*dir-n1, O+y*dir+n2})
             end
         end
     end
@@ -197,12 +199,12 @@ function graph:Dlogaxe(type,options)
                 local y1 = log(y)+p
                 if y1 <= decade+1e-6 then
                     if (k-1)%nbsubdiv ~= 0 then
-                        if type == "logy" then table.insert(grid2, {Z(vmin,y1),Z(vmax,y1)})
-                        else table.insert(grid2, {Z(y1,vmin),Z(y1,vmax)})
+                        if type == "logy" then tblInsert(grid2, {Z(vmin,y1),Z(vmax,y1)})
+                        else tblInsert(grid2, {Z(y1,vmin),Z(y1,vmax)})
                         end
                     else
-                        if type == "logy" then table.insert(grid1, {Z(vmin,y1),Z(vmax,y1)})
-                        else table.insert(grid1, {Z(y1,vmin),Z(y1,vmax)})
+                        if type == "logy" then tblInsert(grid1, {Z(vmin,y1),Z(vmax,y1)})
+                        else tblInsert(grid1, {Z(y1,vmin),Z(y1,vmax)})
                         end
                     end
                 end
@@ -437,7 +439,7 @@ function graph:Dloglabel(...)
     for i = 1, n-2, 3 do   -- Pas de 3 (1,4,7...)
         texte, anchor, args = select(i, ...)  -- Récupère les 3 args
         if anchor ~= nil then 
-            table.insert(argslst,texte); table.insert(argslst,ld.Zlog(anchor)); table.insert(argslst,args)
+            tblInsert(argslst,texte); tblInsert(argslst,ld.Zlog(anchor)); tblInsert(argslst,args)
         else
             print("Dloglabel Warning : the anchor point associated with the text "..texte.." is equal to nil")
         end

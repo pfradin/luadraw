@@ -1,4 +1,4 @@
-# Package luadraw for LuaLaTeX version 3.6
+# Package luadraw for LuaLaTeX version 3.7
 
 * The *luadraw* package defines the environment of the same name, which lets you create mathematical graphs (2D and 3D) using the Lua language. These graphs are ultimately drawn by TikZ (and automatically saved), so why make them in Lua? Because Lua brings all the power of a simple, efficient programming language, capable of performing calculations, using TikZ's graphics capabilities.  
 Run `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) required) or
@@ -9,6 +9,29 @@ and copy *doc* into texmf/doc/lualatex/luadraw/
 Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requis) ou
  copier le contenu de *files* dans : texmf/tex/lualatex/luadraw/  
  et copier le contenu de *doc*  : texmf/doc/lualatex/luadraw/
+ 
+**Version 3.7**
+
+* Added the function *ld.poly2graph()* which allows converting a polyhedron into a graph.
+    
+* Added the *g:Dpolyline2()* method; it functions the same way as the *g:Dpolyline()* method, except that the list of points—in addition to complex numbers—may also contain TikZ nodes expressed as strings.
+
+* For the methods *g:Cylinder_outline()*, *g:Cone_outline()*, and *g:Frustum_outline()*: the returned result contains two additional fields: the *hiddenside* field and the *hiddensection* field.
+    
+* In the module *luadraw_decorations*: added the method *g:Dangle3d()* which draws a right angle in space with options to paint the parallelogram and to add a label.
+    
+* Added the method *g:Dmarkseg3d()* which allows marking a segment of space with small segments.
+    
+* Added new 3D projection modes: *"yx"*, *"zx"*, *"zy"*, *"osi"*, *"yOx"*, *"zOx"*, and *"zOy"*, which are the "symmetrical" versions of the modes *"xy"*, *"xz"*, *"yz"*, *"iso"*, *"xOy"*, *"xOz"*, and *"yOz"*.
+    
+* Addition of the function *ld.cutfacet2()*, which allows for the cutting of a list of facets (or a polyhedron) by an implicit surface defined by the equation *f(x,y,z)=0*, subject to certain conditions on *f*.
+    
+* In the *luadraw_spherical* module, three methods have been added: *g:Dhalf_sphere()*, *g:Dquater_sphere()*, and *g:Dheighth_sphere()*.
+
+* For the *g:Dcut_sphere()* method, the following options have been added: *section=""*, which controls whether or not the circular section is drawn, and *outline=false*, which controls whether or not the outline of the spherical part is drawn.
+    
+* Bug fixes...    
+
  
 **Version 3.6**
 
@@ -52,39 +75,3 @@ Exécutez `l3build install` ([`l3build`](https://ctan.org/pkg/l3build) est requi
 * Added the function *ld.getmatrix3d(T1,T2)*, which calculates and returns the matrix transforming tetrahedron *T1* (a list of four non-coplanar 3D points) into tetrahedron *T2* (a list of four 3D points).
     
 * Bug fixes...  
- 
-**Version 3.5**
-
-* In the *luadraw_spherical* module:
-
-   * The *g:Define_sphere()* method has three additional options: *back=true/false*, *inside=true/false*, and *front=true/false*. These allow for toggling the display of elements located behind, inside, and in front of the sphere. 
-    
-   * Added the *g:DSaxes()* method, which draws the three axes. 
-    
-   * Most graphics methods now include additional options for adding a label. 
-   
-   * Added the functions *ld.smidpoint()* and *ld.sbarycenter()*. 
-
-* In the *luadraw_povray* module:
-
-   * Added the option *clip=true/false* for the *g:Pov_polyline()* method to clip the polygonal line to the current 3D viewport.
-
-   * Added the option *csg=true/false* for the *g:Pov_facet()* method. With the value true, the defined object can be used in CSG operations (with some limitations).
-
-* For 3D paths: addition of the instructions *"e"* for ellipse and *"ea"* for elliptic arc.
-
-* New 3D functions for ellipses and elliptic arcs: *ld.ellipse3db()*, *ld.ellipse3d()*, *ld.ellipticarc3db()*, *ld.ellipticarc3d()*, as well as the associated drawing methods: *g:Dellipse3d()* and *g:Dellipticarc3d()*.
-
-* Added the method *g:Dcut_sphere()* which allows drawing a sphere after it has been cut by a plane.
-
-* Added the *apex=true/false* option for the *g:Dcone()* method; with the value true, the apex is marked by a point when the cone is viewed from above.
-
-* The *g:Saveattr()* method now accepts an argument: *g:Saveattr(scope_options)*; this is a string (empty by default) that will be passed to the *scope* instruction.
-
-* Added the *lowlevel=true/false* option for the *g:BeginOnPlane()* method; with the value true, the transformation matrix is ​​applied at the lowest level, so all graphical elements—arrows, text, etc.—are drawn in the desired plane.
-
-* Addition of the *luadraw_linprog* module, which enables the solving and graphical representation of solutions to 2D or 3D linear programming problems.
-
-* Added the option *gradient=true/false* for the methods *g:Dcylinder()*, *g:Dcone()*, and *g:Dfrustum()*. This specifies whether the fill should be done with a gradient or not (true by default).
-
-* Bug fixes...

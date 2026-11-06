@@ -1,6 +1,6 @@
 -- luadraw_povray.lua
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -14,6 +14,8 @@ local cpx, pt3d = ld.cpx, ld.pt3d
 local Origin, vecI, vecJ, vecK = pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK
 local Z, M = cpx.Z, pt3d.M
 local graph3d = ld.graph3d
+local tblInsert = table.insert
+local tblAppend = table.append
 
 local oldtostring = tostring
 local tostring = function(x)
@@ -101,7 +103,7 @@ function graph3d:Pov_new(options)
  
 function graph3d:Pov_include(...) -- "file1.inc", "file2.inc", ...
     for _, incfile in ipairs{...} do
-        table.insert(Pov_includefiles, incfile)
+        tblInsert(Pov_includefiles, incfile)
     end
 end
 
@@ -181,7 +183,7 @@ end
 local pov_writeln = function(str)
 --  écrit la chaîne str avec retour à la ligne
     if str ~= nil then pov_write(str) end
-    table.insert(Pov_export,"") -- on démarre une nouvelle ligne   
+    tblInsert(Pov_export,"") -- on démarre une nouvelle ligne   
 end
 
 function graph3d:Pov_write(str)
@@ -572,7 +574,7 @@ function graph3d:Pov_plane2( P, options)
     if options.clipbox == nil then 
         options.clipbox = {M(x1,y1,z1), M(x2,y2,z2)}
     else
-        table.insert(options.clipbox,1,{M(x1,y1,z1), M(x2,y2,z2)})
+        tblInsert(options.clipbox,1,{M(x1,y1,z1), M(x2,y2,z2)})
     end
     local A, N = table.unpack( P )
     N = pt3d.normalize(N)
@@ -610,31 +612,31 @@ function graph3d:Pov_facet(F,options)
             --rep.vertices = table.copy(F.vertices)
             --rep.facets = {}
             for _,f in ipairs(F.facets) do
-                if #f == 3 then table.insert(rep,f)
+                if #f == 3 then tblInsert(rep,f)
                 else
                     local a, c, b = f[1], f[2]
                     for k = 3, #f do
                         b = c; c = f[k]
-                        table.insert(rep,{a,b,c})
+                        tblInsert(rep,{a,b,c})
                     end
                 end
             end
         else  -- facets
             for _,f in ipairs(F) do
                 local n= #f
-                if n == 3 then table.insert(rep, f) --triangle
+                if n == 3 then tblInsert(rep, f) --triangle
                 elseif n == 4 then -- quad
                     local a, b, c, d = f[1], f[2], f[3], f[4]
                     if pt3d.abs(c-a) < pt3d.abs(d-b) then
-                        table.insert(rep, {a,c,d}); table.insert(rep, {c,a,b});
+                        tblInsert(rep, {a,c,d}); tblInsert(rep, {c,a,b});
                     else
-                        table.insert(rep, {b,d,a}); table.insert(rep, {d,b,c});
+                        tblInsert(rep, {b,d,a}); tblInsert(rep, {d,b,c});
                     end
                 else --more than 4 vertices
                     local a, c, b = f[1], f[2]
                     for k = 3, #f do
                         b = c; c = f[k]
-                        table.insert(rep,{a,b,c})
+                        tblInsert(rep,{a,b,c})
                     end
                 end
             end
@@ -662,12 +664,12 @@ function graph3d:Pov_facet(F,options)
             pov_writeln("           triangle{ "..strdot(f[1]).." , "..strdot(f[2]).." , "..strdot(f[3]).." }")
         end
     end
-    write_matrix(options.matrix)
-    write_modifiers_rendering(options)
     if csg then
         local a, b, c = ld.strReal(math.random()), ld.strReal(math.random()), ld.strReal(math.random())
         pov_writeln("          inside_vector <"..a..","..b..","..c..">")
-    end
+    end    
+    write_matrix(options.matrix)
+    write_modifiers_rendering(options)
     pov_writeln("  }")
     if edge then
         local L = ld.facetedges(F)
@@ -786,21 +788,21 @@ function graph3d:Pov_polyline(L, options)
     
     local prepare_cp = function(cp)
         local aux = table.copy(cp)
-        if close and (aux[1] ~= aux[#aux]) then table.insert(aux,aux[1]) end
+        if close and (aux[1] ~= aux[#aux]) then tblInsert(aux,aux[1]) end
         local A, B, h, d
         listarrows = {}
         local n = #aux
         if arrows >= 1 then
             A = aux[n-1]; B = table.remove(aux)
             d = pt3d.abs(B-A); h = arrows_height*pt3d.normalize(A-B)
-            if d >= arrows_height then table.insert(aux,B+h) end
-            table.insert(listarrows,{B+h,arrows_radius,B})
+            if d >= arrows_height then tblInsert(aux,B+h) end
+            tblInsert(listarrows,{B+h,arrows_radius,B})
         end
         if arrows == 2 then
             A = table.remove(aux,1); B = aux[1]
             d = pt3d.abs(B-A); h = arrows_height*pt3d.normalize(B-A)
-            if d >= arrows_height then table.insert(aux,A+h) end
-            table.insert(listarrows,{A+h,arrows_radius,A})
+            if d >= arrows_height then tblInsert(aux,A+h) end
+            tblInsert(listarrows,{A+h,arrows_radius,A})
         end
         listdots = aux
     end

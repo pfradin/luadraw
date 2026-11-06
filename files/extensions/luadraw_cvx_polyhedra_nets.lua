@@ -1,6 +1,6 @@
 -- luadraw_polyhdron_net.lua (chargé par luadraw_graph2d.lua)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -13,6 +13,8 @@ local ld = luadraw
 local cpx, pt3d = ld.cpx, ld.pt3d
 local Z, M, vecI, vecJ, vecK = cpx.Z, pt3d.M, pt3d.vecI, pt3d.vecJ, pt3d.vecK
 local graph3d = ld.graph3d
+local tblInsert = table.insert
+local tblAppend = table.append
 
 local getpos = function(elt, L)
 -- renvoie la position de elt dans la liste L
@@ -62,7 +64,7 @@ local test_model = function(F,model)
     end
     local list_root = {}
     for k,f in ipairs(visited) do
-        if f == false then table.insert(list_root,k) end
+        if f == false then tblInsert(list_root,k) end
     end
     if #list_root ~= 1 then
         print("net model error : "..(#list_root).." facets without ancestor instead of one, aborted.")
@@ -88,25 +90,25 @@ function ld.unfold_tree(tree, factor, num)
         angle = factor*angle
         if (num==nil) or (num==k) then -- on tourne tout ou bien la facette k et sa descendance
             if parent == 0 then 
-                table.insert(rep,S) -- c'est la facette initiale (root), elle ne tourne pas
+                tblInsert(rep,S) -- c'est la facette initiale (root), elle ne tourne pas
                 --rep[index] = S
             else
                 local F = arbre[parent][5] -- sommets du parent
                 local axe = {F[a1], F[a2]-F[a1]}
                 local S1 = ld.rotate3d(S,angle,axe) -- rotation de la facette
                 Z[5] = S1
-                table.insert(rep, S1)
+                tblInsert(rep, S1)
                 --rep[index] = S1
                 local j, ancestors = 0, {k}
                 for _, Y in ipairs(arbre) do
                     j = j+1
                     if getpos(Y[1],ancestors) ~= nil then -- Y fait partie des descendants de Z
                         Y[5] = ld.rotate3d(Y[5],angle,axe) -- on tourne Y
-                        table.insert(ancestors,j)  --les descendants de Y doivent tourner eux aussi, ils sont après Y dans l'arbre
+                        tblInsert(ancestors,j)  --les descendants de Y doivent tourner eux aussi, ils sont après Y dans l'arbre
                     end
                     end
             end
-        else table.insert(rep, S)
+        else tblInsert(rep, S)
         end
     end
     return rep
@@ -154,7 +156,7 @@ function ld.unfold_polyhedron(P,options)
                 A = common_edge(face,Z)
                 if A ~= nil then
                     N = normal_vector(Z)
-                    table.insert(arbre, {num, A[1],A[2], pt3d.angle3d(N,n)*ld.rad, N, Z, k} ) -- on ajoute k, le numéro de la facette dans P
+                    tblInsert(arbre, {num, A[1],A[2], pt3d.angle3d(N,n)*ld.rad, N, Z, k} ) -- on ajoute k, le numéro de la facette dans P
                     tree_index[k] = #arbre -- position de la face k dans l'arbre
                     visited_facet[k] = true
                 end
@@ -186,9 +188,9 @@ function ld.unfold_polyhedron(P,options)
         for _, Z in ipairs(arbre) do --on renvoie l'arbre sans les vecteurs normaux 
             local t =  { Z[1], Z[2], Z[3], Z[4], ld.map(function(k) return S[k] end, Z[6]), Z[7]} -- {ancetre,axe1,axe2,angle,sommets, index initial}
             if out ~= nil  then
-                table.insert(out, table.copy(t))
+                tblInsert(out, table.copy(t))
             end
-            table.insert(rep,t)
+            tblInsert(rep,t)
         end
         arbre = rep
     end
@@ -203,12 +205,12 @@ function ld.unfold_polyhedron(P,options)
                 local b, a = L[1]
                 for k = 2, #L do
                     a = b; b = L[k]; 
-                    if not visited[b] then table.insert(rep,{a,b}); visited[b] = true end
+                    if not visited[b] then tblInsert(rep,{a,b}); visited[b] = true end
                 end
             end
             for _, L in ipairs(model) do
                 local a = L[1]
-                if not visited[a] then table.insert(rep,1,{0,a}); root=a; break end -- root
+                if not visited[a] then tblInsert(rep,1,{0,a}); root=a; break end -- root
             end
             return rep
         end
@@ -222,8 +224,8 @@ function ld.unfold_polyhedron(P,options)
         while #model > 0 do
             m = table.remove(model)
             a, d = table.unpack(m)
-            if (a==0) or (visited[a]) then table.insert(rep,m); visited[d] = true
-            else table.insert(model,1,m)
+            if (a==0) or (visited[a]) then tblInsert(rep,m); visited[d] = true
+            else tblInsert(model,1,m)
             end
         end
         model = rep
@@ -235,14 +237,14 @@ function ld.unfold_polyhedron(P,options)
             local Z, face, A, n = F[d]
             local N = normals[d]
             if a == 0 then  
-                table.insert(arbre, {0,0,0,0,N,Z,d} )
+                tblInsert(arbre, {0,0,0,0,N,Z,d} )
                 --index_tree[d] = #arbre
                 tree_index[d] = #arbre -- position de la face k dans l'arbre
             else
                 face = F[a]; n = normals[a]
                 A = common_edge(face,Z)
                 if A ~= nil then
-                    table.insert(arbre, {a, A[1],A[2], pt3d.angle3d(N,n)*ld.rad, N, Z, d} )
+                    tblInsert(arbre, {a, A[1],A[2], pt3d.angle3d(N,n)*ld.rad, N, Z, d} )
                     --index_tree[d] = #arbre
                     tree_index[d] = #arbre -- position de la face k dans l'arbre
                 else
@@ -257,9 +259,9 @@ function ld.unfold_polyhedron(P,options)
             if Z[1] == 0 then index = 0 else index = tree_index[Z[1]] end
             local t =  {index, Z[2], Z[3], Z[4], ld.map(function(k) return S[k] end, Z[6]), Z[7]} -- {ancetre,axe1,axe2,angle,sommets, index initial}
             if out ~= nil  then
-                table.insert(out, table.copy(t))
+                tblInsert(out, table.copy(t))
             end
-            table.insert(rep,t)
+            tblInsert(rep,t)
         end
         arbre = rep
     end
@@ -293,7 +295,7 @@ function ld.unfold_polyhedron(P,options)
                     else ab = b..";"..a
                     end
                     if edges_list[ab] == nil then edges_list[ab] = {id1,id2,tree_index[num]}
-                    else table.append(edges_list[ab], {id1,id2,tree_index[num]})
+                    else tblAppend(edges_list[ab], {id1,id2,tree_index[num]})
                     end
                 end
             end
@@ -305,8 +307,8 @@ function ld.unfold_polyhedron(P,options)
                     local A, B, C, D = rep[n1][a1], rep[n1][b1], rep[n2][a2], rep[n2][b2]
                     -- [A,B] est une des deux arêtes qui se confondent quand le polyèdre est replié, mais elles sont différentes sur le patron alors il faut une languette sur une des deux
                         local h = tabs_wd*cpx.I*cpx.normalize(B-A)
-                        table.insert(tabs_list, {A, (1-lambda)*A+lambda*B+h, lambda*A+(1-lambda)*B+h,B} )
-                        table.insert(twin_edges,{{A,B},{C,D}})
+                        tblInsert(tabs_list, {A, (1-lambda)*A+lambda*B+h, lambda*A+(1-lambda)*B+h,B} )
+                        tblInsert(twin_edges,{{A,B},{C,D}})
                     end
                 end
             end

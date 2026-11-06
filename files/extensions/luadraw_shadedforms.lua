@@ -1,6 +1,6 @@
 -- luadraw_shadedforms.lua 
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -15,6 +15,8 @@ local ld = luadraw
 local graph = ld.graph
 local cpx = ld.cpx
 local Z = cpx.Z
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function graph:Dshadedpolyline(L1,pal,options)
 -- L1 is a list of complex numbers or a list of list od complex numbers
@@ -64,9 +66,9 @@ function graph:Dshadedpolyline(L1,pal,options)
         close = close or cycle
         table.remove(cp,1); table.remove(cp,1)
         if close then
-            if not cycle then table.insert(cp,a) end
+            if not cycle then tblInsert(cp,a) end
             a = (a+b)/2
-            table.insert(cp,a); table.insert(cp1,a)
+            tblInsert(cp,a); tblInsert(cp1,a)
         end
         local Min, Max = math.huge, -math.huge
         for _,z in ipairs(cp1) do
@@ -131,7 +133,7 @@ function graph:Dcolorbar(A,pal,options)
     local labelpos = options.labelpos or "E"
     local addvalues = options.addvalues
     if addvalues ~= nil then
-        table.insert(addvalues,1,min); table.insert(addvalues,max)
+        tblInsert(addvalues,1,min); tblInsert(addvalues,max)
         values = addvalues
     end
     if type(values) == "number" then
@@ -154,8 +156,8 @@ function graph:Dcolorbar(A,pal,options)
     end
     local labels, seg = {}, {}
     for k = 1, #values do
-        table.append(labels,{"$"..ld.num(values[k],digit).."$", anchors[k], {pos=labelpos}})
-        table.insert(seg, {anchors[k], anchors[k]+h})
+        tblAppend(labels,{"$"..ld.num(values[k],digit).."$", anchors[k], {pos=labelpos}})
+        tblInsert(seg, {anchors[k], anchors[k]+h})
     end
     self:Drectangle(A,A+L,A+h+L); self:Dpolyline(seg); self:Dlabel(table.unpack(labels))
 end
@@ -191,7 +193,7 @@ function graph:Dshadedrectangle(x1,x2,y1,y2,pal,options)
             values[key] = img
         end
     end
-    if out~= nil then table.insert(out,Min); table.insert(out,Max) end
+    if out~= nil then tblInsert(out,Min); tblInsert(out,Max) end
     baroptions.minmax = {Min, Max}
     baroptions.values = baroptions.values or #pal
     if bilinear then
@@ -199,7 +201,7 @@ function graph:Dshadedrectangle(x1,x2,y1,y2,pal,options)
         for j = 0, grid[2] do 
             key = "0/"..j
             color = ld.palette(pal,(values[key]-Min)/(Max-Min))
-            table.insert(right_colors, color)
+            tblInsert(right_colors, color)
         end
         -- paint
         local eps =  1e-2 -- to widen the squares a little
@@ -210,7 +212,7 @@ function graph:Dshadedrectangle(x1,x2,y1,y2,pal,options)
             for j = 0, grid[2] do 
                 key = (i+1).."/"..j
                 color = ld.palette(pal,(values[key]-Min)/(Max-Min))
-                table.insert(right_colors, color)
+                tblInsert(right_colors, color)
             end
             for j = 0, grid[2]-1 do
                 local y = y1+deltaY*j

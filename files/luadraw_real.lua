@@ -1,6 +1,6 @@
 -- luadraw_real.lua (chargé par luadraw_complex.lua)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -8,6 +8,8 @@
 --   https://www.ctan.org/license/lppl
 
 local ld = luadraw
+local tblInsert = table.insert
+local tblAppend = table.append
 ld.digits = 4 -- nombre de décimales dans les exports
 ld.epsilon = 1e-16
 ld.mm = math.floor(7227/254) -- conversion en dixième de point, ex: Linewidth(2*mm) pour une épaisseur de 2 millimètres
@@ -64,9 +66,11 @@ end
 
 function ld.range(a, b, step)
     step = step or 1
-    local res = {}
+    local res, n = {}, 0
     for k = a, b, step do
-        table.insert(res,k)
+        n = n+1
+        res[n] = k
+        --tblInsert(res,k)
     end
     return res
 end
@@ -75,25 +79,27 @@ function ld.linspace(...)
 -- linspace(a1,b1,n1,b2,n2,...,bp,np)
     local args = {...}
     local res, b, nb, n, a = {}, args[1], #args
-    local res = {}
-    if nb == 2 then table.insert(args,50); nb = nb+1 end
+    local res, i = {}, 0
+    if nb == 2 then tblInsert(args,50); nb = nb+1 end
     for k = 2, nb-1, 2 do   -- avec un pas de 2 (2,4,6...)
         a = b; b = args[k]; n = args[k+1] 
         local pas = (b-a)/(n-1)
         local x = a
         for _ = 1, n-1 do
-            table.insert(res,x)
+            i = i+1
+            res[i] = x
+            --tblInsert(res,x)
             x = x+pas
         end
     end
-    table.insert(res,b)
+    tblInsert(res,b)
     return res
 end
 
 function ld.reverse(list)
-    local rep = {}
-    for _,x in ipairs(list) do
-        table.insert(rep,1,x)
+    local rep, n = {}, #list
+    for k = 1, n do
+        rep[k] = list[n-k+1]
     end
     return rep
 end
@@ -124,7 +130,7 @@ local function solveBisec(f,a,b,n) -- version 3.6 of luadraw
         u = v; v = v+delta; fu = fv; fv = ld.evalf(f,v)
         local x, y, fx = u, v, fu
         if fv == nil then return end
-        if math.abs(fu) < 1e-6 then table.insert(S,u)
+        if math.abs(fu) < 1e-6 then tblInsert(S,u)
         else
             if fu*fv <= 0 then
                 while math.abs(x-y) > 1e-12 do
@@ -133,7 +139,7 @@ local function solveBisec(f,a,b,n) -- version 3.6 of luadraw
                     if fm == nil then return end
                     if fm*fx <= 0 then y = mid else x = mid; fx = fm end
                 end
-                table.insert(S,(x+y)/2) -- we consider that is a solution
+                tblInsert(S,(x+y)/2) -- we consider that is a solution
             end
         end
     end
@@ -159,19 +165,19 @@ function ld.solve(f,a,b,n,df) -- version 2.4 of luadraw
     end
     for k = 1, n do
         r = x+delta/2
-        if math.abs(f(r)) < 1e-6 then table.insert(S,r)
+        if math.abs(f(r)) < 1e-6 then tblInsert(S,r)
         else
             for i = 1,5 do
                 if r ~= nil then r = ld.evalf(iter,r) end
                 if (r==nil) then break end
             end
             if (r ~= nil) and (r >= x) and (r < fin) and (math.abs(f(r)) < 1e-6) then
-                table.insert(S,r) -- we consider that r is a solution
+                tblInsert(S,r) -- we consider that r is a solution
             end
         end
         x = fin; fin = x+delta
     end
-    if (math.abs(f(b)) < 1e-6) then table.insert(S,r) end
+    if (math.abs(f(b)) < 1e-6) then tblInsert(S,r) end
     if #S > 0 then return S end
 end
 

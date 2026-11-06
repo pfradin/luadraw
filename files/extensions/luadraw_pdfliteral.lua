@@ -1,6 +1,6 @@
 -- luadraw_pdfliteral.lua
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -14,6 +14,8 @@
 
 local ld = luadraw
 local cpx = ld.cpx
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function ld.graph:bpCoord(z) -- coordinates, conversion cm -> bp
     local a, b = self:coord(z.re,z.im)
@@ -44,21 +46,21 @@ function ld.graph:Dliteralpath(...)
         if (type(fill) == "table") and (#fill == 3) then
             strcolor = ld.strReal(fill[1],3).." "..ld.strReal(fill[2],3).." "..ld.strReal(fill[3],3)
             if strcolor ~= strfill then
-                table.insert(literalstr,strcolor.." rg" ) -- fill color
+                tblInsert(literalstr,strcolor.." rg" ) -- fill color
                 strfill = strcolor
             end
         end
         if (type(draw) == "table") and (#draw == 3) then
             strcolor = ld.strReal(draw[1],3).." "..ld.strReal(draw[2],3).." "..ld.strReal(draw[3],3)
             if strcolor ~= strdraw then
-                table.insert(literalstr,strcolor.." RG" ) -- line color
+                tblInsert(literalstr,strcolor.." RG" ) -- line color
                 strdraw = strcolor
             end
         end
         if (type(width) == "number") then
             strcolor = ld.strReal(width/10*ld.pt*28.3464567,3)
             if strcolor ~= strwidth then
-                table.insert(literalstr,strcolor.." w" ) -- line width
+                tblInsert(literalstr,strcolor.." w" ) -- line width
                 strwidth = strcolor
             end
         end           
@@ -69,25 +71,25 @@ function ld.graph:Dliteralpath(...)
         local last
         for _,z in ipairs(path) do -- only "m", "l", "b" and "cl"
             if z == "m" then
-                table.insert(literalstr, self:bpCoord(aux[#aux]).." m")
+                tblInsert(literalstr, self:bpCoord(aux[#aux]).." m")
                 aux = {}
             elseif z == "l" then
                 for _,c in ipairs(aux) do
                     local bpcoord = self:bpCoord(c)
-                    if  last ~= bpcoord then table.insert(literalstr, bpcoord.." l") end
+                    if  last ~= bpcoord then tblInsert(literalstr, bpcoord.." l") end
                     last = bpcoord
                 end
                 aux = {}
             elseif z == "b" then
                 local c1, c2, c3 = table.unpack(aux)
-                table.insert(literalstr, self:bpCoord(c1).." "..self:bpCoord(c2).." "..self:bpCoord(c3).." c")
+                tblInsert(literalstr, self:bpCoord(c1).." "..self:bpCoord(c2).." "..self:bpCoord(c3).." c")
                 aux = {}
             elseif z == "cl" then
-                table.insert(literalstr, "h")
-            else table.insert(aux,z)
+                tblInsert(literalstr, "h")
+            else tblInsert(aux,z)
             end            
         end
-        table.insert(literalstr, ends)
+        tblInsert(literalstr, ends)
     end
     
     local n = select("#", ...)  -- Nombre total d'arguments
@@ -127,21 +129,21 @@ function ld.graph:Dliteralpolyline(...)
         if (type(fill) == "table") and (#fill == 3) then
             strcolor = ld.strReal(fill[1],3).." "..ld.strReal(fill[2],3).." "..ld.strReal(fill[3],3)
             if strcolor ~= strfill then
-                table.insert(literalstr,strcolor.." rg" ) -- fill color
+                tblInsert(literalstr,strcolor.." rg" ) -- fill color
                 strfill = strcolor
             end
         end
         if (type(draw) == "table") and (#draw == 3) then
             strcolor = ld.strReal(draw[1],3).." "..ld.strReal(draw[2],3).." "..ld.strReal(draw[3],3)
             if strcolor ~= strdraw then
-                table.insert(literalstr,strcolor.." RG" ) -- line color
+                tblInsert(literalstr,strcolor.." RG" ) -- line color
                 strdraw = strcolor
             end
         end
         if (type(width) == "number") then
             strcolor = ld.strReal(width/10*ld.pt*28.3464567,3)
             if strcolor ~= strwidth then
-                table.insert(literalstr,strcolor.." w" ) -- line width
+                tblInsert(literalstr,strcolor.." w" ) -- line width
                 strwidth = strcolor
             end
         end              
@@ -151,15 +153,15 @@ function ld.graph:Dliteralpolyline(...)
         for _,cp in ipairs(polyline) do
             for k,z in ipairs(cp) do 
                 z = cpx.toComplex(z)
-                if k == 1 then table.insert(literalstr, self:bpCoord(z).." m") 
+                if k == 1 then tblInsert(literalstr, self:bpCoord(z).." m") 
                 else
                     local bpcoord = self:bpCoord(z)
-                    if  last ~= bpcoord then table.insert(literalstr, bpcoord.." l") end
+                    if  last ~= bpcoord then tblInsert(literalstr, bpcoord.." l") end
                     last = bpcoord
                 end
             end
-            if close then table.insert(literalstr, "h") end
-            table.insert(literalstr, ends)
+            if close then tblInsert(literalstr, "h") end
+            tblInsert(literalstr, ends)
         end
     end
     
@@ -197,14 +199,14 @@ function ld.graph:Dliteraldots(...)
         if (type(draw) == "table") and (#draw == 3) then
             strcolor = ld.strReal(draw[1],3).." "..ld.strReal(draw[2],3).." "..ld.strReal(draw[3],3)
             if strcolor ~= strdraw then
-                table.insert(literalstr,strcolor.." RG" ) -- line color
+                tblInsert(literalstr,strcolor.." RG" ) -- line color
                 strdraw = strcolor
             end
         end
         if (type(width) == "number") then
             strcolor = ld.strReal(width/10*ld.pt*28.3464567,3)
             if strcolor ~= strwidth then
-                table.insert(literalstr,strcolor.." w" ) -- line width
+                tblInsert(literalstr,strcolor.." w" ) -- line width
                 strwidth = strcolor
             end
         end        
@@ -215,11 +217,11 @@ function ld.graph:Dliteraldots(...)
             for k,z in ipairs(cp) do 
                 z = cpx.toComplex(z)
                 local bpcoord = self:bpCoord(z)
-                table.insert(literalstr, bpcoord.." m") 
-                table.insert(literalstr, bpcoord.." l")
+                tblInsert(literalstr, bpcoord.." m") 
+                tblInsert(literalstr, bpcoord.." l")
             end
         end
-        table.insert(literalstr, "s")
+        tblInsert(literalstr, "s")
     end
     
     local n = select("#", ...)  -- Nombre total d'arguments
@@ -290,8 +292,8 @@ if ld.graph3d ~= nil then
                     args.getcolor = ld.define_getcolor(face,pal,mode,args.color,minmax)
                 end            
                 for _, f in ipairs(face) do
-                    table.insert(f,args) -- chaque facette est accompagnée de ses arguments
-                    table.insert(S,f)
+                    tblInsert(f,args) -- chaque facette est accompagnée de ses arguments
+                    tblInsert(S,f)
                 end
             end
         end
@@ -315,21 +317,21 @@ if ld.graph3d ~= nil then
             local strcolor = ld.strReal(color[1],3).." "..ld.strReal(color[2],3).." "..ld.strReal(color[3],3)
             if args.mode ~= ld.mWireframe then
                 if strcolor ~= strfill then
-                    table.insert(literalstr,strcolor.." rg" ) -- fill color
+                    tblInsert(literalstr,strcolor.." rg" ) -- fill color
                     strfill = strcolor
                 end
             end
             if (args.mode ~= ld.mShadedOnly) then
                 local wd = ld.strReal(args.edgewidth/10*ld.pt*28.3464567,3)
                 if wd ~= strwidth then
-                    table.insert(literalstr,wd.." w" ) -- line width
+                    tblInsert(literalstr,wd.." w" ) -- line width
                     strwidth = wd
                 end
             end
             if (args.mode == ld.mShadedOnly) then
                 if (opacity == 1) then
                     if strcolor ~= strdraw then
-                        table.insert(literalstr,strcolor.." RG" ) -- line color same as fill color
+                        tblInsert(literalstr,strcolor.." RG" ) -- line color same as fill color
                         strdraw = strcolor
                     end
                 else ends = "f" --fill only
@@ -340,17 +342,17 @@ if ld.graph3d ~= nil then
             if (ends ~= "f") and (args.mode ~= ld.mShadedOnly) then
                 strcolor = ld.strReal(args.edgecolor[1],3).." "..ld.strReal(args.edgecolor[2],3).." "..ld.strReal(args.edgecolor[3],3)
                 if strcolor ~= strdraw then
-                    table.insert(literalstr,strcolor.." RG" ) -- line color
+                    tblInsert(literalstr,strcolor.." RG" ) -- line color
                     strdraw = strcolor
                 end  
             end
             local n = #f1
-            table.insert(literalstr, self:bpCoord(f1[1]).." m")
+            tblInsert(literalstr, self:bpCoord(f1[1]).." m")
             for k = 2, n-1 do
-                table.insert(literalstr, self:bpCoord(f1[k]).." l")
+                tblInsert(literalstr, self:bpCoord(f1[k]).." l")
             end
-            table.insert(literalstr, self:bpCoord(f1[n]).." l") -- facet inserted
-            table.insert(literalstr, ends) -- facet inserted        
+            tblInsert(literalstr, self:bpCoord(f1[n]).." l") -- facet inserted
+            tblInsert(literalstr, ends) -- facet inserted        
         end
         self:Writeln("\\luadrawLiteral{"..table.concat(literalstr,"\n").."}")
         self.matrix3d = oldmatrix

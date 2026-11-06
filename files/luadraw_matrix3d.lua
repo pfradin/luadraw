@@ -1,6 +1,6 @@
 -- luadraw__matrix3d.lua (chargé par luadraw__graph3d)
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -14,6 +14,8 @@ ld.pt3d = require 'luadraw_point3d'
 local pt3d = ld.pt3d
 local M = pt3d.M
 local isPoint3d = pt3d.isPoint3d
+local tblInsert = table.insert
+local tblAppend = table.append
 
 ld.ID3d = {pt3d.Origin, pt3d.vecI, pt3d.vecJ, pt3d.vecK} -- matrice identité 3d
 
@@ -51,16 +53,16 @@ function ld.mtransform3d(L,M) -- applique la matrice M à L
     if isPoint3d(L) then res = ld.applymatrix3d(L,M)
     elseif isPoint3d(L[1]) then --liste de point3d
         for _, A in ipairs(L) do
-            table.insert(res, ld.applymatrix3d(A,M) )
+            tblInsert(res, ld.applymatrix3d(A,M) )
         end
     else  -- L est une liste de listes
         local aux
         for _,cp in ipairs(L) do
             aux = {}
             for _,A in ipairs(cp) do
-                table.insert(aux, ld.applymatrix3d(A,M) )
+                tblInsert(aux, ld.applymatrix3d(A,M) )
             end
-            table.insert(res,aux)
+            tblInsert(res,aux)
         end
     end
     return res
@@ -75,16 +77,16 @@ function ld.mLtransform3d(L,M) -- applique la partie linéaire de la matrice M �
     if isPoint3d(L) then res = ld.applyLmatrix3d(L,M)
     elseif isPoint3d(L[1]) then --liste de point3d
         for _, A in ipairs(L) do
-            table.insert(res, ld.applyLmatrix3d(A,M) )
+            tblInsert(res, ld.applyLmatrix3d(A,M) )
         end
     else  -- L est une liste de listes
         local aux
         for _,cp in ipairs(L) do
             aux = {}
             for _,A in ipairs(cp) do
-                table.insert(aux, ld.applyLmatrix3d(A,M) )
+                tblInsert(aux, ld.applyLmatrix3d(A,M) )
             end
-            table.insert(res,aux)
+            tblInsert(res,aux)
         end
     end
     return res

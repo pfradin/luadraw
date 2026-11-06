@@ -1,6 +1,6 @@
 -- luadraw_fields2d.lua
--- date 2026/10/10
--- version 3.6
+-- date 2026/11/05
+-- version 3.7
 -- Copyright 2026 Patrick Fradin
 -- This work may be distributed and/or modified under the
 -- conditions of the LaTeX Project Public License.
@@ -13,6 +13,8 @@ local ld = luadraw
 local graph = ld.graph
 local cpx = ld.cpx
 local Z = cpx.Z
+local tblInsert = table.insert
+local tblAppend = table.append
 
 function ld.field(f,x1,x2,y1,y2,grid,long)
 -- champ de vecteurs dans le pavé [x1,x2]x[y1,y2]
@@ -35,7 +37,7 @@ function ld.field(f,x1,x2,y1,y2,grid,long)
                 v = Z(v[1],v[2]) -- passage en complexe
                 v = cpx.normalize(v)
                 if v ~= nil then
-                    table.insert(vectors, {Z(x,y)-long/2*v, Z(x,y)+long/2*v} ) -- on ajoute le vecteur
+                    tblInsert(vectors, {Z(x,y)-long/2*v, Z(x,y)+long/2*v} ) -- on ajoute le vecteur
                 end
             end
             y = y+deltay
@@ -75,13 +77,13 @@ function graph:DplotXY(X,Y,draw_options,clip)
     local L = {} -- liste des points à dessiner
     if type(X[1]) == "number" then 
         for k,x in ipairs(X) do
-            table.insert(L,Z(x,Y[k]))
+            tblInsert(L,Z(x,Y[k]))
         end
     else
         local noms = {} -- liste des labels à placer
         for k = 1, #X do
-            table.insert(L,Z(k,Y[k]))
-            table.append(noms,{X[k],k,{pos="E",node_options="rotate=-90"}})
+            tblInsert(L,Z(k,Y[k]))
+            tblAppend(noms,{X[k],k,{pos="E",node_options="rotate=-90"}})
         end
         self:Dlabel(table.unpack(noms))
     end
@@ -145,7 +147,7 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
             for j = 1, grid[2]-1 do
                 V = vectorAt(P,Dpu,Dpv,F,u,v,length,arrows)
                 if V ~= nil then 
-                    table.insert(vectors,V) 
+                    tblInsert(vectors,V) 
                 end
                 v = v + deltav
             end
@@ -192,9 +194,9 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
         for _,u in ipairs(umesh) do
             local aux = {}
             for _,v in ipairs(vmesh) do
-                table.insert(aux,F(u,v))
+                tblInsert(aux,F(u,v))
             end
-            table.insert(S,aux)
+            tblInsert(S,aux)
         end
         local rep, vectors = {}, {}
         local A, last, cij
@@ -202,17 +204,17 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
             for j = 1, nbv-1 do
                 aux = {}; cij = {(umesh[i]+umesh[i+1])/2, (vmesh[j]+vmesh[j+1])/2}
                 A = S[i][j]; first = A; last = A
-                if A ~= cpx.Jump then table.insert(aux,A) end
+                if A ~= cpx.Jump then tblInsert(aux,A) end
                 A = S[i+1][j]
-                if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then table.insert(aux,A); last = A end
+                if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then tblInsert(aux,A); last = A end
                 A = S[i+1][j+1]
-                if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then table.insert(aux,A); last = A end
+                if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) then tblInsert(aux,A); last = A end
                 A = S[i][j+1]
-                if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) and ((first == cpx.Jump) or different(A,first)) then table.insert(aux,A) end
+                if (A ~= cpx.Jump) and ((last == cpx.Jump) or different(A,last)) and ((first == cpx.Jump) or different(A,first)) then tblInsert(aux,A) end
                 if #aux > 2 then 
                     local V = vectorAt(P,Dpu,Dpv,f1,cij[1],cij[2],length,arrows)
-                    if V == nil then table.insert(vectors,"nil") else table.insert(vectors,V) end
-                    table.insert(rep, {aux, #vectors}) 
+                    if V == nil then tblInsert(vectors,"nil") else tblInsert(vectors,V) end
+                    tblInsert(rep, {aux, #vectors}) 
                 end
             end
         end
@@ -273,7 +275,7 @@ if ld.graph3d ~= nil then -- luadraw with option 3d
             local face, index = table.copy(F[1]), F[2]
             if clip then face = ld.clip3d(face,self:Box3d())[1] end
             if (face ~= nil) and (not ld.isID3d(self.matrix3d)) then face = self:Mtransform3d(face) end
-            if (face ~= nil) and (#face>2) then table.insert(face,index); table.insert(facets,face) end
+            if (face ~= nil) and (#face>2) then tblInsert(face,index); tblInsert(facets,face) end
         end
         local oldmatrix = self.matrix3d
         self.matrix3d = ld.ID3d
